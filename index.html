@@ -3,22 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแจ้งเวลาพัก - Jelly Butterfly Version</title>
-    <!-- ดึงฟอนต์ Kanit สุดน่ารักและอ่านง่าย -->
+    <title>ระบบแจ้งเวลาพัก - Ultimate Version</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#f8fafc">
+    
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease, top 0.4s, left 0.4s, width 0.4s, height 0.4s;
-        }
-        
-        /* 🍮 เอฟเฟกต์แอนิเมชันเยลลี่ดึ๋งดั๋ง (Jelly Keyframes) */
-        @keyframes jelly-bounce {
-            0% { transform: scale(1, 1); }
-            25% { transform: scale(1.12, 0.85); }
-            50% { transform: scale(0.92, 1.08); }
-            75% { transform: scale(1.05, 0.95); }
-            100% { transform: scale(1.04, 1.04); }
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s, color 0.3s;
         }
 
         body {
@@ -29,108 +24,113 @@
             padding: 20px;
             margin: 0;
             min-height: 100vh;
-            
-            /* 🦋 ตั้งค่ารูปพื้นหลังผีเสื้อ 3D 🦋 */
-            background-image: url('Stunning 3D Pink Butterfly Models for Your Home Decor.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+            perspective: 1000px; /* รองรับแอนิเมชัน 3D */
         }
         
-        /* 🌙 เมื่อเปิดโหมดมืด จะทำการดรอปแสงภาพพื้นหลังลง เพื่อความสบายตา */
-        body.dark-mode {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('Stunning 3D Pink Butterfly Models for Your Home Decor.jpg');
-        }
+        body.dark-mode { background-color: #0f172a; color: #f8fafc; }
 
         .container {
             display: flex;
             flex-direction: column;
             gap: 16px;
             width: 100%;
-            max-width: 360px;
+            max-width: 380px;
             position: relative;
-            z-index: 2;
         }
 
-        /* ปุ่มสลับโหมดกลางคืนสุดคิวท์ */
-        .theme-toggle {
-            align-self: flex-end;
-            font-size: 13px;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 30px;
-            background: rgba(255, 255, 255, 0.85);
-            color: #4a4a4c;
-            cursor: pointer;
-            user-select: none;
-            margin-bottom: 4px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            border: 1px solid rgba(255,255,255,0.5);
-            backdrop-filter: blur(5px);
-        }
-        .theme-toggle:hover {
-            animation: jelly-bounce 0.5s ease forwards;
+        /* 📊 Dashboard โควตาเวลา */
+        .dashboard {
             background: #ffffff;
-        }
-        body.dark-mode .theme-toggle {
-            background: rgba(44, 44, 46, 0.85);
-            color: #ffde43;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border-color: rgba(255,255,255,0.05);
-        }
-        
-        /* การ์ดหน้าแรกทรงมนๆ นุ่มฟูแบบมีออร่าขาวใสแว่วผ่านพื้นหลัง */
-        .action-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: rgba(255, 255, 255, 0.92);
-            padding: 14px;
             border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(160, 175, 190, 0.25);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            user-select: none;
-            position: relative;
-            backdrop-filter: blur(4px);
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(148, 163, 184, 0.12);
+            border: 1px solid #e2e8f0;
         }
-
-        /* ชี้ปุ๊บ... ดึ๋งเป็นเยลลี่ทันที! */
-        .action-card:hover:not(.expanded) {
-            animation: jelly-bounce 0.55s ease forwards;
-            box-shadow: 0 15px 35px rgba(120, 135, 160, 0.35);
-            background-color: #ffffff;
+        body.dark-mode .dashboard {
+            background: #1e293b; border-color: #334155;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-        .action-card:active:not(.expanded) {
-            transform: scale(0.95, 0.95);
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
         }
-
-        /* การ์ดในโหมดมืด */
-        body.dark-mode .action-card {
-            background-color: rgba(28, 28, 30, 0.9);
-            border-color: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        }
-        body.dark-mode .action-card:hover:not(.expanded) {
-            box-shadow: 0 15px 35px rgba(0,0,0,0.55);
-            background-color: rgba(38, 38, 40, 0.95);
-        }
+        .dash-title { font-size: 14px; color: #64748b; font-weight: bold; }
+        body.dark-mode .dash-title { color: #94a3b8; }
         
-        /* แคปซูลพาสเทลหน้าแรก */
-        .capsule {
-            width: 100%;
-            padding: 16px 0;
-            border-radius: 100px;
+        /* ช่องกรอกโควตาแบบแก้ไขได้ */
+        .quota-setting {
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        body.dark-mode .quota-setting { color: #94a3b8; }
+        .quota-input {
+            width: 55px;
+            padding: 4px 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: bold;
             text-align: center;
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
+            color: #0f172a;
+            background: #f8fafc;
+        }
+        body.dark-mode .quota-input {
+            background: #0f172a; border-color: #475569; color: #ffffff;
+        }
+
+        .time-grid { display: flex; justify-content: space-around; margin-top: 10px; }
+        .time-box { display: flex; flex-direction: column; text-align: center; }
+        .time-val { font-size: 24px; font-weight: 700; color: #0f172a; }
+        body.dark-mode .time-val { color: #ffffff; }
+        .time-lbl { font-size: 11px; color: #94a3b8; }
+        
+        /* แถบพลังงานความคืบหน้า */
+        .progress-bar { width: 100%; height: 8px; background: #e2e8f0; border-radius: 10px; margin-top: 15px; overflow: hidden; }
+        body.dark-mode .progress-bar { background: #334155; }
+        .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #38bdf8, #c084fc); transition: width 0.5s ease; }
+
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
+        .app-title { font-size: 18px; font-weight: 700; color: #334155; margin: 0; }
+        body.dark-mode .app-title { color: #f1f5f9; }
+
+        .theme-toggle {
+            font-size: 13px; font-weight: 500; padding: 6px 14px; border-radius: 30px;
+            background: #ffffff; color: #4a4a4c; cursor: pointer; user-select: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+        }
+        body.dark-mode .theme-toggle { background: #1e293b; color: #ffde43; border-color: #334155; }
+
+        /* ✨ การ์ดปุ่มกด + เอฟเฟกต์เรืองแสง (Glow Hover) */
+        .action-card {
+            display: flex; flex-direction: column; align-items: center;
+            background-color: #ffffff; padding: 14px; border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(148, 163, 184, 0.1);
+            border: 1px solid #f1f5f9; cursor: pointer; user-select: none;
+            position: relative; transform-style: preserve-3d;
+        }
+        body.dark-mode .action-card { background-color: #1e293b; border-color: #334155; }
+
+        /* การทำ Glow เรืองแสงตามสีธีมของการ์ดแต่ละใบ */
+        #card-get:hover:not(.expanded) { box-shadow: 0 0 25px rgba(192, 132, 252, 0.6); transform: translateY(-3px) scale(1.02); }
+        #card-eat:hover:not(.expanded) { box-shadow: 0 0 25px rgba(250, 204, 21, 0.6); transform: translateY(-3px) scale(1.02); }
+        #card-break:hover:not(.expanded) { box-shadow: 0 0 25px rgba(74, 222, 128, 0.6); transform: translateY(-3px) scale(1.02); }
+        #card-buy:hover:not(.expanded) { box-shadow: 0 0 25px rgba(251, 113, 133, 0.6); transform: translateY(-3px) scale(1.02); }
+        #card-toilet:hover:not(.expanded) { box-shadow: 0 0 25px rgba(56, 189, 248, 0.6); transform: translateY(-3px) scale(1.02); }
+
+        .capsule {
+            width: 100%; padding: 16px 0; border-radius: 100px;
+            text-align: center; font-size: 26px; font-weight: 700;
+            letter-spacing: 0.5px; margin-bottom: 8px;
             box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1);
         }
         
-        /* โทนสีหวานละมุนสไตล์คาเฟ่เยลลี่ */
         .food-get { background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%); color: #4c1d95; }
         .food-eat { background: linear-gradient(135deg, #fef08a 0%, #facc15 100%); color: #713f12; }
         .break { background: linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%); color: #14532d; }
@@ -138,134 +138,145 @@
         .toilet { background: linear-gradient(135deg, #bae6fd 0%, #38bdf8 100%); color: #0c4a6e; }
 
         .helper-text {
-            font-size: 13px;
-            color: #71717a;
-            background: rgba(243, 244, 246, 0.8);
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-weight: 500;
+            font-size: 13px; color: #64748b; background: #f8fafc;
+            padding: 4px 14px; border-radius: 20px; font-weight: 500;
         }
-        body.dark-mode .helper-text {
-            background: #2a2a2d;
-            color: #9bc5ff;
-        }
+        body.dark-mode .helper-text { background: #0f172a; color: #38bdf8; }
 
-        /* -------------------------------------------------- */
-        /* โหมดขยายร่างใหญ่ยักษ์เต็มหน้าจอ (No Scroll) */
-        /* -------------------------------------------------- */
+        /* 🎭 แอนิเมชันเปิดหน้าต่างแบบการ์ตูน 3D (Flip & Bounce Pop) */
         .action-card.expanded {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            max-width: none; border-radius: 0;
-            z-index: 9999;
-            background-color: #ffffff; 
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            padding: 30px; gap: 6vh;
-            overflow: hidden; cursor: default;
-            animation: none;
-            transform: none !important;
-            backdrop-filter: none;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            max-width: none; border-radius: 0; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 30px; gap: 6vh; overflow: hidden; cursor: default;
+            border: none;
+            animation: cartoon-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         
-        /* แสงออร่าพื้นหลังโหมดปกติตอนเต็มจอ */
-        #card-get.expanded { background: radial-gradient(circle, #fbf7ff 0%, #ffffff 100%); }
-        #card-eat.expanded { background: radial-gradient(circle, #fffff0 0%, #ffffff 100%); }
-        #card-break.expanded { background: radial-gradient(circle, #f4fdf7 0%, #ffffff 100%); }
-        #card-buy.expanded { background: radial-gradient(circle, #fff5f6 0%, #ffffff 100%); }
-        #card-toilet.expanded { background: radial-gradient(circle, #f0f9ff 0%, #ffffff 100%); }
+        @keyframes cartoon-pop {
+            0% { transform: scale(0.2) rotateY(-90deg) rotateX(20deg); opacity: 0; border-radius: 100px; }
+            60% { transform: scale(1.04) rotateY(10deg); }
+            100% { transform: scale(1) rotateY(0deg) rotateX(0deg); opacity: 1; border-radius: 0; }
+        }
 
-        /* แสงออร่าพื้นหลังโหมดมืดตอนเต็มจอ */
-        body.dark-mode .action-card.expanded { background-color: #121212; }
-        body.dark-mode #card-get.expanded { background: radial-gradient(circle, #281545 0%, #121212 100%); }
-        body.dark-mode #card-eat.expanded { background: radial-gradient(circle, #2d2a05 0%, #121212 100%); }
-        body.dark-mode #card-break.expanded { background: radial-gradient(circle, #0d2a17 0%, #121212 100%); }
-        body.dark-mode #card-buy.expanded { background: radial-gradient(circle, #3a1013 0%, #121212 100%); }
-        body.dark-mode #card-toilet.expanded { background: radial-gradient(circle, #0e243a 0%, #121212 100%); }
+        /* สีพื้นหลังออร่าตอนเต็มจอ */
+        #card-get.expanded { background: radial-gradient(circle, #f3e8ff 0%, #ffffff 100%); }
+        #card-eat.expanded { background: radial-gradient(circle, #fef9c3 0%, #ffffff 100%); }
+        #card-break.expanded { background: radial-gradient(circle, #dcfce7 0%, #ffffff 100%); }
+        #card-buy.expanded { background: radial-gradient(circle, #ffe4e6 0%, #ffffff 100%); }
+        #card-toilet.expanded { background: radial-gradient(circle, #e0f2fe 0%, #ffffff 100%); }
 
-        /* ตัวแคปซูลยักษ์เด่นสะใจ */
+        body.dark-mode #card-get.expanded { background: radial-gradient(circle, #2e1065 0%, #0f172a 100%); }
+        body.dark-mode #card-eat.expanded { background: radial-gradient(circle, #451a03 0%, #0f172a 100%); }
+        body.dark-mode #card-break.expanded { background: radial-gradient(circle, #064e3b 0%, #0f172a 100%); }
+        body.dark-mode #card-buy.expanded { background: radial-gradient(circle, #4c0519 0%, #0f172a 100%); }
+        body.dark-mode #card-toilet.expanded { background: radial-gradient(circle, #0c4a6e 0%, #0f172a 100%); }
+
         .action-card.expanded .capsule {
-            width: 88vw; max-width: 1300px;
-            height: 46vh; max-height: 460px;
+            width: 88vw; max-width: 1300px; height: 46vh; max-height: 460px;
             display: flex; align-items: center; justify-content: center;
-            font-size: min(13vh, 10vw, 135px); font-weight: 700;
-            border-radius: 1000px; margin-bottom: 0;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.07), inset 0 -8px 0 rgba(0,0,0,0.1);
+            font-size: min(12vh, 9vw, 120px); font-weight: 700; border-radius: 1000px;
+            margin-bottom: 0; box-shadow: 0 25px 50px rgba(0,0,0,0.08), inset 0 -8px 0 rgba(0,0,0,0.1);
         }
-        body.dark-mode .action-card.expanded .capsule {
-            box-shadow: 0 25px 50px rgba(0,0,0,0.45), inset 0 -8px 0 rgba(0,0,0,0.15);
-        }
-        
+        body.dark-mode .action-card.expanded .capsule { box-shadow: 0 25px 50px rgba(0,0,0,0.4); }
         .action-card.expanded .helper-text { display: none; }
 
-        /* ปุ่มกลับมาแล้วดีไซน์มินิมอลน่ารัก */
+        /* ปุ่มกลับมาแล้ว */
         .back-box {
-            display: none;
-            width: 75vw; max-width: 900px;
-            height: 11vh; max-height: 85px; min-height: 65px;
-            background: #f8f9fa;
-            border: 3px dashed #cbd5e1;
-            border-radius: 100px;
-            cursor: pointer;
-            align-items: center; justify-content: center;
-            transform: scale(1);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: none; width: 75vw; max-width: 900px; height: 11vh; max-height: 85px; min-height: 65px;
+            background: #ffffff; border: 3px dashed #cbd5e1; border-radius: 100px;
+            cursor: pointer; align-items: center; justify-content: center;
         }
         .action-card.expanded .back-box { display: flex; }
-        .back-box:hover {
-            animation: jelly-bounce 0.5s ease forwards;
-            background: #ffffff;
-            border-color: #64748b;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        .back-box:hover { background: #f8fafc; border-color: #64748b; transform: scale(1.03); }
+        .back-title { font-size: min(4.2vh, 36px); font-weight: 700; color: #64748b; }
+        body.dark-mode .back-box { background: #1e293b; border-color: #475569; }
+        body.dark-mode .back-title { color: #94a3b8; }
+
+        /* ✨ เอฟเฟกต์ละอองฟองและวิบวับ (Particles) */
+        .particle {
+            position: absolute; pointer-events: none; border-radius: 50%;
+            animation: float-up forwards ease-out; z-index: 100;
         }
-        .back-title {
-            font-size: min(4.5vh, 38px);
-            font-weight: 700;
-            color: #475569;
+        @keyframes float-up {
+            0% { transform: translateY(10px) scale(0.6); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-120px) translateX(var(--dx)); scale(1.4); opacity: 0; }
         }
 
-        body.dark-mode .back-box {
-            background: #1e1e21;
-            border-color: #444446;
+        /* 📜 ตารางสรุปประวัติ */
+        .history-box {
+            background: #ffffff; border-radius: 24px; padding: 20px;
+            box-shadow: 0 10px 25px rgba(148, 163, 184, 0.08);
+            border: 1px solid #e2e8f0; width: 100%; margin-top: 5px;
         }
-        body.dark-mode .back-box:hover {
-            background: #2c2c2e;
-            border-color: #8e8e93;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        body.dark-mode .back-title {
-            color: #ffffff;
-        }
+        body.dark-mode .history-box { background: #1e293b; border-color: #334155; }
+        .history-title { font-size: 14px; font-weight: 700; color: #475569; margin-bottom: 12px; display: flex; justify-content: space-between; }
+        body.dark-mode .history-title { color: #cbd5e1; }
+        .history-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        .history-table th { color: #94a3b8; padding: 8px 4px; font-weight: 500; border-bottom: 1px solid #f1f5f9; }
+        body.dark-mode .history-table th { border-bottom-color: #334155; }
+        .history-table td { padding: 10px 4px; border-bottom: 1px solid #f8fafc; color: #334155; }
+        body.dark-mode .history-table td { border-bottom-color: #1e293b; color: #e2e8f0; }
+        .empty-log { text-align: center; color: #cbd5e1; padding: 20px 0; font-size: 13px; }
 
-        /* หน้าต่างพ็อปอัปตอน Copy สำเร็จ */
+        /* ปุ่มดูเพิ่มเติม / ย่อกลับ */
+        .pagination-btn {
+            display: block; width: 100%; text-align: center; padding: 8px;
+            margin-top: 12px; font-size: 12px; color: #64748b; font-weight: bold;
+            cursor: pointer; border: 1px solid #e2e8f0; border-radius: 12px;
+            background: #f8fafc; user-select: none;
+        }
+        .pagination-btn:hover { background: #f1f5f9; color: #0f172a; }
+        body.dark-mode .pagination-btn { background: #0f172a; border-color: #334155; color: #94a3b8; }
+        body.dark-mode .pagination-btn:hover { background: #1e293b; color: #ffffff; }
+
+        /* หน้าต่างแจ้งเตือน Copy สำเร็จ */
         .success-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(34, 197, 94, 0.96);
-            backdrop-filter: blur(12px);
-            color: white;
-            display: flex; flex-direction: column;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(34, 197, 94, 0.96); backdrop-filter: blur(8px);
+            color: white; display: flex; flex-direction: column;
             justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none;
-            z-index: 10000; border-radius: 22px;
-            transform: scale(0.95);
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0; pointer-events: none; z-index: 10000; border-radius: 22px;
+            transform: scale(0.95); transition: all 0.25s ease;
         }
         .action-card.expanded .success-overlay { border-radius: 0; }
         .success-overlay.show { opacity: 1; transform: scale(1); }
         .success-title { font-size: min(4.5vh, 36px); font-weight: 700; margin-bottom: 6px; }
-        .success-text { font-size: min(2.8vh, 24px); color: #f0fdf4; font-weight: 500; opacity: 0.95; }
+        .success-text { font-size: min(2.8vh, 24px); color: #f0fdf4; font-weight: 500; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- ปุ่มสลับโหมดสุดน่ารัก -->
-        <div class="theme-toggle" onclick="toggleDarkMode(event)">🌙 โหมดกลางคืน</div>
+        <div class="header-row">
+            <h1 class="app-title">☕ Break Recorder</h1>
+            <div class="theme-toggle" onclick="toggleDarkMode(event)">🌙 โหมดกลางคืน</div>
+        </div>
 
-        <!-- 1. ไปเอาอาหาร -->
-        <div class="action-card" id="card-get" onclick="startBreak('ไปเอาอาหาร', this)">
+        <div class="dashboard">
+            <div class="dash-header">
+                <span class="dash-title">📊 สรุปโควตาเวลาพักวันนี้</span>
+                <div class="quota-setting">
+                    โควตา: 
+                    <input type="number" id="quota-input" class="quota-input" min="1" oninput="updateQuota(this.value)"> 
+                    นาที
+                </div>
+            </div>
+            <div class="time-grid">
+                <div class="time-box">
+                    <span class="time-val" id="quota-remain">60</span>
+                    <span class="time-lbl">นาทีที่เหลืออยู่</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-val" id="quota-used">0</span>
+                    <span class="time-lbl">ใช้ไปแล้ว (นาที)</span>
+                </div>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+
+        <div class="action-card" id="card-get" onclick="startBreak('ไปเอาอาหาร', this, '#c084fc', false)">
             <div class="capsule food-get">ไปเอาอาหาร</div>
             <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🍧</div>
             <div class="back-box" onclick="endBreak(this.parentElement, event)">
@@ -277,8 +288,7 @@
             </div>
         </div>
 
-        <!-- 2. กินข้าว -->
-        <div class="action-card" id="card-eat" onclick="startBreak('กินข้าว', this)">
+        <div class="action-card" id="card-eat" onclick="startBreak('กินข้าว', this, '#facc15', false)">
             <div class="capsule food-eat">กินข้าว</div>
             <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🍙</div>
             <div class="back-box" onclick="endBreak(this.parentElement, event)">
@@ -290,8 +300,7 @@
             </div>
         </div>
 
-        <!-- 3. พักเบรก -->
-        <div class="action-card" id="card-break" onclick="startBreak('พักเบรก', this)">
+        <div class="action-card" id="card-break" onclick="startBreak('พักเบรก', this, '#4ade80', false)">
             <div class="capsule break">พักเบรก</div>
             <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🍀</div>
             <div class="back-box" onclick="endBreak(this.parentElement, event)">
@@ -303,8 +312,7 @@
             </div>
         </div>
 
-        <!-- 4. ซื้ออาหาร -->
-        <div class="action-card" id="card-buy" onclick="startBreak('ซื้ออาหาร', this)">
+        <div class="action-card" id="card-buy" onclick="startBreak('ซื้ออาหาร', this, '#fb7185', false)">
             <div class="capsule food-buy">ซื้ออาหาร</div>
             <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🍭</div>
             <div class="back-box" onclick="endBreak(this.parentElement, event)">
@@ -316,8 +324,7 @@
             </div>
         </div>
 
-        <!-- 5. เข้าห้องน้ำ -->
-        <div class="action-card" id="card-toilet" onclick="startBreak('เข้าห้องน้ำ', this)">
+        <div class="action-card" id="card-toilet" onclick="startBreak('เข้าห้องน้ำ', this, '#38bdf8', true)">
             <div class="capsule toilet">เข้าห้องน้ำ</div>
             <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🧼</div>
             <div class="back-box" onclick="endBreak(this.parentElement, event)">
@@ -328,78 +335,234 @@
                 <div class="success-text result-text"></div>
             </div>
         </div>
+
+        <div class="history-box">
+            <div class="history-title">
+                <span>📜 ประวัติการพักวันนี้</span>
+                <span style="cursor:pointer; font-weight:normal; font-size:11px; color:#ef4444;" onclick="clearLogs()">ล้างประวัติ</span>
+            </div>
+            <div id="log-container"></div>
+            <div id="pagination-container"></div>
+        </div>
     </div>
 
     <script>
+        let activeBreak = null;
+        let showAllLogs = false;
+        
+        // 🔊 ระบบสร้างเอฟเฟกต์เสียงด้วยโค้ด (Web Audio API)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                
+                if (type === 'pop') { 
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
+                    osc.frequency.exponentialRampToValueAtTime(1174.66, audioCtx.currentTime + 0.15); 
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+                } else if (type === 'welcome') { 
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); 
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16); 
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+                }
+            } catch(e) { console.log("Audio Context requires user interaction."); }
+        }
+
+        // ✨ เอฟเฟกต์ละอองวิบวับ / ฟองสบู่ลอยขึ้นฟ้า
+        function triggerParticles(cardElement, color, isBubble) {
+            for (let i = 0; i < 18; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * (isBubble ? 14 : 8) + 6;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 80 + 10}%`;
+                particle.style.bottom = '20px';
+                particle.style.setProperty('--dx', `${Math.random() * 100 - 50}px`);
+                particle.style.animationDelay = `${Math.random() * 0.3}s`;
+                particle.style.animationDuration = `${Math.random() * 0.8 + 0.7}s`;
+                
+                if (isBubble) { 
+                    particle.style.background = 'transparent';
+                    particle.style.border = `2px solid ${color}`;
+                    particle.style.boxShadow = `inset 0 0 5px ${color}`;
+                } else { 
+                    particle.style.background = color;
+                    particle.style.boxShadow = `0 0 8px ${color}`;
+                }
+                
+                cardElement.appendChild(particle);
+                setTimeout(() => particle.remove(), 1200);
+            }
+        }
+
         function toggleDarkMode(event) {
             event.stopPropagation();
             document.body.classList.toggle('dark-mode');
             const toggleBtn = document.querySelector('.theme-toggle');
-            if (document.body.classList.contains('dark-mode')) {
-                toggleBtn.innerHTML = '☀️ โหมดกลางวัน';
-            } else {
-                toggleBtn.innerHTML = '🌙 โหมดกลางคืน';
-            }
+            toggleBtn.innerHTML = document.body.classList.contains('dark-mode') ? '☀️ โหมดกลางวัน' : '🌙 โหมดกลางคืน';
         }
 
-        function getThaiTimeString() {
-            const d = new Date();
-            const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+        function getThaiTimeString(dateObj = new Date()) {
+            const utc = dateObj.getTime() + (dateObj.getTimezoneOffset() * 60000);
             const thaiTime = new Date(utc + (3600000 * 7));
-            const hours = String(thaiTime.getHours()).padStart(2, '0');
-            const minutes = String(thaiTime.getMinutes()).padStart(2, '0');
-            return `${hours}:${minutes} น.`;
+            return `${String(thaiTime.getHours()).padStart(2, '0')}:${String(thaiTime.getMinutes()).padStart(2, '0')} น.`;
         }
 
         function performCopy(text) {
             const tempInput = document.createElement("textarea");
-            tempInput.value = text;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand("copy");
+            tempInput.value = text; document.body.appendChild(tempInput);
+            tempInput.select(); document.execCommand("copy");
             document.body.removeChild(tempInput);
         }
 
         function showSuccessOverlay(cardElement, title, text, duration = 850) {
             const overlay = cardElement.querySelector('.success-overlay');
-            const resultTitle = cardElement.querySelector('.result-title');
-            const resultText = cardElement.querySelector('.result-text');
-            
-            resultTitle.textContent = title;
-            resultText.textContent = text;
+            cardElement.querySelector('.result-title').textContent = title;
+            cardElement.querySelector('.result-text').textContent = text;
             overlay.classList.add('show');
-            
-            setTimeout(() => {
-                overlay.classList.remove('show');
-            }, duration);
+            setTimeout(() => overlay.classList.remove('show'), duration);
         }
 
-        function startBreak(actionMessage, cardElement) {
-            if (cardElement.classList.contains('expanded')) return;
+        // แก้ไขโควตาเวลา
+        function updateQuota(val) {
+            let quota = parseInt(val);
+            if (isNaN(quota) || quota < 1) quota = 60;
+            localStorage.setItem('daily_quota', quota);
+            renderDashboardAndLogs();
+        }
 
-            const timeString = getThaiTimeString();
+        // เริ่มพักเบรก
+        function startBreak(actionMessage, cardElement, themeColor, isBubble) {
+            if (cardElement.classList.contains('expanded')) return;
+            
+            playSound('pop');
+            triggerParticles(cardElement, themeColor, isBubble);
+
+            const now = new Date();
+            const timeString = getThaiTimeString(now);
             const textToCopy = `${actionMessage} ${timeString}`;
             performCopy(textToCopy);
 
-            showSuccessOverlay(cardElement, 'บันทึกเวลาเริ่มพักแล้วนะ! 🍮', textToCopy);
+            activeBreak = { action: actionMessage, startTime: now.getTime(), startStr: timeString };
 
-            setTimeout(() => {
-                cardElement.classList.add('expanded');
-            }, 120);
+            showSuccessOverlay(cardElement, 'บันทึกเวลาเริ่มพักแล้ว! 🍮', textToCopy);
+            setTimeout(() => cardElement.classList.add('expanded'), 120);
         }
 
+        // กลับมาแล้ว
         function endBreak(cardElement, event) {
             event.stopPropagation(); 
+            playSound('welcome');
 
             const textToCopy = `กลับมาแล้ว`; 
             performCopy(textToCopy);
 
-            cardElement.classList.remove('expanded');
+            if (activeBreak) {
+                const endTime = new Date().getTime();
+                const diffMs = endTime - activeBreak.startTime;
+                const diffMins = Math.max(1, Math.round(diffMs / 60000)); 
+                
+                saveLog(activeBreak.action, activeBreak.startStr, getThaiTimeString(new Date()), diffMins);
+                activeBreak = null;
+            }
 
-            setTimeout(() => {
-                showSuccessOverlay(cardElement, 'เย้! ยินดีต้อนรับกลับนะคุ้บ 🏠', textToCopy, 1200);
-            }, 80);
+            cardElement.classList.remove('expanded');
+            setTimeout(() => showSuccessOverlay(cardElement, 'บันทึกเวลากลับมาแล้ว! 🏠', textToCopy, 1200), 80);
         }
+
+        // บันทึกประวัติลง LocalStorage
+        function saveLog(action, start, end, duration) {
+            const today = new Date().toDateString();
+            let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
+            logs.push({ date: today, action, start, end, duration });
+            localStorage.setItem('break_logs', JSON.stringify(logs));
+            renderDashboardAndLogs();
+        }
+
+        function clearLogs() {
+            if(confirm("ต้องการล้างประวัติการพักทั้งหมดของวันนี้ใช่หรือไม่?")) {
+                localStorage.removeItem('break_logs');
+                renderDashboardAndLogs();
+            }
+        }
+
+        function toggleLogPagination() {
+            showAllLogs = !showAllLogs;
+            renderDashboardAndLogs();
+        }
+
+        // แสดงผลตาราง แดชบอร์ด และระบบแสดงประวัติ 5 แถว
+        function renderDashboardAndLogs() {
+            const today = new Date().toDateString();
+            const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
+            const todayLogs = logs.filter(log => log.date === today).reverse();
+            
+            let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
+            document.getElementById('quota-input').value = dailyQuota;
+
+            let totalUsed = 0;
+            todayLogs.forEach(log => totalUsed += log.duration);
+
+            const logContainer = document.getElementById('log-container');
+            const paginationContainer = document.getElementById('pagination-container');
+            
+            if (todayLogs.length === 0) {
+                logContainer.innerHTML = '<div class="empty-log">ยังไม่มีประวัติการพักสำหรับวันนี้</div>';
+                paginationContainer.innerHTML = '';
+            } else {
+                const displayedLogs = showAllLogs ? todayLogs : todayLogs.slice(0, 5);
+                
+                let tableHtml = `<table class="history-table">
+                    <thead><tr><th>กิจกรรม</th><th>เริ่ม</th><th>กลับ</th><th>รวม</th></tr></thead>
+                    <tbody>`;
+                displayedLogs.forEach(log => {
+                    tableHtml += `<tr>
+                        <td><strong>${log.action}</strong></td>
+                        <td>${log.start}</td>
+                        <td>${log.end}</td>
+                        <td><span style="color:#c084fc; font-weight:bold;">${log.duration} น.</span></td>
+                    </tr>`;
+                });
+                tableHtml += '</tbody></table>';
+                logContainer.innerHTML = tableHtml;
+
+                if (todayLogs.length > 5) {
+                    paginationContainer.innerHTML = showAllLogs 
+                        ? `<div class="pagination-btn" onclick="toggleLogPagination()">ย่อกลับ</div>`
+                        : `<div class="pagination-btn" onclick="toggleLogPagination()">ดูเพิ่มเติม (อีก ${todayLogs.length - 5} รายการ)</div>`;
+                } else {
+                    paginationContainer.innerHTML = '';
+                }
+            }
+
+            // คำนวณโควตาเวลา
+            const remain = Math.max(0, dailyQuota - totalUsed);
+            document.getElementById('quota-used').textContent = totalUsed;
+            document.getElementById('quota-remain').textContent = remain;
+            
+            const progressPercent = Math.max(0, (remain / dailyQuota) * 100);
+            const progressFill = document.getElementById('progress-fill');
+            progressFill.style.width = `${progressPercent}%`;
+            
+            if (progressPercent < 25) {
+                progressFill.style.background = 'linear-gradient(90deg, #f43f5e, #fb7185)';
+            } else {
+                progressFill.style.background = 'linear-gradient(90deg, #38bdf8, #c084fc)';
+            }
+        }
+
+        window.onload = renderDashboardAndLogs;
     </script>
 </body>
 </html>
