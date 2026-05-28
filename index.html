@@ -3,115 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแจ้งเวลาพัก - Mega Dark Mode Version</title>
-    <!-- ดึงฟอนต์ Kanit ดีไซน์หนาเด่นชัด -->
+    <title>ระบบแจ้งเวลาพัก - Jelly Cute Version</title>
+    <!-- ดึงฟอนต์ Kanit สุดน่ารักและอ่านง่าย -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+            /* เพิ่มความลื่นไหลในการขยายร่าง */
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, top 0.4s, left 0.4s, width 0.4s, height 0.4s;
         }
+        
+        /* ------------------------------------------- */
+        /* 🍮 เอฟเฟกต์แอนิเมชันเยลลี่ดึ๋งดั๋ง (Jelly Keyframes) */
+        /* ------------------------------------------- */
+        @keyframes jelly-bounce {
+            0% { transform: scale(1, 1); }
+            25% { transform: scale(1.12, 0.85); }
+            50% { transform: scale(0.92, 1.08); }
+            75% { transform: scale(1.05, 0.95); }
+            100% { transform: scale(1.04, 1.04); } /* ค้างให้ใหญ่ขึ้นนิดนึงตอนชี้ */
+        }
+
         body {
             font-family: 'Kanit', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 15px;
+            padding: 20px;
             margin: 0;
             background-color: transparent;
         }
         .container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
             width: 100%;
-            max-width: 360px; /* ขนาดหน้าแรกปกติ */
+            max-width: 360px;
         }
 
-        /* ------------------------------------------- */
-        /* ปุ่มสลับโหมดกลางคืน (Theme Toggle Button) */
-        /* ------------------------------------------- */
+        /* ปุ่มสลับโหมดกลางคืนสุดคิวท์ */
         .theme-toggle {
             align-self: flex-end;
             font-size: 13px;
             font-weight: 500;
-            padding: 6px 14px;
-            border-radius: 20px;
-            background: #f2f2f7;
-            color: #3a3a3c;
+            padding: 8px 16px;
+            border-radius: 30px;
+            background: #eef2f3;
+            color: #4a4a4c;
             cursor: pointer;
             user-select: none;
             margin-bottom: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.02);
         }
         .theme-toggle:hover {
-            transform: scale(1.03);
+            animation: jelly-bounce 0.5s ease forwards;
+            background: #e2e8f0;
         }
-        /* เปลี่ยนสไตล์ปุ่มเมื่ออยู่ในโหมดมืด */
         body.dark-mode .theme-toggle {
             background: #2c2c2e;
-            color: #e5e5ea;
+            color: #ffde43;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        body.dark-mode .theme-toggle:hover {
+            background: #3a3a3c;
         }
         
-        /* การ์ดหน้าแรก (โหมดปกติ) */
+        /* การ์ดหน้าแรกทรงมนๆ นุ่มฟู */
         .action-card {
             display: flex;
             flex-direction: column;
             align-items: center;
             background-color: #ffffff;
-            padding: 12px;
-            border-radius: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
-            border: 1px solid rgba(0,0,0,0.04);
+            padding: 14px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(160, 175, 190, 0.15);
+            border: 2px solid #f6f8fa;
             cursor: pointer;
             user-select: none;
             position: relative;
         }
-        .action-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+
+        /* ✨ ชี้ปุ๊บ... ดึ๋งเป็นเยลลี่ทันที! (เฉพาะตอนยังไม่กดขยายจอ) */
+        .action-card:hover:not(.expanded) {
+            animation: jelly-bounce 0.55s ease forwards;
+            box-shadow: 0 15px 30px rgba(140, 155, 180, 0.25);
+            border-color: #eef2f5;
+        }
+        /* ตอนกดปุ่มยุบตัวเล็กน้อยเพิ่มความหนึบ */
+        .action-card:active:not(.expanded) {
+            transform: scale(0.95, 0.95);
         }
 
-        /* การ์ดหน้าแรก (โหมดมืด) */
+        /* การ์ดในโหมดมืด */
         body.dark-mode .action-card {
             background-color: #1c1c1e;
-            border-color: rgba(255, 255, 255, 0.04);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            border-color: #262628;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-        body.dark-mode .action-card:hover {
-            background-color: #2c2c2e;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+        body.dark-mode .action-card:hover:not(.expanded) {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.45);
+            background-color: #222224;
         }
         
-        /* ปุ่มแคปซูลหน้าแรก */
+        /* แคปซูลพาสเทลหน้าแรก */
         .capsule {
             width: 100%;
             padding: 16px 0;
             border-radius: 100px;
             text-align: center;
             font-size: 26px;
-            font-weight: 500;
+            font-weight: 700;
             letter-spacing: 0.5px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1); /* เพิ่มมิติความนุ่มนิ่มแบบปุ่มกด */
         }
         
-        /* โค้ดสีปุ่มระดับพรีเมียม */
-        .food-get { background: linear-gradient(135deg, #e3c4ff 0%, #c48af5 100%); color: #3b0094; }
-        .food-eat { background: linear-gradient(135deg, #fff9ae 0%, #fff100 100%); color: #615b00; }
-        .break { background: linear-gradient(135deg, #e6fad9 0%, #d1f0c2 100%); color: #0b542c; }
-        .food-buy { background: linear-gradient(135deg, #ffe3e3 0%, #fad2d2 100%); color: #9c0005; }
-        .toilet { background: linear-gradient(135deg, #e1f2fd 0%, #c2e2f5 100%); color: #0d467a; }
+        /* 🎨 โทนสีหวานละมุนสไตล์คาเฟ่เยลลี่ */
+        .food-get { background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%); color: #4c1d95; }
+        .food-eat { background: linear-gradient(135deg, #fef08a 0%, #facc15 100%); color: #713f12; }
+        .break { background: linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%); color: #14532d; }
+        .food-buy { background: linear-gradient(135deg, #fecdd3 0%, #fb7185 100%); color: #881337; }
+        .toilet { background: linear-gradient(135deg, #bae6fd 0%, #38bdf8 100%); color: #0c4a6e; }
 
         .helper-text {
-            font-size: 12px;
-            color: #8e8e93;
-            background: #f2f2f7;
-            padding: 3px 12px;
+            font-size: 13px;
+            color: #9ca3af;
+            background: #f3f4f6;
+            padding: 4px 14px;
             border-radius: 20px;
+            font-weight: 500;
         }
         body.dark-mode .helper-text {
-            background: #2c2c2e;
-            color: #aeaeb2;
+            background: #2a2a2d;
+            color: #9bc5ff;
         }
 
         /* -------------------------------------------------- */
@@ -126,107 +151,113 @@
             background-color: #ffffff; 
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
-            padding: 30px; gap: 5vh;
+            padding: 30px; gap: 6vh;
             overflow: hidden; cursor: default;
+            animation: none; /* ปิดแอนิเมชันเยลลี่ตอนเต็มจอเพื่อความนิ่งมั่นคง */
+            transform: none !important;
         }
         
-        /* แสงพื้นหลังโหมดปกติตอนเต็มจอ */
-        #card-get.expanded { background: radial-gradient(circle, #fcf9ff 0%, #ffffff 100%); }
-        #card-eat.expanded { background: radial-gradient(circle, #fffff2 0%, #ffffff 100%); }
-        #card-break.expanded { background: radial-gradient(circle, #f9fdf7 0%, #ffffff 100%); }
-        #card-buy.expanded { background: radial-gradient(circle, #fff8f8 0%, #ffffff 100%); }
-        #card-toilet.expanded { background: radial-gradient(circle, #f7faff 0%, #ffffff 100%); }
+        /* แสงออร่าพื้นหลังโหมดปกติ */
+        #card-get.expanded { background: radial-gradient(circle, #fbf7ff 0%, #ffffff 100%); }
+        #card-eat.expanded { background: radial-gradient(circle, #fffff0 0%, #ffffff 100%); }
+        #card-break.expanded { background: radial-gradient(circle, #f4fdf7 0%, #ffffff 100%); }
+        #card-buy.expanded { background: radial-gradient(circle, #fff5f6 0%, #ffffff 100%); }
+        #card-toilet.expanded { background: radial-gradient(circle, #f0f9ff 0%, #ffffff 100%); }
 
-        /* 🔥 แสงพื้นหลังโหมดมืดตอนเต็มจอ (สวยหรู สบายตา ไม่สว่างโร่) 🔥 */
+        /* แสงออร่าพื้นหลังโหมดมืด */
         body.dark-mode .action-card.expanded { background-color: #121212; }
-        body.dark-mode #card-get.expanded { background: radial-gradient(circle, #1f1033 0%, #121212 100%); }
-        body.dark-mode #card-eat.expanded { background: radial-gradient(circle, #242203 0%, #121212 100%); }
-        body.dark-mode #card-break.expanded { background: radial-gradient(circle, #0b2112 0%, #121212 100%); }
-        body.dark-mode #card-buy.expanded { background: radial-gradient(circle, #2b0b0d 0%, #121212 100%); }
-        body.dark-mode #card-toilet.expanded { background: radial-gradient(circle, #0a1b2b 0%, #121212 100%); }
+        body.dark-mode #card-get.expanded { background: radial-gradient(circle, #281545 0%, #121212 100%); }
+        body.dark-mode #card-eat.expanded { background: radial-gradient(circle, #2d2a05 0%, #121212 100%); }
+        body.dark-mode #card-break.expanded { background: radial-gradient(circle, #0d2a17 0%, #121212 100%); }
+        body.dark-mode #card-buy.expanded { background: radial-gradient(circle, #3a1013 0%, #121212 100%); }
+        body.dark-mode #card-toilet.expanded { background: radial-gradient(circle, #0e243a 0%, #121212 100%); }
 
-        /* แคปซูลตอนเต็มจอขนาดใหญ่ยักษ์ */
+        /* ตัวแคปซูลยักษ์เด่นสะใจระดับไททัน */
         .action-card.expanded .capsule {
             width: 88vw; max-width: 1300px;
-            height: 48vh; max-height: 460px;
+            height: 46vh; max-height: 460px;
             display: flex; align-items: center; justify-content: center;
             font-size: min(13vh, 10vw, 135px); font-weight: 700;
             border-radius: 1000px; margin-bottom: 0;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.06);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.07), inset 0 -8px 0 rgba(0,0,0,0.1);
         }
         body.dark-mode .action-card.expanded .capsule {
-            box-shadow: 0 20px 45px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.45), inset 0 -8px 0 rgba(0,0,0,0.15);
         }
         
         .action-card.expanded .helper-text { display: none; }
 
-        /* ปุ่มกลับมาแล้ว (โหมดปกติ) */
+        /* ปุ่มกลับมาแล้วดีไซน์มินิมอลน่ารักด้านล่าง */
         .back-box {
             display: none;
             width: 75vw; max-width: 900px;
             height: 11vh; max-height: 85px; min-height: 65px;
             background: #f8f9fa;
-            border: 3px dashed #b5b5ba;
+            border: 3px dashed #cbd5e1;
             border-radius: 100px;
             cursor: pointer;
             align-items: center; justify-content: center;
+            transform: scale(1);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .action-card.expanded .back-box { display: flex; }
+        
+        /* สั่งให้ปุ่มกลับมาแล้วเด้งดึ๋งได้เหมือนกันเวลาชี้! */
         .back-box:hover {
+            animation: jelly-bounce 0.5s ease forwards;
             background: #ffffff;
-            border-color: #3a3a3c;
-            transform: scale(1.015);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            border-color: #64748b;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
         }
         .back-title {
             font-size: min(4.5vh, 38px);
-            font-weight: 500;
-            color: #2c2c2e;
+            font-weight: 700;
+            color: #475569;
         }
 
-        /* ปุ่มกลับมาแล้ว (โหมดมืด) */
         body.dark-mode .back-box {
-            background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
-            border-color: #545456;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: #1e1e21;
+            border-color: #444446;
         }
         body.dark-mode .back-box:hover {
             background: #2c2c2e;
             border-color: #8e8e93;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
         body.dark-mode .back-title {
             color: #ffffff;
         }
 
-        /* หน้าต่างแจ้งเตือนตอนก๊อปปี้สำเร็จ */
+        /* หน้าต่างสีเขียวพ็อปอัปตอน Copy สำเร็จ */
         .success-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(30, 126, 52, 0.96);
-            backdrop-filter: blur(10px);
+            background: rgba(34, 197, 94, 0.96);
+            backdrop-filter: blur(12px);
             color: white;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             opacity: 0; pointer-events: none;
-            z-index: 10000; border-radius: 20px;
+            z-index: 10000; border-radius: 22px;
+            transform: scale(0.95);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .action-card.expanded .success-overlay { border-radius: 0; }
-        .success-overlay.show { opacity: 1; }
+        .success-overlay.show { opacity: 1; transform: scale(1); }
         .success-title { font-size: min(4.5vh, 36px); font-weight: 700; margin-bottom: 6px; }
-        .success-text { font-size: min(2.8vh, 24px); color: #e8f5e9; font-weight: 400; opacity: 0.95; }
+        .success-text { font-size: min(2.8vh, 24px); color: #f0fdf4; font-weight: 500; opacity: 0.95; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- ปุ่มสลับโหมด -->
+        <!-- ปุ่มสลับโหมดสุดน่ารัก -->
         <div class="theme-toggle" onclick="toggleDarkMode(event)">🌙 โหมดกลางคืน</div>
 
         <!-- 1. ไปเอาอาหาร -->
         <div class="action-card" id="card-get" onclick="startBreak('ไปเอาอาหาร', this)">
             <div class="capsule food-get">ไปเอาอาหาร</div>
-            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก</div>
+            <div class="helper-text">คลิกเพื่อแจ้มเวลาพัก 🍧</div>
             <div class="back-box" onclick="endBreak(this.parentElement, event)">
                 <div class="back-title">กลับมาแล้ว</div>
             </div>
@@ -239,7 +270,7 @@
         <!-- 2. กินข้าว -->
         <div class="action-card" id="card-eat" onclick="startBreak('กินข้าว', this)">
             <div class="capsule food-eat">กินข้าว</div>
-            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก</div>
+            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🍙</div>
             <div class="back-box" onclick="endBreak(this.parentElement, event)">
                 <div class="back-title">กลับมาแล้ว</div>
             </div>
@@ -252,7 +283,7 @@
         <!-- 3. พักเบรก -->
         <div class="action-card" id="card-break" onclick="startBreak('พักเบรก', this)">
             <div class="capsule break">พักเบรก</div>
-            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก</div>
+            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🍀</div>
             <div class="back-box" onclick="endBreak(this.parentElement, event)">
                 <div class="back-title">กลับมาแล้ว</div>
             </div>
@@ -265,7 +296,7 @@
         <!-- 4. ซื้ออาหาร -->
         <div class="action-card" id="card-buy" onclick="startBreak('ซื้ออาหาร', this)">
             <div class="capsule food-buy">ซื้ออาหาร</div>
-            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก</div>
+            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🍭</div>
             <div class="back-box" onclick="endBreak(this.parentElement, event)">
                 <div class="back-title">กลับมาแล้ว</div>
             </div>
@@ -278,7 +309,7 @@
         <!-- 5. เข้าห้องน้ำ -->
         <div class="action-card" id="card-toilet" onclick="startBreak('เข้าห้องน้ำ', this)">
             <div class="capsule toilet">เข้าห้องน้ำ</div>
-            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก</div>
+            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🧼</div>
             <div class="back-box" onclick="endBreak(this.parentElement, event)">
                 <div class="back-title">กลับมาแล้ว</div>
             </div>
@@ -290,7 +321,7 @@
     </div>
 
     <script>
-        // ฟังก์ชันสลับโหมดมืด/สว่าง
+        // ระบบสลับโหมดกลางวัน/กลางคืน
         function toggleDarkMode(event) {
             event.stopPropagation();
             document.body.classList.toggle('dark-mode');
@@ -302,7 +333,7 @@
             }
         }
 
-        // ดึงเวลาปัจจุบันสไตล์ไทย
+        // คำนวณเวลาไทยปัจจุบัน
         function getThaiTimeString() {
             const d = new Date();
             const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
@@ -312,7 +343,7 @@
             return `${hours}:${minutes} น.`;
         }
 
-        // สั่งคัดลอกลง Clipboard
+        // คำสั่ง Copy ลงคลิปบอร์ด
         function performCopy(text) {
             const tempInput = document.createElement("textarea");
             tempInput.value = text;
@@ -322,7 +353,7 @@
             document.body.removeChild(tempInput);
         }
 
-        // แสดงกล่องแจ้งเตือนสีเขียว
+        // เอฟเฟกต์หน้าต่างป็อปอัปสีเขียว
         function showSuccessOverlay(cardElement, title, text, duration = 850) {
             const overlay = cardElement.querySelector('.success-overlay');
             const resultTitle = cardElement.querySelector('.result-title');
@@ -337,7 +368,7 @@
             }, duration);
         }
 
-        // เมื่อคลิกปุ่มเริ่มพัก: ก๊อปปี้ข้อความ + เวลา
+        // ตอนกดปุ่มเริ่มพัก: ก๊อปปี้ข้อความ + เวลา
         function startBreak(actionMessage, cardElement) {
             if (cardElement.classList.contains('expanded')) return;
 
@@ -345,14 +376,14 @@
             const textToCopy = `${actionMessage} ${timeString}`;
             performCopy(textToCopy);
 
-            showSuccessOverlay(cardElement, 'บันทึกเวลาเริ่มพักแล้ว! 🚀', textToCopy);
+            showSuccessOverlay(cardElement, 'บันทึกเวลาเริ่มพักแล้วนะ! 🍮', textToCopy);
 
             setTimeout(() => {
                 cardElement.classList.add('expanded');
             }, 120);
         }
 
-        // 🔥 แก้ไขตามสั่ง: พอกดกลับมาแล้ว จะก๊อปปี้แค่คำว่า "กลับมาแล้ว" เพียวๆ ไม่มีเวลาเด็ดขาด 🔥
+        // ตอนกดกลับมาแล้ว: ก๊อปปี้คำว่า "กลับมาแล้ว" เพียวๆ ไม่มีเวลาติดไป
         function endBreak(cardElement, event) {
             event.stopPropagation(); 
 
@@ -362,7 +393,7 @@
             cardElement.classList.remove('expanded');
 
             setTimeout(() => {
-                showSuccessOverlay(cardElement, 'ยินดีต้อนรับกลับครับ! 🏠', textToCopy, 1200);
+                showSuccessOverlay(cardElement, 'เย้! ยินดีต้อนรับกลับนะคุ้บ 🏠', textToCopy, 1200);
             }, 80);
         }
     </script>
