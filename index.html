@@ -3,25 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแจ้งเวลาพัก - Jelly Cute Version</title>
+    <title>ระบบแจ้งเวลาพัก - Jelly Butterfly Version</title>
     <!-- ดึงฟอนต์ Kanit สุดน่ารักและอ่านง่าย -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
-            /* เพิ่มความลื่นไหลในการขยายร่าง */
             transition: background-color 0.3s ease, box-shadow 0.3s ease, top 0.4s, left 0.4s, width 0.4s, height 0.4s;
         }
         
-        /* ------------------------------------------- */
         /* 🍮 เอฟเฟกต์แอนิเมชันเยลลี่ดึ๋งดั๋ง (Jelly Keyframes) */
-        /* ------------------------------------------- */
         @keyframes jelly-bounce {
             0% { transform: scale(1, 1); }
             25% { transform: scale(1.12, 0.85); }
             50% { transform: scale(0.92, 1.08); }
             75% { transform: scale(1.05, 0.95); }
-            100% { transform: scale(1.04, 1.04); } /* ค้างให้ใหญ่ขึ้นนิดนึงตอนชี้ */
+            100% { transform: scale(1.04, 1.04); }
         }
 
         body {
@@ -31,14 +28,29 @@
             align-items: center;
             padding: 20px;
             margin: 0;
-            background-color: transparent;
+            min-height: 100vh;
+            
+            /* 🦋 ตั้งค่ารูปพื้นหลังผีเสื้อ 3D 🦋 */
+            background-image: url('Stunning 3D Pink Butterfly Models for Your Home Decor.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
         }
+        
+        /* 🌙 เมื่อเปิดโหมดมืด จะทำการดรอปแสงภาพพื้นหลังลง เพื่อความสบายตา */
+        body.dark-mode {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('Stunning 3D Pink Butterfly Models for Your Home Decor.jpg');
+        }
+
         .container {
             display: flex;
             flex-direction: column;
             gap: 16px;
             width: 100%;
             max-width: 360px;
+            position: relative;
+            z-index: 2;
         }
 
         /* ปุ่มสลับโหมดกลางคืนสุดคิวท์ */
@@ -48,62 +60,61 @@
             font-weight: 500;
             padding: 8px 16px;
             border-radius: 30px;
-            background: #eef2f3;
+            background: rgba(255, 255, 255, 0.85);
             color: #4a4a4c;
             cursor: pointer;
             user-select: none;
             margin-bottom: 4px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-            border: 1px solid rgba(0,0,0,0.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.5);
+            backdrop-filter: blur(5px);
         }
         .theme-toggle:hover {
             animation: jelly-bounce 0.5s ease forwards;
-            background: #e2e8f0;
+            background: #ffffff;
         }
         body.dark-mode .theme-toggle {
-            background: #2c2c2e;
+            background: rgba(44, 44, 46, 0.85);
             color: #ffde43;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        body.dark-mode .theme-toggle:hover {
-            background: #3a3a3c;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.05);
         }
         
-        /* การ์ดหน้าแรกทรงมนๆ นุ่มฟู */
+        /* การ์ดหน้าแรกทรงมนๆ นุ่มฟูแบบมีออร่าขาวใสแว่วผ่านพื้นหลัง */
         .action-card {
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.92);
             padding: 14px;
             border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(160, 175, 190, 0.15);
-            border: 2px solid #f6f8fa;
+            box-shadow: 0 10px 30px rgba(160, 175, 190, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.5);
             cursor: pointer;
             user-select: none;
             position: relative;
+            backdrop-filter: blur(4px);
         }
 
-        /* ✨ ชี้ปุ๊บ... ดึ๋งเป็นเยลลี่ทันที! (เฉพาะตอนยังไม่กดขยายจอ) */
+        /* ชี้ปุ๊บ... ดึ๋งเป็นเยลลี่ทันที! */
         .action-card:hover:not(.expanded) {
             animation: jelly-bounce 0.55s ease forwards;
-            box-shadow: 0 15px 30px rgba(140, 155, 180, 0.25);
-            border-color: #eef2f5;
+            box-shadow: 0 15px 35px rgba(120, 135, 160, 0.35);
+            background-color: #ffffff;
         }
-        /* ตอนกดปุ่มยุบตัวเล็กน้อยเพิ่มความหนึบ */
         .action-card:active:not(.expanded) {
             transform: scale(0.95, 0.95);
         }
 
         /* การ์ดในโหมดมืด */
         body.dark-mode .action-card {
-            background-color: #1c1c1e;
-            border-color: #262628;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            background-color: rgba(28, 28, 30, 0.9);
+            border-color: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
         body.dark-mode .action-card:hover:not(.expanded) {
-            box-shadow: 0 15px 30px rgba(0,0,0,0.45);
-            background-color: #222224;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.55);
+            background-color: rgba(38, 38, 40, 0.95);
         }
         
         /* แคปซูลพาสเทลหน้าแรก */
@@ -116,10 +127,10 @@
             font-weight: 700;
             letter-spacing: 0.5px;
             margin-bottom: 8px;
-            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1); /* เพิ่มมิติความนุ่มนิ่มแบบปุ่มกด */
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1);
         }
         
-        /* 🎨 โทนสีหวานละมุนสไตล์คาเฟ่เยลลี่ */
+        /* โทนสีหวานละมุนสไตล์คาเฟ่เยลลี่ */
         .food-get { background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%); color: #4c1d95; }
         .food-eat { background: linear-gradient(135deg, #fef08a 0%, #facc15 100%); color: #713f12; }
         .break { background: linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%); color: #14532d; }
@@ -128,8 +139,8 @@
 
         .helper-text {
             font-size: 13px;
-            color: #9ca3af;
-            background: #f3f4f6;
+            color: #71717a;
+            background: rgba(243, 244, 246, 0.8);
             padding: 4px 14px;
             border-radius: 20px;
             font-weight: 500;
@@ -153,18 +164,19 @@
             justify-content: center; align-items: center;
             padding: 30px; gap: 6vh;
             overflow: hidden; cursor: default;
-            animation: none; /* ปิดแอนิเมชันเยลลี่ตอนเต็มจอเพื่อความนิ่งมั่นคง */
+            animation: none;
             transform: none !important;
+            backdrop-filter: none;
         }
         
-        /* แสงออร่าพื้นหลังโหมดปกติ */
+        /* แสงออร่าพื้นหลังโหมดปกติตอนเต็มจอ */
         #card-get.expanded { background: radial-gradient(circle, #fbf7ff 0%, #ffffff 100%); }
         #card-eat.expanded { background: radial-gradient(circle, #fffff0 0%, #ffffff 100%); }
         #card-break.expanded { background: radial-gradient(circle, #f4fdf7 0%, #ffffff 100%); }
         #card-buy.expanded { background: radial-gradient(circle, #fff5f6 0%, #ffffff 100%); }
         #card-toilet.expanded { background: radial-gradient(circle, #f0f9ff 0%, #ffffff 100%); }
 
-        /* แสงออร่าพื้นหลังโหมดมืด */
+        /* แสงออร่าพื้นหลังโหมดมืดตอนเต็มจอ */
         body.dark-mode .action-card.expanded { background-color: #121212; }
         body.dark-mode #card-get.expanded { background: radial-gradient(circle, #281545 0%, #121212 100%); }
         body.dark-mode #card-eat.expanded { background: radial-gradient(circle, #2d2a05 0%, #121212 100%); }
@@ -172,7 +184,7 @@
         body.dark-mode #card-buy.expanded { background: radial-gradient(circle, #3a1013 0%, #121212 100%); }
         body.dark-mode #card-toilet.expanded { background: radial-gradient(circle, #0e243a 0%, #121212 100%); }
 
-        /* ตัวแคปซูลยักษ์เด่นสะใจระดับไททัน */
+        /* ตัวแคปซูลยักษ์เด่นสะใจ */
         .action-card.expanded .capsule {
             width: 88vw; max-width: 1300px;
             height: 46vh; max-height: 460px;
@@ -187,7 +199,7 @@
         
         .action-card.expanded .helper-text { display: none; }
 
-        /* ปุ่มกลับมาแล้วดีไซน์มินิมอลน่ารักด้านล่าง */
+        /* ปุ่มกลับมาแล้วดีไซน์มินิมอลน่ารัก */
         .back-box {
             display: none;
             width: 75vw; max-width: 900px;
@@ -201,8 +213,6 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .action-card.expanded .back-box { display: flex; }
-        
-        /* สั่งให้ปุ่มกลับมาแล้วเด้งดึ๋งได้เหมือนกันเวลาชี้! */
         .back-box:hover {
             animation: jelly-bounce 0.5s ease forwards;
             background: #ffffff;
@@ -228,7 +238,7 @@
             color: #ffffff;
         }
 
-        /* หน้าต่างสีเขียวพ็อปอัปตอน Copy สำเร็จ */
+        /* หน้าต่างพ็อปอัปตอน Copy สำเร็จ */
         .success-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -257,7 +267,7 @@
         <!-- 1. ไปเอาอาหาร -->
         <div class="action-card" id="card-get" onclick="startBreak('ไปเอาอาหาร', this)">
             <div class="capsule food-get">ไปเอาอาหาร</div>
-            <div class="helper-text">คลิกเพื่อแจ้มเวลาพัก 🍧</div>
+            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🍧</div>
             <div class="back-box" onclick="endBreak(this.parentElement, event)">
                 <div class="back-title">กลับมาแล้ว</div>
             </div>
@@ -321,7 +331,6 @@
     </div>
 
     <script>
-        // ระบบสลับโหมดกลางวัน/กลางคืน
         function toggleDarkMode(event) {
             event.stopPropagation();
             document.body.classList.toggle('dark-mode');
@@ -333,7 +342,6 @@
             }
         }
 
-        // คำนวณเวลาไทยปัจจุบัน
         function getThaiTimeString() {
             const d = new Date();
             const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
@@ -343,7 +351,6 @@
             return `${hours}:${minutes} น.`;
         }
 
-        // คำสั่ง Copy ลงคลิปบอร์ด
         function performCopy(text) {
             const tempInput = document.createElement("textarea");
             tempInput.value = text;
@@ -353,7 +360,6 @@
             document.body.removeChild(tempInput);
         }
 
-        // เอฟเฟกต์หน้าต่างป็อปอัปสีเขียว
         function showSuccessOverlay(cardElement, title, text, duration = 850) {
             const overlay = cardElement.querySelector('.success-overlay');
             const resultTitle = cardElement.querySelector('.result-title');
@@ -368,7 +374,6 @@
             }, duration);
         }
 
-        // ตอนกดปุ่มเริ่มพัก: ก๊อปปี้ข้อความ + เวลา
         function startBreak(actionMessage, cardElement) {
             if (cardElement.classList.contains('expanded')) return;
 
@@ -383,7 +388,6 @@
             }, 120);
         }
 
-        // ตอนกดกลับมาแล้ว: ก๊อปปี้คำว่า "กลับมาแล้ว" เพียวๆ ไม่มีเวลาติดไป
         function endBreak(cardElement, event) {
             event.stopPropagation(); 
 
