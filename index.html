@@ -3,249 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแจ้งเวลาพัก - Premium Version</title>
+    <title>ระบบแจ้งเวลาพัก - Ultimate Pro</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#f8fafc">
     
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s, color 0.3s;
-        }
-
-        body {
-            font-family: 'Kanit', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            margin: 0;
-            min-height: 100vh;
-            background-color: #f8fafc;
-            overflow-x: hidden;
-            perspective: 1000px;
-        }
-        
+        * { box-sizing: border-box; transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s, color 0.3s; }
+        body { font-family: 'Kanit', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; min-height: 100vh; background-color: #f8fafc; overflow-x: hidden; perspective: 1000px; color: #334155; }
         body.dark-mode { background-color: #0f172a; color: #f8fafc; }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            width: 100%;
-            max-width: 380px;
-            position: relative;
-        }
-
-        /* 📊 Dashboard โควตาเวลา */
-        .dashboard {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(148, 163, 184, 0.12);
-            border: 1px solid #e2e8f0;
-        }
-        body.dark-mode .dashboard {
-            background: #1e293b; border-color: #334155;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        .dash-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .dash-title { font-size: 14px; color: #64748b; font-weight: bold; }
-        body.dark-mode .dash-title { color: #94a3b8; }
         
-        .quota-setting {
-            font-size: 12px;
-            color: #64748b;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        body.dark-mode .quota-setting { color: #94a3b8; }
-        .quota-input {
-            width: 55px;
-            padding: 4px 6px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-family: inherit;
-            font-weight: bold;
-            text-align: center;
-            color: #0f172a;
-            background: #f8fafc;
-        }
-        body.dark-mode .quota-input {
-            background: #0f172a; border-color: #475569; color: #ffffff;
-        }
+        .container { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 380px; position: relative; }
 
+        /* Dashboard */
+        .dashboard { background: #ffffff; border-radius: 24px; padding: 20px; box-shadow: 0 10px 25px rgba(148, 163, 184, 0.12); border: 1px solid #e2e8f0; position: relative; }
+        body.dark-mode .dashboard { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .dash-title { font-size: 14px; font-weight: bold; color: #64748b; }
+        body.dark-mode .dash-title { color: #94a3b8; }
+        .quota-input { width: 55px; padding: 4px 6px; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: bold; text-align: center; color: #0f172a; background: #f8fafc; }
+        body.dark-mode .quota-input { background: #0f172a; border-color: #475569; color: #ffffff; }
         .time-grid { display: flex; justify-content: space-around; margin-top: 10px; }
-        .time-box { display: flex; flex-direction: column; text-align: center; }
-        .time-val { font-size: 24px; font-weight: 700; color: #0f172a; }
+        .time-box { text-align: center; }
+        .time-val { font-size: 24px; font-weight: 700; color: #0f172a; display: block; }
         body.dark-mode .time-val { color: #ffffff; }
         .time-lbl { font-size: 11px; color: #94a3b8; }
-        
         .progress-bar { width: 100%; height: 8px; background: #e2e8f0; border-radius: 10px; margin-top: 15px; overflow: hidden; }
         body.dark-mode .progress-bar { background: #334155; }
         .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #38bdf8, #c084fc); transition: width 0.5s ease; }
+        
+        .overtime-alert { display: none; background: linear-gradient(90deg, #ef4444, #f43f5e); color: white; font-size: 11px; text-align: center; padding: 4px; border-radius: 10px; margin-top: 10px; font-weight: bold; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.9; } 50% { opacity: 1; transform: scale(1.01); } 100% { opacity: 0.9; } }
 
+        /* Controls */
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
-        .app-title { font-size: 18px; font-weight: 700; color: #334155; margin: 0; }
-        body.dark-mode .app-title { color: #f1f5f9; }
-
-        .controls-group { display: flex; gap: 8px; }
-        .theme-toggle, .mute-toggle {
-            font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 30px;
-            background: #ffffff; color: #4a4a4c; cursor: pointer; user-select: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
-        }
-        body.dark-mode .theme-toggle, body.dark-mode .mute-toggle { background: #1e293b; color: #ffffff; border-color: #334155; }
-
-        /* ✨ การ์ดปุ่มกด + เอฟเฟกต์เรืองแสง */
-        .action-card {
-            display: flex; flex-direction: column; align-items: center;
-            background-color: #ffffff; padding: 14px; border-radius: 24px;
-            box-shadow: 0 8px 20px rgba(148, 163, 184, 0.1);
-            border: 1px solid #f1f5f9; cursor: pointer; user-select: none;
-            position: relative; transform-style: preserve-3d;
-        }
-        body.dark-mode .action-card { background-color: #1e293b; border-color: #334155; }
-
-        #card-get:hover:not(.expanded) { box-shadow: 0 0 25px rgba(192, 132, 252, 0.6); transform: translateY(-3px) scale(1.02); }
-        #card-eat:hover:not(.expanded) { box-shadow: 0 0 25px rgba(250, 204, 21, 0.6); transform: translateY(-3px) scale(1.02); }
-        #card-break:hover:not(.expanded) { box-shadow: 0 0 25px rgba(74, 222, 128, 0.6); transform: translateY(-3px) scale(1.02); }
-        #card-buy:hover:not(.expanded) { box-shadow: 0 0 25px rgba(251, 113, 133, 0.6); transform: translateY(-3px) scale(1.02); }
-        #card-toilet:hover:not(.expanded) { box-shadow: 0 0 25px rgba(56, 189, 248, 0.6); transform: translateY(-3px) scale(1.02); }
-
-        .capsule {
-            width: 100%; padding: 16px 0; border-radius: 100px;
-            text-align: center; font-size: 26px; font-weight: 700;
-            letter-spacing: 0.5px; margin-bottom: 8px;
-            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
+        .app-title { font-size: 18px; font-weight: 700; margin: 0; }
+        .btn-ctrl { font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 20px; background: #fff; cursor: pointer; border: 1px solid #e2e8f0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        body.dark-mode .btn-ctrl { background: #1e293b; border-color: #334155; color: #fff; }
         
-        .food-get { background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%); color: #4c1d95; }
-        .food-eat { background: linear-gradient(135deg, #fef08a 0%, #facc15 100%); color: #713f12; }
-        .break { background: linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%); color: #14532d; }
-        .food-buy { background: linear-gradient(135deg, #fecdd3 0%, #fb7185 100%); color: #881337; }
-        .toilet { background: linear-gradient(135deg, #bae6fd 0%, #38bdf8 100%); color: #0c4a6e; }
+        /* Action Cards */
+        .cards-container { display: flex; flex-direction: column; gap: 14px; }
+        .action-card { background: #fff; padding: 14px; border-radius: 24px; box-shadow: 0 8px 20px rgba(148, 163, 184, 0.1); border: 1px solid #f1f5f9; cursor: pointer; text-align: center; position: relative; transform-style: preserve-3d; }
+        body.dark-mode .action-card { background: #1e293b; border-color: #334155; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .action-card:hover:not(.expanded) { transform: translateY(-2px); }
+        
+        .capsule { width: 100%; padding: 16px 0; border-radius: 100px; font-size: 24px; font-weight: 700; margin-bottom: 8px; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; }
+        .helper-text { font-size: 12px; color: #64748b; background: #f8fafc; padding: 4px 14px; border-radius: 20px; display: inline-block; }
+        body.dark-mode .helper-text { background: #0f172a; color: #94a3b8; }
+        
+        .theme-purple { background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%); color: #4c1d95; }
+        .theme-yellow { background: linear-gradient(135deg, #fef08a 0%, #facc15 100%); color: #713f12; }
+        .theme-green { background: linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%); color: #14532d; }
+        .theme-pink { background: linear-gradient(135deg, #fecdd3 0%, #fb7185 100%); color: #881337; }
+        .theme-blue { background: linear-gradient(135deg, #bae6fd 0%, #38bdf8 100%); color: #0c4a6e; }
+        .theme-orange { background: linear-gradient(135deg, #fed7aa 0%, #fb923c 100%); color: #7c2d12; }
+        .theme-gray { background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%); color: #1e293b; }
 
-        .helper-text {
-            font-size: 13px; color: #64748b; background: #f8fafc;
-            padding: 4px 14px; border-radius: 20px; font-weight: 500;
-        }
-        body.dark-mode .helper-text { background: #0f172a; color: #38bdf8; }
-
-        /* 👑 Running Timer (นับเวลาเรียลไทม์) */
-        .live-timer { display: none; font-size: min(5vh, 5vw, 42px); font-weight: 500; margin-top: 10px; opacity: 0.9; }
+        /* Fullscreen Mode */
+        .live-timer { display: none; font-size: min(5vh, 42px); font-weight: 500; margin-top: 5px; }
         .action-card.expanded .live-timer { display: block; }
+        .live-timer.overtime { color: #ef4444; animation: text-flash 1s infinite; font-weight: bold; }
+        @keyframes text-flash { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
-        /* 🎭 แอนิเมชันเปิดหน้าต่างแบบการ์ตูน 3D */
-        .action-card.expanded {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            max-width: none; border-radius: 0; z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 30px; gap: 6vh; overflow: hidden; cursor: default;
-            border: none;
-            animation: cartoon-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
+        .action-card.expanded { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; border-radius: 0; z-index: 999; display: flex; justify-content: center; align-items: center; padding: 20px; gap: 4vh; cursor: default; animation: popIn 0.4s cubic-bezier(0.2, 1, 0.4, 1) forwards; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: none; }
+        body.dark-mode .action-card.expanded { background: rgba(15,23,42,0.95); }
+        @keyframes popIn { 0% { transform: scale(0.8) translateY(50px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
         
-        @keyframes cartoon-pop {
-            0% { transform: scale(0.2) rotateY(-90deg) rotateX(20deg); opacity: 0; border-radius: 100px; }
-            60% { transform: scale(1.04) rotateY(10deg); }
-            100% { transform: scale(1) rotateY(0deg) rotateX(0deg); opacity: 1; border-radius: 0; }
-        }
-
-        #card-get.expanded { background: radial-gradient(circle, #f3e8ff 0%, #ffffff 100%); }
-        #card-eat.expanded { background: radial-gradient(circle, #fef9c3 0%, #ffffff 100%); }
-        #card-break.expanded { background: radial-gradient(circle, #dcfce7 0%, #ffffff 100%); }
-        #card-buy.expanded { background: radial-gradient(circle, #ffe4e6 0%, #ffffff 100%); }
-        #card-toilet.expanded { background: radial-gradient(circle, #e0f2fe 0%, #ffffff 100%); }
-
-        body.dark-mode #card-get.expanded { background: radial-gradient(circle, #2e1065 0%, #0f172a 100%); }
-        body.dark-mode #card-eat.expanded { background: radial-gradient(circle, #451a03 0%, #0f172a 100%); }
-        body.dark-mode #card-break.expanded { background: radial-gradient(circle, #064e3b 0%, #0f172a 100%); }
-        body.dark-mode #card-buy.expanded { background: radial-gradient(circle, #4c0519 0%, #0f172a 100%); }
-        body.dark-mode #card-toilet.expanded { background: radial-gradient(circle, #0c4a6e 0%, #0f172a 100%); }
-
-        .action-card.expanded .capsule {
-            width: 88vw; max-width: 1300px; height: 46vh; max-height: 460px;
-            font-size: min(9vh, 7vw, 85px); font-weight: 700; border-radius: 1000px;
-            margin-bottom: 0; box-shadow: 0 25px 50px rgba(0,0,0,0.08), inset 0 -8px 0 rgba(0,0,0,0.1);
-        }
-        body.dark-mode .action-card.expanded .capsule { box-shadow: 0 25px 50px rgba(0,0,0,0.4); }
+        .action-card.expanded .capsule { width: 90vw; max-width: 600px; padding: 40px 0; font-size: min(8vh, 60px); border-radius: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
         .action-card.expanded .helper-text { display: none; }
-
-        .back-box {
-            display: none; width: 75vw; max-width: 900px; height: 11vh; max-height: 85px; min-height: 65px;
-            background: #ffffff; border: 3px dashed #cbd5e1; border-radius: 100px;
-            cursor: pointer; align-items: center; justify-content: center;
-        }
-        .action-card.expanded .back-box { display: flex; }
-        .back-box:hover { background: #f8fafc; border-color: #64748b; transform: scale(1.03); }
-        .back-title { font-size: min(4.2vh, 36px); font-weight: 700; color: #64748b; }
-        body.dark-mode .back-box { background: #1e293b; border-color: #475569; }
-        body.dark-mode .back-title { color: #94a3b8; }
-
-        .particle {
-            position: absolute; pointer-events: none; border-radius: 50%;
-            animation: float-up forwards ease-out; z-index: 100;
-        }
-        @keyframes float-up {
-            0% { transform: translateY(10px) scale(0.6); opacity: 0; }
-            20% { opacity: 0.8; }
-            100% { transform: translateY(-120px) translateX(var(--dx)); scale(1.4); opacity: 0; }
-        }
-
-        /* 📜 ตารางสรุปประวัติ */
-        .history-box {
-            background: #ffffff; border-radius: 24px; padding: 20px;
-            box-shadow: 0 10px 25px rgba(148, 163, 184, 0.08);
-            border: 1px solid #e2e8f0; width: 100%; margin-top: 5px;
-        }
-        body.dark-mode .history-box { background: #1e293b; border-color: #334155; }
-        .history-title { font-size: 14px; font-weight: 700; color: #475569; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        body.dark-mode .history-title { color: #cbd5e1; }
         
-        .history-actions { display: flex; gap: 10px; font-size: 11px; font-weight: normal; }
-        .btn-copy-summary { color: #38bdf8; cursor: pointer; }
-        .btn-clear-history { color: #ef4444; cursor: pointer; }
+        .back-btn { display: none; width: 80vw; max-width: 500px; padding: 20px; border-radius: 100px; background: #fff; border: 3px dashed #cbd5e1; font-size: 28px; font-weight: bold; color: #64748b; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        body.dark-mode .back-btn { background: #1e293b; border-color: #475569; color: #cbd5e1; }
+        .action-card.expanded .back-btn { display: block; text-align: center; }
 
-        .history-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
-        .history-table th { color: #94a3b8; padding: 8px 4px; font-weight: 500; border-bottom: 1px solid #f1f5f9; }
-        body.dark-mode .history-table th { border-bottom-color: #334155; }
-        .history-table td { padding: 10px 4px; border-bottom: 1px solid #f8fafc; color: #334155; }
-        body.dark-mode .history-table td { border-bottom-color: #1e293b; color: #e2e8f0; }
-        .empty-log { text-align: center; color: #cbd5e1; padding: 20px 0; font-size: 13px; }
+        /* Add Custom Activity Form */
+        .add-card-btn { padding: 12px; border: 2px dashed #cbd5e1; border-radius: 16px; text-align: center; color: #64748b; font-weight: bold; cursor: pointer; background: transparent; }
+        body.dark-mode .add-card-btn { border-color: #475569; color: #94a3b8; }
+        
+        .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal { background: #fff; border-radius: 20px; padding: 25px; width: 100%; max-width: 350px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        body.dark-mode .modal { background: #1e293b; color: #f1f5f9; }
+        .modal h3 { margin-top: 0; }
+        .modal input[type="text"] { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 15px; font-family: inherit; }
+        body.dark-mode .modal input[type="text"] { background: #0f172a; border-color: #475569; color: #fff; }
+        .color-picker { display: flex; gap: 8px; margin-bottom: 15px; }
+        .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+        .color-dot.selected { border-color: #0f172a; transform: scale(1.1); }
+        body.dark-mode .color-dot.selected { border-color: #fff; }
+        .checkbox-group { margin-bottom: 20px; display: flex; align-items: center; gap: 8px; font-size: 14px; }
+        .modal-btns { display: flex; gap: 10px; }
+        .btn-save { flex: 1; background: #38bdf8; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-cancel { flex: 1; background: #e2e8f0; color: #475569; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        body.dark-mode .btn-cancel { background: #334155; color: #cbd5e1; }
 
-        .pagination-btn {
-            display: block; width: 100%; text-align: center; padding: 8px;
-            margin-top: 12px; font-size: 12px; color: #64748b; font-weight: bold;
-            cursor: pointer; border: 1px solid #e2e8f0; border-radius: 12px;
-            background: #f8fafc; user-select: none;
-        }
-        .pagination-btn:hover { background: #f1f5f9; color: #0f172a; }
-        body.dark-mode .pagination-btn { background: #0f172a; border-color: #334155; color: #94a3b8; }
-        body.dark-mode .pagination-btn:hover { background: #1e293b; color: #ffffff; }
+        /* History & Export */
+        .history-box { background: #ffffff; border-radius: 24px; padding: 20px; border: 1px solid #e2e8f0; margin-top: 5px; }
+        body.dark-mode .history-box { background: #1e293b; border-color: #334155; }
+        .hist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; font-size: 14px; }
+        .hist-list { list-style: none; padding: 0; margin: 0; font-size: 13px; max-height: 200px; overflow-y: auto; }
+        .hist-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+        body.dark-mode .hist-item { border-color: #334155; }
+        .hist-item:last-child { border: none; }
+        .hist-time { color: #94a3b8; font-size: 11px; }
+        .hist-dur { font-weight: bold; color: #c084fc; }
+        .hist-dur.free { color: #38bdf8; }
+        
+        .export-btn { display: block; width: 100%; padding: 10px; margin-top: 15px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; text-align: center; color: #475569; font-weight: bold; cursor: pointer; font-size: 12px; }
+        body.dark-mode .export-btn { background: #0f172a; border-color: #475569; color: #94a3b8; }
 
-        .success-overlay {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(34, 197, 94, 0.96); backdrop-filter: blur(8px);
-            color: white; display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; z-index: 10000; border-radius: 22px;
-            transform: scale(0.95); transition: all 0.25s ease;
-        }
-        .action-card.expanded .success-overlay { border-radius: 0; }
-        .success-overlay.show { opacity: 1; transform: scale(1); }
-        .success-title { font-size: min(4.5vh, 36px); font-weight: 700; margin-bottom: 6px; }
-        .success-text { font-size: min(2.8vh, 24px); color: #f0fdf4; font-weight: 500; }
+        /* Floating Overlays */
+        .limit-prompt { position: absolute; top: 10px; right: 10px; display: none; background: rgba(0,0,0,0.8); color: #fff; padding: 8px 12px; border-radius: 12px; font-size: 14px; }
+        .action-card.expanded .limit-prompt { display: flex; align-items: center; gap: 8px; }
+        .limit-prompt select { background: #334155; color: #fff; border: 1px solid #475569; border-radius: 6px; padding: 4px; font-family: inherit; }
+        
+        .success-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #22c55e; color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: bold; box-shadow: 0 10px 20px rgba(0,0,0,0.2); z-index: 9999; opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .success-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     </style>
 </head>
 <body>
@@ -254,8 +128,8 @@
         <div class="header-row">
             <h1 class="app-title">☕ Break Recorder</h1>
             <div class="controls-group">
-                <div class="mute-toggle" id="mute-toggle" onclick="toggleMute(event)">🔊 เปิดเสียง</div>
-                <div class="theme-toggle" onclick="toggleDarkMode(event)">🌙 โหมดกลางคืน</div>
+                <button class="btn-ctrl" id="mute-btn" onclick="toggleMute()">🔊 เสียง</button>
+                <button class="btn-ctrl" onclick="toggleDarkMode()">🌙 ธีม</button>
             </div>
         </div>
 
@@ -263,399 +137,336 @@
             <div class="dash-header">
                 <span class="dash-title">📊 สรุปโควตาเวลาพักวันนี้</span>
                 <div class="quota-setting">
-                    โควตา: 
-                    <input type="number" id="quota-input" class="quota-input" min="1" oninput="updateQuota(this.value)"> 
-                    นาที
+                    โควตา: <input type="number" id="quota-input" class="quota-input" min="1" value="60" onchange="updateQuota(this.value)"> น.
                 </div>
             </div>
             <div class="time-grid">
-                <div class="time-box">
-                    <span class="time-val" id="quota-remain">60</span>
-                    <span class="time-lbl">นาทีที่เหลืออยู่</span>
-                </div>
-                <div class="time-box">
-                    <span class="time-val" id="quota-used">0</span>
-                    <span class="time-lbl">ใช้ไปแล้ว (นาที)</span>
-                </div>
+                <div class="time-box"><span class="time-val" id="quota-remain">60</span><span class="time-lbl">คงเหลือ (นาที)</span></div>
+                <div class="time-box"><span class="time-val" id="quota-used">0</span><span class="time-lbl">ใช้ไปแล้ว (นาที)</span></div>
             </div>
             <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="overtime-alert" id="overtime-banner">⚠️ คำเตือน: ใช้เวลาพักเกินโควตารวมแล้ว!</div>
         </div>
 
-        <div class="action-card" id="card-get" onclick="startBreak('ไปเอาอาหาร', this, '#c084fc', false)">
-            <div class="capsule food-get">
-                <span>ไปเอาอาหาร</span>
-                <div class="live-timer">00:00</div>
+        <div class="cards-container" id="cards-container">
             </div>
-            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🍧</div>
-            <div class="back-box" onclick="endBreak(this.parentElement, event)">
-                <div class="back-title">กลับมาแล้ว</div>
-            </div>
-            <div class="success-overlay">
-                <div class="success-title result-title">คัดลอกสำเร็จ! ✨</div>
-                <div class="success-text result-text"></div>
-            </div>
-        </div>
 
-        <div class="action-card" id="card-eat" onclick="startBreak('กินข้าว', this, '#facc15', false)">
-            <div class="capsule food-eat">
-                <span>กินข้าว</span>
-                <div class="live-timer">00:00</div>
-            </div>
-            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🍙</div>
-            <div class="back-box" onclick="endBreak(this.parentElement, event)">
-                <div class="back-title">กลับมาแล้ว</div>
-            </div>
-            <div class="success-overlay">
-                <div class="success-title result-title">คัดลอกสำเร็จ! ✨</div>
-                <div class="success-text result-text"></div>
-            </div>
-        </div>
-
-        <div class="action-card" id="card-break" onclick="startBreak('พักเบรก', this, '#4ade80', false)">
-            <div class="capsule break">
-                <span>พักเบรก</span>
-                <div class="live-timer">00:00</div>
-            </div>
-            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🍀</div>
-            <div class="back-box" onclick="endBreak(this.parentElement, event)">
-                <div class="back-title">กลับมาแล้ว</div>
-            </div>
-            <div class="success-overlay">
-                <div class="success-title result-title">คัดลอกสำเร็จ! ✨</div>
-                <div class="success-text result-text"></div>
-            </div>
-        </div>
-
-        <div class="action-card" id="card-buy" onclick="startBreak('ซื้ออาหาร', this, '#fb7185', false)">
-            <div class="capsule food-buy">
-                <span>ซื้ออาหาร</span>
-                <div class="live-timer">00:00</div>
-            </div>
-            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🍭</div>
-            <div class="back-box" onclick="endBreak(this.parentElement, event)">
-                <div class="back-title">กลับมาแล้ว</div>
-            </div>
-            <div class="success-overlay">
-                <div class="success-title result-title">คัดลอกสำเร็จ! ✨</div>
-                <div class="success-text result-text"></div>
-            </div>
-        </div>
-
-        <div class="action-card" id="card-toilet" onclick="startBreak('เข้าห้องน้ำ', this, '#38bdf8', true)">
-            <div class="capsule toilet">
-                <span>เข้าห้องน้ำ</span>
-                <div class="live-timer">00:00</div>
-            </div>
-            <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก 🧼</div>
-            <div class="back-box" onclick="endBreak(this.parentElement, event)">
-                <div class="back-title">กลับมาแล้ว</div>
-            </div>
-            <div class="success-overlay">
-                <div class="success-title result-title">คัดลอกสำเร็จ! ✨</div>
-                <div class="success-text result-text"></div>
-            </div>
-        </div>
+        <div class="add-card-btn" onclick="openAddModal()">+ เพิ่มกิจกรรมใหม่</div>
 
         <div class="history-box">
-            <div class="history-title">
-                <span>📜 ประวัติการพักวันนี้</span>
-                <div class="history-actions">
-                    <span class="btn-copy-summary" onclick="copySummary()">📋 คัดลอกสรุปทั้งวัน</span>
-                    <span class="btn-clear-history" onclick="clearLogs()">ล้างประวัติ</span>
-                </div>
+            <div class="hist-header">
+                <span>ประวัติล่าสุดวันนี้</span>
+                <span style="color: #ef4444; cursor: pointer; font-weight: normal; font-size: 11px;" onclick="clearHistory()">ล้างประวัติ</span>
             </div>
-            <div id="log-container"></div>
-            <div id="pagination-container"></div>
+            <ul class="hist-list" id="hist-list"></ul>
+            <button class="export-btn" onclick="exportToCSV()">📥 โหลดประวัติทั้งหมด (.CSV)</button>
+        </div>
+    </div>
+
+    <div class="success-toast" id="toast">คัดลอกสำเร็จ! ✨</div>
+
+    <div class="modal-overlay" id="add-modal">
+        <div class="modal">
+            <h3>สร้างกิจกรรมใหม่</h3>
+            <input type="text" id="new-act-name" placeholder="ชื่อกิจกรรม (เช่น ชงกาแฟ)" maxlength="20">
+            <div style="font-size: 12px; margin-bottom: 5px; color: #64748b;">เลือกสี:</div>
+            <div class="color-picker" id="color-picker">
+                <div class="color-dot theme-purple selected" data-color="theme-purple"></div>
+                <div class="color-dot theme-yellow" data-color="theme-yellow"></div>
+                <div class="color-dot theme-green" data-color="theme-green"></div>
+                <div class="color-dot theme-blue" data-color="theme-blue"></div>
+                <div class="color-dot theme-pink" data-color="theme-pink"></div>
+                <div class="color-dot theme-orange" data-color="theme-orange"></div>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="new-act-free">
+                <label for="new-act-free">ไม่นำไปหักโควตาเวลา 🌟</label>
+            </div>
+            <div class="modal-btns">
+                <button class="btn-cancel" onclick="closeAddModal()">ยกเลิก</button>
+                <button class="btn-save" onclick="saveNewActivity()">สร้างปุ่ม</button>
+            </div>
         </div>
     </div>
 
     <script>
-        let activeBreak = null;
-        let showAllLogs = false;
-        let timerInterval = null;
+        // --- State Management ---
         let isMuted = localStorage.getItem('is_muted') === 'true';
+        let dailyQuota = parseInt(localStorage.getItem('daily_quota')) || 60;
+        let activeBreak = null;
+        let timerInterval = null;
         
-        // 🔊 ระบบสร้างเอฟเฟกต์เสียง
+        // Default Activities
+        const defaultActivities = [
+            { id: 'act_1', name: 'ไปเอาอาหาร', color: 'theme-purple', isFree: false },
+            { id: 'act_2', name: 'กินข้าว', color: 'theme-yellow', isFree: false },
+            { id: 'act_3', name: 'พักเบรก', color: 'theme-green', isFree: false },
+            { id: 'act_4', name: 'ซื้ออาหาร', color: 'theme-pink', isFree: false },
+            { id: 'act_5', name: 'เข้าห้องน้ำ', color: 'theme-blue', isFree: true } // ห้องน้ำฟรี
+        ];
+
+        let activities = JSON.parse(localStorage.getItem('custom_activities')) || defaultActivities;
+        let historyLogs = JSON.parse(localStorage.getItem('break_logs_v5')) || [];
+
+        // --- Audio System ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (isMuted) return;
             try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
+                const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
                 osc.connect(gain); gain.connect(audioCtx.destination);
-                
                 if (type === 'pop') { 
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
-                    osc.frequency.exponentialRampToValueAtTime(1174.66, audioCtx.currentTime + 0.15); 
-                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+                    osc.frequency.setValueAtTime(600, audioCtx.currentTime); 
+                    osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1); 
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
                 } else if (type === 'welcome') { 
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
-                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); 
-                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16); 
-                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+                    osc.frequency.setValueAtTime(400, audioCtx.currentTime); 
+                    osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1); 
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'alarm') {
+                    // Siren for limit exceed
+                    osc.type = 'square'; osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.4);
                 }
-            } catch(e) { console.log("Audio interaction error"); }
+            } catch(e) {}
         }
 
-        // ✨ เอฟเฟกต์ละอองวิบวับ
-        function triggerParticles(cardElement, color, isBubble) {
-            for (let i = 0; i < 18; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
+        // --- UI Rendering ---
+        function renderActivities() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+            activities.forEach(act => {
+                const card = document.createElement('div');
+                card.className = `action-card`;
+                card.id = act.id;
                 
-                const size = Math.random() * (isBubble ? 14 : 8) + 6;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${Math.random() * 80 + 10}%`;
-                particle.style.bottom = '20px';
-                particle.style.setProperty('--dx', `${Math.random() * 100 - 50}px`);
-                particle.style.animationDelay = `${Math.random() * 0.3}s`;
-                particle.style.animationDuration = `${Math.random() * 0.8 + 0.7}s`;
+                // Add Delete button only for custom activities (id > act_5)
+                const isCustom = parseInt(act.id.split('_')[1]) > 5;
+                const delBtn = isCustom ? `<div style="position:absolute; top:10px; right:15px; color:#cbd5e1; font-size:16px;" onclick="deleteActivity('${act.id}', event)">✕</div>` : '';
                 
-                if (isBubble) { 
-                    particle.style.background = 'transparent';
-                    particle.style.border = `2px solid ${color}`;
-                    particle.style.boxShadow = `inset 0 0 5px ${color}`;
-                } else { 
-                    particle.style.background = color;
-                    particle.style.boxShadow = `0 0 8px ${color}`;
-                }
+                const freeTag = act.isFree ? ' 🌟' : '';
                 
-                cardElement.appendChild(particle);
-                setTimeout(() => particle.remove(), 1200);
-            }
-        }
-
-        function toggleDarkMode(event) {
-            event.stopPropagation();
-            document.body.classList.toggle('dark-mode');
-            const toggleBtn = document.querySelector('.theme-toggle');
-            toggleBtn.innerHTML = document.body.classList.contains('dark-mode') ? '☀️ โหมดกลางวัน' : '🌙 โหมดกลางคืน';
-        }
-
-        function toggleMute(event) {
-            event.stopPropagation();
-            isMuted = !isMuted;
-            localStorage.setItem('is_muted', isMuted);
-            document.getElementById('mute-toggle').innerHTML = isMuted ? '🔇 ปิดเสียง' : '🔊 เปิดเสียง';
-        }
-
-        function getThaiTimeString(dateObj = new Date()) {
-            const utc = dateObj.getTime() + (dateObj.getTimezoneOffset() * 60000);
-            const thaiTime = new Date(utc + (3600000 * 7));
-            return `${String(thaiTime.getHours()).padStart(2, '0')}:${String(thaiTime.getMinutes()).padStart(2, '0')} น.`;
-        }
-
-        function performCopy(text) {
-            const tempInput = document.createElement("textarea");
-            tempInput.value = text; document.body.appendChild(tempInput);
-            tempInput.select(); document.execCommand("copy");
-            document.body.removeChild(tempInput);
-        }
-
-        function showSuccessOverlay(cardElement, title, text, duration = 850) {
-            const overlay = cardElement.querySelector('.success-overlay');
-            cardElement.querySelector('.result-title').textContent = title;
-            cardElement.querySelector('.result-text').textContent = text;
-            overlay.classList.add('show');
-            setTimeout(() => overlay.classList.remove('show'), duration);
-        }
-
-        function updateQuota(val) {
-            let quota = parseInt(val);
-            if (isNaN(quota) || quota < 1) quota = 60;
-            localStorage.setItem('daily_quota', quota);
-            renderDashboardAndLogs();
-        }
-
-        // เริ่มพักเบรก พร้อมระบบวิ่งเวลานับวินาทีแบบ Live!
-        function startBreak(actionMessage, cardElement, themeColor, isBubble) {
-            if (cardElement.classList.contains('expanded')) return;
-            
-            playSound('pop');
-            triggerParticles(cardElement, themeColor, isBubble);
-
-            const now = new Date();
-            const timeString = getThaiTimeString(now);
-            const textToCopy = `${actionMessage} ${timeString}`;
-            performCopy(textToCopy);
-
-            activeBreak = { action: actionMessage, startTime: now.getTime(), startStr: timeString };
-
-            // อัปเดตและเริ่มตัวจับเวลาแบบวินาทีจริง
-            const timerDisplay = cardElement.querySelector('.live-timer');
-            timerDisplay.textContent = '00:00';
-            
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                if (!activeBreak) return;
-                const elapsedSecs = Math.floor((Date.now() - activeBreak.startTime) / 1000);
-                const mins = String(Math.floor(elapsedSecs / 60)).padStart(2, '0');
-                const secs = String(elapsedSecs % 60).padStart(2, '0');
-                timerDisplay.textContent = `${mins}:${secs}`;
-            }, 1000);
-
-            showSuccessOverlay(cardElement, 'บันทึกเวลาเริ่มพักแล้ว! 🍮', textToCopy);
-            setTimeout(() => cardElement.classList.add('expanded'), 120);
-        }
-
-        // กลับมาแล้ว
-        function endBreak(cardElement, event) {
-            event.stopPropagation(); 
-            playSound('welcome');
-
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-
-            const textToCopy = `กลับมาแล้ว`; 
-            performCopy(textToCopy);
-
-            if (activeBreak) {
-                const endTime = new Date().getTime();
-                const diffMs = endTime - activeBreak.startTime;
-                
-                // ตรวจสอบเงื่อนไขพิเศษ: ถ้าเป็นการ "เข้าห้องน้ำ" ให้หักโควต้าเป็น 0 นาทีทันที
-                let diffMins = Math.max(1, Math.round(diffMs / 60000)); 
-                if (activeBreak.action === "เข้าห้องน้ำ") {
-                    diffMins = 0;
-                }
-                
-                saveLog(activeBreak.action, activeBreak.startStr, getThaiTimeString(new Date()), diffMins);
-                activeBreak = null;
-            }
-
-            cardElement.classList.remove('expanded');
-            setTimeout(() => showSuccessOverlay(cardElement, 'บันทึกเวลากลับมาแล้ว! 🏠', textToCopy, 1200), 80);
-        }
-
-        function saveLog(action, start, end, duration) {
-            const today = new Date().toDateString();
-            let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
-            logs.push({ date: today, action, start, end, duration });
-            localStorage.setItem('break_logs', JSON.stringify(logs));
-            renderDashboardAndLogs();
-        }
-
-        // 📋 ฟังก์ชันพิเศษ: คัดลอกรายงานสรุปทั้งวันแบบจัดฟอร์แมตสวยงาม
-        function copySummary() {
-            const today = new Date().toDateString();
-            const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
-            const todayLogs = logs.filter(log => log.date === today);
-            
-            if (todayLogs.length === 0) {
-                alert("ยังไม่มีประวัติการพักของวันนี้ให้คัดลอก");
-                return;
-            }
-            
-            let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
-            let totalUsed = 0;
-            todayLogs.forEach(log => totalUsed += log.duration);
-            
-            const now = new Date();
-            const dateStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-            
-            let summaryText = `📋 รายงานสรุปเวลาพักประจำวันที่ ${dateStr}\n`;
-            summaryText += `----------------------------------------\n`;
-            todayLogs.forEach((log, index) => {
-                // ปรับแต่งข้อความแจ้งเตือนถ้าเป็นห้องน้ำที่ไม่หักโควต้า
-                const durationText = log.action === "เข้าห้องน้ำ" ? "ไม่หักโควต้า" : `รวม: ${log.duration} นาที`;
-                summaryText += `${index + 1}. ${log.action} (${log.start} - ${log.end}) | ${durationText}\n`;
-            });
-            summaryText += `----------------------------------------\n`;
-            summaryText += `⏱️ โควตาทั้งหมด: ${dailyQuota} นาที\n`;
-            summaryText += `📊 ใช้ไปแล้ว: ${totalUsed} นาที\n`;
-            summaryText += `🔋 คงเหลือ: ${Math.max(0, dailyQuota - totalUsed)} นาที`;
-            
-            performCopy(summaryText);
-            alert("คัดลอกรายงานสรุปประจำวันไปยัง Clipboard เรียบร้อยแล้ว! ✨");
-        }
-
-        function clearLogs() {
-            if(confirm("ต้องการล้างประวัติการพักทั้งหมดของวันนี้ใช่หรือไม่?")) {
-                localStorage.removeItem('break_logs');
-                renderDashboardAndLogs();
-            }
-        }
-
-        function toggleLogPagination() {
-            showAllLogs = !showAllLogs;
-            renderDashboardAndLogs();
-        }
-
-        function renderDashboardAndLogs() {
-            const today = new Date().toDateString();
-            const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
-            const todayLogs = logs.filter(log => log.date === today).reverse();
-            
-            let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
-            document.getElementById('quota-input').value = dailyQuota;
-
-            let totalUsed = 0;
-            todayLogs.forEach(log => totalUsed += log.duration);
-
-            const logContainer = document.getElementById('log-container');
-            const paginationContainer = document.getElementById('pagination-container');
-            
-            if (todayLogs.length === 0) {
-                logContainer.innerHTML = '<div class="empty-log">ยังไม่มีประวัติการพักสำหรับวันนี้</div>';
-                paginationContainer.innerHTML = '';
-            } else {
-                const displayedLogs = showAllLogs ? todayLogs : todayLogs.slice(0, 5);
-                
-                let tableHtml = `<table class="history-table">
-                    <thead><tr><th>กิจกรรม</th><th>เริ่ม</th><th>กลับ</th><th>รวม</th></tr></thead>
-                    <tbody>`;
-                displayedLogs.forEach(log => {
-                    // แสดงสีและข้อความพิเศษในตารางสำหรับเข้าห้องน้ำ
-                    const isToilet = log.action === "เข้าห้องน้ำ";
-                    const durationDisplay = isToilet ? "0 น. 🌟" : `${log.duration} น.`;
-                    const durationStyle = isToilet ? "color:#38bdf8; font-weight:bold;" : "color:#c084fc; font-weight:bold;";
+                card.innerHTML = `
+                    ${delBtn}
+                    <div class="capsule ${act.color}">
+                        <span>${act.name}${freeTag}</span>
+                        <div class="live-timer">00:00</div>
+                    </div>
+                    <div class="helper-text">คลิกเพื่อแจ้งเวลาพัก</div>
                     
-                    tableHtml += `<tr>
-                        <td><strong>${log.action}</strong></td>
-                        <td>${log.start}</td>
-                        <td>${log.end}</td>
-                        <td><span style="${durationStyle}">${durationDisplay}</span></td>
-                    </tr>`;
-                });
-                tableHtml += '</tbody></table>';
-                logContainer.innerHTML = tableHtml;
+                    <div class="limit-prompt">
+                        ⏰ เตือนเมื่อเกิน: 
+                        <select class="limit-select" onclick="event.stopPropagation()">
+                            <option value="0">ไม่เตือน</option>
+                            <option value="5">5 นาที</option>
+                            <option value="10">10 นาที</option>
+                            <option value="15" selected>15 นาที</option>
+                            <option value="30">30 นาที</option>
+                            <option value="45">45 นาที</option>
+                        </select>
+                    </div>
 
-                if (todayLogs.length > 5) {
-                    paginationContainer.innerHTML = showAllLogs 
-                        ? `<div class="pagination-btn" onclick="toggleLogPagination()">ย่อกลับ</div>`
-                        : `<div class="pagination-btn" onclick="toggleLogPagination()">ดูเพิ่มเติม (อีก ${todayLogs.length - 5} รายการ)</div>`;
-                } else {
-                    paginationContainer.innerHTML = '';
-                }
-            }
+                    <div class="back-btn" onclick="endBreak('${act.id}', event)">กลับมาแล้ว</div>
+                `;
+                card.onclick = () => startBreak(act, card);
+                container.appendChild(card);
+            });
+        }
 
-            const remain = Math.max(0, dailyQuota - totalUsed);
-            document.getElementById('quota-used').textContent = totalUsed;
+        function renderDashboard() {
+            const today = new Date().toDateString();
+            const todayLogs = historyLogs.filter(l => l.date === today);
+            
+            let usedQuota = 0;
+            todayLogs.forEach(l => {
+                if (!l.isFree) usedQuota += l.duration; // หักเฉพาะอันที่ไม่ฟรี
+            });
+
+            const remain = Math.max(0, dailyQuota - usedQuota);
+            document.getElementById('quota-input').value = dailyQuota;
+            document.getElementById('quota-used').textContent = usedQuota;
             document.getElementById('quota-remain').textContent = remain;
             
-            const progressPercent = Math.max(0, (remain / dailyQuota) * 100);
-            const progressFill = document.getElementById('progress-fill');
-            progressFill.style.width = `${progressPercent}%`;
+            const pct = Math.max(0, Math.min(100, (remain / dailyQuota) * 100));
+            const fill = document.getElementById('progress-fill');
+            const alertBanner = document.getElementById('overtime-banner');
             
-            if (progressPercent < 25) {
-                progressFill.style.background = 'linear-gradient(90deg, #f43f5e, #fb7185)';
+            fill.style.width = `${pct}%`;
+            if (usedQuota >= dailyQuota) { 
+                fill.style.background = '#ef4444'; 
+                alertBanner.style.display = 'block'; 
+            } else { 
+                fill.style.background = pct < 25 ? '#f43f5e' : 'linear-gradient(90deg, #38bdf8, #c084fc)'; 
+                alertBanner.style.display = 'none'; 
+            }
+
+            // Render History List (Max 5)
+            const listObj = document.getElementById('hist-list');
+            listObj.innerHTML = '';
+            if(todayLogs.length === 0) {
+                listObj.innerHTML = '<li style="text-align:center; color:#94a3b8;">ยังไม่มีประวัติ</li>';
             } else {
-                progressFill.style.background = 'linear-gradient(90deg, #38bdf8, #c084fc)';
+                [...todayLogs].reverse().slice(0, 5).forEach(l => {
+                    const durClass = l.isFree ? 'hist-dur free' : 'hist-dur';
+                    const durText = l.isFree ? '0 น. (ฟรี)' : `${l.duration} น.`;
+                    listObj.innerHTML += `
+                        <li class="hist-item">
+                            <div>
+                                <strong>${l.action}</strong>
+                                <div class="hist-time">${l.start} - ${l.end}</div>
+                            </div>
+                            <div class="${durClass}">${durText}</div>
+                        </li>
+                    `;
+                });
             }
         }
 
-        window.onload = () => {
-            document.getElementById('mute-toggle').innerHTML = isMuted ? '🔇 ปิดเสียง' : '🔊 เปิดเสียง';
-            renderDashboardAndLogs();
+        // --- Core Logic ---
+        function startBreak(act, cardElement) {
+            if (cardElement.classList.contains('expanded')) return;
+            playSound('pop');
+            
+            const now = new Date();
+            const timeStr = getThaiTimeString(now);
+            performCopy(`${act.name} ${timeStr}`);
+            showToast(`คัดลอก: ${act.name} ${timeStr}`);
+
+            // Setup Limit Alert
+            const limitSelect = cardElement.querySelector('.limit-select');
+            const limitMins = parseInt(limitSelect.value);
+
+            activeBreak = { id: act.id, action: act.name, isFree: act.isFree, startTime: now.getTime(), startStr: timeStr, limitSecs: limitMins * 60 };
+
+            const timerUI = cardElement.querySelector('.live-timer');
+            timerUI.textContent = '00:00'; timerUI.classList.remove('overtime');
+
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if(!activeBreak) return;
+                const elapsedSecs = Math.floor((Date.now() - activeBreak.startTime) / 1000);
+                timerUI.textContent = `${String(Math.floor(elapsedSecs / 60)).padStart(2, '0')}:${String(elapsedSecs % 60).padStart(2, '0')}`;
+                
+                // Per-activity limit alert
+                if (activeBreak.limitSecs > 0 && elapsedSecs >= activeBreak.limitSecs) {
+                    if (!timerUI.classList.contains('overtime')) {
+                        timerUI.classList.add('overtime');
+                    }
+                    if (elapsedSecs % 10 === 0) playSound('alarm'); // เตือนซ้ำทุกๆ 10 วินาที
+                }
+            }, 1000);
+
+            cardElement.classList.add('expanded');
+        }
+
+        function endBreak(actId, event) {
+            event.stopPropagation();
+            if(!activeBreak || activeBreak.id !== actId) return;
+            
+            playSound('welcome');
+            if (timerInterval) clearInterval(timerInterval);
+            
+            performCopy(`กลับมาแล้ว`);
+            showToast('คัดลอก: กลับมาแล้ว');
+
+            const diffMins = Math.max(1, Math.round((Date.now() - activeBreak.startTime) / 60000));
+            
+            historyLogs.push({
+                date: new Date().toDateString(),
+                action: activeBreak.action,
+                isFree: activeBreak.isFree,
+                start: activeBreak.startStr,
+                end: getThaiTimeString(),
+                duration: diffMins
+            });
+            localStorage.setItem('break_logs_v5', JSON.stringify(historyLogs));
+            
+            document.getElementById(actId).classList.remove('expanded');
+            activeBreak = null;
+            renderDashboard();
+        }
+
+        // --- Custom Activity Logic ---
+        function openAddModal() { document.getElementById('add-modal').style.display = 'flex'; }
+        function closeAddModal() { document.getElementById('add-modal').style.display = 'none'; document.getElementById('new-act-name').value = ''; }
+        
+        document.querySelectorAll('.color-dot').forEach(dot => {
+            dot.onclick = (e) => {
+                document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+                e.target.classList.add('selected');
+            }
+        });
+
+        function saveNewActivity() {
+            const name = document.getElementById('new-act-name').value.trim();
+            if(!name) return alert('กรุณาตั้งชื่อกิจกรรม');
+            const color = document.querySelector('.color-dot.selected').dataset.color;
+            const isFree = document.getElementById('new-act-free').checked;
+            
+            const newId = `act_${Date.now()}`;
+            activities.push({ id: newId, name, color, isFree });
+            localStorage.setItem('custom_activities', JSON.stringify(activities));
+            
+            closeAddModal();
+            renderActivities();
+        }
+
+        function deleteActivity(id, event) {
+            event.stopPropagation();
+            if(confirm('ลบกิจกรรมนี้?')) {
+                activities = activities.filter(a => a.id !== id);
+                localStorage.setItem('custom_activities', JSON.stringify(activities));
+                renderActivities();
+            }
+        }
+
+        // --- CSV Export Logic ---
+        function exportToCSV() {
+            if(historyLogs.length === 0) return alert('ไม่มีข้อมูลประวัติให้ Export');
+            
+            // สร้าง Header ของ CSV
+            const headers = ['วันที่', 'กิจกรรม', 'เวลาเริ่ม', 'เวลากลับ', 'ระยะเวลา(นาที)', 'หักโควตาหรือไม่'];
+            let csvRows = [headers.join(',')]; //
+            
+            // ใส่ข้อมูลลงทีละแถว
+            historyLogs.forEach(log => {
+                const isDeduct = log.isFree ? 'ไม่หัก' : 'หักโควตา';
+                const row = [log.date, log.action, log.start, log.end, log.duration, isDeduct];
+                csvRows.push(row.join(',')); //
+            });
+            
+            const csvString = csvRows.join('\n'); // แปลง Array เป็น String คั่นด้วย Newline
+            
+            // แปลงเป็น Blob และดาวน์โหลดไฟล์
+            const blob = new Blob(["\uFEFF" + csvString], { type: 'text/csv;charset=utf-8;' }); // \uFEFF คือ BOM เพื่อให้ Excel อ่านภาษาไทยได้
+            const url = URL.createObjectURL(blob); //
+            
+            const link = document.createElement('a'); //
+            link.href = url; //
+            link.download = `break-history-${new Date().toISOString().slice(0,10)}.csv`; //
+            document.body.appendChild(link); //
+            link.click(); // กดลิงก์อัตโนมัติเพื่อดาวน์โหลด
+            document.body.removeChild(link); //
+        }
+
+        // --- Utilities ---
+        function updateQuota(val) { dailyQuota = parseInt(val) || 60; localStorage.setItem('daily_quota', dailyQuota); renderDashboard(); }
+        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+        function toggleMute() { isMuted = !isMuted; localStorage.setItem('is_muted', isMuted); document.getElementById('mute-btn').innerHTML = isMuted ? '🔇 ปิดเสียง' : '🔊 เสียง'; }
+        function clearHistory() { if(confirm("ล้างประวัติวันนี้?")) { historyLogs = historyLogs.filter(l => l.date !== new Date().toDateString()); localStorage.setItem('break_logs_v5', JSON.stringify(historyLogs)); renderDashboard(); } }
+        function getThaiTimeString(d = new Date()) { const utc = d.getTime() + (d.getTimezoneOffset() * 60000); const t = new Date(utc + 25200000); return `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')} น.`; }
+        function performCopy(txt) { const i = document.createElement("textarea"); i.value = txt; document.body.appendChild(i); i.select(); document.execCommand("copy"); document.body.removeChild(i); }
+        function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+
+        // Init
+        window.onload = () => { 
+            document.getElementById('mute-btn').innerHTML = isMuted ? '🔇 ปิดเสียง' : '🔊 เสียง';
+            renderActivities(); 
+            renderDashboard(); 
         };
     </script>
 </body>
