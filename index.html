@@ -3,167 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแจ้งเวลาพัก - Ultimate Premium (Cute Edition)</title>
+    <title>ระบบแจ้งเวลาพัก - Super WOW Edition</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#f8fafc">
     
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
-            transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s, color 0.3s;
+            transition: background-color 0.4s, box-shadow 0.4s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s, border-color 0.3s;
         }
 
         body {
             font-family: 'Kanit', sans-serif;
             display: flex; flex-direction: column; align-items: center;
             padding: 20px; margin: 0; min-height: 100vh;
-            background-color: #f8fafc; overflow-x: hidden; perspective: 1000px;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            overflow-x: hidden; perspective: 1000px;
         }
         
-        /* 🌟 ธีมโหมดกลางคืนแบบน่ารักขึ้น */
-        body.dark-mode { background-color: #0f172a; color: #f8fafc; }
+        body.dark-mode { background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); color: #f8fafc; }
+
+        /* ✨ เลเยอร์ฟองสบู่ (ขยับตามเมาส์ได้ด้วย JS) */
+        .bg-bubbles {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; overflow: hidden; pointer-events: none; margin: 0; padding: 0;
+            transition: transform 0.1s ease-out; /* สำหรับ Parallax */
+        }
+        .bg-bubbles li {
+            position: absolute; list-style: none; display: block;
+            width: 40px; height: 40px; background: rgba(56, 189, 248, 0.25);
+            bottom: -150px; animation: square 20s linear infinite; border-radius: 50%;
+            backdrop-filter: blur(2px); border: 1px solid rgba(255,255,255,0.3);
+        }
+        body.dark-mode .bg-bubbles li {
+            background: rgba(192, 132, 252, 0.2); border: 1px solid rgba(255,255,255,0.1);
+        }
+        @keyframes square {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-120vh) scale(3) rotate(360deg); opacity: 0; }
+        }
+        .bg-bubbles li:nth-child(1) { left: 10%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 15s; }
+        .bg-bubbles li:nth-child(2) { left: 25%; width: 90px; height: 90px; animation-delay: 2s; animation-duration: 25s; }
+        .bg-bubbles li:nth-child(3) { left: 45%; width: 40px; height: 40px; animation-delay: 4s; animation-duration: 20s; }
+        .bg-bubbles li:nth-child(4) { left: 65%; width: 70px; height: 70px; animation-delay: 0s; animation-duration: 18s; }
+        .bg-bubbles li:nth-child(5) { left: 85%; width: 50px; height: 50px; animation-delay: 3s; animation-duration: 22s; }
+        .bg-bubbles li:nth-child(6) { left: 55%; width: 30px; height: 30px; animation-delay: 7s; animation-duration: 12s; }
 
         .container {
-            display: flex; flex-direction: column; gap: 16px;
-            width: 100%; max-width: 400px; position: relative;
+            display: flex; flex-direction: column; gap: 18px;
+            width: 100%; max-width: 400px; position: relative; z-index: 10;
         }
 
-        /* 📊 Dashboard โควตาเวลา */
-        .dashboard {
-            background: #ffffff; border-radius: 24px; padding: 20px;
-            box-shadow: 0 10px 25px rgba(148, 163, 184, 0.12); border: 2px dashed #e2e8f0; /* เส้นประน่ารักๆ */
+        /* 💎 Glassmorphism UI (ดีไซน์กระจกฝ้า) */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 28px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
         }
-        body.dark-mode .dashboard { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        
+        body.dark-mode .glass-panel {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .dashboard { padding: 22px; }
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .dash-title { font-size: 14px; color: #64748b; font-weight: bold; }
-        body.dark-mode .dash-title { color: #94a3b8; }
+        .dash-title { font-size: 15px; color: #475569; font-weight: 800; }
+        body.dark-mode .dash-title { color: #cbd5e1; }
         
-        .quota-setting { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 4px; }
+        .quota-setting { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 6px; font-weight: 600;}
         body.dark-mode .quota-setting { color: #94a3b8; }
         .quota-input {
-            width: 55px; padding: 4px 6px; border: 2px solid #cbd5e1; border-radius: 8px; /* ขอบหนาขึ้นนิดนึง */
-            font-family: inherit; font-weight: bold; text-align: center; color: #0f172a; background: #f8fafc;
+            width: 55px; padding: 4px 6px; border: 2px solid rgba(203, 213, 225, 0.5); border-radius: 8px;
+            font-family: inherit; font-weight: bold; text-align: center; color: #0f172a; background: rgba(255,255,255,0.8);
+            transition: all 0.3s;
         }
-        body.dark-mode .quota-input { background: #0f172a; border-color: #475569; color: #ffffff; }
+        .quota-input:focus { outline: none; border-color: #38bdf8; transform: scale(1.1); }
+        body.dark-mode .quota-input { background: rgba(15, 23, 42, 0.6); border-color: rgba(71, 85, 105, 0.5); color: #ffffff; }
 
         .time-grid { display: flex; justify-content: space-around; margin-top: 10px; }
         .time-box { display: flex; flex-direction: column; text-align: center; }
-        .time-val { font-size: 28px; font-weight: 700; color: #0f172a; } /* เลขใหญ่ขึ้น */
-        body.dark-mode .time-val { color: #ffffff; }
-        .time-lbl { font-size: 12px; color: #94a3b8; }
+        .time-val { font-size: 32px; font-weight: 800; color: #0f172a; text-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        body.dark-mode .time-val { color: #ffffff; text-shadow: 0 2px 10px rgba(255,255,255,0.1); }
+        .time-lbl { font-size: 12px; color: #64748b; font-weight: 600; }
+        body.dark-mode .time-lbl { color: #94a3b8; }
         
-        /* หลอดพลังงานแบบมนๆ */
-        .progress-bar { width: 100%; height: 12px; background: #e2e8f0; border-radius: 20px; margin-top: 15px; overflow: hidden; }
-        body.dark-mode .progress-bar { background: #334155; }
-        .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #38bdf8, #c084fc); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 20px;}
+        .progress-bar { width: 100%; height: 12px; background: rgba(226, 232, 240, 0.6); border-radius: 20px; margin-top: 15px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        body.dark-mode .progress-bar { background: rgba(51, 65, 85, 0.6); }
+        .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #38bdf8, #c084fc, #ff7eb3); background-size: 200% 200%; animation: gradient-shift 3s ease infinite; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); border-radius: 20px;}
 
-        /* มาสคอตน่ารักๆ บน Dashboard */
-        .mascot-area {
-            text-align: center; margin-top: 10px; font-size: 24px;
-            animation: bounce 2s infinite; display: none;
+        /* ✨ อัปเกรด Title ให้เป็นแสงสีรุ้งวิ่งได้ */
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; flex-wrap: wrap; gap: 10px;}
+        .app-title { 
+            font-size: 22px; font-weight: 800; margin: 0;
+            background: linear-gradient(to right, #ff758c, #ff7eb3, #c084fc, #38bdf8, #ff758c);
+            -webkit-background-clip: text; color: transparent;
+            background-size: 300% 300%; animation: gradient-text 4s linear infinite;
         }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
+        @keyframes gradient-text { 0%{background-position: 0% 50%} 100%{background-position: 100% 50%} }
+        @keyframes gradient-shift { 0%{background-position: 0% 50%} 50%{background-position: 100% 50%} 100%{background-position: 0% 50%} }
 
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; flex-wrap: wrap; gap: 10px; }
-        .app-title { font-size: 20px; font-weight: 700; color: #334155; margin: 0; display: flex; align-items: center; gap: 8px;}
-        body.dark-mode .app-title { color: #f1f5f9; }
-
-        .controls-group { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; flex: 1; }
+        .controls-group { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; flex: 1; }
         .theme-toggle, .mute-toggle, .gender-toggle {
-            font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 30px;
-            background: #ffffff; color: #4a4a4c; cursor: pointer; user-select: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+            font-size: 11px; font-weight: 700; padding: 8px 12px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.8); color: #475569; cursor: pointer; user-select: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.5);
+            backdrop-filter: blur(5px);
         }
-        body.dark-mode .theme-toggle, body.dark-mode .mute-toggle, body.dark-mode .gender-toggle { background: #1e293b; color: #ffffff; border-color: #334155; }
-        .theme-toggle:hover, .mute-toggle:hover, .gender-toggle:hover { transform: scale(1.05); }
+        body.dark-mode .theme-toggle, body.dark-mode .mute-toggle, body.dark-mode .gender-toggle { 
+            background: rgba(30, 41, 59, 0.8); color: #cbd5e1; border-color: rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .theme-toggle:hover, .mute-toggle:hover, .gender-toggle:hover { transform: translateY(-2px) scale(1.05); }
 
-        /* ✨ การ์ดปุ่มกดแบบ Dynamic & น่ารัก */
+        /* ✨ การ์ดปุ่มกด + เอฟเฟกต์เรืองแสงทะลุกระจก */
         .action-card {
             display: flex; flex-direction: column; align-items: center;
-            background-color: #ffffff; padding: 16px; border-radius: 28px;
-            box-shadow: 0 8px 20px rgba(148, 163, 184, 0.1); border: 2px solid #f1f5f9; /* ขอบหนาขึ้นนิดนึง */
-            cursor: pointer; user-select: none; position: relative; transform-style: preserve-3d;
+            padding: 18px; cursor: pointer; user-select: none;
+            position: relative; transform-style: preserve-3d;
         }
-        body.dark-mode .action-card { background-color: #1e293b; border-color: #334155; }
-
-        .action-card:hover:not(.expanded) { box-shadow: 0 0 25px var(--hover-color); transform: translateY(-4px) scale(1.03); border-color: var(--particle-color);}
+        .action-card:hover:not(.expanded) { 
+            box-shadow: 0 15px 35px var(--hover-color), inset 0 0 0 1px rgba(255, 255, 255, 0.8); 
+            transform: translateY(-5px) scale(1.03) rotateX(5deg); 
+            border-color: transparent;
+        }
 
         .capsule {
             width: 100%; padding: 18px 0; border-radius: 100px;
-            text-align: center; font-size: 26px; font-weight: 700;
-            letter-spacing: 0.5px; margin-bottom: 8px; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1);
+            text-align: center; font-size: 28px; font-weight: 800;
+            letter-spacing: 0.5px; margin-bottom: 8px;
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.15), 0 10px 20px rgba(0,0,0,0.1);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
         }
+        /* แสงสะท้อนบน Capsule */
+        .capsule::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg); transition: 0.5s;
+        }
+        .action-card:hover:not(.expanded) .capsule::after { left: 200%; transition: 0.8s ease-in-out; }
         
-        /* Floating Emoji - เอฟเฟกต์อิโมจิลอยในการ์ดตอนยังไม่ขยาย */
         .floating-emoji {
-            position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
-            font-size: 32px; opacity: 0.2; transition: all 0.3s;
+            position: absolute; right: 25px; top: 50%; transform: translateY(-50%);
+            font-size: 38px; opacity: 0.15; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
         }
         .action-card:hover:not(.expanded) .floating-emoji {
-            opacity: 0.8; transform: translateY(-50%) scale(1.2) rotate(10deg);
+            opacity: 1; transform: translateY(-50%) scale(1.3) rotate(15deg);
         }
-        
-        .helper-text {
-            font-size: 13px; color: #64748b; background: #f8fafc;
-            padding: 6px 16px; border-radius: 20px; font-weight: 500;
-        }
-        body.dark-mode .helper-text { background: #0f172a; color: #38bdf8; }
 
-        .live-timer { display: none; font-size: min(5vh, 5vw, 42px); font-weight: 500; margin-top: 10px; opacity: 0.9; }
+        .helper-text {
+            font-size: 13px; color: #64748b; background: rgba(255,255,255,0.7);
+            padding: 6px 16px; border-radius: 20px; font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        body.dark-mode .helper-text { background: rgba(15, 23, 42, 0.6); color: #38bdf8; }
+
+        /* 👑 Running Timer */
+        .live-timer { display: none; font-size: min(5vh, 5vw, 42px); font-weight: 600; margin-top: 10px; opacity: 0.9; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .action-card.expanded .live-timer { display: block; }
 
-        /* 🎭 แอนิเมชันเปิดหน้าต่างแบบการ์ตูน 3D */
+        /* 🎭 แอนิเมชันเปิดหน้าต่าง 3D Super Pop */
         .action-card.expanded {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             max-width: none; border-radius: 0; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 30px; gap: 6vh; overflow: hidden; cursor: default; border: none;
-            background: var(--expand-bg-light);
-            animation: cartoon-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            padding: 30px; gap: 6vh; overflow: hidden; cursor: default;
+            border: none; background: var(--expand-bg-light);
+            animation: super-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
         }
         body.dark-mode .action-card.expanded { background: var(--expand-bg-dark); }
         
-        @keyframes cartoon-pop {
-            0% { transform: scale(0.2) rotateY(-90deg) rotateX(20deg); opacity: 0; border-radius: 100px; }
-            60% { transform: scale(1.05) rotateY(10deg); }
-            100% { transform: scale(1) rotateY(0deg) rotateX(0deg); opacity: 1; border-radius: 0; }
+        @keyframes super-pop {
+            0% { transform: scale(0.1) rotateY(-90deg) rotateX(30deg) translateY(200px); opacity: 0; border-radius: 100px; }
+            50% { transform: scale(1.1) rotateY(15deg) translateY(-20px); }
+            100% { transform: scale(1) rotateY(0deg) rotateX(0deg) translateY(0); opacity: 1; border-radius: 0; }
         }
 
         .action-card.expanded .capsule {
-            width: 90vw; max-width: 1400px; height: 50vh; max-height: 600px;
-            font-size: min(15vh, 140px); font-weight: 700; border-radius: 60px; /* ใหญ่เต็มตา */
-            margin-bottom: 0; box-shadow: 0 30px 60px rgba(0,0,0,0.15), inset 0 -10px 0 rgba(0,0,0,0.1);
+            width: 90vw; max-width: 1400px; height: 48vh; max-height: 500px;
+            font-size: min(15vh, 140px); font-weight: 800; border-radius: 60px;
+            margin-bottom: 0; box-shadow: 0 30px 60px rgba(0,0,0,0.2), inset 0 -12px 0 rgba(0,0,0,0.15);
         }
-        body.dark-mode .action-card.expanded .capsule { box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
-        .action-card.expanded .helper-text { display: none; }
-        .action-card.expanded .edit-btn { display: none; }
-        .action-card.expanded .floating-emoji { display: none; } /* ซ่อนอีโมจิลอยตอนขยาย */
+        body.dark-mode .action-card.expanded .capsule { box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 -12px 0 rgba(0,0,0,0.3); }
+        .action-card.expanded .helper-text, .action-card.expanded .edit-btn, .action-card.expanded .floating-emoji { display: none; }
+        .action-card.expanded .live-timer { font-size: min(12vh, 100px); font-weight: 800; margin-top: 20px;}
 
-        .action-card.expanded .live-timer { font-size: min(12vh, 100px); font-weight: 700; margin-top: 20px;}
-
-        /* ปุ่มกลับมาแล้วใหญ่และเด้งได้ */
+        /* ปุ่มกลับมาแล้วเด้งดึ๋ง */
         .back-box {
-            display: none; width: 85vw; max-width: 1000px; height: 18vh; max-height: 150px; min-height: 100px;
-            background: #ffffff; border: 4px dashed #cbd5e1; border-radius: 80px;
+            display: none; width: 85vw; max-width: 1000px; height: 16vh; max-height: 140px; min-height: 90px;
+            background: rgba(255,255,255,0.9); border: 5px dashed #cbd5e1; border-radius: 80px;
             cursor: pointer; align-items: center; justify-content: center;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* bouncy */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .action-card.expanded .back-box { display: flex; }
-        .back-box:hover { background: #f8fafc; border-color: #64748b; transform: scale(1.05); } /* เด้งมากขึ้น */
-        .back-box:active { transform: scale(0.95); } /* ยุบตอนกด */
-        .back-title { font-size: min(7vh, 60px); font-weight: 700; color: #64748b; }
-        body.dark-mode .back-box { background: #1e293b; border-color: #475569; }
-        body.dark-mode .back-title { color: #94a3b8; }
+        .back-box:hover { background: #ffffff; border-color: #38bdf8; border-style: solid; transform: translateY(-10px) scale(1.05); box-shadow: 0 25px 50px rgba(56, 189, 248, 0.3); }
+        .back-box:active { transform: translateY(5px) scale(0.95); }
+        .back-title { font-size: min(6vh, 50px); font-weight: 800; color: #64748b; transition: 0.3s;}
+        .back-box:hover .back-title { color: #38bdf8; }
+        
+        body.dark-mode .back-box { background: rgba(30, 41, 59, 0.9); border-color: #475569; }
+        body.dark-mode .back-title { color: #cbd5e1; }
+        body.dark-mode .back-box:hover { background: #1e293b; border-color: #38bdf8; }
 
-        /* ✨ เอฟเฟกต์ละอองฟอง (ปรับให้สวยขึ้น) */
+        /* พลุกระดาษฉลอง (Confetti) */
+        .confetti {
+            position: fixed; width: 10px; height: 20px; z-index: 100000; pointer-events: none;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
         .particle { position: absolute; pointer-events: none; border-radius: 50%; animation: float-up forwards ease-in-out; z-index: 100; }
         @keyframes float-up {
             0% { transform: translateY(10px) scale(0.6) rotate(0deg); opacity: 0; }
@@ -171,124 +231,122 @@
             100% { transform: translateY(-150px) translateX(var(--dx)) scale(1.5) rotate(45deg); opacity: 0; }
         }
 
-        /* ปุ่มจัดการกิจกรรม */
         .edit-btn {
-            position: absolute; top: 12px; right: 12px; width: 36px; height: 36px;
+            position: absolute; top: 15px; right: 15px; width: 38px; height: 38px;
             background: rgba(255,255,255,0.95); border-radius: 50%; display: flex;
             align-items: center; justify-content: center; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 16px; z-index: 10;
-            transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-size: 16px; z-index: 10;
         }
-        .edit-btn:hover { transform: rotate(15deg) scale(1.1); }
+        .edit-btn:hover { transform: rotate(20deg) scale(1.15); background: #38bdf8; color: white;}
         body.dark-mode .edit-btn { background: #334155; }
         
         .add-act-btn {
-            background: #f8fafc; border: 3px dashed #cbd5e1; color: #64748b;
-            padding: 18px; text-align: center; border-radius: 24px; font-weight: 700; font-size: 16px;
-            cursor: pointer; margin-bottom: 5px; transition: all 0.2s;
+            background: rgba(255,255,255,0.5); border: 3px dashed rgba(203, 213, 225, 0.8); color: #64748b;
+            padding: 18px; text-align: center; border-radius: 28px; font-weight: 800; font-size: 16px;
+            cursor: pointer; margin-bottom: 5px; transition: all 0.3s;
             display: flex; align-items: center; justify-content: center; gap: 8px;
+            backdrop-filter: blur(10px);
         }
-        .add-act-btn:hover { background: #f1f5f9; border-color: #94a3b8; transform: translateY(-2px); }
-        body.dark-mode .add-act-btn { background: #1e293b; border-color: #475569; color: #94a3b8; }
-        body.dark-mode .add-act-btn:hover { background: #334155; }
+        .add-act-btn:hover { background: rgba(255,255,255,0.9); border-color: #38bdf8; border-style: solid; color: #38bdf8; transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2); }
+        body.dark-mode .add-act-btn { background: rgba(30, 41, 59, 0.5); border-color: rgba(71, 85, 105, 0.8); color: #94a3b8; }
+        body.dark-mode .add-act-btn:hover { background: rgba(30, 41, 59, 0.9); border-color: #38bdf8; color: #38bdf8; }
 
-        /* Modal จัดการกิจกรรม (ดูดีขึ้น) */
+        /* Modal จัดการกิจกรรม */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             z-index: 100000; align-items: center; justify-content: center;
         }
         .modal-box {
-            background: white; padding: 30px; border-radius: 28px; width: 90%; max-width: 360px;
-            display: flex; flex-direction: column; gap: 14px; box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-            animation: slideUp 0.3s ease-out;
+            background: rgba(255,255,255,0.95); padding: 30px; border-radius: 32px; width: 90%; max-width: 380px;
+            display: flex; flex-direction: column; gap: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid rgba(255,255,255,0.8);
         }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        body.dark-mode .modal-box { background: #1e293b; color: #f8fafc; border: 1px solid #334155; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        body.dark-mode .modal-box { background: rgba(30, 41, 59, 0.95); color: #f8fafc; border: 1px solid rgba(255,255,255,0.1); }
         
-        .input-group { display: flex; flex-direction: column; gap: 4px; }
-        .input-label { font-size: 13px; font-weight: bold; color: #64748b; }
-        body.dark-mode .input-label { color: #94a3b8; }
-        .modal-box input, .modal-box select {
-            padding: 12px 16px; border-radius: 12px; border: 2px solid #e2e8f0; font-family: 'Kanit'; font-size: 15px; outline: none; transition: border-color 0.2s;
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-label { font-size: 13px; font-weight: 800; color: #475569; }
+        body.dark-mode .input-label { color: #cbd5e1; }
+        .modal-box input {
+            padding: 14px 18px; border-radius: 16px; border: 2px solid #e2e8f0; font-family: 'Kanit'; font-size: 15px; outline: none; transition: all 0.3s; background: rgba(255,255,255,0.8); font-weight: 600;
         }
-        .modal-box input:focus, .modal-box select:focus { border-color: #38bdf8; }
-        body.dark-mode .modal-box input, body.dark-mode .modal-box select { background: #0f172a; border-color: #475569; color: white; }
+        .modal-box input:focus { border-color: #38bdf8; box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1); transform: translateY(-2px); }
+        body.dark-mode .modal-box input { background: rgba(15, 23, 42, 0.8); border-color: #475569; color: white; }
         
-        .color-picker-container { display: flex; gap: 10px; margin-top: 5px; flex-wrap: wrap; justify-content: center;}
-        .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .color-dot:hover { transform: scale(1.1); }
-        .color-dot.selected { border-color: #0f172a; transform: scale(1.15); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .color-picker-container { display: flex; gap: 12px; margin-top: 5px; flex-wrap: wrap; justify-content: center;}
+        .color-dot { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .color-dot:hover { transform: scale(1.15); }
+        .color-dot.selected { border-color: #0f172a; transform: scale(1.2); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
         body.dark-mode .color-dot.selected { border-color: #fff; }
         
-        .modal-btn-group { display: flex; gap: 12px; margin-top: 15px; }
-        .modal-btn { flex: 1; padding: 14px; border: none; border-radius: 14px; font-weight: bold; font-family: 'Kanit'; font-size: 15px; cursor: pointer; transition: transform 0.1s; }
-        .modal-btn:active { transform: scale(0.95); }
+        .modal-btn-group { display: flex; gap: 12px; margin-top: 10px; }
+        .modal-btn { flex: 1; padding: 16px; border: none; border-radius: 16px; font-weight: 800; font-family: 'Kanit'; font-size: 16px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .modal-btn:active { transform: translateY(2px) scale(0.98); }
 
-        /* 📜 ตารางสรุปประวัติ (มนขึ้น น่ารักขึ้น) */
-        .history-box {
-            background: #ffffff; border-radius: 24px; padding: 20px;
-            box-shadow: 0 10px 25px rgba(148, 163, 184, 0.08); border: 2px dashed #e2e8f0; width: 100%;
-        }
-        body.dark-mode .history-box { background: #1e293b; border-color: #334155; }
-        .history-title { font-size: 15px; font-weight: 700; color: #475569; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        body.dark-mode .history-title { color: #cbd5e1; }
+        /* 📜 ตารางสรุปประวัติ */
+        .history-box { padding: 22px; margin-top: 5px;}
+        .history-title { font-size: 16px; font-weight: 800; color: #334155; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        body.dark-mode .history-title { color: #f1f5f9; }
         
-        .history-actions { display: flex; gap: 10px; font-size: 12px; font-weight: bold; flex-wrap: wrap; }
-        .btn-copy-summary { color: #38bdf8; cursor: pointer; padding: 4px 8px; border-radius: 8px; background: #e0f2fe; }
-        .btn-export-csv { color: #10b981; cursor: pointer; padding: 4px 8px; border-radius: 8px; background: #d1fae5; }
-        .btn-clear-history { color: #ef4444; cursor: pointer; padding: 4px 8px; border-radius: 8px; background: #fee2e2; }
-        body.dark-mode .btn-copy-summary { background: rgba(56, 189, 248, 0.1); }
-        body.dark-mode .btn-export-csv { background: rgba(16, 185, 129, 0.1); }
-        body.dark-mode .btn-clear-history { background: rgba(239, 68, 68, 0.1); }
+        .history-actions { display: flex; gap: 8px; font-size: 12px; font-weight: 800; flex-wrap: wrap; }
+        .btn-copy-summary { color: #0284c7; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(56, 189, 248, 0.2); transition: 0.2s;}
+        .btn-export-csv { color: #059669; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(16, 185, 129, 0.2); transition: 0.2s;}
+        .btn-clear-history { color: #dc2626; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(239, 68, 68, 0.2); transition: 0.2s;}
+        .btn-copy-summary:hover, .btn-export-csv:hover, .btn-clear-history:hover { transform: scale(1.05); filter: brightness(1.1); }
 
         .history-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
-        .history-table th { color: #94a3b8; padding: 10px 4px; font-weight: 600; border-bottom: 2px solid #f1f5f9; }
-        body.dark-mode .history-table th { border-bottom-color: #334155; }
-        .history-table td { padding: 12px 4px; border-bottom: 1px solid #f8fafc; color: #334155; }
-        body.dark-mode .history-table td { border-bottom-color: #1e293b; color: #e2e8f0; }
-        .empty-log { text-align: center; color: #94a3b8; padding: 30px 0; font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px;}
-        .empty-log::before { content: '😴'; font-size: 30px; }
+        .history-table th { color: #64748b; padding: 12px 4px; font-weight: 700; border-bottom: 2px solid rgba(226, 232, 240, 0.6); }
+        body.dark-mode .history-table th { border-bottom-color: rgba(51, 65, 85, 0.6); color: #94a3b8;}
+        .history-table td { padding: 14px 4px; border-bottom: 1px solid rgba(241, 245, 249, 0.6); color: #334155; font-weight: 500;}
+        body.dark-mode .history-table td { border-bottom-color: rgba(30, 41, 59, 0.6); color: #e2e8f0; }
+        .empty-log { text-align: center; color: #94a3b8; padding: 40px 0; font-size: 15px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 12px;}
+        .empty-log::before { content: '🚀'; font-size: 40px; animation: bounce 2s infinite; }
 
         .pagination-btn {
-            display: block; width: 100%; text-align: center; padding: 10px; margin-top: 15px;
-            font-size: 13px; color: #64748b; font-weight: bold; cursor: pointer;
-            border: 2px dashed #e2e8f0; border-radius: 14px; background: #f8fafc; user-select: none; transition: background 0.2s;
+            display: block; width: 100%; text-align: center; padding: 12px; margin-top: 15px;
+            font-size: 14px; color: #64748b; font-weight: 800; cursor: pointer;
+            border: 2px dashed rgba(203, 213, 225, 0.8); border-radius: 16px; background: rgba(255,255,255,0.5); transition: all 0.3s;
         }
-        .pagination-btn:hover { background: #f1f5f9; color: #0f172a; border-style: solid;}
-        body.dark-mode .pagination-btn { background: #0f172a; border-color: #334155; color: #94a3b8; }
-        body.dark-mode .pagination-btn:hover { background: #1e293b; color: #ffffff; }
+        .pagination-btn:hover { background: #ffffff; color: #0ea5e9; border-color: #0ea5e9; border-style: solid; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(14, 165, 233, 0.1);}
+        body.dark-mode .pagination-btn { background: rgba(15, 23, 42, 0.5); border-color: rgba(71, 85, 105, 0.8); color: #94a3b8; }
+        body.dark-mode .pagination-btn:hover { background: #1e293b; color: #38bdf8; border-color: #38bdf8; }
 
         .success-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(34, 197, 94, 0.96); backdrop-filter: blur(8px);
+            background: rgba(34, 197, 94, 0.95); backdrop-filter: blur(10px);
             color: white; display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; z-index: 10000; border-radius: 28px;
-            transform: scale(0.95); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0.9); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .action-card.expanded .success-overlay { border-radius: 0; }
         .success-overlay.show { opacity: 1; transform: scale(1); }
-        .success-title { font-size: min(4.5vh, 36px); font-weight: 700; margin-bottom: 6px; }
-        .success-text { font-size: min(2.8vh, 24px); color: #f0fdf4; font-weight: 500; text-align: center; padding: 0 20px; }
+        .success-title { font-size: min(5vh, 42px); font-weight: 800; margin-bottom: 8px; text-shadow: 0 4px 10px rgba(0,0,0,0.2);}
+        .success-text { font-size: min(3vh, 28px); color: #ecfdf5; font-weight: 600; text-align: center; padding: 0 20px; }
     </style>
 </head>
 <body>
 
+    <ul class="bg-bubbles" id="bg-bubbles">
+        <li></li><li></li><li></li><li></li><li></li><li></li>
+    </ul>
+
     <div class="container">
         <div class="header-row">
-            <h1 class="app-title">☕ Break Recorder</h1>
+            <h1 class="app-title">✨ Break Recorder</h1>
             <div class="controls-group">
-                <div class="gender-toggle" id="gender-toggle" onclick="toggleGender(event)">👦 ชาย (ครับ)</div>
-                <div class="mute-toggle" id="mute-toggle" onclick="toggleMute(event)">🔊 เปิดเสียง</div>
-                <div class="theme-toggle" onclick="toggleDarkMode(event)">🌙 โหมดกลางคืน</div>
+                <div class="gender-toggle" id="gender-toggle" onclick="toggleGender(event)">👦 ชาย</div>
+                <div class="mute-toggle" id="mute-toggle" onclick="toggleMute(event)">🔊 เสียง</div>
+                <div class="theme-toggle" onclick="toggleDarkMode(event)">🌙 ธีม</div>
             </div>
         </div>
 
-        <div class="dashboard">
+        <div class="dashboard glass-panel">
             <div class="dash-header">
-                <span class="dash-title">📊 สรุปโควตาเวลาพักวันนี้</span>
+                <span class="dash-title">📊 โควตาเวลาพักวันนี้</span>
                 <div class="quota-setting">
-                    โควตา: <input type="number" id="quota-input" class="quota-input" min="1" oninput="updateQuota(this.value)"> นาที
+                    ตั้งค่าโควตา: <input type="number" id="quota-input" class="quota-input" min="1" oninput="updateQuota(this.value)"> นาที
                 </div>
             </div>
             <div class="time-grid">
@@ -302,16 +360,15 @@
                 </div>
             </div>
             <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-            <div class="mascot-area" id="mascot">🎉 เก่งมาก! พักเสร็จแล้วลุยงานต่อ!</div>
         </div>
 
-        <div id="activities-container" style="display: flex; flex-direction: column; gap: 16px;"></div>
+        <div id="activities-container" style="display: flex; flex-direction: column; gap: 18px;"></div>
         
-        <div class="add-act-btn" onclick="openModal(-1)">✨ เพิ่มกิจกรรมใหม่ ✨</div>
+        <div class="add-act-btn" onclick="openModal(-1)">✨ สร้างกิจกรรมใหม่ ✨</div>
 
-        <div class="history-box">
+        <div class="history-box glass-panel">
             <div class="history-title">
-                <span>📜 ประวัติการพักวันนี้</span>
+                <span>📜 ประวัติการพัก</span>
                 <div class="history-actions">
                     <span class="btn-copy-summary" onclick="copySummary()">📋 คัดลอก</span>
                     <span class="btn-export-csv" onclick="exportCSV()">📥 CSV</span>
@@ -325,26 +382,26 @@
 
     <div class="modal-overlay" id="activity-modal">
         <div class="modal-box">
-            <h3 id="modal-title" style="margin: 0; color: #334155; text-align: center;">เพิ่มกิจกรรม</h3>
+            <h3 id="modal-title" style="margin: 0; color: #1e293b; text-align: center; font-size: 24px; font-weight: 800;">เพิ่มกิจกรรม</h3>
             
             <div class="input-group">
                 <span class="input-label">ชื่อกิจกรรม</span>
-                <input type="text" id="act-name" placeholder="เช่น ชงกาแฟ">
+                <input type="text" id="act-name" placeholder="เช่น ชงกาแฟ ฯลฯ">
             </div>
             
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 12px;">
                 <div class="input-group" style="flex: 1;">
                     <span class="input-label">อิโมจิ</span>
-                    <input type="text" id="act-emoji" placeholder="☕" style="text-align: center;">
+                    <input type="text" id="act-emoji" placeholder="☕" style="text-align: center; font-size: 20px;">
                 </div>
                 <div class="input-group" style="flex: 2;">
-                    <span class="input-label">แจ้งเตือนเมื่อเกิน (นาที)</span>
-                    <input type="number" id="act-limit" placeholder="ใส่ 0 หากไม่จำกัด">
+                    <span class="input-label">เตือนเมื่อเกิน (นาที)</span>
+                    <input type="number" id="act-limit" placeholder="0 = ไม่จำกัด">
                 </div>
             </div>
 
             <div class="input-group">
-                <span class="input-label">เลือกธีมสี 🎨</span>
+                <span class="input-label">เลือกออร่าสี 🎨</span>
                 <div class="color-picker-container" id="color-picker">
                     <div class="color-dot theme-purple selected" data-color="purple" style="background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);"></div>
                     <div class="color-dot theme-yellow" data-color="yellow" style="background: linear-gradient(135deg, #fef08a 0%, #facc15 100%);"></div>
@@ -355,27 +412,53 @@
                 </div>
             </div>
             
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; margin-top: 10px; background: #f1f5f9; padding: 10px; border-radius: 12px; border: 1px dashed #cbd5e1;" id="toilet-label">
-                <input type="checkbox" id="act-istoilet"> 🌟 ไม่นำไปหักโควตาเวลาหลัก
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; background: rgba(241, 245, 249, 0.8); padding: 12px 16px; border-radius: 16px; border: 2px dashed #cbd5e1; transition: 0.3s;" id="toilet-label">
+                <input type="checkbox" id="act-istoilet" style="width: 20px; height: 20px; accent-color: #38bdf8;"> 🌟 ไม่หักโควตาเวลาหลัก
             </label>
 
             <div class="modal-btn-group">
-                <button class="modal-btn" onclick="saveActivity()" style="background: #38bdf8; color: white;">💾 บันทึก</button>
+                <button class="modal-btn" onclick="saveActivity()" style="background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: white;">💾 บันทึก</button>
                 <button class="modal-btn" onclick="closeModal()" style="background: #e2e8f0; color: #475569;">❌ ยกเลิก</button>
             </div>
-            <button id="btn-delete" class="modal-btn" onclick="deleteActivity()" style="background: #fee2e2; color: #ef4444; border: 1px dashed #ef4444; display: none; margin-top: 0;">🗑️ ลบกิจกรรมนี้</button>
+            <button id="btn-delete" class="modal-btn" onclick="deleteActivity()" style="background: #fee2e2; color: #ef4444; border: 2px dashed #ef4444; display: none; margin-top: 0;">🗑️ ลบกิจกรรมนี้</button>
         </div>
     </div>
 
     <script>
-        // 🎨 ธีมสีสำหรับสร้างการ์ดอัตโนมัติ (เพิ่มสีมินต์)
+        // --- 🎈 ระบบ Parallax ฟองสบู่ขยับตามเมาส์ ---
+        document.addEventListener('mousemove', (e) => {
+            const bubbles = document.getElementById('bg-bubbles');
+            const x = (window.innerWidth / 2 - e.pageX) / 30;
+            const y = (window.innerHeight / 2 - e.pageY) / 30;
+            bubbles.style.transform = `translate(${x}px, ${y}px)`;
+        });
+
+        // --- 🎉 ระบบจุดพลุกระดาษฉลอง (Confetti) ---
+        function fireConfetti() {
+            const colors = ['#ff758c', '#ff7eb3', '#c084fc', '#38bdf8', '#facc15', '#4ade80'];
+            for(let i=0; i<60; i++) {
+                let conf = document.createElement('div');
+                conf.className = 'confetti';
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.top = '-20px';
+                conf.style.width = Math.random() * 12 + 6 + 'px';
+                conf.style.height = Math.random() * 24 + 10 + 'px';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '4px';
+                conf.style.animationDuration = Math.random() * 3 + 2 + 's';
+                conf.style.animationDelay = Math.random() * 0.5 + 's';
+                document.body.appendChild(conf);
+                setTimeout(() => conf.remove(), 5000);
+            }
+        }
+
         const themes = {
-            purple: { grad: 'linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%)', text: '#4c1d95', expandLight: 'radial-gradient(circle, #f3e8ff 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #2e1065 0%, #0f172a 100%)', particle: '#c084fc', hover: 'rgba(192, 132, 252, 0.6)' },
-            yellow: { grad: 'linear-gradient(135deg, #fef08a 0%, #facc15 100%)', text: '#713f12', expandLight: 'radial-gradient(circle, #fef9c3 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #451a03 0%, #0f172a 100%)', particle: '#facc15', hover: 'rgba(250, 204, 21, 0.6)' },
-            green: { grad: 'linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%)', text: '#14532d', expandLight: 'radial-gradient(circle, #dcfce7 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #064e3b 0%, #0f172a 100%)', particle: '#4ade80', hover: 'rgba(74, 222, 128, 0.6)' },
-            pink: { grad: 'linear-gradient(135deg, #fecdd3 0%, #fb7185 100%)', text: '#881337', expandLight: 'radial-gradient(circle, #ffe4e6 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #4c0519 0%, #0f172a 100%)', particle: '#fb7185', hover: 'rgba(251, 113, 133, 0.6)' },
-            blue: { grad: 'linear-gradient(135deg, #bae6fd 0%, #38bdf8 100%)', text: '#0c4a6e', expandLight: 'radial-gradient(circle, #e0f2fe 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #0c4a6e 0%, #0f172a 100%)', particle: '#38bdf8', hover: 'rgba(56, 189, 248, 0.6)' },
-            mint: { grad: 'linear-gradient(135deg, #a7f3d0 0%, #10b981 100%)', text: '#064e3b', expandLight: 'radial-gradient(circle, #ecfdf5 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #064e3b 0%, #0f172a 100%)', particle: '#10b981', hover: 'rgba(16, 185, 129, 0.6)' }
+            purple: { grad: 'linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%)', text: '#4c1d95', expandLight: 'radial-gradient(circle, #f3e8ff 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #2e1065 0%, #0f172a 100%)', particle: '#c084fc', hover: 'rgba(192, 132, 252, 0.4)' },
+            yellow: { grad: 'linear-gradient(135deg, #fef08a 0%, #facc15 100%)', text: '#713f12', expandLight: 'radial-gradient(circle, #fef9c3 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #451a03 0%, #0f172a 100%)', particle: '#facc15', hover: 'rgba(250, 204, 21, 0.4)' },
+            green: { grad: 'linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%)', text: '#14532d', expandLight: 'radial-gradient(circle, #dcfce7 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #064e3b 0%, #0f172a 100%)', particle: '#4ade80', hover: 'rgba(74, 222, 128, 0.4)' },
+            pink: { grad: 'linear-gradient(135deg, #fecdd3 0%, #fb7185 100%)', text: '#881337', expandLight: 'radial-gradient(circle, #ffe4e6 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #4c0519 0%, #0f172a 100%)', particle: '#fb7185', hover: 'rgba(251, 113, 133, 0.4)' },
+            blue: { grad: 'linear-gradient(135deg, #bae6fd 0%, #38bdf8 100%)', text: '#0c4a6e', expandLight: 'radial-gradient(circle, #e0f2fe 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #0c4a6e 0%, #0f172a 100%)', particle: '#38bdf8', hover: 'rgba(56, 189, 248, 0.4)' },
+            mint: { grad: 'linear-gradient(135deg, #a7f3d0 0%, #10b981 100%)', text: '#064e3b', expandLight: 'radial-gradient(circle, #ecfdf5 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #064e3b 0%, #0f172a 100%)', particle: '#10b981', hover: 'rgba(16, 185, 129, 0.4)' }
         };
 
         const defaultActivities = [
@@ -386,14 +469,11 @@
             { id: 5, name: 'เข้าห้องน้ำ', emoji: '🧼', theme: 'blue', limit: 0, isToilet: true }
         ];
 
-        let activeBreak = null;
-        let showAllLogs = false;
-        let timerInterval = null;
+        let activeBreak = null; let showAllLogs = false; let timerInterval = null;
         let isMuted = localStorage.getItem('is_muted') === 'true';
         let gender = localStorage.getItem('gender') || 'male';
         let editingIndex = -1;
 
-        // 🔊 ระบบเสียง
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (isMuted) return;
@@ -401,60 +481,51 @@
                 const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
                 osc.connect(gain); gain.connect(audioCtx.destination);
                 if (type === 'pop') { 
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
-                    osc.frequency.exponentialRampToValueAtTime(1174.66, audioCtx.currentTime + 0.15); 
-                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); 
+                    osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1); 
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
                 } else if (type === 'welcome') { 
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
-                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16); 
-                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.35);
-                } else if (type === 'alert') {
-                    osc.type = 'square'; osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-                    osc.frequency.setValueAtTime(400, audioCtx.currentTime + 0.1);
-                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); 
+                    osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1); osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.2); 
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.4);
                 }
             } catch(e) {}
         }
 
         function triggerParticles(cardElement, color, isBubble) {
-            for (let i = 0; i < 18; i++) {
-                const particle = document.createElement('div'); particle.classList.add('particle');
-                const size = Math.random() * (isBubble ? 14 : 8) + 6;
-                particle.style.width = `${size}px`; particle.style.height = `${size}px`;
-                particle.style.left = `${Math.random() * 80 + 10}%`; particle.style.bottom = '20px';
-                particle.style.setProperty('--dx', `${Math.random() * 100 - 50}px`);
-                particle.style.animationDelay = `${Math.random() * 0.3}s`;
-                particle.style.animationDuration = `${Math.random() * 0.8 + 0.7}s`;
-                if (isBubble) { particle.style.background = 'transparent'; particle.style.border = `3px solid ${color}`; particle.style.boxShadow = `inset 0 0 8px ${color}`; } 
-                else { particle.style.background = color; particle.style.boxShadow = `0 0 10px ${color}`; }
-                cardElement.appendChild(particle); setTimeout(() => particle.remove(), 1200);
+            for (let i = 0; i < 20; i++) {
+                const p = document.createElement('div'); p.classList.add('particle');
+                const size = Math.random() * (isBubble ? 15 : 10) + 5;
+                p.style.width = `${size}px`; p.style.height = `${size}px`;
+                p.style.left = `${Math.random() * 80 + 10}%`; p.style.bottom = '20px';
+                p.style.setProperty('--dx', `${Math.random() * 120 - 60}px`);
+                p.style.animationDelay = `${Math.random() * 0.2}s`; p.style.animationDuration = `${Math.random() * 0.8 + 0.6}s`;
+                if (isBubble) { p.style.background = 'transparent'; p.style.border = `3px solid ${color}`; p.style.boxShadow = `inset 0 0 10px ${color}`; } 
+                else { p.style.background = color; p.style.boxShadow = `0 0 15px ${color}`; }
+                cardElement.appendChild(p); setTimeout(() => p.remove(), 1200);
             }
         }
 
-        // ⚙️ Toggles
         function toggleDarkMode(event) {
             event.stopPropagation(); document.body.classList.toggle('dark-mode');
-            document.querySelector('.theme-toggle').innerHTML = document.body.classList.contains('dark-mode') ? '☀️ โหมดกลางวัน' : '🌙 โหมดกลางคืน';
-            // Update modal text color fix
-            document.getElementById('modal-title').style.color = document.body.classList.contains('dark-mode') ? '#f8fafc' : '#334155';
-            document.getElementById('toilet-label').style.background = document.body.classList.contains('dark-mode') ? '#1e293b' : '#f1f5f9';
+            document.querySelector('.theme-toggle').innerHTML = document.body.classList.contains('dark-mode') ? '☀️ ธีม' : '🌙 ธีม';
+            document.getElementById('modal-title').style.color = document.body.classList.contains('dark-mode') ? '#f8fafc' : '#1e293b';
+            document.getElementById('toilet-label').style.background = document.body.classList.contains('dark-mode') ? 'rgba(30, 41, 59, 0.8)' : 'rgba(241, 245, 249, 0.8)';
             document.getElementById('toilet-label').style.borderColor = document.body.classList.contains('dark-mode') ? '#475569' : '#cbd5e1';
         }
         function toggleMute(event) { event.stopPropagation(); isMuted = !isMuted; localStorage.setItem('is_muted', isMuted); updateHeaderTexts(); }
         function toggleGender(event) { event.stopPropagation(); gender = gender === 'male' ? 'female' : 'male'; localStorage.setItem('gender', gender); updateHeaderTexts(); }
         
         function updateHeaderTexts() {
-            document.getElementById('mute-toggle').innerHTML = isMuted ? '🔇 ปิดเสียง' : '🔊 เปิดเสียง';
-            document.getElementById('gender-toggle').innerHTML = gender === 'male' ? '👦 ชาย (ครับ)' : '👩 หญิง (ค่ะ)';
+            document.getElementById('mute-toggle').innerHTML = isMuted ? '🔇 เสียง' : '🔊 เสียง';
+            document.getElementById('gender-toggle').innerHTML = gender === 'male' ? '👦 ชาย' : '👩 หญิง';
         }
 
         function getThaiTimeString(dateObj = new Date()) {
             const utc = dateObj.getTime() + (dateObj.getTimezoneOffset() * 60000);
-            const thaiTime = new Date(utc + (3600000 * 7));
-            return `${String(thaiTime.getHours()).padStart(2, '0')}:${String(thaiTime.getMinutes()).padStart(2, '0')} น.`;
+            return `${String(new Date(utc + (3600000 * 7)).getHours()).padStart(2, '0')}:${String(new Date(utc + (3600000 * 7)).getMinutes()).padStart(2, '0')} น.`;
         }
 
         function performCopy(text) {
@@ -474,24 +545,17 @@
             localStorage.setItem('daily_quota', quota); renderDashboardAndLogs();
         }
 
-        // 🧩 สร้างปุ่มกิจกรรมอัตโนมัติ
         function renderActivities() {
-            const container = document.getElementById('activities-container');
-            container.innerHTML = '';
+            const container = document.getElementById('activities-container'); container.innerHTML = '';
             let activities = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
             
             activities.forEach((act, index) => {
                 const t = themes[act.theme] || themes['purple'];
-                const card = document.createElement('div');
-                card.className = 'action-card';
-                card.style.setProperty('--hover-color', t.hover);
-                card.style.setProperty('--expand-bg-light', t.expandLight);
-                card.style.setProperty('--expand-bg-dark', t.expandDark);
-                card.style.setProperty('--particle-color', t.particle);
+                const card = document.createElement('div'); card.className = 'action-card glass-panel';
+                card.style.setProperty('--hover-color', t.hover); card.style.setProperty('--expand-bg-light', t.expandLight);
+                card.style.setProperty('--expand-bg-dark', t.expandDark); card.style.setProperty('--particle-color', t.particle);
                 
                 card.onclick = (e) => { if(!e.target.closest('.edit-btn') && !e.target.closest('.back-box')) startBreak(index, card); };
-
-                let limitText = act.limit > 0 ? ` (ลิมิต ${act.limit} น.)` : '';
 
                 card.innerHTML = `
                     <div class="edit-btn" onclick="openModal(${index}, event)">✏️</div>
@@ -500,7 +564,7 @@
                         <div class="live-timer">00:00</div>
                     </div>
                     <div class="floating-emoji">${act.emoji}</div>
-                    <div class="helper-text">คลิกแจ้งเวลาพัก ${act.emoji}${limitText}</div>
+                    <div class="helper-text">กดแจ้งเวลาพัก ${act.emoji} ${act.limit > 0 ? `(ลิมิต ${act.limit} น.)` : ''}</div>
                     <div class="back-box" onclick="endBreak(${index}, this.parentElement, event)">
                         <div class="back-title">กลับมาแล้ว</div>
                     </div>
@@ -513,77 +577,72 @@
             });
         }
 
-        // 📝 ระบบ Modal จัดการกิจกรรม
         function openModal(index, event) {
-            if(event) event.stopPropagation();
-            editingIndex = index;
+            if(event) event.stopPropagation(); editingIndex = index;
             let activities = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
             
             if (index >= 0) {
                 const act = activities[index];
                 document.getElementById('modal-title').textContent = 'แก้ไขกิจกรรม';
                 document.getElementById('act-name').value = act.name;
-                document.getElementById('act-emoji').value = act.emoji;
-                document.getElementById('act-limit').value = act.limit || 0;
-                document.getElementById('act-theme').value = act.theme || 'purple';
+                document.getElementById('act-emoji').value = act.emoji || '';
+                document.getElementById('act-limit').value = act.limit || '';
+                document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+                let dotToSelect = document.querySelector(`.color-dot[data-color="${act.theme || 'purple'}"]`);
+                if(dotToSelect) dotToSelect.classList.add('selected');
                 document.getElementById('act-istoilet').checked = act.isToilet;
                 document.getElementById('btn-delete').style.display = 'block';
             } else {
-                document.getElementById('modal-title').textContent = 'เพิ่มกิจกรรมใหม่';
-                document.getElementById('act-name').value = '';
-                document.getElementById('act-emoji').value = '✨';
-                document.getElementById('act-limit').value = '';
-                document.getElementById('act-theme').value = 'purple';
-                document.getElementById('act-istoilet').checked = false;
-                document.getElementById('btn-delete').style.display = 'none';
+                document.getElementById('modal-title').textContent = 'สร้างกิจกรรมใหม่';
+                document.getElementById('act-name').value = ''; document.getElementById('act-emoji').value = '✨'; document.getElementById('act-limit').value = '';
+                document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+                document.querySelector('.color-dot[data-color="purple"]').classList.add('selected');
+                document.getElementById('act-istoilet').checked = false; document.getElementById('btn-delete').style.display = 'none';
             }
-            document.getElementById('modal-title').style.color = document.body.classList.contains('dark-mode') ? '#f8fafc' : '#334155';
+            
+            document.getElementById('modal-title').style.color = document.body.classList.contains('dark-mode') ? '#f8fafc' : '#1e293b';
+            document.getElementById('toilet-label').style.background = document.body.classList.contains('dark-mode') ? 'rgba(30, 41, 59, 0.8)' : 'rgba(241, 245, 249, 0.8)';
             document.getElementById('activity-modal').style.display = 'flex';
         }
 
         function closeModal() { document.getElementById('activity-modal').style.display = 'none'; }
 
+        document.querySelectorAll('.color-dot').forEach(dot => {
+            dot.onclick = (e) => { document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected')); e.target.classList.add('selected'); }
+        });
+
         function saveActivity() {
             let activities = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
+            let selectedDot = document.querySelector('.color-dot.selected');
             const newAct = {
                 id: editingIndex >= 0 ? activities[editingIndex].id : Date.now(),
                 name: document.getElementById('act-name').value || 'กิจกรรมใหม่',
                 emoji: document.getElementById('act-emoji').value || '✨',
                 limit: parseInt(document.getElementById('act-limit').value) || 0,
-                theme: document.getElementById('act-theme').value,
+                theme: selectedDot ? selectedDot.dataset.color : 'purple',
                 isToilet: document.getElementById('act-istoilet').checked
             };
-
-            if (editingIndex >= 0) activities[editingIndex] = newAct;
-            else activities.push(newAct);
-            
-            localStorage.setItem('activities', JSON.stringify(activities));
-            closeModal(); renderActivities();
+            if (editingIndex >= 0) activities[editingIndex] = newAct; else activities.push(newAct);
+            localStorage.setItem('activities', JSON.stringify(activities)); closeModal(); renderActivities();
         }
         
         function deleteActivity() {
             if(confirm('ต้องการลบกิจกรรมนี้ใช่หรือไม่?')) {
                 let activities = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
-                activities.splice(editingIndex, 1);
-                localStorage.setItem('activities', JSON.stringify(activities));
+                activities.splice(editingIndex, 1); localStorage.setItem('activities', JSON.stringify(activities));
                 closeModal(); renderActivities();
             }
         }
 
-        // ⏱️ ระบบเวลาพัก
         function startBreak(index, cardElement) {
             if (cardElement.classList.contains('expanded')) return;
-            
             let activities = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
-            const act = activities[index];
-            const t = themes[act.theme] || themes['purple'];
+            const act = activities[index]; const t = themes[act.theme] || themes['purple'];
 
             playSound('pop'); triggerParticles(cardElement, t.particle, act.isToilet);
 
-            const suffix = gender === 'male' ? 'ครับ' : 'ค่ะ';
-            const now = new Date(); const timeString = getThaiTimeString(now);
-            const textToCopy = `${act.name} ${timeString} ${suffix}`;
-            performCopy(textToCopy);
+            const suffix = gender === 'male' ? 'ครับ' : 'ค่ะ'; const now = new Date(); const timeString = getThaiTimeString(now);
+            const textToCopy = `${act.name} ${timeString} ${suffix}`; performCopy(textToCopy);
 
             activeBreak = { action: act.name, startTime: now.getTime(), startStr: timeString, limit: act.limit, isToilet: act.isToilet };
 
@@ -595,38 +654,29 @@
                 timerDisplay.textContent = `${String(Math.floor(elapsedSecs / 60)).padStart(2, '0')}:${String(elapsedSecs % 60).padStart(2, '0')}`;
             }, 1000);
 
-            showSuccessOverlay(cardElement, 'บันทึกเวลาเริ่มพัก! 🍮', textToCopy);
-            setTimeout(() => cardElement.classList.add('expanded'), 120);
+            showSuccessOverlay(cardElement, `เริ่มพักแล้ว! ${act.emoji}`, textToCopy);
+            setTimeout(() => cardElement.classList.add('expanded'), 150);
         }
 
         function endBreak(index, cardElement, event) {
-            event.stopPropagation(); playSound('welcome');
+            event.stopPropagation(); playSound('welcome'); fireConfetti(); // 🎊 จุดพลุ!
             if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
 
-            const suffix = gender === 'male' ? 'ครับ' : 'ค่ะ';
-            const textToCopy = `กลับมาแล้ว ${suffix}`; performCopy(textToCopy);
-
-            let alertMsg = null;
+            const suffix = gender === 'male' ? 'ครับ' : 'ค่ะ'; const textToCopy = `กลับมาแล้ว ${suffix}`; performCopy(textToCopy);
 
             if (activeBreak) {
                 const diffMs = new Date().getTime() - activeBreak.startTime;
                 let diffMins = Math.max(1, Math.round(diffMs / 60000)); 
                 if (activeBreak.isToilet) diffMins = 0;
-                
-                // แจ้งเตือนถ้านานเกินขีดจำกัดที่ตั้งไว้
                 if (activeBreak.limit > 0 && diffMins > activeBreak.limit) {
-                    alertMsg = `⚠️ แจ้งเตือนเวลาเกินลิมิต!\n\nกิจกรรม: ${activeBreak.action}\nขีดจำกัดที่ตั้งไว้: ${activeBreak.limit} นาที\nเวลาที่คุณใช้ไปจริง: ${diffMins} นาที`;
+                    setTimeout(() => alert(`⚠️ เวลาเกินลิมิต!\n\nกิจกรรม: ${activeBreak.action}\nขีดจำกัดที่ตั้งไว้: ${activeBreak.limit} นาที\nเวลาที่คุณใช้ไปจริง: ${diffMins} นาที`), 200);
                 }
-                
                 saveLog(activeBreak.action, activeBreak.startStr, getThaiTimeString(new Date()), diffMins);
                 activeBreak = null;
             }
 
             cardElement.classList.remove('expanded');
-            setTimeout(() => {
-                showSuccessOverlay(cardElement, 'บันทึกกลับมาแล้ว! 🏠', textToCopy, 1200);
-                if(alertMsg) { playSound('alert'); setTimeout(() => alert(alertMsg), 150); }
-            }, 80);
+            setTimeout(() => { showSuccessOverlay(cardElement, 'ยินดีต้อนรับกลับมา! 🏠', textToCopy, 1500); }, 100);
         }
 
         function saveLog(action, start, end, duration) {
@@ -635,18 +685,16 @@
             localStorage.setItem('break_logs', JSON.stringify(logs)); renderDashboardAndLogs();
         }
 
-        // 📋 สรุป และ ส่งออก CSV
         function copySummary() {
             const today = new Date().toDateString();
             const logs = JSON.parse(localStorage.getItem('break_logs') || '[]').filter(log => log.date === today);
-            if (logs.length === 0) { alert("ยังไม่มีประวัติของวันนี้"); return; }
-            
+            if (logs.length === 0) { alert("ยังไม่มีประวัติของวันนี้ให้คัดลอก"); return; }
             let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
             let totalUsed = 0; logs.forEach(log => totalUsed += log.duration);
             
             const now = new Date(); const dateStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-            let sumText = `📋 รายงานสรุปเวลาพัก ${dateStr}\n----------------------------------------\n`;
-            logs.forEach((log, i) => sumText += `${i + 1}. ${log.action} (${log.start} - ${log.end}) | ${log.duration === 0 ? "ไม่หักโควต้า" : `รวม: ${log.duration} นาที`}\n`);
+            let sumText = `📋 สรุปเวลาพัก ${dateStr} ${gender === 'male' ? 'ครับ' : 'ค่ะ'}\n----------------------------------------\n`;
+            logs.forEach((log, i) => sumText += `${i + 1}. ${log.action} (${log.start} - ${log.end}) | ${log.duration === 0 ? "ไม่หักโควต้า" : `รวม: ${log.duration} น.`}\n`);
             sumText += `----------------------------------------\n⏱️ โควตาทั้งหมด: ${dailyQuota} นาที\n📊 ใช้ไปแล้ว: ${totalUsed} นาที\n🔋 คงเหลือ: ${Math.max(0, dailyQuota - totalUsed)} นาที`;
             
             performCopy(sumText); alert("คัดลอกสรุปไปยัง Clipboard แล้ว! ✨");
@@ -655,15 +703,10 @@
         function exportCSV() {
             const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
             if (logs.length === 0) { alert("ไม่มีข้อมูลประวัติให้ส่งออก"); return; }
-            
-            // ใช้ \uFEFF ด้านหน้าเพื่อให้ Excel เปิดภาษาไทยได้โดยไม่เพี้ยน (BOM)
             let csv = "\uFEFFวันที่,กิจกรรม,เวลาเริ่ม,เวลากลับ,ใช้เวลา (นาที)\n";
             logs.forEach(log => { csv += `${log.date},${log.action},${log.start},${log.end},${log.duration}\n`; });
-            
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a"); a.href = url; a.download = `Break_History.csv`;
-            a.click(); URL.revokeObjectURL(url);
+            const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+            const a = document.createElement("a"); a.href = url; a.download = `Break_History.csv`; a.click(); URL.revokeObjectURL(url);
         }
 
         function clearLogs() { if(confirm("ต้องการล้างประวัติวันนี้ใช่หรือไม่?")) { localStorage.removeItem('break_logs'); renderDashboardAndLogs(); } }
@@ -673,29 +716,27 @@
             const today = new Date().toDateString();
             const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
             const todayLogs = logs.filter(log => log.date === today).reverse();
-            
             let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
             document.getElementById('quota-input').value = dailyQuota;
-
             let totalUsed = 0; todayLogs.forEach(log => totalUsed += log.duration);
 
             const logContainer = document.getElementById('log-container');
             const paginationContainer = document.getElementById('pagination-container');
             
             if (todayLogs.length === 0) {
-                logContainer.innerHTML = '<div class="empty-log">ยังไม่มีประวัติการพักสำหรับวันนี้</div>'; paginationContainer.innerHTML = '';
+                logContainer.innerHTML = '<div class="empty-log">เริ่มลุยงานกันเลย! 🚀</div>'; paginationContainer.innerHTML = '';
             } else {
                 const displayedLogs = showAllLogs ? todayLogs : todayLogs.slice(0, 5);
                 let tableHtml = `<table class="history-table"><thead><tr><th>กิจกรรม</th><th>เริ่ม</th><th>กลับ</th><th>รวม</th></tr></thead><tbody>`;
                 displayedLogs.forEach(log => {
                     const isZero = log.duration === 0;
                     tableHtml += `<tr><td><strong>${log.action}</strong></td><td>${log.start}</td><td>${log.end}</td>
-                        <td><span style="color:${isZero ? '#38bdf8' : '#c084fc'}; font-weight:bold;">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span></td></tr>`;
+                        <td><span style="color:${isZero ? '#38bdf8' : '#c084fc'}; font-weight:800;">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span></td></tr>`;
                 });
                 tableHtml += '</tbody></table>'; logContainer.innerHTML = tableHtml;
 
                 paginationContainer.innerHTML = todayLogs.length > 5 
-                    ? `<div class="pagination-btn" onclick="toggleLogPagination()">${showAllLogs ? 'ย่อกลับ' : `ดูเพิ่มเติม (อีก ${todayLogs.length - 5} รายการ)`}</div>` 
+                    ? `<div class="pagination-btn" onclick="toggleLogPagination()">${showAllLogs ? 'ย่อกลับ 🔼' : `ดูเพิ่มเติม (อีก ${todayLogs.length - 5} รายการ) 🔽`}</div>` 
                     : '';
             }
 
@@ -705,7 +746,7 @@
             const progressPercent = Math.max(0, (remain / dailyQuota) * 100);
             const progressFill = document.getElementById('progress-fill');
             progressFill.style.width = `${progressPercent}%`;
-            progressFill.style.background = progressPercent < 25 ? 'linear-gradient(90deg, #f43f5e, #fb7185)' : 'linear-gradient(90deg, #38bdf8, #c084fc)';
+            progressFill.style.background = progressPercent < 25 ? 'linear-gradient(90deg, #f43f5e, #fb7185)' : 'linear-gradient(90deg, #38bdf8, #c084fc, #ff7eb3)';
         }
 
         window.onload = () => { updateHeaderTexts(); renderActivities(); renderDashboardAndLogs(); };
