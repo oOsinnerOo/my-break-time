@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแจ้งเวลาพัก - Ultimate Premium</title>
+    <title>ระบบแจ้งเวลาพัก - Ultimate Premium (Cute Edition)</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -22,6 +22,8 @@
             padding: 20px; margin: 0; min-height: 100vh;
             background-color: #f8fafc; overflow-x: hidden; perspective: 1000px;
         }
+        
+        /* 🌟 ธีมโหมดกลางคืนแบบน่ารักขึ้น */
         body.dark-mode { background-color: #0f172a; color: #f8fafc; }
 
         .container {
@@ -32,9 +34,10 @@
         /* 📊 Dashboard โควตาเวลา */
         .dashboard {
             background: #ffffff; border-radius: 24px; padding: 20px;
-            box-shadow: 0 10px 25px rgba(148, 163, 184, 0.12); border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(148, 163, 184, 0.12); border: 2px dashed #e2e8f0; /* เส้นประน่ารักๆ */
         }
         body.dark-mode .dashboard { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .dash-title { font-size: 14px; color: #64748b; font-weight: bold; }
         body.dark-mode .dash-title { color: #94a3b8; }
@@ -42,54 +45,75 @@
         .quota-setting { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 4px; }
         body.dark-mode .quota-setting { color: #94a3b8; }
         .quota-input {
-            width: 55px; padding: 4px 6px; border: 1px solid #cbd5e1; border-radius: 8px;
+            width: 55px; padding: 4px 6px; border: 2px solid #cbd5e1; border-radius: 8px; /* ขอบหนาขึ้นนิดนึง */
             font-family: inherit; font-weight: bold; text-align: center; color: #0f172a; background: #f8fafc;
         }
         body.dark-mode .quota-input { background: #0f172a; border-color: #475569; color: #ffffff; }
 
         .time-grid { display: flex; justify-content: space-around; margin-top: 10px; }
         .time-box { display: flex; flex-direction: column; text-align: center; }
-        .time-val { font-size: 24px; font-weight: 700; color: #0f172a; }
+        .time-val { font-size: 28px; font-weight: 700; color: #0f172a; } /* เลขใหญ่ขึ้น */
         body.dark-mode .time-val { color: #ffffff; }
-        .time-lbl { font-size: 11px; color: #94a3b8; }
+        .time-lbl { font-size: 12px; color: #94a3b8; }
         
-        .progress-bar { width: 100%; height: 8px; background: #e2e8f0; border-radius: 10px; margin-top: 15px; overflow: hidden; }
+        /* หลอดพลังงานแบบมนๆ */
+        .progress-bar { width: 100%; height: 12px; background: #e2e8f0; border-radius: 20px; margin-top: 15px; overflow: hidden; }
         body.dark-mode .progress-bar { background: #334155; }
-        .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #38bdf8, #c084fc); transition: width 0.5s ease; }
+        .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #38bdf8, #c084fc); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 20px;}
+
+        /* มาสคอตน่ารักๆ บน Dashboard */
+        .mascot-area {
+            text-align: center; margin-top: 10px; font-size: 24px;
+            animation: bounce 2s infinite; display: none;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
 
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; flex-wrap: wrap; gap: 10px; }
-        .app-title { font-size: 18px; font-weight: 700; color: #334155; margin: 0; }
+        .app-title { font-size: 20px; font-weight: 700; color: #334155; margin: 0; display: flex; align-items: center; gap: 8px;}
         body.dark-mode .app-title { color: #f1f5f9; }
 
         .controls-group { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; flex: 1; }
         .theme-toggle, .mute-toggle, .gender-toggle {
-            font-size: 11px; font-weight: 500; padding: 6px 10px; border-radius: 30px;
+            font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 30px;
             background: #ffffff; color: #4a4a4c; cursor: pointer; user-select: none;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
         }
         body.dark-mode .theme-toggle, body.dark-mode .mute-toggle, body.dark-mode .gender-toggle { background: #1e293b; color: #ffffff; border-color: #334155; }
+        .theme-toggle:hover, .mute-toggle:hover, .gender-toggle:hover { transform: scale(1.05); }
 
-        /* ✨ การ์ดปุ่มกดแบบ Dynamic */
+        /* ✨ การ์ดปุ่มกดแบบ Dynamic & น่ารัก */
         .action-card {
             display: flex; flex-direction: column; align-items: center;
-            background-color: #ffffff; padding: 14px; border-radius: 24px;
-            box-shadow: 0 8px 20px rgba(148, 163, 184, 0.1); border: 1px solid #f1f5f9;
+            background-color: #ffffff; padding: 16px; border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(148, 163, 184, 0.1); border: 2px solid #f1f5f9; /* ขอบหนาขึ้นนิดนึง */
             cursor: pointer; user-select: none; position: relative; transform-style: preserve-3d;
         }
         body.dark-mode .action-card { background-color: #1e293b; border-color: #334155; }
 
-        .action-card:hover:not(.expanded) { box-shadow: 0 0 25px var(--hover-color); transform: translateY(-3px) scale(1.02); }
+        .action-card:hover:not(.expanded) { box-shadow: 0 0 25px var(--hover-color); transform: translateY(-4px) scale(1.03); border-color: var(--particle-color);}
 
         .capsule {
-            width: 100%; padding: 16px 0; border-radius: 100px;
+            width: 100%; padding: 18px 0; border-radius: 100px;
             text-align: center; font-size: 26px; font-weight: 700;
             letter-spacing: 0.5px; margin-bottom: 8px; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         
+        /* Floating Emoji - เอฟเฟกต์อิโมจิลอยในการ์ดตอนยังไม่ขยาย */
+        .floating-emoji {
+            position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+            font-size: 32px; opacity: 0.2; transition: all 0.3s;
+        }
+        .action-card:hover:not(.expanded) .floating-emoji {
+            opacity: 0.8; transform: translateY(-50%) scale(1.2) rotate(10deg);
+        }
+        
         .helper-text {
             font-size: 13px; color: #64748b; background: #f8fafc;
-            padding: 4px 14px; border-radius: 20px; font-weight: 500;
+            padding: 6px 16px; border-radius: 20px; font-weight: 500;
         }
         body.dark-mode .helper-text { background: #0f172a; color: #38bdf8; }
 
@@ -103,106 +127,135 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 30px; gap: 6vh; overflow: hidden; cursor: default; border: none;
             background: var(--expand-bg-light);
-            animation: cartoon-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: cartoon-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         body.dark-mode .action-card.expanded { background: var(--expand-bg-dark); }
         
         @keyframes cartoon-pop {
             0% { transform: scale(0.2) rotateY(-90deg) rotateX(20deg); opacity: 0; border-radius: 100px; }
-            60% { transform: scale(1.04) rotateY(10deg); }
+            60% { transform: scale(1.05) rotateY(10deg); }
             100% { transform: scale(1) rotateY(0deg) rotateX(0deg); opacity: 1; border-radius: 0; }
         }
 
         .action-card.expanded .capsule {
-            width: 88vw; max-width: 1300px; height: 46vh; max-height: 460px;
-            font-size: min(9vh, 7vw, 85px); font-weight: 700; border-radius: 1000px;
-            margin-bottom: 0; box-shadow: 0 25px 50px rgba(0,0,0,0.08), inset 0 -8px 0 rgba(0,0,0,0.1);
+            width: 90vw; max-width: 1400px; height: 50vh; max-height: 600px;
+            font-size: min(15vh, 140px); font-weight: 700; border-radius: 60px; /* ใหญ่เต็มตา */
+            margin-bottom: 0; box-shadow: 0 30px 60px rgba(0,0,0,0.15), inset 0 -10px 0 rgba(0,0,0,0.1);
         }
-        body.dark-mode .action-card.expanded .capsule { box-shadow: 0 25px 50px rgba(0,0,0,0.4); }
+        body.dark-mode .action-card.expanded .capsule { box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
         .action-card.expanded .helper-text { display: none; }
         .action-card.expanded .edit-btn { display: none; }
+        .action-card.expanded .floating-emoji { display: none; } /* ซ่อนอีโมจิลอยตอนขยาย */
 
+        .action-card.expanded .live-timer { font-size: min(12vh, 100px); font-weight: 700; margin-top: 20px;}
+
+        /* ปุ่มกลับมาแล้วใหญ่และเด้งได้ */
         .back-box {
-            display: none; width: 75vw; max-width: 900px; height: 11vh; max-height: 85px; min-height: 65px;
-            background: #ffffff; border: 3px dashed #cbd5e1; border-radius: 100px;
+            display: none; width: 85vw; max-width: 1000px; height: 18vh; max-height: 150px; min-height: 100px;
+            background: #ffffff; border: 4px dashed #cbd5e1; border-radius: 80px;
             cursor: pointer; align-items: center; justify-content: center;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* bouncy */
         }
         .action-card.expanded .back-box { display: flex; }
-        .back-box:hover { background: #f8fafc; border-color: #64748b; transform: scale(1.03); }
-        .back-title { font-size: min(4.2vh, 36px); font-weight: 700; color: #64748b; }
+        .back-box:hover { background: #f8fafc; border-color: #64748b; transform: scale(1.05); } /* เด้งมากขึ้น */
+        .back-box:active { transform: scale(0.95); } /* ยุบตอนกด */
+        .back-title { font-size: min(7vh, 60px); font-weight: 700; color: #64748b; }
         body.dark-mode .back-box { background: #1e293b; border-color: #475569; }
         body.dark-mode .back-title { color: #94a3b8; }
 
-        .particle { position: absolute; pointer-events: none; border-radius: 50%; animation: float-up forwards ease-out; z-index: 100; }
+        /* ✨ เอฟเฟกต์ละอองฟอง (ปรับให้สวยขึ้น) */
+        .particle { position: absolute; pointer-events: none; border-radius: 50%; animation: float-up forwards ease-in-out; z-index: 100; }
         @keyframes float-up {
-            0% { transform: translateY(10px) scale(0.6); opacity: 0; }
+            0% { transform: translateY(10px) scale(0.6) rotate(0deg); opacity: 0; }
             20% { opacity: 0.8; }
-            100% { transform: translateY(-120px) translateX(var(--dx)); scale(1.4); opacity: 0; }
+            100% { transform: translateY(-150px) translateX(var(--dx)) scale(1.5) rotate(45deg); opacity: 0; }
         }
 
         /* ปุ่มจัดการกิจกรรม */
         .edit-btn {
-            position: absolute; top: 12px; right: 12px; width: 32px; height: 32px;
-            background: rgba(255,255,255,0.9); border-radius: 50%; display: flex;
+            position: absolute; top: 12px; right: 12px; width: 36px; height: 36px;
+            background: rgba(255,255,255,0.95); border-radius: 50%; display: flex;
             align-items: center; justify-content: center; cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 14px; z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 16px; z-index: 10;
+            transition: transform 0.2s;
         }
+        .edit-btn:hover { transform: rotate(15deg) scale(1.1); }
         body.dark-mode .edit-btn { background: #334155; }
         
         .add-act-btn {
-            background: #f1f5f9; border: 2px dashed #cbd5e1; color: #64748b;
-            padding: 16px; text-align: center; border-radius: 24px; font-weight: 700;
-            cursor: pointer; margin-bottom: 5px; box-shadow: none;
+            background: #f8fafc; border: 3px dashed #cbd5e1; color: #64748b;
+            padding: 18px; text-align: center; border-radius: 24px; font-weight: 700; font-size: 16px;
+            cursor: pointer; margin-bottom: 5px; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .add-act-btn:hover { background: #e2e8f0; border-color: #94a3b8; }
+        .add-act-btn:hover { background: #f1f5f9; border-color: #94a3b8; transform: translateY(-2px); }
         body.dark-mode .add-act-btn { background: #1e293b; border-color: #475569; color: #94a3b8; }
         body.dark-mode .add-act-btn:hover { background: #334155; }
 
-        /* Modal จัดการกิจกรรม */
+        /* Modal จัดการกิจกรรม (ดูดีขึ้น) */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
             z-index: 100000; align-items: center; justify-content: center;
         }
         .modal-box {
-            background: white; padding: 25px; border-radius: 24px; width: 90%; max-width: 350px;
-            display: flex; flex-direction: column; gap: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            background: white; padding: 30px; border-radius: 28px; width: 90%; max-width: 360px;
+            display: flex; flex-direction: column; gap: 14px; box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            animation: slideUp 0.3s ease-out;
         }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         body.dark-mode .modal-box { background: #1e293b; color: #f8fafc; border: 1px solid #334155; }
+        
+        .input-group { display: flex; flex-direction: column; gap: 4px; }
+        .input-label { font-size: 13px; font-weight: bold; color: #64748b; }
+        body.dark-mode .input-label { color: #94a3b8; }
         .modal-box input, .modal-box select {
-            padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; font-family: 'Kanit'; font-size: 14px;
+            padding: 12px 16px; border-radius: 12px; border: 2px solid #e2e8f0; font-family: 'Kanit'; font-size: 15px; outline: none; transition: border-color 0.2s;
         }
+        .modal-box input:focus, .modal-box select:focus { border-color: #38bdf8; }
         body.dark-mode .modal-box input, body.dark-mode .modal-box select { background: #0f172a; border-color: #475569; color: white; }
-        .modal-btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        .modal-btn { flex: 1; padding: 12px; border: none; border-radius: 12px; font-weight: bold; font-family: 'Kanit'; cursor: pointer; }
+        
+        .color-picker-container { display: flex; gap: 10px; margin-top: 5px; flex-wrap: wrap; justify-content: center;}
+        .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .color-dot:hover { transform: scale(1.1); }
+        .color-dot.selected { border-color: #0f172a; transform: scale(1.15); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        body.dark-mode .color-dot.selected { border-color: #fff; }
+        
+        .modal-btn-group { display: flex; gap: 12px; margin-top: 15px; }
+        .modal-btn { flex: 1; padding: 14px; border: none; border-radius: 14px; font-weight: bold; font-family: 'Kanit'; font-size: 15px; cursor: pointer; transition: transform 0.1s; }
+        .modal-btn:active { transform: scale(0.95); }
 
-        /* 📜 ตารางสรุปประวัติ */
+        /* 📜 ตารางสรุปประวัติ (มนขึ้น น่ารักขึ้น) */
         .history-box {
             background: #ffffff; border-radius: 24px; padding: 20px;
-            box-shadow: 0 10px 25px rgba(148, 163, 184, 0.08); border: 1px solid #e2e8f0; width: 100%;
+            box-shadow: 0 10px 25px rgba(148, 163, 184, 0.08); border: 2px dashed #e2e8f0; width: 100%;
         }
         body.dark-mode .history-box { background: #1e293b; border-color: #334155; }
-        .history-title { font-size: 14px; font-weight: 700; color: #475569; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 5px; }
+        .history-title { font-size: 15px; font-weight: 700; color: #475569; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
         body.dark-mode .history-title { color: #cbd5e1; }
         
-        .history-actions { display: flex; gap: 10px; font-size: 11px; font-weight: normal; flex-wrap: wrap; }
-        .btn-copy-summary { color: #38bdf8; cursor: pointer; }
-        .btn-export-csv { color: #10b981; cursor: pointer; }
-        .btn-clear-history { color: #ef4444; cursor: pointer; }
+        .history-actions { display: flex; gap: 10px; font-size: 12px; font-weight: bold; flex-wrap: wrap; }
+        .btn-copy-summary { color: #38bdf8; cursor: pointer; padding: 4px 8px; border-radius: 8px; background: #e0f2fe; }
+        .btn-export-csv { color: #10b981; cursor: pointer; padding: 4px 8px; border-radius: 8px; background: #d1fae5; }
+        .btn-clear-history { color: #ef4444; cursor: pointer; padding: 4px 8px; border-radius: 8px; background: #fee2e2; }
+        body.dark-mode .btn-copy-summary { background: rgba(56, 189, 248, 0.1); }
+        body.dark-mode .btn-export-csv { background: rgba(16, 185, 129, 0.1); }
+        body.dark-mode .btn-clear-history { background: rgba(239, 68, 68, 0.1); }
 
         .history-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
-        .history-table th { color: #94a3b8; padding: 8px 4px; font-weight: 500; border-bottom: 1px solid #f1f5f9; }
+        .history-table th { color: #94a3b8; padding: 10px 4px; font-weight: 600; border-bottom: 2px solid #f1f5f9; }
         body.dark-mode .history-table th { border-bottom-color: #334155; }
-        .history-table td { padding: 10px 4px; border-bottom: 1px solid #f8fafc; color: #334155; }
+        .history-table td { padding: 12px 4px; border-bottom: 1px solid #f8fafc; color: #334155; }
         body.dark-mode .history-table td { border-bottom-color: #1e293b; color: #e2e8f0; }
-        .empty-log { text-align: center; color: #cbd5e1; padding: 20px 0; font-size: 13px; }
+        .empty-log { text-align: center; color: #94a3b8; padding: 30px 0; font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px;}
+        .empty-log::before { content: '😴'; font-size: 30px; }
 
         .pagination-btn {
-            display: block; width: 100%; text-align: center; padding: 8px; margin-top: 12px;
-            font-size: 12px; color: #64748b; font-weight: bold; cursor: pointer;
-            border: 1px solid #e2e8f0; border-radius: 12px; background: #f8fafc; user-select: none;
+            display: block; width: 100%; text-align: center; padding: 10px; margin-top: 15px;
+            font-size: 13px; color: #64748b; font-weight: bold; cursor: pointer;
+            border: 2px dashed #e2e8f0; border-radius: 14px; background: #f8fafc; user-select: none; transition: background 0.2s;
         }
-        .pagination-btn:hover { background: #f1f5f9; color: #0f172a; }
+        .pagination-btn:hover { background: #f1f5f9; color: #0f172a; border-style: solid;}
         body.dark-mode .pagination-btn { background: #0f172a; border-color: #334155; color: #94a3b8; }
         body.dark-mode .pagination-btn:hover { background: #1e293b; color: #ffffff; }
 
@@ -210,8 +263,8 @@
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(34, 197, 94, 0.96); backdrop-filter: blur(8px);
             color: white; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; z-index: 10000; border-radius: 22px;
-            transform: scale(0.95); transition: all 0.25s ease;
+            opacity: 0; pointer-events: none; z-index: 10000; border-radius: 28px;
+            transform: scale(0.95); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .action-card.expanded .success-overlay { border-radius: 0; }
         .success-overlay.show { opacity: 1; transform: scale(1); }
@@ -249,20 +302,20 @@
                 </div>
             </div>
             <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="mascot-area" id="mascot">🎉 เก่งมาก! พักเสร็จแล้วลุยงานต่อ!</div>
         </div>
 
-        <!-- พื้นที่แสดงกิจกรรม (สร้างจาก JS) -->
         <div id="activities-container" style="display: flex; flex-direction: column; gap: 16px;"></div>
         
-        <div class="add-act-btn" onclick="openModal(-1)">+ เพิ่มกิจกรรมใหม่</div>
+        <div class="add-act-btn" onclick="openModal(-1)">✨ เพิ่มกิจกรรมใหม่ ✨</div>
 
         <div class="history-box">
             <div class="history-title">
                 <span>📜 ประวัติการพักวันนี้</span>
                 <div class="history-actions">
                     <span class="btn-copy-summary" onclick="copySummary()">📋 คัดลอก</span>
-                    <span class="btn-export-csv" onclick="exportCSV()">📥 ส่งออก CSV</span>
-                    <span class="btn-clear-history" onclick="clearLogs()">ล้างประวัติ</span>
+                    <span class="btn-export-csv" onclick="exportCSV()">📥 CSV</span>
+                    <span class="btn-clear-history" onclick="clearLogs()">🗑️ ล้าง</span>
                 </div>
             </div>
             <div id="log-container"></div>
@@ -270,39 +323,59 @@
         </div>
     </div>
 
-    <!-- Modal จัดการกิจกรรม -->
     <div class="modal-overlay" id="activity-modal">
         <div class="modal-box">
-            <h3 id="modal-title" style="margin: 0; color: #334155;">เพิ่มกิจกรรม</h3>
-            <input type="text" id="act-name" placeholder="ชื่อกิจกรรม (เช่น ชงกาแฟ)">
-            <input type="text" id="act-emoji" placeholder="อิโมจิ (เช่น ☕)">
-            <input type="number" id="act-limit" placeholder="เวลาจำกัด (นาที) - ใส่ 0 ถ้าไม่มีลิมิต">
-            <select id="act-theme">
-                <option value="purple">ธีมสีม่วง 🔮</option>
-                <option value="yellow">ธีมสีเหลือง 🌟</option>
-                <option value="green">ธีมสีเขียว 🍀</option>
-                <option value="pink">ธีมสีชมพู 🌸</option>
-                <option value="blue">ธีมสีฟ้า 💧</option>
-            </select>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; margin-top: 5px;">
-                <input type="checkbox" id="act-istoilet"> ไม่หักโควตาเวลาหลัก (เช่น ห้องน้ำ)
-            </label>
-            <div class="modal-btn-group">
-                <button class="modal-btn" onclick="saveActivity()" style="background: #38bdf8; color: white;">บันทึก</button>
-                <button class="modal-btn" onclick="closeModal()" style="background: #e2e8f0; color: #475569;">ยกเลิก</button>
+            <h3 id="modal-title" style="margin: 0; color: #334155; text-align: center;">เพิ่มกิจกรรม</h3>
+            
+            <div class="input-group">
+                <span class="input-label">ชื่อกิจกรรม</span>
+                <input type="text" id="act-name" placeholder="เช่น ชงกาแฟ">
             </div>
-            <button id="btn-delete" class="modal-btn" onclick="deleteActivity()" style="background: #ef4444; color: white; display: none; margin-top: 0;">ลบกิจกรรมนี้</button>
+            
+            <div style="display: flex; gap: 10px;">
+                <div class="input-group" style="flex: 1;">
+                    <span class="input-label">อิโมจิ</span>
+                    <input type="text" id="act-emoji" placeholder="☕" style="text-align: center;">
+                </div>
+                <div class="input-group" style="flex: 2;">
+                    <span class="input-label">แจ้งเตือนเมื่อเกิน (นาที)</span>
+                    <input type="number" id="act-limit" placeholder="ใส่ 0 หากไม่จำกัด">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <span class="input-label">เลือกธีมสี 🎨</span>
+                <div class="color-picker-container" id="color-picker">
+                    <div class="color-dot theme-purple selected" data-color="purple" style="background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);"></div>
+                    <div class="color-dot theme-yellow" data-color="yellow" style="background: linear-gradient(135deg, #fef08a 0%, #facc15 100%);"></div>
+                    <div class="color-dot theme-green" data-color="green" style="background: linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%);"></div>
+                    <div class="color-dot theme-pink" data-color="pink" style="background: linear-gradient(135deg, #fecdd3 0%, #fb7185 100%);"></div>
+                    <div class="color-dot theme-blue" data-color="blue" style="background: linear-gradient(135deg, #bae6fd 0%, #38bdf8 100%);"></div>
+                    <div class="color-dot theme-mint" data-color="mint" style="background: linear-gradient(135deg, #a7f3d0 0%, #10b981 100%);"></div>
+                </div>
+            </div>
+            
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; margin-top: 10px; background: #f1f5f9; padding: 10px; border-radius: 12px; border: 1px dashed #cbd5e1;" id="toilet-label">
+                <input type="checkbox" id="act-istoilet"> 🌟 ไม่นำไปหักโควตาเวลาหลัก
+            </label>
+
+            <div class="modal-btn-group">
+                <button class="modal-btn" onclick="saveActivity()" style="background: #38bdf8; color: white;">💾 บันทึก</button>
+                <button class="modal-btn" onclick="closeModal()" style="background: #e2e8f0; color: #475569;">❌ ยกเลิก</button>
+            </div>
+            <button id="btn-delete" class="modal-btn" onclick="deleteActivity()" style="background: #fee2e2; color: #ef4444; border: 1px dashed #ef4444; display: none; margin-top: 0;">🗑️ ลบกิจกรรมนี้</button>
         </div>
     </div>
 
     <script>
-        // 🎨 ธีมสีสำหรับสร้างการ์ดอัตโนมัติ
+        // 🎨 ธีมสีสำหรับสร้างการ์ดอัตโนมัติ (เพิ่มสีมินต์)
         const themes = {
             purple: { grad: 'linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%)', text: '#4c1d95', expandLight: 'radial-gradient(circle, #f3e8ff 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #2e1065 0%, #0f172a 100%)', particle: '#c084fc', hover: 'rgba(192, 132, 252, 0.6)' },
             yellow: { grad: 'linear-gradient(135deg, #fef08a 0%, #facc15 100%)', text: '#713f12', expandLight: 'radial-gradient(circle, #fef9c3 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #451a03 0%, #0f172a 100%)', particle: '#facc15', hover: 'rgba(250, 204, 21, 0.6)' },
             green: { grad: 'linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%)', text: '#14532d', expandLight: 'radial-gradient(circle, #dcfce7 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #064e3b 0%, #0f172a 100%)', particle: '#4ade80', hover: 'rgba(74, 222, 128, 0.6)' },
             pink: { grad: 'linear-gradient(135deg, #fecdd3 0%, #fb7185 100%)', text: '#881337', expandLight: 'radial-gradient(circle, #ffe4e6 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #4c0519 0%, #0f172a 100%)', particle: '#fb7185', hover: 'rgba(251, 113, 133, 0.6)' },
-            blue: { grad: 'linear-gradient(135deg, #bae6fd 0%, #38bdf8 100%)', text: '#0c4a6e', expandLight: 'radial-gradient(circle, #e0f2fe 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #0c4a6e 0%, #0f172a 100%)', particle: '#38bdf8', hover: 'rgba(56, 189, 248, 0.6)' }
+            blue: { grad: 'linear-gradient(135deg, #bae6fd 0%, #38bdf8 100%)', text: '#0c4a6e', expandLight: 'radial-gradient(circle, #e0f2fe 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #0c4a6e 0%, #0f172a 100%)', particle: '#38bdf8', hover: 'rgba(56, 189, 248, 0.6)' },
+            mint: { grad: 'linear-gradient(135deg, #a7f3d0 0%, #10b981 100%)', text: '#064e3b', expandLight: 'radial-gradient(circle, #ecfdf5 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #064e3b 0%, #0f172a 100%)', particle: '#10b981', hover: 'rgba(16, 185, 129, 0.6)' }
         };
 
         const defaultActivities = [
@@ -355,8 +428,8 @@
                 particle.style.setProperty('--dx', `${Math.random() * 100 - 50}px`);
                 particle.style.animationDelay = `${Math.random() * 0.3}s`;
                 particle.style.animationDuration = `${Math.random() * 0.8 + 0.7}s`;
-                if (isBubble) { particle.style.background = 'transparent'; particle.style.border = `2px solid ${color}`; particle.style.boxShadow = `inset 0 0 5px ${color}`; } 
-                else { particle.style.background = color; particle.style.boxShadow = `0 0 8px ${color}`; }
+                if (isBubble) { particle.style.background = 'transparent'; particle.style.border = `3px solid ${color}`; particle.style.boxShadow = `inset 0 0 8px ${color}`; } 
+                else { particle.style.background = color; particle.style.boxShadow = `0 0 10px ${color}`; }
                 cardElement.appendChild(particle); setTimeout(() => particle.remove(), 1200);
             }
         }
@@ -367,6 +440,8 @@
             document.querySelector('.theme-toggle').innerHTML = document.body.classList.contains('dark-mode') ? '☀️ โหมดกลางวัน' : '🌙 โหมดกลางคืน';
             // Update modal text color fix
             document.getElementById('modal-title').style.color = document.body.classList.contains('dark-mode') ? '#f8fafc' : '#334155';
+            document.getElementById('toilet-label').style.background = document.body.classList.contains('dark-mode') ? '#1e293b' : '#f1f5f9';
+            document.getElementById('toilet-label').style.borderColor = document.body.classList.contains('dark-mode') ? '#475569' : '#cbd5e1';
         }
         function toggleMute(event) { event.stopPropagation(); isMuted = !isMuted; localStorage.setItem('is_muted', isMuted); updateHeaderTexts(); }
         function toggleGender(event) { event.stopPropagation(); gender = gender === 'male' ? 'female' : 'male'; localStorage.setItem('gender', gender); updateHeaderTexts(); }
@@ -412,6 +487,7 @@
                 card.style.setProperty('--hover-color', t.hover);
                 card.style.setProperty('--expand-bg-light', t.expandLight);
                 card.style.setProperty('--expand-bg-dark', t.expandDark);
+                card.style.setProperty('--particle-color', t.particle);
                 
                 card.onclick = (e) => { if(!e.target.closest('.edit-btn') && !e.target.closest('.back-box')) startBreak(index, card); };
 
@@ -423,6 +499,7 @@
                         <span>${act.name}</span>
                         <div class="live-timer">00:00</div>
                     </div>
+                    <div class="floating-emoji">${act.emoji}</div>
                     <div class="helper-text">คลิกแจ้งเวลาพัก ${act.emoji}${limitText}</div>
                     <div class="back-box" onclick="endBreak(${index}, this.parentElement, event)">
                         <div class="back-title">กลับมาแล้ว</div>
