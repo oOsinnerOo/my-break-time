@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแจ้งเวลาพัก - Super Edition</title>
+    <title>ระบบแจ้งเวลาพัก - Super WOW Edition</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#f8fafc">
+    <meta name="theme-color" content="#FFE3EE">
     
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
@@ -20,24 +20,51 @@
             font-family: 'Kanit', sans-serif;
             display: flex; flex-direction: column; align-items: center;
             padding: 20px; margin: 0; min-height: 100vh;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background: linear-gradient(135deg, #FFF6E9 0%, #FFE3EE 35%, #F1E6FF 70%, #E6F3FF 100%);
             overflow-x: hidden; perspective: 1000px;
         }
         
-        body.dark-mode { background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); color: #f8fafc; }
+        body.dark-mode { background: linear-gradient(135deg, #2B1B3D 0%, #442A5E 45%, #5C3A87 100%); color: #f8fafc; }
+
+        /* 🌈 เลเยอร์ออโรร่าเคลื่อนไหวช้าๆ ด้านหลังสุด */
+        .bg-aurora { position: fixed; inset: 0; z-index: -3; overflow: hidden; pointer-events: none; }
+        .bg-aurora span {
+            position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55;
+            animation: aurora-drift ease-in-out infinite alternate;
+        }
+        .bg-aurora span:nth-child(1) { width: 55vw; height: 55vw; top: -15%; left: -10%; background: radial-gradient(circle, #FFC1D9, transparent 70%); animation-duration: 22s; }
+        .bg-aurora span:nth-child(2) { width: 50vw; height: 50vw; bottom: -20%; right: -10%; background: radial-gradient(circle, #D8B4FE, transparent 70%); animation-duration: 26s; animation-delay: -6s; }
+        .bg-aurora span:nth-child(3) { width: 40vw; height: 40vw; bottom: 10%; left: 5%; background: radial-gradient(circle, #FFE3A3, transparent 70%); animation-duration: 19s; animation-delay: -3s; }
+        .bg-aurora span:nth-child(4) { width: 38vw; height: 38vw; top: 20%; right: 15%; background: radial-gradient(circle, #A7F3D0, transparent 70%); animation-duration: 24s; animation-delay: -10s; }
+        body.dark-mode .bg-aurora span { opacity: 0.35; }
+        @keyframes aurora-drift {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            100% { transform: translate(6vw, 8vh) scale(1.25) rotate(25deg); }
+        }
+
+        /* ✨ ดาวกระพริบลอยเบาๆ */
+        .bg-sparkles { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+        .bg-sparkles span {
+            position: absolute; font-size: 16px; animation: sparkle-twinkle ease-in-out infinite;
+            filter: drop-shadow(0 0 4px rgba(255,255,255,0.8));
+        }
+        @keyframes sparkle-twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.15) rotate(20deg); }
+        }
 
         /* ✨ เลเยอร์ฟองสบู่ (ขยับตามเมาส์ได้ด้วย JS) */
         .bg-bubbles {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; overflow: hidden; pointer-events: none; margin: 0; padding: 0;
+            z-index: -2; overflow: hidden; pointer-events: none; margin: 0; padding: 0;
             transition: transform 0.1s ease-out; /* สำหรับ Parallax */
         }
         .bg-bubbles li {
             position: absolute; list-style: none; display: block;
             bottom: -160px; border-radius: 50%; animation: float-bubble linear infinite;
-            background: radial-gradient(circle at 30% 26%, rgba(255,255,255,0.95), var(--tint, rgba(56,189,248,0.45)) 42%, rgba(255,255,255,0) 78%);
+            background: radial-gradient(circle at 30% 26%, rgba(255,255,255,0.95), var(--tint, rgba(255,90,140,0.45)) 42%, rgba(255,255,255,0) 78%);
             border: 1px solid rgba(255,255,255,0.45);
-            box-shadow: 0 10px 24px -8px var(--glow, rgba(56,189,248,0.4)), inset 0 0 10px rgba(255,255,255,0.35);
+            box-shadow: 0 10px 24px -8px var(--glow, rgba(255,90,140,0.4)), inset 0 0 10px rgba(255,255,255,0.35);
             backdrop-filter: blur(1px);
         }
         body.dark-mode .bg-bubbles li {
@@ -56,6 +83,31 @@
             display: flex; flex-direction: column; gap: 18px;
             width: 100%; max-width: 400px; position: relative; z-index: 10;
         }
+
+        /* 🎬 การ์ดเด้งเข้ามาตอนโหลดหน้า */
+        @keyframes card-pop-in {
+            0% { opacity: 0; transform: translateY(28px) scale(0.85) rotate(-3deg); }
+            60% { opacity: 1; transform: translateY(-4px) scale(1.03) rotate(1deg); }
+            100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+        }
+        .action-card.card-enter { animation: card-pop-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.4) backwards; }
+
+        /* 🫧 ไอคอนลอยเบาๆ ตลอดเวลาแม้ไม่ hover */
+        @keyframes emoji-idle-float {
+            0%, 100% { transform: translateY(-50%) rotate(-4deg); }
+            50% { transform: translateY(-58%) rotate(4deg); }
+        }
+
+        /* ✨ หัวข้อกระดิกเบาๆ */
+        @keyframes title-bounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-3px) rotate(-2deg); }
+            75% { transform: translateY(1px) rotate(2deg); }
+        }
+
+        /* 💗 ปุ่มเด้งตอนกด */
+        button, .chip, .icon-btn, .theme-toggle, .mute-toggle, .gender-toggle, .notify-toggle, .pagination-btn { transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s, color 0.3s, box-shadow 0.3s; }
+        button:active, .theme-toggle:active, .mute-toggle:active, .gender-toggle:active, .notify-toggle:active { transform: scale(0.9) !important; }
 
         /* 💎 Glassmorphism UI (ดีไซน์กระจกฝ้า) */
         .glass-panel {
@@ -84,7 +136,7 @@
             font-family: inherit; font-weight: bold; text-align: center; color: #0f172a; background: rgba(255,255,255,0.8);
             transition: all 0.3s;
         }
-        .quota-input:focus { outline: none; border-color: #38bdf8; transform: scale(1.1); }
+        .quota-input:focus { outline: none; border-color: #FF5A8C; transform: scale(1.1); }
         body.dark-mode .quota-input { background: rgba(15, 23, 42, 0.6); border-color: rgba(71, 85, 105, 0.5); color: #ffffff; }
 
         .time-grid { display: flex; justify-content: space-around; margin-top: 10px; }
@@ -96,14 +148,14 @@
         
         .progress-bar { width: 100%; height: 12px; background: rgba(226, 232, 240, 0.6); border-radius: 20px; margin-top: 15px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
         body.dark-mode .progress-bar { background: rgba(51, 65, 85, 0.6); }
-        .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #38bdf8, #c084fc, #ff7eb3); background-size: 200% 200%; animation: gradient-shift 3s ease infinite; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); border-radius: 20px;}
+        .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #FF5A8C, #c084fc, #ff7eb3); background-size: 200% 200%; animation: gradient-shift 3s ease infinite; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); border-radius: 20px;}
 
         .stats-row { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-top: 16px; border-top: 1px dashed rgba(203, 213, 225, 0.6); gap: 16px; }
         body.dark-mode .stats-row { border-top-color: rgba(71, 85, 105, 0.6); }
         .week-chart { display: flex; align-items: flex-end; gap: 5px; height: 46px; flex: 1; }
         .week-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
         .week-bar { width: 100%; border-radius: 4px 4px 2px 2px; background: rgba(148, 163, 184, 0.4); min-height: 3px; }
-        .week-bar.today { background: linear-gradient(180deg, #38bdf8, #c084fc); }
+        .week-bar.today { background: linear-gradient(180deg, #FF5A8C, #c084fc); }
         .week-lbl { font-size: 9px; color: #94a3b8; font-weight: 700; }
         .streak-box { display: flex; flex-direction: column; align-items: center; min-width: 64px; }
         .streak-num { font-size: 24px; font-weight: 800; color: #f97316; line-height: 1; }
@@ -114,12 +166,14 @@
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; flex-wrap: wrap; gap: 10px;}
         .app-title { 
             font-size: 22px; font-weight: 800; margin: 0;
-            background: linear-gradient(to right, #ff758c, #ff7eb3, #c084fc, #38bdf8, #ff758c);
+            background: linear-gradient(to right, #ff758c, #ff7eb3, #c084fc, #FF5A8C, #ff758c);
             -webkit-background-clip: text; color: transparent;
             background-size: 300% 300%; animation: gradient-text 4s linear infinite;
         }
         @keyframes gradient-text { 0%{background-position: 0% 50%} 100%{background-position: 100% 50%} }
         @keyframes gradient-shift { 0%{background-position: 0% 50%} 50%{background-position: 100% 50%} 100%{background-position: 0% 50%} }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .app-title .title-emoji { display: inline-block; animation: title-bounce 2.2s ease-in-out infinite; }
 
         .controls-group { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; flex: 1; }
         .theme-toggle, .mute-toggle, .gender-toggle, .notify-toggle {
@@ -132,10 +186,10 @@
             background: rgba(30, 41, 59, 0.8); color: #cbd5e1; border-color: rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .theme-toggle:hover, .mute-toggle:hover, .gender-toggle:hover, .notify-toggle:hover { transform: translateY(-2px) scale(1.05); }
-        .notify-toggle.active { background: rgba(56, 189, 248, 0.25); color: #0284c7; border-color: #38bdf8; }
-        body.dark-mode .notify-toggle.active { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+        .notify-toggle.active { background: rgba(255, 90, 140, 0.25); color: #D6336C; border-color: #FF5A8C; }
+        body.dark-mode .notify-toggle.active { background: rgba(255, 90, 140, 0.2); color: #FF5A8C; }
         .install-toggle { display: none; }
-        .volume-slider { width: 60px; vertical-align: middle; accent-color: #38bdf8; cursor: pointer; }
+        .volume-slider { width: 60px; vertical-align: middle; accent-color: #FF5A8C; cursor: pointer; }
 
         .drag-handle {
             position: absolute; top: 15px; left: 15px; width: 32px; height: 32px; z-index: 10;
@@ -146,7 +200,7 @@
         .drag-handle:active { cursor: grabbing; }
         body.dark-mode .drag-handle { background: rgba(51, 65, 85, 0.8); color: #cbd5e1; }
         .action-card.expanded .drag-handle { display: none; }
-        .action-card.drag-over { outline: 3px dashed #38bdf8; outline-offset: 4px; }
+        .action-card.drag-over { outline: 3px dashed #FF5A8C; outline-offset: 4px; }
 
         .btn-backup { color: #7c3aed; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(124, 58, 237, 0.15); transition: 0.2s; }
         .btn-import { color: #ea580c; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(234, 88, 12, 0.15); transition: 0.2s; }
@@ -155,9 +209,9 @@
         .heatmap-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 4px; }
         .heatmap-cell { aspect-ratio: 1; border-radius: 5px; background: rgba(148, 163, 184, 0.15); }
         body.dark-mode .heatmap-cell { background: rgba(71, 85, 105, 0.3); }
-        .heatmap-cell.lvl-1 { background: rgba(56, 189, 248, 0.35); }
-        .heatmap-cell.lvl-2 { background: rgba(56, 189, 248, 0.6); }
-        .heatmap-cell.lvl-3 { background: linear-gradient(135deg, #38bdf8, #c084fc); }
+        .heatmap-cell.lvl-1 { background: rgba(255, 90, 140, 0.35); }
+        .heatmap-cell.lvl-2 { background: rgba(255, 90, 140, 0.6); }
+        .heatmap-cell.lvl-3 { background: linear-gradient(135deg, #FF5A8C, #c084fc); }
         .heatmap-cell.lvl-over { background: linear-gradient(135deg, #f43f5e, #fb7185); }
         .heatmap-lbl-row { display: flex; justify-content: flex-end; align-items: center; gap: 6px; font-size: 10px; color: #94a3b8; margin-top: 8px; font-weight: 700; }
 
@@ -193,9 +247,11 @@
             position: absolute; right: 25px; top: 50%; transform: translateY(-50%);
             font-size: 38px; opacity: 0.15; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+            animation: emoji-idle-float 3.5s ease-in-out infinite;
         }
         .action-card:hover:not(.expanded) .floating-emoji {
             opacity: 1; transform: translateY(-50%) scale(1.3) rotate(15deg);
+            animation-play-state: paused;
         }
 
         .helper-text {
@@ -203,7 +259,7 @@
             padding: 6px 16px; border-radius: 20px; font-weight: 600;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-        body.dark-mode .helper-text { background: rgba(15, 23, 42, 0.6); color: #38bdf8; }
+        body.dark-mode .helper-text { background: rgba(15, 23, 42, 0.6); color: #FF5A8C; }
 
         /* 👑 Running Timer */
         .live-timer { display: none; font-size: min(5vh, 5vw, 42px); font-weight: 600; margin-top: 10px; opacity: 0.9; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -245,14 +301,14 @@
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .action-card.expanded .back-box { display: flex; }
-        .back-box:hover { background: #ffffff; border-color: #38bdf8; border-style: solid; transform: translateY(-10px) scale(1.05); box-shadow: 0 25px 50px rgba(56, 189, 248, 0.3); }
+        .back-box:hover { background: #ffffff; border-color: #FF5A8C; border-style: solid; transform: translateY(-10px) scale(1.05); box-shadow: 0 25px 50px rgba(255, 90, 140, 0.3); }
         .back-box:active { transform: translateY(5px) scale(0.95); }
         .back-title { font-size: min(6vh, 50px); font-weight: 800; color: #64748b; transition: 0.3s;}
-        .back-box:hover .back-title { color: #38bdf8; }
+        .back-box:hover .back-title { color: #FF5A8C; }
         
         body.dark-mode .back-box { background: rgba(30, 41, 59, 0.9); border-color: #475569; }
         body.dark-mode .back-title { color: #cbd5e1; }
-        body.dark-mode .back-box:hover { background: #1e293b; border-color: #38bdf8; }
+        body.dark-mode .back-box:hover { background: #1e293b; border-color: #FF5A8C; }
 
         /* พลุกระดาษฉลอง (Confetti) */
         .confetti {
@@ -276,7 +332,7 @@
             align-items: center; justify-content: center; cursor: pointer;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-size: 16px; z-index: 10;
         }
-        .edit-btn:hover { transform: rotate(20deg) scale(1.15); background: #38bdf8; color: white;}
+        .edit-btn:hover { transform: rotate(20deg) scale(1.15); background: #FF5A8C; color: white;}
         body.dark-mode .edit-btn { background: #334155; }
         
         .add-act-btn {
@@ -286,9 +342,9 @@
             display: flex; align-items: center; justify-content: center; gap: 8px;
             backdrop-filter: blur(10px);
         }
-        .add-act-btn:hover { background: rgba(255,255,255,0.9); border-color: #38bdf8; border-style: solid; color: #38bdf8; transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2); }
+        .add-act-btn:hover { background: rgba(255,255,255,0.9); border-color: #FF5A8C; border-style: solid; color: #FF5A8C; transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 25px rgba(255, 90, 140, 0.2); }
         body.dark-mode .add-act-btn { background: rgba(30, 41, 59, 0.5); border-color: rgba(71, 85, 105, 0.8); color: #94a3b8; }
-        body.dark-mode .add-act-btn:hover { background: rgba(30, 41, 59, 0.9); border-color: #38bdf8; color: #38bdf8; }
+        body.dark-mode .add-act-btn:hover { background: rgba(30, 41, 59, 0.9); border-color: #FF5A8C; color: #FF5A8C; }
 
         /* Modal จัดการกิจกรรม */
         .modal-overlay {
@@ -310,7 +366,7 @@
         .modal-box input {
             padding: 14px 18px; border-radius: 16px; border: 2px solid #e2e8f0; font-family: 'Kanit'; font-size: 15px; outline: none; transition: all 0.3s; background: rgba(255,255,255,0.8); font-weight: 600;
         }
-        .modal-box input:focus { border-color: #38bdf8; box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1); transform: translateY(-2px); }
+        .modal-box input:focus { border-color: #FF5A8C; box-shadow: 0 0 0 4px rgba(255, 90, 140, 0.1); transform: translateY(-2px); }
         body.dark-mode .modal-box input { background: rgba(15, 23, 42, 0.8); border-color: #475569; color: white; }
         
         .color-picker-container { display: flex; gap: 12px; margin-top: 5px; flex-wrap: wrap; justify-content: center;}
@@ -330,7 +386,7 @@
         body.dark-mode .history-title { color: #f1f5f9; }
         
         .history-actions { display: flex; gap: 8px; font-size: 12px; font-weight: 800; flex-wrap: wrap; }
-        .btn-copy-summary { color: #0284c7; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(56, 189, 248, 0.2); transition: 0.2s;}
+        .btn-copy-summary { color: #D6336C; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(255, 90, 140, 0.2); transition: 0.2s;}
         .btn-export-csv { color: #059669; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(16, 185, 129, 0.2); transition: 0.2s;}
         .btn-clear-history { color: #dc2626; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(239, 68, 68, 0.2); transition: 0.2s;}
         .btn-copy-summary:hover, .btn-export-csv:hover, .btn-clear-history:hover { transform: scale(1.05); filter: brightness(1.1); }
@@ -348,9 +404,9 @@
             font-size: 14px; color: #64748b; font-weight: 800; cursor: pointer;
             border: 2px dashed rgba(203, 213, 225, 0.8); border-radius: 16px; background: rgba(255,255,255,0.5); transition: all 0.3s;
         }
-        .pagination-btn:hover { background: #ffffff; color: #0ea5e9; border-color: #0ea5e9; border-style: solid; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(14, 165, 233, 0.1);}
+        .pagination-btn:hover { background: #ffffff; color: #C084FC; border-color: #C084FC; border-style: solid; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(192, 132, 252, 0.15);}
         body.dark-mode .pagination-btn { background: rgba(15, 23, 42, 0.5); border-color: rgba(71, 85, 105, 0.8); color: #94a3b8; }
-        body.dark-mode .pagination-btn:hover { background: #1e293b; color: #38bdf8; border-color: #38bdf8; }
+        body.dark-mode .pagination-btn:hover { background: #1e293b; color: #FF5A8C; border-color: #FF5A8C; }
 
         .success-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -367,11 +423,13 @@
 </head>
 <body>
 
+    <div class="bg-aurora"><span></span><span></span><span></span><span></span></div>
     <ul class="bg-bubbles" id="bg-bubbles"></ul>
+    <div class="bg-sparkles" id="bg-sparkles"></div>
 
     <div class="container">
         <div class="header-row">
-            <h1 class="app-title">✨ Break Recorder</h1>
+            <h1 class="app-title"><span class="title-emoji">✨</span> Break Recorder</h1>
             <div class="controls-group">
                 <div class="gender-toggle" id="gender-toggle" onclick="toggleGender(event)">👦 ชาย</div>
                 <div class="mute-toggle" id="mute-toggle" onclick="toggleMute(event)">🔊 เสียง</div>
@@ -471,17 +529,17 @@
                     <div class="color-dot theme-yellow" data-color="yellow" style="background: linear-gradient(135deg, #fef08a 0%, #facc15 100%);"></div>
                     <div class="color-dot theme-green" data-color="green" style="background: linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%);"></div>
                     <div class="color-dot theme-pink" data-color="pink" style="background: linear-gradient(135deg, #fecdd3 0%, #fb7185 100%);"></div>
-                    <div class="color-dot theme-blue" data-color="blue" style="background: linear-gradient(135deg, #bae6fd 0%, #38bdf8 100%);"></div>
+                    <div class="color-dot theme-blue" data-color="blue" style="background: linear-gradient(135deg, #bae6fd 0%, #FF5A8C 100%);"></div>
                     <div class="color-dot theme-mint" data-color="mint" style="background: linear-gradient(135deg, #a7f3d0 0%, #10b981 100%);"></div>
                 </div>
             </div>
             
             <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; background: rgba(241, 245, 249, 0.8); padding: 12px 16px; border-radius: 16px; border: 2px dashed #cbd5e1; transition: 0.3s;" id="toilet-label">
-                <input type="checkbox" id="act-istoilet" style="width: 20px; height: 20px; accent-color: #38bdf8;"> 🌟 ไม่หักโควตาเวลาหลัก
+                <input type="checkbox" id="act-istoilet" style="width: 20px; height: 20px; accent-color: #FF5A8C;"> 🌟 ไม่หักโควตาเวลาหลัก
             </label>
 
             <div class="modal-btn-group">
-                <button class="modal-btn" onclick="saveActivity()" style="background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: white;">💾 บันทึก</button>
+                <button class="modal-btn" onclick="saveActivity()" style="background: linear-gradient(135deg, #FF5A8C, #C084FC); color: white;">💾 บันทึก</button>
                 <button class="modal-btn" onclick="closeModal()" style="background: #e2e8f0; color: #475569;">❌ ยกเลิก</button>
             </div>
             <button id="btn-delete" class="modal-btn" onclick="deleteActivity()" style="background: #fee2e2; color: #ef4444; border: 2px dashed #ef4444; display: none; margin-top: 0;">🗑️ ลบกิจกรรมนี้</button>
@@ -493,9 +551,9 @@
         (function generateBubbles() {
             const container = document.getElementById('bg-bubbles');
             const tints = [
-                { tint: 'rgba(56, 189, 248, 0.5)', glow: 'rgba(56, 189, 248, 0.45)' },
+                { tint: 'rgba(255, 90, 140, 0.5)', glow: 'rgba(255, 90, 140, 0.45)' },
                 { tint: 'rgba(192, 132, 252, 0.5)', glow: 'rgba(192, 132, 252, 0.45)' },
-                { tint: 'rgba(251, 113, 133, 0.45)', glow: 'rgba(251, 113, 133, 0.4)' },
+                { tint: 'rgba(255, 183, 77, 0.45)', glow: 'rgba(255, 183, 77, 0.4)' },
                 { tint: 'rgba(52, 211, 153, 0.45)', glow: 'rgba(52, 211, 153, 0.4)' }
             ];
             const count = 16;
@@ -518,6 +576,25 @@
             }
         })();
 
+        // --- ⭐ สร้างดาวกระพริบลอยเบาๆ ทั่วจอ ---
+        (function generateSparkles() {
+            const container = document.getElementById('bg-sparkles');
+            const glyphs = ['✨', '⭐', '💫'];
+            const count = 12;
+            for (let i = 0; i < count; i++) {
+                const s = document.createElement('span');
+                s.textContent = glyphs[i % glyphs.length];
+                const duration = (2.5 + Math.random() * 3).toFixed(1);
+                const delay = (Math.random() * 5).toFixed(1);
+                const size = Math.round(12 + Math.random() * 16);
+                s.style.cssText = `
+                    left:${(Math.random() * 100).toFixed(1)}%; top:${(Math.random() * 100).toFixed(1)}%;
+                    font-size:${size}px; animation-duration:${duration}s; animation-delay:${delay}s;
+                `;
+                container.appendChild(s);
+            }
+        })();
+
         // --- 🎈 ระบบ Parallax ฟองสบู่ขยับตามเมาส์ ---
         document.addEventListener('mousemove', (e) => {
             const bubbles = document.getElementById('bg-bubbles');
@@ -528,7 +605,7 @@
 
         // --- 🎉 ระบบจุดพลุกระดาษฉลอง (Confetti) ---
         function fireConfetti() {
-            const colors = ['#ff758c', '#ff7eb3', '#c084fc', '#38bdf8', '#facc15', '#4ade80'];
+            const colors = ['#ff758c', '#ff7eb3', '#c084fc', '#FF5A8C', '#facc15', '#4ade80'];
             for(let i=0; i<60; i++) {
                 let conf = document.createElement('div');
                 conf.className = 'confetti';
@@ -550,7 +627,7 @@
             yellow: { grad: 'linear-gradient(135deg, #fef08a 0%, #facc15 100%)', text: '#713f12', expandLight: 'radial-gradient(circle, #fef9c3 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #451a03 0%, #0f172a 100%)', particle: '#facc15', hover: 'rgba(250, 204, 21, 0.4)' },
             green: { grad: 'linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%)', text: '#14532d', expandLight: 'radial-gradient(circle, #dcfce7 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #064e3b 0%, #0f172a 100%)', particle: '#4ade80', hover: 'rgba(74, 222, 128, 0.4)' },
             pink: { grad: 'linear-gradient(135deg, #fecdd3 0%, #fb7185 100%)', text: '#881337', expandLight: 'radial-gradient(circle, #ffe4e6 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #4c0519 0%, #0f172a 100%)', particle: '#fb7185', hover: 'rgba(251, 113, 133, 0.4)' },
-            blue: { grad: 'linear-gradient(135deg, #bae6fd 0%, #38bdf8 100%)', text: '#0c4a6e', expandLight: 'radial-gradient(circle, #e0f2fe 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #0c4a6e 0%, #0f172a 100%)', particle: '#38bdf8', hover: 'rgba(56, 189, 248, 0.4)' },
+            blue: { grad: 'linear-gradient(135deg, #bae6fd 0%, #FF5A8C 100%)', text: '#0c4a6e', expandLight: 'radial-gradient(circle, #e0f2fe 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #0c4a6e 0%, #0f172a 100%)', particle: '#FF5A8C', hover: 'rgba(255, 90, 140, 0.4)' },
             mint: { grad: 'linear-gradient(135deg, #a7f3d0 0%, #10b981 100%)', text: '#064e3b', expandLight: 'radial-gradient(circle, #ecfdf5 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #064e3b 0%, #0f172a 100%)', particle: '#10b981', hover: 'rgba(16, 185, 129, 0.4)' }
         };
 
@@ -672,9 +749,10 @@
             
             activities.forEach((act, index) => {
                 const t = themes[act.theme] || themes['purple'];
-                const card = document.createElement('div'); card.className = 'action-card glass-panel';
+                const card = document.createElement('div'); card.className = 'action-card glass-panel card-enter';
                 card.style.setProperty('--hover-color', t.hover); card.style.setProperty('--expand-bg-light', t.expandLight);
                 card.style.setProperty('--expand-bg-dark', t.expandDark); card.style.setProperty('--particle-color', t.particle);
+                card.style.animationDelay = `${index * 0.08}s`;
                 
                 card.onclick = (e) => { if(!e.target.closest('.edit-btn') && !e.target.closest('.back-box') && !e.target.closest('.drag-handle')) startBreak(index, card); };
 
@@ -876,7 +954,7 @@
                     const isZero = log.duration === 0;
                     const realIdx = logs.indexOf(log);
                     tableHtml += `<tr><td><strong>${log.action}</strong></td><td>${log.start}</td><td>${log.end}</td>
-                        <td><span style="color:${isZero ? '#38bdf8' : '#c084fc'}; font-weight:800;">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span></td>
+                        <td><span style="color:${isZero ? '#FF5A8C' : '#c084fc'}; font-weight:800;">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span></td>
                         <td style="white-space:nowrap;"><span style="cursor:pointer; margin-right:8px;" onclick="editLog(${realIdx})">✏️</span><span style="cursor:pointer;" onclick="deleteLog(${realIdx})">🗑️</span></td></tr>`;
                 });
                 tableHtml += '</tbody></table>'; logContainer.innerHTML = tableHtml;
@@ -892,7 +970,7 @@
             const progressPercent = Math.max(0, (remain / dailyQuota) * 100);
             const progressFill = document.getElementById('progress-fill');
             progressFill.style.width = `${progressPercent}%`;
-            progressFill.style.background = progressPercent < 25 ? 'linear-gradient(90deg, #f43f5e, #fb7185)' : 'linear-gradient(90deg, #38bdf8, #c084fc, #ff7eb3)';
+            progressFill.style.background = progressPercent < 25 ? 'linear-gradient(90deg, #f43f5e, #fb7185)' : 'linear-gradient(90deg, #FF5A8C, #c084fc, #ff7eb3)';
 
             checkQuotaWarning(remain, dailyQuota);
             renderWeekChartAndStreak(logs, dailyQuota);
@@ -1025,7 +1103,7 @@
         try {
             const manifestData = {
                 name: 'ระบบแจ้งเวลาพัก - Super WOW Edition', short_name: 'Break Time',
-                start_url: '.', display: 'standalone', background_color: '#f8fafc', theme_color: '#38bdf8'
+                start_url: '.', display: 'standalone', background_color: '#FFE3EE', theme_color: '#FF5A8C'
             };
             const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
             const link = document.createElement('link');
