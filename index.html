@@ -34,24 +34,23 @@
         }
         .bg-bubbles li {
             position: absolute; list-style: none; display: block;
-            width: 40px; height: 40px; background: rgba(56, 189, 248, 0.25);
-            bottom: -150px; animation: square 20s linear infinite; border-radius: 50%;
-            backdrop-filter: blur(2px); border: 1px solid rgba(255,255,255,0.3);
+            bottom: -160px; border-radius: 50%; animation: float-bubble linear infinite;
+            background: radial-gradient(circle at 30% 26%, rgba(255,255,255,0.95), var(--tint, rgba(56,189,248,0.45)) 42%, rgba(255,255,255,0) 78%);
+            border: 1px solid rgba(255,255,255,0.45);
+            box-shadow: 0 10px 24px -8px var(--glow, rgba(56,189,248,0.4)), inset 0 0 10px rgba(255,255,255,0.35);
+            backdrop-filter: blur(1px);
         }
         body.dark-mode .bg-bubbles li {
-            background: rgba(192, 132, 252, 0.2); border: 1px solid rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.15);
+            background: radial-gradient(circle at 30% 26%, rgba(255,255,255,0.55), var(--tint, rgba(192,132,252,0.4)) 45%, rgba(255,255,255,0) 78%);
         }
-        @keyframes square {
-            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.8; }
-            100% { transform: translateY(-120vh) scale(3) rotate(360deg); opacity: 0; }
+        @keyframes float-bubble {
+            0% { transform: translate(0, 0) scale(0.6) rotate(0deg); opacity: 0; }
+            12% { opacity: var(--peak, 0.85); }
+            50% { transform: translate(var(--dx, 40px), -58vh) scale(1.1) rotate(160deg); }
+            88% { opacity: var(--peak, 0.85); }
+            100% { transform: translate(calc(var(--dx, 40px) * -0.6), -125vh) scale(1.3) rotate(320deg); opacity: 0; }
         }
-        .bg-bubbles li:nth-child(1) { left: 10%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 15s; }
-        .bg-bubbles li:nth-child(2) { left: 25%; width: 90px; height: 90px; animation-delay: 2s; animation-duration: 25s; }
-        .bg-bubbles li:nth-child(3) { left: 45%; width: 40px; height: 40px; animation-delay: 4s; animation-duration: 20s; }
-        .bg-bubbles li:nth-child(4) { left: 65%; width: 70px; height: 70px; animation-delay: 0s; animation-duration: 18s; }
-        .bg-bubbles li:nth-child(5) { left: 85%; width: 50px; height: 50px; animation-delay: 3s; animation-duration: 22s; }
-        .bg-bubbles li:nth-child(6) { left: 55%; width: 30px; height: 30px; animation-delay: 7s; animation-duration: 12s; }
 
         .container {
             display: flex; flex-direction: column; gap: 18px;
@@ -99,6 +98,18 @@
         body.dark-mode .progress-bar { background: rgba(51, 65, 85, 0.6); }
         .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #38bdf8, #c084fc, #ff7eb3); background-size: 200% 200%; animation: gradient-shift 3s ease infinite; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); border-radius: 20px;}
 
+        .stats-row { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-top: 16px; border-top: 1px dashed rgba(203, 213, 225, 0.6); gap: 16px; }
+        body.dark-mode .stats-row { border-top-color: rgba(71, 85, 105, 0.6); }
+        .week-chart { display: flex; align-items: flex-end; gap: 5px; height: 46px; flex: 1; }
+        .week-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+        .week-bar { width: 100%; border-radius: 4px 4px 2px 2px; background: rgba(148, 163, 184, 0.4); min-height: 3px; }
+        .week-bar.today { background: linear-gradient(180deg, #38bdf8, #c084fc); }
+        .week-lbl { font-size: 9px; color: #94a3b8; font-weight: 700; }
+        .streak-box { display: flex; flex-direction: column; align-items: center; min-width: 64px; }
+        .streak-num { font-size: 24px; font-weight: 800; color: #f97316; line-height: 1; }
+        .streak-lbl { font-size: 9px; color: #64748b; font-weight: 700; margin-top: 3px; text-align: center; }
+        body.dark-mode .streak-lbl { color: #94a3b8; }
+
         /* ✨ อัปเกรด Title ให้เป็นแสงสีรุ้งวิ่งได้ */
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; flex-wrap: wrap; gap: 10px;}
         .app-title { 
@@ -111,16 +122,44 @@
         @keyframes gradient-shift { 0%{background-position: 0% 50%} 50%{background-position: 100% 50%} 100%{background-position: 0% 50%} }
 
         .controls-group { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; flex: 1; }
-        .theme-toggle, .mute-toggle, .gender-toggle {
+        .theme-toggle, .mute-toggle, .gender-toggle, .notify-toggle {
             font-size: 11px; font-weight: 700; padding: 8px 12px; border-radius: 30px;
             background: rgba(255, 255, 255, 0.8); color: #475569; cursor: pointer; user-select: none;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.5);
             backdrop-filter: blur(5px);
         }
-        body.dark-mode .theme-toggle, body.dark-mode .mute-toggle, body.dark-mode .gender-toggle { 
+        body.dark-mode .theme-toggle, body.dark-mode .mute-toggle, body.dark-mode .gender-toggle, body.dark-mode .notify-toggle { 
             background: rgba(30, 41, 59, 0.8); color: #cbd5e1; border-color: rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        .theme-toggle:hover, .mute-toggle:hover, .gender-toggle:hover { transform: translateY(-2px) scale(1.05); }
+        .theme-toggle:hover, .mute-toggle:hover, .gender-toggle:hover, .notify-toggle:hover { transform: translateY(-2px) scale(1.05); }
+        .notify-toggle.active { background: rgba(56, 189, 248, 0.25); color: #0284c7; border-color: #38bdf8; }
+        body.dark-mode .notify-toggle.active { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+        .install-toggle { display: none; }
+        .volume-slider { width: 60px; vertical-align: middle; accent-color: #38bdf8; cursor: pointer; }
+
+        .drag-handle {
+            position: absolute; top: 15px; left: 15px; width: 32px; height: 32px; z-index: 10;
+            display: flex; align-items: center; justify-content: center; cursor: grab;
+            font-size: 18px; color: #94a3b8; background: rgba(255,255,255,0.7); border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .drag-handle:active { cursor: grabbing; }
+        body.dark-mode .drag-handle { background: rgba(51, 65, 85, 0.8); color: #cbd5e1; }
+        .action-card.expanded .drag-handle { display: none; }
+        .action-card.drag-over { outline: 3px dashed #38bdf8; outline-offset: 4px; }
+
+        .btn-backup { color: #7c3aed; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(124, 58, 237, 0.15); transition: 0.2s; }
+        .btn-import { color: #ea580c; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(234, 88, 12, 0.15); transition: 0.2s; }
+        .btn-backup:hover, .btn-import:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+        .heatmap-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 4px; }
+        .heatmap-cell { aspect-ratio: 1; border-radius: 5px; background: rgba(148, 163, 184, 0.15); }
+        body.dark-mode .heatmap-cell { background: rgba(71, 85, 105, 0.3); }
+        .heatmap-cell.lvl-1 { background: rgba(56, 189, 248, 0.35); }
+        .heatmap-cell.lvl-2 { background: rgba(56, 189, 248, 0.6); }
+        .heatmap-cell.lvl-3 { background: linear-gradient(135deg, #38bdf8, #c084fc); }
+        .heatmap-cell.lvl-over { background: linear-gradient(135deg, #f43f5e, #fb7185); }
+        .heatmap-lbl-row { display: flex; justify-content: flex-end; align-items: center; gap: 6px; font-size: 10px; color: #94a3b8; margin-top: 8px; font-weight: 700; }
 
         /* ✨ การ์ดปุ่มกด + เอฟเฟกต์เรืองแสงทะลุกระจก */
         .action-card {
@@ -328,9 +367,7 @@
 </head>
 <body>
 
-    <ul class="bg-bubbles" id="bg-bubbles">
-        <li></li><li></li><li></li><li></li><li></li><li></li>
-    </ul>
+    <ul class="bg-bubbles" id="bg-bubbles"></ul>
 
     <div class="container">
         <div class="header-row">
@@ -338,7 +375,10 @@
             <div class="controls-group">
                 <div class="gender-toggle" id="gender-toggle" onclick="toggleGender(event)">👦 ชาย</div>
                 <div class="mute-toggle" id="mute-toggle" onclick="toggleMute(event)">🔊 เสียง</div>
+                <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.1" value="1" title="ระดับเสียงแจ้งเตือน" oninput="setVolume(this.value)">
+                <div class="notify-toggle" id="notify-toggle" onclick="toggleNotify(event)">🔔 แจ้งเตือน</div>
                 <div class="theme-toggle" onclick="toggleDarkMode(event)">🌙 ธีม</div>
+                <div class="theme-toggle install-toggle" id="install-btn" onclick="installApp()">📲 ติดตั้งแอป</div>
             </div>
         </div>
 
@@ -360,6 +400,13 @@
                 </div>
             </div>
             <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="stats-row">
+                <div class="week-chart" id="week-chart"></div>
+                <div class="streak-box">
+                    <span class="streak-num" id="streak-num">0</span>
+                    <span class="streak-lbl">วันติด<br>ไม่เกินโควตา</span>
+                </div>
+            </div>
         </div>
 
         <div id="activities-container" style="display: flex; flex-direction: column; gap: 18px;"></div>
@@ -372,11 +419,28 @@
                 <div class="history-actions">
                     <span class="btn-copy-summary" onclick="copySummary()">📋 คัดลอก</span>
                     <span class="btn-export-csv" onclick="exportCSV()">📥 CSV</span>
+                    <span class="btn-backup" onclick="exportBackup()">💾 สำรอง</span>
+                    <label class="btn-import" for="import-file">📤 นำเข้า</label>
+                    <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importBackup(event)">
                     <span class="btn-clear-history" onclick="clearLogs()">🗑️ ล้าง</span>
                 </div>
             </div>
             <div id="log-container"></div>
             <div id="pagination-container"></div>
+        </div>
+
+        <div class="history-box glass-panel">
+            <div class="history-title"><span>📅 ภาพรวมรายเดือน</span></div>
+            <div class="heatmap-grid" id="heatmap-grid"></div>
+            <div class="heatmap-lbl-row">
+                <span>น้อย</span>
+                <div class="heatmap-cell" style="width:12px; height:12px;"></div>
+                <div class="heatmap-cell lvl-1" style="width:12px; height:12px;"></div>
+                <div class="heatmap-cell lvl-2" style="width:12px; height:12px;"></div>
+                <div class="heatmap-cell lvl-3" style="width:12px; height:12px;"></div>
+                <div class="heatmap-cell lvl-over" style="width:12px; height:12px;"></div>
+                <span>เกินโควตา</span>
+            </div>
         </div>
     </div>
 
@@ -425,6 +489,35 @@
     </div>
 
     <script>
+        // --- 🫧 สร้างฟองสบู่แบบสุ่ม ให้ดูมีมิติและเป็นธรรมชาติมากขึ้น ---
+        (function generateBubbles() {
+            const container = document.getElementById('bg-bubbles');
+            const tints = [
+                { tint: 'rgba(56, 189, 248, 0.5)', glow: 'rgba(56, 189, 248, 0.45)' },
+                { tint: 'rgba(192, 132, 252, 0.5)', glow: 'rgba(192, 132, 252, 0.45)' },
+                { tint: 'rgba(251, 113, 133, 0.45)', glow: 'rgba(251, 113, 133, 0.4)' },
+                { tint: 'rgba(52, 211, 153, 0.45)', glow: 'rgba(52, 211, 153, 0.4)' }
+            ];
+            const count = 16;
+            for (let i = 0; i < count; i++) {
+                const li = document.createElement('li');
+                const size = Math.round(14 + Math.random() * 76);
+                const c = tints[i % tints.length];
+                const duration = (16 + Math.random() * 16).toFixed(1);
+                const delay = (Math.random() * -duration).toFixed(1);
+                const drift = Math.round((Math.random() - 0.5) * 220);
+                const peak = (0.5 + Math.random() * 0.4).toFixed(2);
+                li.style.cssText = `
+                    left:${(Math.random() * 100).toFixed(1)}%;
+                    width:${size}px; height:${size}px;
+                    --tint:${c.tint}; --glow:${c.glow};
+                    --dx:${drift}px; --peak:${peak};
+                    animation-duration:${duration}s; animation-delay:${delay}s;
+                `;
+                container.appendChild(li);
+            }
+        })();
+
         // --- 🎈 ระบบ Parallax ฟองสบู่ขยับตามเมาส์ ---
         document.addEventListener('mousemove', (e) => {
             const bubbles = document.getElementById('bg-bubbles');
@@ -473,26 +566,31 @@
         let isMuted = localStorage.getItem('is_muted') === 'true';
         let gender = localStorage.getItem('gender') || 'male';
         let editingIndex = -1;
+        let notifyEnabled = localStorage.getItem('notify_enabled') === 'true' && 'Notification' in window && Notification.permission === 'granted';
+        let soundVolume = localStorage.getItem('sound_volume') !== null ? parseFloat(localStorage.getItem('sound_volume')) : 1;
+        let dragSrcIndex = null;
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
-            if (isMuted) return;
+            if (isMuted || soundVolume <= 0) return;
             try {
                 const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
                 osc.connect(gain); gain.connect(audioCtx.destination);
                 if (type === 'pop') { 
                     osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); 
                     osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1); 
-                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.2 * soundVolume, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
                     osc.start(); osc.stop(audioCtx.currentTime + 0.1);
                 } else if (type === 'welcome') { 
                     osc.type = 'triangle'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); 
                     osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1); osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.2); 
-                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                    gain.gain.setValueAtTime(0.15 * soundVolume, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
                     osc.start(); osc.stop(audioCtx.currentTime + 0.4);
                 }
             } catch(e) {}
         }
+
+        function setVolume(v) { soundVolume = parseFloat(v); localStorage.setItem('sound_volume', soundVolume); }
 
         function triggerParticles(cardElement, color, isBubble) {
             for (let i = 0; i < 20; i++) {
@@ -517,10 +615,33 @@
         }
         function toggleMute(event) { event.stopPropagation(); isMuted = !isMuted; localStorage.setItem('is_muted', isMuted); updateHeaderTexts(); }
         function toggleGender(event) { event.stopPropagation(); gender = gender === 'male' ? 'female' : 'male'; localStorage.setItem('gender', gender); updateHeaderTexts(); }
-        
+
+        function toggleNotify(event) {
+            event.stopPropagation();
+            if (!('Notification' in window)) { alert('เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน'); return; }
+            if (notifyEnabled) {
+                notifyEnabled = false; localStorage.setItem('notify_enabled', 'false'); updateHeaderTexts(); return;
+            }
+            if (Notification.permission === 'granted') {
+                notifyEnabled = true; localStorage.setItem('notify_enabled', 'true'); updateHeaderTexts();
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(perm => {
+                    notifyEnabled = perm === 'granted';
+                    localStorage.setItem('notify_enabled', notifyEnabled);
+                    updateHeaderTexts();
+                });
+            } else {
+                alert('การแจ้งเตือนถูกปิดกั้นไว้ กรุณาเปิดสิทธิ์แจ้งเตือนในตั้งค่าเบราว์เซอร์');
+            }
+        }
+
         function updateHeaderTexts() {
             document.getElementById('mute-toggle').innerHTML = isMuted ? '🔇 เสียง' : '🔊 เสียง';
             document.getElementById('gender-toggle').innerHTML = gender === 'male' ? '👦 ชาย' : '👩 หญิง';
+            document.getElementById('volume-slider').value = soundVolume;
+            const notifyBtn = document.getElementById('notify-toggle');
+            notifyBtn.innerHTML = notifyEnabled ? '🔔 แจ้งเตือนแล้ว' : '🔕 แจ้งเตือน';
+            notifyBtn.classList.toggle('active', notifyEnabled);
         }
 
         function getThaiTimeString(dateObj = new Date()) {
@@ -555,9 +676,10 @@
                 card.style.setProperty('--hover-color', t.hover); card.style.setProperty('--expand-bg-light', t.expandLight);
                 card.style.setProperty('--expand-bg-dark', t.expandDark); card.style.setProperty('--particle-color', t.particle);
                 
-                card.onclick = (e) => { if(!e.target.closest('.edit-btn') && !e.target.closest('.back-box')) startBreak(index, card); };
+                card.onclick = (e) => { if(!e.target.closest('.edit-btn') && !e.target.closest('.back-box') && !e.target.closest('.drag-handle')) startBreak(index, card); };
 
                 card.innerHTML = `
+                    <div class="drag-handle" draggable="true" title="ลากเพื่อจัดเรียงลำดับ">⠿</div>
                     <div class="edit-btn" onclick="openModal(${index}, event)">✏️</div>
                     <div class="capsule" style="background: ${t.grad}; color: ${t.text};">
                         <span>${act.name}</span>
@@ -573,6 +695,22 @@
                         <div class="success-text result-text"></div>
                     </div>
                 `;
+
+                const handle = card.querySelector('.drag-handle');
+                handle.addEventListener('dragstart', (e) => { dragSrcIndex = index; e.stopPropagation(); e.dataTransfer.effectAllowed = 'move'; });
+                card.addEventListener('dragover', (e) => { e.preventDefault(); card.classList.add('drag-over'); });
+                card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+                card.addEventListener('drop', (e) => {
+                    e.preventDefault(); card.classList.remove('drag-over');
+                    if (dragSrcIndex === null || dragSrcIndex === index) return;
+                    let acts = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
+                    const [moved] = acts.splice(dragSrcIndex, 1);
+                    acts.splice(index, 0, moved);
+                    localStorage.setItem('activities', JSON.stringify(acts));
+                    dragSrcIndex = null;
+                    renderActivities();
+                });
+
                 container.appendChild(card);
             });
         }
@@ -644,7 +782,7 @@
             const suffix = gender === 'male' ? 'ครับ' : 'ค่ะ'; const now = new Date(); const timeString = getThaiTimeString(now);
             const textToCopy = `${act.name} ${timeString} ${suffix}`; performCopy(textToCopy);
 
-            activeBreak = { action: act.name, startTime: now.getTime(), startStr: timeString, limit: act.limit, isToilet: act.isToilet };
+            activeBreak = { action: act.name, startTime: now.getTime(), startStr: timeString, limit: act.limit, isToilet: act.isToilet, notified: false };
 
             const timerDisplay = cardElement.querySelector('.live-timer'); timerDisplay.textContent = '00:00';
             if (timerInterval) clearInterval(timerInterval);
@@ -652,6 +790,12 @@
                 if (!activeBreak) return;
                 const elapsedSecs = Math.floor((Date.now() - activeBreak.startTime) / 1000);
                 timerDisplay.textContent = `${String(Math.floor(elapsedSecs / 60)).padStart(2, '0')}:${String(elapsedSecs % 60).padStart(2, '0')}`;
+                if (!activeBreak.notified && activeBreak.limit > 0 && !activeBreak.isToilet && elapsedSecs >= activeBreak.limit * 60) {
+                    activeBreak.notified = true;
+                    if (notifyEnabled) {
+                        new Notification('⏰ ถึงเวลาที่ตั้งไว้แล้ว', { body: `${activeBreak.action} เกินลิมิต ${activeBreak.limit} นาทีแล้ว กลับมาได้เลย` });
+                    }
+                }
             }, 1000);
 
             showSuccessOverlay(cardElement, `เริ่มพักแล้ว! ${act.emoji}`, textToCopy);
@@ -727,11 +871,13 @@
                 logContainer.innerHTML = '<div class="empty-log">เริ่มลุยงานกันเลย! 🚀</div>'; paginationContainer.innerHTML = '';
             } else {
                 const displayedLogs = showAllLogs ? todayLogs : todayLogs.slice(0, 5);
-                let tableHtml = `<table class="history-table"><thead><tr><th>กิจกรรม</th><th>เริ่ม</th><th>กลับ</th><th>รวม</th></tr></thead><tbody>`;
+                let tableHtml = `<table class="history-table"><thead><tr><th>กิจกรรม</th><th>เริ่ม</th><th>กลับ</th><th>รวม</th><th></th></tr></thead><tbody>`;
                 displayedLogs.forEach(log => {
                     const isZero = log.duration === 0;
+                    const realIdx = logs.indexOf(log);
                     tableHtml += `<tr><td><strong>${log.action}</strong></td><td>${log.start}</td><td>${log.end}</td>
-                        <td><span style="color:${isZero ? '#38bdf8' : '#c084fc'}; font-weight:800;">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span></td></tr>`;
+                        <td><span style="color:${isZero ? '#38bdf8' : '#c084fc'}; font-weight:800;">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span></td>
+                        <td style="white-space:nowrap;"><span style="cursor:pointer; margin-right:8px;" onclick="editLog(${realIdx})">✏️</span><span style="cursor:pointer;" onclick="deleteLog(${realIdx})">🗑️</span></td></tr>`;
                 });
                 tableHtml += '</tbody></table>'; logContainer.innerHTML = tableHtml;
 
@@ -747,6 +893,155 @@
             const progressFill = document.getElementById('progress-fill');
             progressFill.style.width = `${progressPercent}%`;
             progressFill.style.background = progressPercent < 25 ? 'linear-gradient(90deg, #f43f5e, #fb7185)' : 'linear-gradient(90deg, #38bdf8, #c084fc, #ff7eb3)';
+
+            checkQuotaWarning(remain, dailyQuota);
+            renderWeekChartAndStreak(logs, dailyQuota);
+            renderHeatmap(logs, dailyQuota);
+        }
+
+        function editLog(realIndex) {
+            let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
+            const log = logs[realIndex]; if (!log) return;
+            const newAction = prompt('แก้ไขชื่อกิจกรรม', log.action);
+            if (newAction === null) return;
+            const newDuration = prompt('แก้ไขเวลาที่ใช้ (นาที)', log.duration);
+            if (newDuration === null) return;
+            log.action = newAction.trim() || log.action;
+            const d = parseInt(newDuration);
+            log.duration = isNaN(d) ? log.duration : Math.max(0, d);
+            logs[realIndex] = log;
+            localStorage.setItem('break_logs', JSON.stringify(logs));
+            renderDashboardAndLogs();
+        }
+
+        function deleteLog(realIndex) {
+            if (!confirm('ลบรายการนี้ใช่หรือไม่?')) return;
+            let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
+            logs.splice(realIndex, 1);
+            localStorage.setItem('break_logs', JSON.stringify(logs));
+            renderDashboardAndLogs();
+        }
+
+        function checkQuotaWarning(remain, dailyQuota) {
+            if (!notifyEnabled) return;
+            const todayKey = new Date().toDateString();
+            if (remain <= 0 && localStorage.getItem('quota_zero_notified') !== todayKey) {
+                localStorage.setItem('quota_zero_notified', todayKey);
+                new Notification('🔋 โควตาหมดแล้ว', { body: `ใช้เวลาพักครบ ${dailyQuota} นาทีของวันนี้แล้ว` });
+            } else if (remain > 0 && remain <= 10 && localStorage.getItem('quota_warn_notified') !== todayKey) {
+                localStorage.setItem('quota_warn_notified', todayKey);
+                new Notification('⚠️ โควตาใกล้หมดแล้ว', { body: `เหลือเวลาพักอีกแค่ ${remain} นาทีของวันนี้` });
+            }
+        }
+
+        function renderHeatmap(logs, dailyQuota) {
+            const grid = document.getElementById('heatmap-grid');
+            const cells = [];
+            for (let i = 34; i >= 0; i--) {
+                const d = new Date(); d.setDate(d.getDate() - i);
+                const dStr = d.toDateString();
+                const total = logs.filter(l => l.date === dStr).reduce((s, l) => s + l.duration, 0);
+                let cls = 'heatmap-cell';
+                if (total > dailyQuota) cls += ' lvl-over';
+                else if (total > dailyQuota * 0.6) cls += ' lvl-3';
+                else if (total > dailyQuota * 0.25) cls += ' lvl-2';
+                else if (total > 0) cls += ' lvl-1';
+                const dateLbl = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+                cells.push(`<div class="${cls}" title="${dateLbl}: ${total} นาที"></div>`);
+            }
+            grid.innerHTML = cells.join('');
+        }
+
+        function renderWeekChartAndStreak(logs, dailyQuota) {
+            const dayLbls = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+            const days = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date(); d.setDate(d.getDate() - i);
+                const dStr = d.toDateString();
+                const total = logs.filter(l => l.date === dStr).reduce((s, l) => s + l.duration, 0);
+                days.push({ total, isToday: i === 0, label: dayLbls[d.getDay()] });
+            }
+            const max = Math.max(...days.map(d => d.total), 1);
+            const chartEl = document.getElementById('week-chart');
+            chartEl.innerHTML = days.map(d => `
+                <div class="week-col">
+                    <div class="week-bar ${d.isToday ? 'today' : ''}" style="height:${Math.max((d.total / max) * 100, 4)}%" title="${d.total} นาที"></div>
+                    <span class="week-lbl">${d.label}</span>
+                </div>`).join('');
+
+            let streak = 0;
+            for (let i = 0; i < 60; i++) {
+                const d = new Date(); d.setDate(d.getDate() - i);
+                const dStr = d.toDateString();
+                const dayLogs = logs.filter(l => l.date === dStr);
+                if (dayLogs.length === 0) { if (i === 0) continue; break; }
+                const total = dayLogs.reduce((s, l) => s + l.duration, 0);
+                if (total > dailyQuota) break;
+                streak++;
+            }
+            document.getElementById('streak-num').textContent = streak;
+        }
+
+        window.addEventListener('beforeunload', (e) => {
+            if (activeBreak) { e.preventDefault(); e.returnValue = ''; }
+        });
+
+        function exportBackup() {
+            const data = {
+                activities: JSON.parse(localStorage.getItem('activities')) || defaultActivities,
+                break_logs: JSON.parse(localStorage.getItem('break_logs') || '[]'),
+                daily_quota: localStorage.getItem('daily_quota') || '60',
+                gender: gender, is_muted: isMuted, sound_volume: soundVolume
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url;
+            a.download = `break-time-backup-${new Date().toISOString().slice(0,10)}.json`;
+            a.click(); URL.revokeObjectURL(url);
+        }
+
+        function importBackup(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (!confirm('นำเข้าข้อมูลนี้จะแทนที่ข้อมูลปัจจุบันทั้งหมด ยืนยันหรือไม่?')) return;
+                    if (data.activities) localStorage.setItem('activities', JSON.stringify(data.activities));
+                    if (data.break_logs) localStorage.setItem('break_logs', JSON.stringify(data.break_logs));
+                    if (data.daily_quota) localStorage.setItem('daily_quota', data.daily_quota);
+                    if (typeof data.is_muted !== 'undefined') localStorage.setItem('is_muted', data.is_muted);
+                    if (data.gender) localStorage.setItem('gender', data.gender);
+                    if (typeof data.sound_volume !== 'undefined') localStorage.setItem('sound_volume', data.sound_volume);
+                    alert('นำเข้าข้อมูลสำเร็จ! กำลังโหลดหน้าใหม่');
+                    location.reload();
+                } catch (err) {
+                    alert('ไฟล์ไม่ถูกต้อง ไม่สามารถนำเข้าได้');
+                }
+            };
+            reader.readAsText(file); event.target.value = '';
+        }
+
+        try {
+            const manifestData = {
+                name: 'ระบบแจ้งเวลาพัก - Super WOW Edition', short_name: 'Break Time',
+                start_url: '.', display: 'standalone', background_color: '#f8fafc', theme_color: '#38bdf8'
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+            const link = document.createElement('link');
+            link.rel = 'manifest'; link.href = URL.createObjectURL(manifestBlob);
+            document.head.appendChild(link);
+        } catch (e) {}
+
+        let deferredInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); deferredInstallPrompt = e;
+            document.getElementById('install-btn').style.display = 'inline-block';
+        });
+        function installApp() {
+            if (!deferredInstallPrompt) return;
+            deferredInstallPrompt.prompt();
+            deferredInstallPrompt.userChoice.then(() => { deferredInstallPrompt = null; document.getElementById('install-btn').style.display = 'none'; });
         }
 
         window.onload = () => { updateHeaderTexts(); renderActivities(); renderDashboardAndLogs(); };
