@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแจ้งเวลาพัก - Super Ultimate Edition</title>
+    <title>ระบบแจ้งเวลาพัก - Super WOW Edition</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -493,7 +493,7 @@
 
     <div class="container">
         <div class="header-row">
-            <h1 class="app-title"><span class="title-emoji">✨</span> Break Recorder</h1>
+            <h1 class="app-title"><span class="title-emoji" id="title-emoji">✨</span> Break Recorder</h1>
             <div class="controls-group">
                 <div class="gender-toggle" id="gender-toggle" onclick="toggleGender(event)">👦 ชาย</div>
                 <div class="mute-toggle" id="mute-toggle" onclick="toggleMute(event)">🔊 เสียง</div>
@@ -649,10 +649,19 @@
             }
         })();
 
-        // --- ⭐ สร้างดาวกระพริบลอยเบาๆ ทั่วจอ ---
-        (function generateSparkles() {
+        // --- ⭐ สร้างดาวกระพริบลอยเบาๆ ทั่วจอ (เปลี่ยนไอคอนตามธีม) ---
+        const SPARKLE_GLYPHS = {
+            day: ['✨', '⭐', '💫'],
+            night: ['🌙', '⭐', '✨'],
+            ocean: ['🫧', '🐚', '✨'],
+            forest: ['🍃', '🦋', '✨'],
+            sunset: ['🌅', '🌸', '✨']
+        };
+        function renderSparkles(theme) {
             const container = document.getElementById('bg-sparkles');
-            const glyphs = ['✨', '⭐', '💫'];
+            if (!container) return;
+            container.innerHTML = '';
+            const glyphs = SPARKLE_GLYPHS[theme] || SPARKLE_GLYPHS.day;
             const count = 12;
             for (let i = 0; i < count; i++) {
                 const s = document.createElement('span');
@@ -666,7 +675,7 @@
                 `;
                 container.appendChild(s);
             }
-        })();
+        }
 
         // --- 🎈 ระบบ Parallax ฟองสบู่ขยับตามเมาส์ ---
         document.addEventListener('mousemove', (e) => {
@@ -677,8 +686,16 @@
         });
 
         // --- 🎉 ระบบจุดพลุกระดาษฉลอง (Confetti) ---
+        const CONFETTI_COLORS = {
+            day: ['#ff758c', '#ff7eb3', '#c084fc', '#FF5A8C', '#facc15', '#4ade80'],
+            night: ['#FF5A8C', '#C084FC', '#38bdf8', '#facc15', '#a78bfa', '#f8fafc'],
+            ocean: ['#FF7A59', '#06B6D4', '#FFD666', '#ffffff', '#0891B2', '#FFB199'],
+            forest: ['#F5A623', '#4CAF7D', '#E98CA6', '#FFF1B5', '#8BC34A', '#D8895A'],
+            sunset: ['#FF4D8D', '#8B5CF6', '#FFAF59', '#FFD6EB', '#C77DFF', '#FF8FA3']
+        };
         function fireConfetti() {
-            const colors = ['#ff758c', '#ff7eb3', '#c084fc', '#FF5A8C', '#facc15', '#4ade80'];
+            const currentTheme = document.body.getAttribute('data-theme') || 'day';
+            const colors = CONFETTI_COLORS[currentTheme] || CONFETTI_COLORS.day;
             for(let i=0; i<60; i++) {
                 let conf = document.createElement('div');
                 conf.className = 'confetti';
@@ -774,6 +791,9 @@
             localStorage.setItem('site_theme', theme);
             document.querySelectorAll('.theme-swatch').forEach(s => s.classList.toggle('selected', s.dataset.theme === theme));
             document.getElementById('theme-btn').innerHTML = `${THEME_EMOJIS[theme] || '🎨'} ธีม`;
+            const titleEmoji = document.getElementById('title-emoji');
+            if (titleEmoji) titleEmoji.textContent = THEME_EMOJIS[theme] || '✨';
+            renderSparkles(theme);
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (metaTheme) metaTheme.setAttribute('content', THEME_META_COLORS[theme] || THEME_META_COLORS.day);
             applyModalThemeColors();
