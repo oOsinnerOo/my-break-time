@@ -21,7 +21,7 @@
             --aurora-1: #FFC1D9; --aurora-2: #D8B4FE; --aurora-3: #FFE3A3; --aurora-4: #A7F3D0;
         }
         body[data-theme="night"] {
-            --bg-gradient: linear-gradient(135deg, #2B1B3D 0%, #442A5E 45%, #5C3A87 100%);
+            --bg-gradient: linear-gradient(135deg, #2B1B3D 0%, #3A2450 35%, #442A5E 70%, #5C3A87 100%);
         }
         body[data-theme="ocean"] {
             --bg-gradient: linear-gradient(135deg, #E0F7FA 0%, #B3ECF5 35%, #A0DEF0 70%, #CDEFFF 100%);
@@ -59,6 +59,7 @@
             padding: 20px; margin: 0; min-height: 100vh;
             background: linear-gradient(135deg, #FFF6E9 0%, #FFE3EE 35%, #F1E6FF 70%, #E6F3FF 100%);
             background: var(--bg-gradient, linear-gradient(135deg, #FFF6E9 0%, #FFE3EE 35%, #F1E6FF 70%, #E6F3FF 100%));
+            transition: background 0.7s ease, color 0.5s ease;
             overflow-x: hidden; perspective: 1000px;
         }
         
@@ -190,6 +191,22 @@
 
         .stats-row { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-top: 16px; border-top: 1px dashed rgba(203, 213, 225, 0.6); gap: 16px; }
         body[data-theme="night"] .stats-row { border-top-color: rgba(71, 85, 105, 0.6); }
+        .badges-section { margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(203, 213, 225, 0.6); }
+        body[data-theme="night"] .badges-section { border-top-color: rgba(71, 85, 105, 0.6); }
+        .badges-title { font-size: 12px; font-weight: 700; color: #64748b; }
+        body[data-theme="night"] .badges-title { color: #94a3b8; }
+        .badges-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+        .badge-item {
+            width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            font-size: 19px; background: rgba(148, 163, 184, 0.12); filter: grayscale(1); opacity: 0.5;
+            transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .badge-item.unlocked {
+            background: linear-gradient(135deg, rgba(var(--accent-rgb),0.18), rgba(var(--accent2-rgb),0.18));
+            filter: none; opacity: 1; animation: badge-pop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .badge-item:hover { transform: scale(1.15) rotate(-6deg); }
+        @keyframes badge-pop { 0% { transform: scale(0.3) rotate(-20deg); } 60% { transform: scale(1.2) rotate(8deg); } 100% { transform: scale(1) rotate(0); } }
         .week-chart { display: flex; align-items: flex-end; gap: 5px; height: 46px; flex: 1; }
         .week-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
         .week-bar { width: 100%; border-radius: 4px 4px 2px 2px; background: rgba(148, 163, 184, 0.4); min-height: 3px; }
@@ -212,6 +229,8 @@
         @keyframes gradient-shift { 0%{background-position: 0% 50%} 50%{background-position: 100% 50%} 100%{background-position: 0% 50%} }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .app-title .title-emoji { display: inline-block; animation: title-bounce 2.2s ease-in-out infinite; }
+        .greeting-line { margin: 2px 0 0; font-size: 13px; font-weight: 500; color: #64748b; }
+        body[data-theme="night"] .greeting-line { color: #94a3b8; }
 
         .controls-group { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; flex: 1; }
         .theme-toggle, .mute-toggle, .gender-toggle, .notify-toggle {
@@ -232,14 +251,22 @@
         .theme-picker-wrap { position: relative; }
         .theme-menu {
             position: absolute; top: calc(100% + 8px); right: 0; z-index: 50;
-            display: flex; gap: 8px; padding: 10px; border-radius: 20px;
+            display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 20px;
             background: rgba(255,255,255,0.97); box-shadow: 0 15px 35px rgba(0,0,0,0.18);
             border: 1px solid rgba(255,255,255,0.8);
             opacity: 0; visibility: hidden; transform: translateY(-8px) scale(0.9); transform-origin: top right;
             transition: opacity 0.22s, visibility 0.22s, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-width: 230px;
         }
+        .theme-swatch-row { display: flex; gap: 8px; }
         body[data-theme="night"] .theme-menu { background: rgba(30, 41, 59, 0.98); border-color: rgba(255,255,255,0.1); }
         .theme-menu.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .auto-theme-row {
+            display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #64748b;
+            border-top: 1px solid rgba(203, 213, 225, 0.6); padding-top: 10px; cursor: pointer;
+        }
+        body[data-theme="night"] .auto-theme-row { color: #94a3b8; border-top-color: rgba(71, 85, 105, 0.6); }
+        .auto-theme-row input { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
         .theme-swatch {
             width: 38px; height: 38px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;
             display: flex; align-items: center; justify-content: center; font-size: 16px;
@@ -423,6 +450,40 @@
         }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
         body[data-theme="night"] .modal-box { background: rgba(30, 41, 59, 0.95); color: #f8fafc; border: 1px solid rgba(255,255,255,0.1); }
+
+        .dialog-icon { font-size: 44px; text-align: center; animation: title-bounce 2.2s ease-in-out infinite; }
+        #dialog-input {
+            padding: 14px 18px; border-radius: 16px; border: 2px solid #e2e8f0; font-family: 'Kanit'; font-size: 15px;
+            outline: none; transition: all 0.3s; background: rgba(255,255,255,0.8); font-weight: 600; width: 100%;
+        }
+        #dialog-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.1); }
+        body[data-theme="night"] #dialog-input { background: rgba(15, 23, 42, 0.8); border-color: #475569; color: white; }
+
+        .toast-container {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 200000;
+            display: flex; flex-direction: column-reverse; gap: 10px; align-items: center; pointer-events: none;
+            width: 100%; padding: 0 16px;
+        }
+        .toast {
+            background: rgba(255,255,255,0.97); color: #334155; padding: 13px 18px; border-radius: 18px;
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+            border: 1px solid rgba(255,255,255,0.6);
+            animation: toast-in 0.35s cubic-bezier(0.34,1.56,0.64,1); pointer-events: auto;
+            font-size: 14px; font-weight: 600; max-width: 420px; backdrop-filter: blur(10px);
+        }
+        body[data-theme="night"] .toast { background: rgba(30, 41, 59, 0.97); color: #f1f5f9; border-color: rgba(255,255,255,0.1); }
+        .toast.hide { animation: toast-out 0.3s ease forwards; }
+        @keyframes toast-in { from { opacity: 0; transform: translateY(24px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes toast-out { to { opacity: 0; transform: translateY(10px) scale(0.9); } }
+        .toast-success { border-left: 4px solid #4CAF7D; }
+        .toast-warning { border-left: 4px solid #f59e0b; }
+        .toast-error { border-left: 4px solid #ef4444; }
+        .toast-action-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; border: none;
+            font-weight: 700; padding: 6px 14px; border-radius: 10px; cursor: pointer; font-family: 'Kanit'; font-size: 13px;
+            flex-shrink: 0; transition: transform 0.2s;
+        }
+        .toast-action-btn:active { transform: scale(0.92); }
         
         .input-group { display: flex; flex-direction: column; gap: 6px; }
         .input-label { font-size: 13px; font-weight: 800; color: #475569; }
@@ -432,6 +493,17 @@
         }
         .modal-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.1); transform: translateY(-2px); }
         body[data-theme="night"] .modal-box input { background: rgba(15, 23, 42, 0.8); border-color: #475569; color: white; }
+
+        .emoji-picker {
+            display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 60; margin-top: 6px;
+            background: rgba(255,255,255,0.98); border-radius: 16px; padding: 8px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.18); border: 1px solid rgba(255,255,255,0.8);
+            grid-template-columns: repeat(6, 1fr); gap: 2px; max-height: 160px; overflow-y: auto;
+        }
+        .emoji-picker.open { display: grid; }
+        body[data-theme="night"] .emoji-picker { background: rgba(30,41,59,0.98); border-color: rgba(255,255,255,0.1); }
+        .emoji-opt { background: none; border: none; font-size: 19px; padding: 6px 0; border-radius: 8px; cursor: pointer; transition: transform 0.15s, background 0.15s; }
+        .emoji-opt:hover { background: rgba(var(--accent-rgb), 0.15); transform: scale(1.25); }
         
         .color-picker-container { display: flex; gap: 12px; margin-top: 5px; flex-wrap: wrap; justify-content: center;}
         .color-dot { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -452,6 +524,8 @@
         .history-actions { display: flex; gap: 8px; font-size: 12px; font-weight: 800; flex-wrap: wrap; }
         .btn-copy-summary { color: #D6336C; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(var(--accent-rgb), 0.2); transition: 0.2s;}
         .btn-export-csv { color: #059669; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(16, 185, 129, 0.2); transition: 0.2s;}
+        .btn-share-image { color: #7c3aed; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(124, 58, 237, 0.15); transition: 0.2s;}
+        .btn-share-image:hover { transform: scale(1.05); filter: brightness(1.1); }
         .btn-clear-history { color: #dc2626; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(239, 68, 68, 0.2); transition: 0.2s;}
         .btn-copy-summary:hover, .btn-export-csv:hover, .btn-clear-history:hover { transform: scale(1.05); filter: brightness(1.1); }
 
@@ -493,7 +567,10 @@
 
     <div class="container">
         <div class="header-row">
-            <h1 class="app-title"><span class="title-emoji" id="title-emoji">✨</span> Break Recorder</h1>
+            <div>
+                <h1 class="app-title"><span class="title-emoji" id="title-emoji">✨</span> Break Recorder</h1>
+                <p class="greeting-line" id="greeting-line"></p>
+            </div>
             <div class="controls-group">
                 <div class="gender-toggle" id="gender-toggle" onclick="toggleGender(event)">👦 ชาย</div>
                 <div class="mute-toggle" id="mute-toggle" onclick="toggleMute(event)">🔊 เสียง</div>
@@ -502,11 +579,16 @@
                 <div class="theme-picker-wrap">
                     <div class="theme-toggle" id="theme-btn" onclick="toggleThemeMenu(event)">🎨 ธีม</div>
                     <div class="theme-menu" id="theme-menu">
-                        <button type="button" class="theme-swatch swatch-day" data-theme="day" title="กลางวัน" onclick="setSiteTheme('day', event)"><span>☀️</span></button>
-                        <button type="button" class="theme-swatch swatch-night" data-theme="night" title="กลางคืน" onclick="setSiteTheme('night', event)"><span>🌙</span></button>
-                        <button type="button" class="theme-swatch swatch-ocean" data-theme="ocean" title="ทะเล" onclick="setSiteTheme('ocean', event)"><span>🌊</span></button>
-                        <button type="button" class="theme-swatch swatch-forest" data-theme="forest" title="ป่าไม้" onclick="setSiteTheme('forest', event)"><span>🌿</span></button>
-                        <button type="button" class="theme-swatch swatch-sunset" data-theme="sunset" title="ซันเซ็ต" onclick="setSiteTheme('sunset', event)"><span>🌅</span></button>
+                        <div class="theme-swatch-row">
+                            <button type="button" class="theme-swatch swatch-day" data-theme="day" title="กลางวัน" onclick="setSiteTheme('day', event)"><span>☀️</span></button>
+                            <button type="button" class="theme-swatch swatch-night" data-theme="night" title="กลางคืน" onclick="setSiteTheme('night', event)"><span>🌙</span></button>
+                            <button type="button" class="theme-swatch swatch-ocean" data-theme="ocean" title="ทะเล" onclick="setSiteTheme('ocean', event)"><span>🌊</span></button>
+                            <button type="button" class="theme-swatch swatch-forest" data-theme="forest" title="ป่าไม้" onclick="setSiteTheme('forest', event)"><span>🌿</span></button>
+                            <button type="button" class="theme-swatch swatch-sunset" data-theme="sunset" title="ซันเซ็ต" onclick="setSiteTheme('sunset', event)"><span>🌅</span></button>
+                        </div>
+                        <label class="auto-theme-row" onclick="event.stopPropagation()">
+                            <input type="checkbox" id="auto-theme-check" onchange="toggleAutoTheme(this.checked)"> 🕐 สลับอัตโนมัติตามเวลา
+                        </label>
                     </div>
                 </div>
                 <div class="theme-toggle install-toggle" id="install-btn" onclick="installApp()">📲 ติดตั้งแอป</div>
@@ -538,6 +620,10 @@
                     <span class="streak-lbl">วันติด<br>ไม่เกินโควตา</span>
                 </div>
             </div>
+            <div class="badges-section">
+                <span class="badges-title">🏅 ป้ายรางวัล</span>
+                <div class="badges-row" id="badges-row"></div>
+            </div>
         </div>
 
         <div id="activities-container" style="display: flex; flex-direction: column; gap: 18px;"></div>
@@ -549,6 +635,7 @@
                 <span>📜 ประวัติการพัก</span>
                 <div class="history-actions">
                     <span class="btn-copy-summary" onclick="copySummary()">📋 คัดลอก</span>
+                    <span class="btn-share-image" onclick="shareSummaryImage()">🖼️ แชร์รูป</span>
                     <span class="btn-export-csv" onclick="exportCSV()">📥 CSV</span>
                     <span class="btn-backup" onclick="exportBackup()">💾 สำรอง</span>
                     <label class="btn-import" for="import-file">📤 นำเข้า</label>
@@ -585,9 +672,10 @@
             </div>
             
             <div style="display: flex; gap: 12px;">
-                <div class="input-group" style="flex: 1;">
+                <div class="input-group" style="flex: 1; position: relative;">
                     <span class="input-label">อิโมจิ</span>
-                    <input type="text" id="act-emoji" placeholder="☕" style="text-align: center; font-size: 20px;">
+                    <input type="text" id="act-emoji" placeholder="☕" style="text-align: center; font-size: 20px;" onfocus="showEmojiPicker()">
+                    <div class="emoji-picker" id="emoji-picker"></div>
                 </div>
                 <div class="input-group" style="flex: 2;">
                     <span class="input-label">เตือนเมื่อเกิน (นาที)</span>
@@ -619,8 +707,113 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="custom-dialog" onclick="if(event.target===this) closeDialog(null)">
+        <div class="modal-box dialog-box">
+            <div class="dialog-icon" id="dialog-icon">💬</div>
+            <h3 id="dialog-title-text" style="margin: 0; text-align: center; font-size: 20px; font-weight: 800;"></h3>
+            <p id="dialog-message" style="margin: 0; text-align: center; font-size: 14px; color: #64748b; white-space: pre-line; line-height: 1.6;"></p>
+            <input type="text" id="dialog-input" style="display:none;">
+            <div class="modal-btn-group" id="dialog-actions"></div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <canvas id="share-canvas" width="600" height="750" style="display:none;"></canvas>
+
     <script>
-        // --- 🫧 สร้างฟองสบู่แบบสุ่ม ให้ดูมีมิติและเป็นธรรมชาติมากขึ้น ---
+        // --- 😀 ตัวเลือกอิโมจิด่วน สำหรับตอนสร้าง/แก้ไขกิจกรรม ---
+        const EMOJI_PICKER_LIST = ['☕','🍵','🧋','🥤','🍔','🍕','🍜','🍱','🍪','🍩','🚬','🚽','🚶','🏃','🧘','💬','📱','🎮','🛌','😴','🎧','📖','✏️','🧹','🌿','🚗','🏠','💊','🩺','🎵','📞','🧊'];
+        function showEmojiPicker() {
+            const picker = document.getElementById('emoji-picker');
+            picker.innerHTML = EMOJI_PICKER_LIST.map(e => `<button type="button" class="emoji-opt" onclick="pickEmoji('${e}')">${e}</button>`).join('');
+            picker.classList.add('open');
+        }
+        function pickEmoji(e) {
+            document.getElementById('act-emoji').value = e;
+            document.getElementById('emoji-picker').classList.remove('open');
+        }
+        document.addEventListener('click', (ev) => {
+            if (!ev.target.closest('#emoji-picker') && ev.target.id !== 'act-emoji') {
+                const p = document.getElementById('emoji-picker'); if (p) p.classList.remove('open');
+            }
+        });
+
+
+        let dialogResolve = null;
+        function closeDialog(result) {
+            document.getElementById('custom-dialog').style.display = 'none';
+            document.removeEventListener('keydown', handleDialogKeydown);
+            if (dialogResolve) { const r = dialogResolve; dialogResolve = null; r(result); }
+        }
+        function handleDialogKeydown(e) {
+            if (e.key === 'Escape') closeDialog(null);
+            if (e.key === 'Enter' && document.getElementById('dialog-input').style.display !== 'none') {
+                closeDialog(document.getElementById('dialog-input').value);
+            }
+        }
+        function showDialog({ title = '', message = '', icon = '💬', type = 'alert', defaultValue = '' }) {
+            return new Promise((resolve) => {
+                dialogResolve = resolve;
+                document.getElementById('dialog-icon').textContent = icon;
+                document.getElementById('dialog-title-text').textContent = title;
+                document.getElementById('dialog-title-text').style.color = isNightTheme() ? '#f8fafc' : '#1e293b';
+                document.getElementById('dialog-message').textContent = message;
+                document.getElementById('dialog-message').style.display = message ? 'block' : 'none';
+                const input = document.getElementById('dialog-input');
+                const actions = document.getElementById('dialog-actions');
+                actions.innerHTML = '';
+                if (type === 'prompt') {
+                    input.style.display = 'block'; input.value = defaultValue;
+                    setTimeout(() => { input.focus(); input.select(); }, 150);
+                } else { input.style.display = 'none'; }
+
+                if (type === 'alert') {
+                    actions.innerHTML = `<button class="modal-btn" style="background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white;" onclick="closeDialog(true)">ตกลง</button>`;
+                } else if (type === 'confirm') {
+                    actions.innerHTML = `
+                        <button class="modal-btn" style="background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white;" onclick="closeDialog(true)">ยืนยัน</button>
+                        <button class="modal-btn" style="background: #e2e8f0; color: #475569;" onclick="closeDialog(false)">ยกเลิก</button>`;
+                } else if (type === 'prompt') {
+                    actions.innerHTML = `
+                        <button class="modal-btn" style="background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white;" onclick="closeDialog(document.getElementById('dialog-input').value)">ตกลง</button>
+                        <button class="modal-btn" style="background: #e2e8f0; color: #475569;" onclick="closeDialog(null)">ยกเลิก</button>`;
+                }
+                document.getElementById('custom-dialog').style.display = 'flex';
+                document.addEventListener('keydown', handleDialogKeydown);
+            });
+        }
+        function showAlertDialog(message, title = 'แจ้งเตือน', icon = '✨') { return showDialog({ title, message, icon, type: 'alert' }); }
+        function showConfirmDialog(message, title = 'ยืนยันการทำรายการ', icon = '❓') { return showDialog({ title, message, icon, type: 'confirm' }); }
+        function showPromptDialog(message, defaultValue = '', title = 'แก้ไขข้อมูล', icon = '✏️') { return showDialog({ title, message, icon, type: 'prompt', defaultValue }); }
+
+        // --- 🍞 ระบบ Toast แจ้งเตือนแบบไม่บล็อกหน้าจอ พร้อมปุ่มเลิกทำได้ ---
+        function showToast(message, type = 'info', options = {}) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            const toastIcons = { success: '✅', info: '💡', warning: '⚠️', error: '❌' };
+            const iconSpan = document.createElement('span'); iconSpan.textContent = toastIcons[type] || '💡';
+            const msgSpan = document.createElement('span'); msgSpan.textContent = message; msgSpan.style.flex = '1';
+            toast.appendChild(iconSpan); toast.appendChild(msgSpan);
+            if (options.actionLabel && options.onAction) {
+                const btn = document.createElement('button');
+                btn.className = 'toast-action-btn'; btn.textContent = options.actionLabel;
+                btn.onclick = () => { options.onAction(); dismissToast(toast); };
+                toast.appendChild(btn);
+            }
+            container.appendChild(toast);
+            const duration = options.duration || 3200;
+            toast._timer = setTimeout(() => dismissToast(toast), duration);
+            return toast;
+        }
+        function dismissToast(toast) {
+            if (!toast || !toast.parentNode) return;
+            clearTimeout(toast._timer);
+            toast.classList.add('hide');
+            setTimeout(() => toast.remove(), 300);
+        }
+
         (function generateBubbles() {
             const container = document.getElementById('bg-bubbles');
             const tints = [
@@ -759,6 +952,29 @@
 
         function setVolume(v) { soundVolume = parseFloat(v); localStorage.setItem('sound_volume', soundVolume); }
 
+        function playThemeChime(theme) {
+            if (isMuted || soundVolume <= 0) return;
+            try {
+                const now = audioCtx.currentTime;
+                const notes = {
+                    day:    [{f:523,t:0,d:0.12,type:'triangle'},{f:659,t:0.10,d:0.18,type:'triangle'},{f:784,t:0.22,d:0.22,type:'triangle'}],
+                    night:  [{f:440,t:0,d:0.30,type:'sine'},{f:330,t:0.18,d:0.40,type:'sine'}],
+                    ocean:  [{f:900,t:0,d:0.08,type:'sine'},{f:500,t:0.06,d:0.18,type:'sine'},{f:700,t:0.20,d:0.15,type:'sine'}],
+                    forest: [{f:660,t:0,d:0.08,type:'triangle'},{f:880,t:0.07,d:0.08,type:'triangle'},{f:740,t:0.16,d:0.12,type:'triangle'}],
+                    sunset: [{f:587,t:0,d:0.20,type:'triangle'},{f:494,t:0.15,d:0.20,type:'triangle'},{f:392,t:0.30,d:0.30,type:'sine'}]
+                };
+                (notes[theme] || notes.day).forEach(n => {
+                    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+                    osc.type = n.type; osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.frequency.setValueAtTime(n.f, now + n.t);
+                    gain.gain.setValueAtTime(0.001, now + n.t);
+                    gain.gain.exponentialRampToValueAtTime(0.16 * soundVolume, now + n.t + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + n.d);
+                    osc.start(now + n.t); osc.stop(now + n.t + n.d + 0.02);
+                });
+            } catch(e) {}
+        }
+
         function triggerParticles(cardElement, color, isBubble) {
             for (let i = 0; i < 20; i++) {
                 const p = document.createElement('div'); p.classList.add('particle');
@@ -785,7 +1001,14 @@
         const THEME_EMOJIS = { day: '☀️', night: '🌙', ocean: '🌊', forest: '🌿', sunset: '🌅' };
 
         function setSiteTheme(theme, event) {
-            if (event) event.stopPropagation();
+            if (event) {
+                event.stopPropagation();
+                if (event.target.closest && event.target.closest('.theme-swatch')) {
+                    localStorage.setItem('auto_theme', 'false');
+                    const cb = document.getElementById('auto-theme-check');
+                    if (cb) cb.checked = false;
+                }
+            }
             if (!theme || theme === 'day') { document.body.removeAttribute('data-theme'); theme = 'day'; }
             else { document.body.setAttribute('data-theme', theme); }
             localStorage.setItem('site_theme', theme);
@@ -794,6 +1017,7 @@
             const titleEmoji = document.getElementById('title-emoji');
             if (titleEmoji) titleEmoji.textContent = THEME_EMOJIS[theme] || '✨';
             renderSparkles(theme);
+            if (event) playThemeChime(theme);
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (metaTheme) metaTheme.setAttribute('content', THEME_META_COLORS[theme] || THEME_META_COLORS.day);
             applyModalThemeColors();
@@ -802,12 +1026,37 @@
         function toggleThemeMenu(event) { event.stopPropagation(); document.getElementById('theme-menu').classList.toggle('open'); }
         function closeThemeMenu() { document.getElementById('theme-menu').classList.remove('open'); }
         document.addEventListener('click', (e) => { if (!e.target.closest('.theme-picker-wrap')) closeThemeMenu(); });
+
+        function getAutoTheme() {
+            const h = new Date().getHours() + new Date().getMinutes() / 60;
+            if (h >= 5 && h < 17) return 'day';
+            if (h >= 17 && h < 19.5) return 'sunset';
+            return 'night';
+        }
+        function toggleAutoTheme(enabled) {
+            localStorage.setItem('auto_theme', enabled ? 'true' : 'false');
+            if (enabled) { setSiteTheme(getAutoTheme()); showToast('เปิดธีมอัตโนมัติตามเวลาแล้ว ✨', 'success'); }
+        }
+        setInterval(() => { if (localStorage.getItem('auto_theme') === 'true') setSiteTheme(getAutoTheme()); }, 15 * 60 * 1000);
+
+        function renderGreeting() {
+            const g = document.getElementById('greeting-line'); if (!g) return;
+            const hour = new Date().getHours();
+            let text;
+            if (hour >= 5 && hour < 11) text = '☀️ สวัสดีตอนเช้า พร้อมลุยกันหรือยัง?';
+            else if (hour >= 11 && hour < 13) text = '🍽️ ได้เวลาพักเที่ยงแล้วนะ';
+            else if (hour >= 13 && hour < 17) text = '🌤️ พักบ่ายสักหน่อยไหม?';
+            else if (hour >= 17 && hour < 20) text = '🌇 ใกล้เลิกงานแล้ว สู้ๆ อีกนิด';
+            else if (hour >= 20 && hour < 24) text = '🌙 ทำงานดึกแล้วนะ อย่าลืมพักบ้าง';
+            else text = '😴 ดึกมากแล้ว ดูแลตัวเองด้วยนะ';
+            g.textContent = text;
+        }
         function toggleMute(event) { event.stopPropagation(); isMuted = !isMuted; localStorage.setItem('is_muted', isMuted); updateHeaderTexts(); }
         function toggleGender(event) { event.stopPropagation(); gender = gender === 'male' ? 'female' : 'male'; localStorage.setItem('gender', gender); updateHeaderTexts(); }
 
         function toggleNotify(event) {
             event.stopPropagation();
-            if (!('Notification' in window)) { alert('เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน'); return; }
+            if (!('Notification' in window)) { showToast('เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน', 'warning'); return; }
             if (notifyEnabled) {
                 notifyEnabled = false; localStorage.setItem('notify_enabled', 'false'); updateHeaderTexts(); return;
             }
@@ -820,7 +1069,7 @@
                     updateHeaderTexts();
                 });
             } else {
-                alert('การแจ้งเตือนถูกปิดกั้นไว้ กรุณาเปิดสิทธิ์แจ้งเตือนในตั้งค่าเบราว์เซอร์');
+                showToast('การแจ้งเตือนถูกปิดกั้นไว้ กรุณาเปิดสิทธิ์ในตั้งค่าเบราว์เซอร์', 'warning', { duration: 4500 });
             }
         }
 
@@ -954,8 +1203,9 @@
             localStorage.setItem('activities', JSON.stringify(activities)); closeModal(); renderActivities();
         }
         
-        function deleteActivity() {
-            if(confirm('ต้องการลบกิจกรรมนี้ใช่หรือไม่?')) {
+        async function deleteActivity() {
+            const ok = await showConfirmDialog('ต้องการลบกิจกรรมนี้ใช่หรือไม่?', 'ลบกิจกรรม', '🗑️');
+            if (ok) {
                 let activities = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
                 activities.splice(editingIndex, 1); localStorage.setItem('activities', JSON.stringify(activities));
                 closeModal(); renderActivities();
@@ -1003,7 +1253,7 @@
                 let diffMins = Math.max(1, Math.round(diffMs / 60000)); 
                 if (activeBreak.isToilet) diffMins = 0;
                 if (activeBreak.limit > 0 && diffMins > activeBreak.limit) {
-                    setTimeout(() => alert(`⚠️ เวลาเกินลิมิต!\n\nกิจกรรม: ${activeBreak.action}\nขีดจำกัดที่ตั้งไว้: ${activeBreak.limit} นาที\nเวลาที่คุณใช้ไปจริง: ${diffMins} นาที`), 200);
+                    setTimeout(() => showToast(`⏰ ${activeBreak.action} เกินลิมิต ${activeBreak.limit} นาที (ใช้ไป ${diffMins} นาที)`, 'warning', { duration: 5000 }), 300);
                 }
                 saveLog(activeBreak.action, activeBreak.startStr, getThaiTimeString(new Date()), diffMins);
                 activeBreak = null;
@@ -1019,10 +1269,116 @@
             localStorage.setItem('break_logs', JSON.stringify(logs)); renderDashboardAndLogs();
         }
 
+        function drawRoundedRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + w, y, r);
+            ctx.closePath();
+        }
+
+        async function shareSummaryImage() {
+            const today = new Date().toDateString();
+            const logs = JSON.parse(localStorage.getItem('break_logs') || '[]').filter(log => log.date === today);
+            if (logs.length === 0) { showToast('ยังไม่มีประวัติของวันนี้ให้แชร์', 'info'); return; }
+
+            const dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
+            let totalUsed = 0; logs.forEach(l => totalUsed += l.duration);
+            const remain = Math.max(0, dailyQuota - totalUsed);
+            const streak = document.getElementById('streak-num').textContent;
+
+            const theme = document.body.getAttribute('data-theme') || 'day';
+            const cs = getComputedStyle(document.body);
+            const accent = (cs.getPropertyValue('--accent').trim()) || '#FF5A8C';
+            const accent2 = (cs.getPropertyValue('--accent2').trim()) || '#C084FC';
+            const bgColors = {
+                day: ['#FFF6E9', '#FFE3EE', '#F1E6FF'], night: ['#2B1B3D', '#3A2450', '#5C3A87'],
+                ocean: ['#E0F7FA', '#B3ECF5', '#CDEFFF'], forest: ['#F1F8E9', '#DCEDC8', '#FFF3D6'],
+                sunset: ['#FFE0D6', '#FFC2D1', '#C7B8F0']
+            };
+            const isDark = theme === 'night';
+            const textColor = isDark ? '#f8fafc' : '#1e293b';
+            const subTextColor = isDark ? '#cbd5e1' : '#64748b';
+
+            await document.fonts.ready;
+            const canvas = document.getElementById('share-canvas');
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width, H = canvas.height;
+
+            const [c1, c2, c3] = bgColors[theme] || bgColors.day;
+            const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+            bgGrad.addColorStop(0, c1); bgGrad.addColorStop(0.5, c2); bgGrad.addColorStop(1, c3);
+            ctx.fillStyle = bgGrad; ctx.fillRect(0, 0, W, H);
+
+            ctx.fillStyle = isDark ? 'rgba(30,41,59,0.55)' : 'rgba(255,255,255,0.55)';
+            drawRoundedRect(ctx, 30, 30, W - 60, H - 60, 32); ctx.fill();
+
+            const now = new Date();
+            const dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+            ctx.textAlign = 'center';
+            ctx.fillStyle = textColor; ctx.font = "700 30px 'Kanit', sans-serif";
+            ctx.fillText('✨ สรุปเวลาพักวันนี้', W / 2, 90);
+            ctx.fillStyle = subTextColor; ctx.font = "500 16px 'Kanit', sans-serif";
+            ctx.fillText(dateStr, W / 2, 118);
+
+            let y = 165;
+            const stats = [
+                { label: 'ใช้ไปแล้ว', value: `${totalUsed} นาที` },
+                { label: 'คงเหลือ', value: `${remain} นาที` },
+                { label: 'สตรีค', value: `${streak} วัน 🔥` }
+            ];
+            const pillW = (W - 60 - 40) / 3;
+            stats.forEach((s, i) => {
+                const x = 50 + i * (pillW + 20);
+                ctx.fillStyle = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.7)';
+                drawRoundedRect(ctx, x, y, pillW, 70, 16); ctx.fill();
+                ctx.fillStyle = accent; ctx.textAlign = 'center'; ctx.font = "700 20px 'Kanit', sans-serif";
+                ctx.fillText(s.value, x + pillW / 2, y + 32);
+                ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Kanit', sans-serif";
+                ctx.fillText(s.label, x + pillW / 2, y + 54);
+            });
+
+            y += 100;
+            ctx.textAlign = 'left'; ctx.fillStyle = textColor; ctx.font = "700 15px 'Kanit', sans-serif";
+            ctx.fillText('รายการวันนี้', 50, y);
+            logs.slice(0, 9).forEach((log, i) => {
+                y += 42;
+                const barColor = i % 2 === 0 ? accent : accent2;
+                ctx.fillStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.6)';
+                drawRoundedRect(ctx, 50, y - 26, W - 100, 36, 12); ctx.fill();
+                ctx.fillStyle = barColor; drawRoundedRect(ctx, 50, y - 26, 5, 36, 3); ctx.fill();
+                ctx.fillStyle = textColor; ctx.font = "600 14px 'Kanit', sans-serif"; ctx.textAlign = 'left';
+                ctx.fillText(`${log.action}`, 68, y - 4);
+                ctx.textAlign = 'right'; ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Kanit', sans-serif";
+                ctx.fillText(`${log.start} - ${log.end} · ${log.duration} น.`, W - 60, y - 4);
+            });
+            if (logs.length > 9) {
+                y += 32; ctx.textAlign = 'center'; ctx.fillStyle = subTextColor; ctx.font = "500 13px 'Kanit', sans-serif";
+                ctx.fillText(`และอีก ${logs.length - 9} รายการ...`, W / 2, y);
+            }
+
+            ctx.textAlign = 'center'; ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Kanit', sans-serif";
+            ctx.fillText('สร้างจาก Break Recorder ✨', W / 2, H - 45);
+
+            canvas.toBlob(async (blob) => {
+                const fileName = `break-summary-${dateStr.replace(/\//g, '-')}.png`;
+                const file = new File([blob], fileName, { type: 'image/png' });
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try { await navigator.share({ files: [file], title: 'สรุปเวลาพักวันนี้' }); return; } catch (e) {}
+                }
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a'); a.href = url; a.download = fileName; a.click();
+                URL.revokeObjectURL(url);
+                showToast('บันทึกรูปสรุปแล้ว', 'success');
+            }, 'image/png');
+        }
+
         function copySummary() {
             const today = new Date().toDateString();
             const logs = JSON.parse(localStorage.getItem('break_logs') || '[]').filter(log => log.date === today);
-            if (logs.length === 0) { alert("ยังไม่มีประวัติของวันนี้ให้คัดลอก"); return; }
+            if (logs.length === 0) { showToast('ยังไม่มีประวัติของวันนี้ให้คัดลอก', 'info'); return; }
             let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
             let totalUsed = 0; logs.forEach(log => totalUsed += log.duration);
             
@@ -1031,19 +1387,23 @@
             logs.forEach((log, i) => sumText += `${i + 1}. ${log.action} (${log.start} - ${log.end}) | ${log.duration === 0 ? "ไม่หักโควต้า" : `รวม: ${log.duration} น.`}\n`);
             sumText += `----------------------------------------\n⏱️ โควตาทั้งหมด: ${dailyQuota} นาที\n📊 ใช้ไปแล้ว: ${totalUsed} นาที\n🔋 คงเหลือ: ${Math.max(0, dailyQuota - totalUsed)} นาที`;
             
-            performCopy(sumText); alert("คัดลอกสรุปไปยัง Clipboard แล้ว! ✨");
+            performCopy(sumText); showToast('คัดลอกสรุปไปยัง Clipboard แล้ว!', 'success');
         }
 
         function exportCSV() {
             const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
-            if (logs.length === 0) { alert("ไม่มีข้อมูลประวัติให้ส่งออก"); return; }
+            if (logs.length === 0) { showToast('ไม่มีข้อมูลประวัติให้ส่งออก', 'info'); return; }
             let csv = "\uFEFFวันที่,กิจกรรม,เวลาเริ่ม,เวลากลับ,ใช้เวลา (นาที)\n";
             logs.forEach(log => { csv += `${log.date},${log.action},${log.start},${log.end},${log.duration}\n`; });
             const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
             const a = document.createElement("a"); a.href = url; a.download = `Break_History.csv`; a.click(); URL.revokeObjectURL(url);
+            showToast('ส่งออก CSV แล้ว', 'success');
         }
 
-        function clearLogs() { if(confirm("ต้องการล้างประวัติวันนี้ใช่หรือไม่?")) { localStorage.removeItem('break_logs'); renderDashboardAndLogs(); } }
+        async function clearLogs() {
+            const ok = await showConfirmDialog('ต้องการล้างประวัติวันนี้ทั้งหมดใช่หรือไม่? การกระทำนี้ย้อนกลับไม่ได้', 'ล้างประวัติวันนี้', '🗑️');
+            if (ok) { localStorage.removeItem('break_logs'); renderDashboardAndLogs(); showToast('ล้างประวัติวันนี้แล้ว', 'success'); }
+        }
         function toggleLogPagination() { showAllLogs = !showAllLogs; renderDashboardAndLogs(); }
 
         function renderDashboardAndLogs() {
@@ -1089,12 +1449,12 @@
             renderHeatmap(logs, dailyQuota);
         }
 
-        function editLog(realIndex) {
+        async function editLog(realIndex) {
             let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
             const log = logs[realIndex]; if (!log) return;
-            const newAction = prompt('แก้ไขชื่อกิจกรรม', log.action);
+            const newAction = await showPromptDialog('ชื่อกิจกรรม', log.action, 'แก้ไขรายการ', '✏️');
             if (newAction === null) return;
-            const newDuration = prompt('แก้ไขเวลาที่ใช้ (นาที)', log.duration);
+            const newDuration = await showPromptDialog('เวลาที่ใช้ (นาที)', log.duration, 'แก้ไขรายการ', '⏱️');
             if (newDuration === null) return;
             log.action = newAction.trim() || log.action;
             const d = parseInt(newDuration);
@@ -1102,14 +1462,25 @@
             logs[realIndex] = log;
             localStorage.setItem('break_logs', JSON.stringify(logs));
             renderDashboardAndLogs();
+            showToast('แก้ไขรายการแล้ว', 'success');
         }
 
         function deleteLog(realIndex) {
-            if (!confirm('ลบรายการนี้ใช่หรือไม่?')) return;
             let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
+            const removed = logs[realIndex]; if (!removed) return;
             logs.splice(realIndex, 1);
             localStorage.setItem('break_logs', JSON.stringify(logs));
             renderDashboardAndLogs();
+            showToast(`ลบ "${removed.action}" แล้ว`, 'success', {
+                actionLabel: 'เลิกทำ',
+                onAction: () => {
+                    let currentLogs = JSON.parse(localStorage.getItem('break_logs') || '[]');
+                    currentLogs.splice(realIndex, 0, removed);
+                    localStorage.setItem('break_logs', JSON.stringify(currentLogs));
+                    renderDashboardAndLogs();
+                    showToast('กู้คืนรายการแล้ว', 'info');
+                }
+            });
         }
 
         function checkQuotaWarning(remain, dailyQuota) {
@@ -1170,6 +1541,35 @@
                 streak++;
             }
             document.getElementById('streak-num').textContent = streak;
+            updateBadges(streak);
+        }
+
+        const BADGE_MILESTONES = [
+            { days: 3,   icon: '🌱', label: '3 วันแรก' },
+            { days: 7,   icon: '🔥', label: '1 สัปดาห์' },
+            { days: 14,  icon: '⭐', label: '2 สัปดาห์' },
+            { days: 30,  icon: '🏆', label: '1 เดือน' },
+            { days: 60,  icon: '💎', label: '2 เดือน' },
+            { days: 100, icon: '👑', label: '100 วัน' }
+        ];
+        function updateBadges(streak) {
+            let earned = JSON.parse(localStorage.getItem('earned_badges') || '[]');
+            let newlyEarned = null;
+            BADGE_MILESTONES.forEach(b => {
+                if (streak >= b.days && !earned.includes(b.days)) { earned.push(b.days); newlyEarned = b; }
+            });
+            if (newlyEarned) {
+                localStorage.setItem('earned_badges', JSON.stringify(earned));
+                fireConfetti(); playSound('welcome');
+                showToast(`ปลดล็อกป้าย ${newlyEarned.icon} ${newlyEarned.label} แล้ว!`, 'success', { duration: 5000 });
+            }
+            const container = document.getElementById('badges-row');
+            if (container) {
+                container.innerHTML = BADGE_MILESTONES.map(b => {
+                    const unlocked = earned.includes(b.days);
+                    return `<div class="badge-item ${unlocked ? 'unlocked' : ''}" title="${b.label} (พักต่อเนื่อง ${b.days} วัน)"><span>${unlocked ? b.icon : '🔒'}</span></div>`;
+                }).join('');
+            }
         }
 
         window.addEventListener('beforeunload', (e) => {
@@ -1193,20 +1593,21 @@
         function importBackup(event) {
             const file = event.target.files[0]; if (!file) return;
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (!confirm('นำเข้าข้อมูลนี้จะแทนที่ข้อมูลปัจจุบันทั้งหมด ยืนยันหรือไม่?')) return;
+                    const ok = await showConfirmDialog('นำเข้าข้อมูลนี้จะแทนที่ข้อมูลปัจจุบันทั้งหมด ยืนยันหรือไม่?', 'นำเข้าข้อมูล', '📤');
+                    if (!ok) return;
                     if (data.activities) localStorage.setItem('activities', JSON.stringify(data.activities));
                     if (data.break_logs) localStorage.setItem('break_logs', JSON.stringify(data.break_logs));
                     if (data.daily_quota) localStorage.setItem('daily_quota', data.daily_quota);
                     if (typeof data.is_muted !== 'undefined') localStorage.setItem('is_muted', data.is_muted);
                     if (data.gender) localStorage.setItem('gender', data.gender);
                     if (typeof data.sound_volume !== 'undefined') localStorage.setItem('sound_volume', data.sound_volume);
-                    alert('นำเข้าข้อมูลสำเร็จ! กำลังโหลดหน้าใหม่');
-                    location.reload();
+                    showToast('นำเข้าข้อมูลสำเร็จ! กำลังโหลดหน้าใหม่', 'success');
+                    setTimeout(() => location.reload(), 1200);
                 } catch (err) {
-                    alert('ไฟล์ไม่ถูกต้อง ไม่สามารถนำเข้าได้');
+                    showToast('ไฟล์ไม่ถูกต้อง ไม่สามารถนำเข้าได้', 'error');
                 }
             };
             reader.readAsText(file); event.target.value = '';
@@ -1234,9 +1635,21 @@
             deferredInstallPrompt.userChoice.then(() => { deferredInstallPrompt = null; document.getElementById('install-btn').style.display = 'none'; });
         }
 
+        // ลงทะเบียน Service Worker (ไฟล์ sw.js) เพื่อให้เปิดเว็บได้แม้ไม่มีเน็ตหลังเข้าครั้งแรกแล้ว
+        // ถ้ายังไม่ได้อัปโหลด sw.js ไว้ที่โฟลเดอร์เดียวกัน จะแค่ล้มเหลวเงียบๆ ไม่กระทบการทำงานอื่น
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            });
+        }
+
         window.onload = () => {
-            const savedTheme = localStorage.getItem('site_theme') || 'day';
+            const autoOn = localStorage.getItem('auto_theme') === 'true';
+            const savedTheme = autoOn ? getAutoTheme() : (localStorage.getItem('site_theme') || 'day');
             setSiteTheme(savedTheme);
+            const autoCb = document.getElementById('auto-theme-check');
+            if (autoCb) autoCb.checked = autoOn;
+            renderGreeting();
             updateHeaderTexts(); renderActivities(); renderDashboardAndLogs();
         };
     </script>
