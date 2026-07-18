@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแจ้งเวลาพัก - 888 Edition</title>
+    <title>ระบบแจ้งเวลาพัก - Super WOW Edition</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -93,11 +93,18 @@
         [data-tooltip]:hover::after, [data-tooltip]:hover::before { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
         [data-tooltip]:hover::before { transform: translateX(-50%) translateY(0); }
 
+        /* 🌗 เลเยอร์พื้นหลังคู่ สำหรับไล่สีธีมแบบนุ่มๆ (crossfade) */
+        .theme-bg-layer {
+            position: fixed; inset: 0; z-index: -4; pointer-events: none;
+            opacity: 0; transition: opacity 1.1s ease;
+        }
+
         /* 🌈 เลเยอร์ออโรร่าเคลื่อนไหวช้าๆ ด้านหลังสุด */
         .bg-aurora { position: fixed; inset: 0; z-index: -3; overflow: hidden; pointer-events: none; }
         .bg-aurora span {
             position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55;
             animation: aurora-drift ease-in-out infinite alternate;
+            transition: background 1.1s ease;
         }
         .bg-aurora span:nth-child(1) { width: 55vw; height: 55vw; top: -15%; left: -10%; background: radial-gradient(circle, var(--aurora-1), transparent 70%); animation-duration: 22s; }
         .bg-aurora span:nth-child(2) { width: 50vw; height: 50vw; bottom: -20%; right: -10%; background: radial-gradient(circle, var(--aurora-2), transparent 70%); animation-duration: 26s; animation-delay: -6s; }
@@ -620,6 +627,8 @@
 </head>
 <body>
 
+    <div class="theme-bg-layer" id="theme-bg-a"></div>
+    <div class="theme-bg-layer" id="theme-bg-b"></div>
     <div class="bg-aurora"><span></span><span></span><span></span><span></span></div>
     <ul class="bg-bubbles" id="bg-bubbles"></ul>
     <div class="bg-sparkles" id="bg-sparkles"></div>
@@ -1083,6 +1092,26 @@
 
         const THEME_META_COLORS = { day: '#FFE3EE', night: '#442A5E', ocean: '#B3ECF5', forest: '#DCEDC8', sunset: '#FFC2D1' };
         const THEME_EMOJIS = { day: '☀️', night: '🌙', ocean: '🌊', forest: '🌿', sunset: '🌅' };
+        const THEME_GRADIENTS = {
+            day:    'linear-gradient(135deg, #FFF6E9 0%, #FFE3EE 35%, #F1E6FF 70%, #E6F3FF 100%)',
+            night:  'linear-gradient(135deg, #2B1B3D 0%, #3A2450 35%, #442A5E 70%, #5C3A87 100%)',
+            ocean:  'linear-gradient(135deg, #E0F7FA 0%, #B3ECF5 35%, #A0DEF0 70%, #CDEFFF 100%)',
+            forest: 'linear-gradient(135deg, #F1F8E9 0%, #DCEDC8 35%, #C8E6C9 70%, #FFF3D6 100%)',
+            sunset: 'linear-gradient(135deg, #FFE0D6 0%, #FFC2D1 35%, #E4B8F5 70%, #C7B8F0 100%)'
+        };
+        // เลเยอร์พื้นหลัง 2 ชั้นสลับกัน ไล่สีเข้าหากันแบบนุ่มๆ ด้วย opacity crossfade (แม่นยำกว่าไล่สี gradient ตรงๆ ทุกเบราว์เซอร์)
+        let activeBgLayer = 'a';
+        function crossfadeThemeBg(theme) {
+            const grad = THEME_GRADIENTS[theme] || THEME_GRADIENTS.day;
+            const showEl = document.getElementById(activeBgLayer === 'a' ? 'theme-bg-b' : 'theme-bg-a');
+            const hideEl = document.getElementById(activeBgLayer === 'a' ? 'theme-bg-a' : 'theme-bg-b');
+            if (!showEl || !hideEl) return;
+            showEl.style.background = grad;
+            void showEl.offsetWidth; // บังคับ reflow ให้ browser จับพื้นหลังใหม่ก่อนเริ่ม fade
+            showEl.style.opacity = '1';
+            hideEl.style.opacity = '0';
+            activeBgLayer = activeBgLayer === 'a' ? 'b' : 'a';
+        }
 
         function setSiteTheme(theme, event) {
             if (event) {
@@ -1096,6 +1125,7 @@
             if (!theme || theme === 'day') { document.body.removeAttribute('data-theme'); theme = 'day'; }
             else { document.body.setAttribute('data-theme', theme); }
             localStorage.setItem('site_theme', theme);
+            crossfadeThemeBg(theme);
             document.querySelectorAll('.theme-swatch').forEach(s => s.classList.toggle('selected', s.dataset.theme === theme));
             document.getElementById('theme-btn').innerHTML = `${THEME_EMOJIS[theme] || '🎨'} ธีม`;
             const titleEmoji = document.getElementById('title-emoji');
