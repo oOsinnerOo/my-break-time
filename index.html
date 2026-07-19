@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแจ้งเวลาพัก - Super WOW Edition</title>
+    <title>ระบบแจ้งเวลาพัก - 888 Edition</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -185,18 +185,33 @@
 
         /* 💎 Glassmorphism UI (ดีไซน์กระจกฝ้า) */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 28px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(22px) saturate(1.7);
+            -webkit-backdrop-filter: blur(22px) saturate(1.7);
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            border-radius: 26px;
+            box-shadow:
+                inset 0 1.5px 0 rgba(255,255,255,0.95),
+                inset 0 -12px 20px -14px rgba(255,255,255,0.5),
+                0 24px 45px -18px rgba(30, 20, 45, 0.16),
+                0 8px 18px -10px rgba(30, 20, 45, 0.08);
+            position: relative; isolation: isolate;
+        }
+        .glass-panel::before {
+            content: ''; position: absolute; top: 0; left: 18%; right: 18%; height: 1px; z-index: 1;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent);
+            pointer-events: none;
         }
         body[data-theme="night"] .glass-panel {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            background: rgba(24, 20, 38, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            box-shadow:
+                inset 0 1.5px 0 rgba(255,255,255,0.08),
+                inset 0 -12px 20px -14px rgba(255,255,255,0.03),
+                0 24px 45px -18px rgba(0, 0, 0, 0.45),
+                0 8px 18px -10px rgba(0, 0, 0, 0.3);
         }
+        body[data-theme="night"] .glass-panel::before { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent); }
 
         .dashboard { padding: 22px; }
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -223,19 +238,53 @@
         .quota-input:focus { outline: none; border-color: var(--accent); transform: scale(1.1); }
         body[data-theme="night"] .quota-input { background: rgba(15, 23, 42, 0.6); border-color: rgba(71, 85, 105, 0.5); color: #ffffff; }
 
-        .time-grid { display: flex; justify-content: space-around; margin-top: 10px; }
-        .time-box { display: flex; flex-direction: column; text-align: center; }
+        /* 🍱 Bento grid — เลย์เอาต์แดชบอร์ดสไตล์โมเดิร์น */
+        .bento-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px;
+            grid-template-areas: "ring ring" "streak week";
+        }
+        .bento-tile {
+            background: rgba(255,255,255,0.42); border-radius: 20px; padding: 14px;
+            border: 1px solid rgba(255,255,255,0.55);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 8px 18px -10px rgba(30,20,45,0.1);
+        }
+        body[data-theme="night"] .bento-tile {
+            background: rgba(15,23,42,0.38); border-color: rgba(255,255,255,0.07);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 18px -10px rgba(0,0,0,0.35);
+        }
+        .bento-ring { grid-area: ring; display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; }
+        .bento-streak { grid-area: streak; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .bento-week { grid-area: week; display: flex; flex-direction: column; }
+        .bento-tile-title { font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; color: #64748b; margin-bottom: 8px; }
+        body[data-theme="night"] .bento-tile-title { color: #94a3b8; }
+
+        .quota-ring-wrap { position: relative; width: 112px; height: 112px; flex-shrink: 0; }
+        .quota-ring { width: 112px; height: 112px; transform: rotate(-90deg); }
+        .ring-track { fill: none; stroke: rgba(148, 163, 184, 0.22); stroke-width: 13; }
+        body[data-theme="night"] .ring-track { stroke: rgba(148, 163, 184, 0.15); }
+        #ringGradient stop { transition: stop-color 0.5s ease; }
+        .ring-progress {
+            fill: none; stroke: url(#ringGradient); stroke-width: 13; stroke-linecap: round;
+            stroke-dasharray: 427; stroke-dashoffset: 427;
+            transition: stroke-dashoffset 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.4s;
+        }
+        .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .ring-center .time-val { font-size: 26px; line-height: 1; }
+        .ring-center-lbl { font-size: 10px; color: #64748b; font-weight: 600; margin-top: 2px; }
+        body[data-theme="night"] .ring-center-lbl { color: #94a3b8; }
+
+        .ring-side-stat { display: flex; align-items: center; gap: 10px; }
+        .ring-side-icon {
+            width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; background: rgba(var(--accent-rgb), 0.15); flex-shrink: 0;
+        }
         .time-val { font-size: 32px; font-weight: 800; color: #0f172a; text-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         body[data-theme="night"] .time-val { color: #ffffff; text-shadow: 0 2px 10px rgba(255,255,255,0.1); }
-        .time-lbl { font-size: 12px; color: #64748b; font-weight: 600; }
+        .time-val-sm { font-size: 19px; font-weight: 800; color: #0f172a; display: block; line-height: 1.1; }
+        body[data-theme="night"] .time-val-sm { color: #ffffff; }
+        .time-lbl { font-size: 11px; color: #64748b; font-weight: 600; }
         body[data-theme="night"] .time-lbl { color: #94a3b8; }
-        
-        .progress-bar { width: 100%; height: 12px; background: rgba(226, 232, 240, 0.6); border-radius: 20px; margin-top: 15px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
-        body[data-theme="night"] .progress-bar { background: rgba(51, 65, 85, 0.6); }
-        .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent)); background-size: 200% 200%; animation: gradient-shift 3s ease infinite; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); border-radius: 20px;}
 
-        .stats-row { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-top: 16px; border-top: 1px dashed rgba(203, 213, 225, 0.6); gap: 16px; }
-        body[data-theme="night"] .stats-row { border-top-color: rgba(71, 85, 105, 0.6); }
         .badges-section { margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(203, 213, 225, 0.6); }
         body[data-theme="night"] .badges-section { border-top-color: rgba(71, 85, 105, 0.6); }
         .badges-title { font-size: 12px; font-weight: 700; color: #64748b; }
@@ -257,8 +306,7 @@
         .week-bar { width: 100%; border-radius: 4px 4px 2px 2px; background: rgba(148, 163, 184, 0.4); min-height: 3px; }
         .week-bar.today { background: linear-gradient(180deg, var(--accent), var(--accent2)); }
         .week-lbl { font-size: 9px; color: #94a3b8; font-weight: 700; }
-        .streak-box { display: flex; flex-direction: column; align-items: center; min-width: 64px; }
-        .streak-num { font-size: 24px; font-weight: 800; color: #f97316; line-height: 1; }
+        .streak-num { font-size: 26px; font-weight: 800; color: #f97316; line-height: 1; }
         .streak-lbl { font-size: 9px; color: #64748b; font-weight: 700; margin-top: 3px; text-align: center; }
         body[data-theme="night"] .streak-lbl { color: #94a3b8; }
 
@@ -271,7 +319,6 @@
             background-size: 300% 300%; animation: gradient-text 4s linear infinite;
         }
         @keyframes gradient-text { 0%{background-position: 0% 50%} 100%{background-position: 100% 50%} }
-        @keyframes gradient-shift { 0%{background-position: 0% 50%} 50%{background-position: 100% 50%} 100%{background-position: 0% 50%} }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .app-title .title-emoji { display: inline-block; animation: title-bounce 2.2s ease-in-out infinite; }
         .greeting-line { margin: 2px 0 0; font-size: 13px; font-weight: 500; color: #64748b; }
@@ -595,11 +642,29 @@
         .btn-clear-history { color: #dc2626; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(239, 68, 68, 0.2); transition: 0.2s;}
         .btn-copy-summary:hover, .btn-export-csv:hover, .btn-clear-history:hover { transform: scale(1.05); filter: brightness(1.1); }
 
-        .history-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
-        .history-table th { color: #64748b; padding: 12px 4px; font-weight: 700; border-bottom: 2px solid rgba(226, 232, 240, 0.6); }
-        body[data-theme="night"] .history-table th { border-bottom-color: rgba(51, 65, 85, 0.6); color: #94a3b8;}
-        .history-table td { padding: 14px 4px; border-bottom: 1px solid rgba(241, 245, 249, 0.6); color: #334155; font-weight: 500;}
-        body[data-theme="night"] .history-table td { border-bottom-color: rgba(30, 41, 59, 0.6); color: #e2e8f0; }
+        .log-list { display: flex; flex-direction: column; gap: 8px; }
+        .log-row {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            background: rgba(255,255,255,0.45); border-radius: 16px; padding: 11px 14px;
+            border-left: 4px solid var(--accent); box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+            transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+            animation: card-pop-in 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.4) backwards;
+        }
+        .log-row:hover { transform: translateX(3px); box-shadow: 0 6px 16px rgba(0,0,0,0.07); }
+        body[data-theme="night"] .log-row { background: rgba(15, 23, 42, 0.4); }
+        .log-row-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .log-action { font-weight: 700; font-size: 13.5px; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        body[data-theme="night"] .log-action { color: #f1f5f9; }
+        .log-time { font-size: 10.5px; color: #94a3b8; font-weight: 600; }
+        .log-row-side { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .log-duration { font-weight: 800; font-size: 13.5px; white-space: nowrap; }
+        .log-row-actions { display: flex; gap: 2px; }
+        .log-icon-btn {
+            width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; cursor: pointer; font-size: 12px; background: rgba(148,163,184,0.12);
+            transition: transform 0.2s, background 0.2s; flex-shrink: 0;
+        }
+        .log-icon-btn:hover { transform: scale(1.15) rotate(-6deg); background: rgba(var(--accent-rgb), 0.18); }
         .empty-log { text-align: center; color: #94a3b8; padding: 40px 0; font-size: 15px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 12px;}
         .empty-log::before { content: '🚀'; font-size: 40px; animation: bounce 2s infinite; }
 
@@ -676,22 +741,43 @@
                     </span> นาที
                 </div>
             </div>
-            <div class="time-grid">
-                <div class="time-box">
-                    <span class="time-val" id="quota-remain">60</span>
-                    <span class="time-lbl">นาทีที่เหลืออยู่</span>
+            <div class="bento-grid">
+                <div class="bento-tile bento-ring">
+                    <div class="quota-ring-wrap">
+                        <svg class="quota-ring" viewBox="0 0 160 160">
+                            <defs>
+                                <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color: var(--accent);"/>
+                                    <stop offset="100%" style="stop-color: var(--accent2);"/>
+                                </linearGradient>
+                                <linearGradient id="ringGradientLow" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color: #f43f5e;"/>
+                                    <stop offset="100%" style="stop-color: #fb7185;"/>
+                                </linearGradient>
+                            </defs>
+                            <circle class="ring-track" cx="80" cy="80" r="68"></circle>
+                            <circle class="ring-progress" id="ring-progress" cx="80" cy="80" r="68"></circle>
+                        </svg>
+                        <div class="ring-center">
+                            <span class="time-val" id="quota-remain">60</span>
+                            <span class="ring-center-lbl">นาทีเหลือ</span>
+                        </div>
+                    </div>
+                    <div class="ring-side-stat">
+                        <span class="ring-side-icon">⏱️</span>
+                        <div>
+                            <span class="time-val-sm" id="quota-used">0</span>
+                            <span class="time-lbl">นาทีที่ใช้ไป</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="time-box">
-                    <span class="time-val" id="quota-used">0</span>
-                    <span class="time-lbl">ใช้ไปแล้ว (นาที)</span>
-                </div>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-            <div class="stats-row">
-                <div class="week-chart" id="week-chart"></div>
-                <div class="streak-box">
+                <div class="bento-tile bento-streak">
                     <span class="streak-num" id="streak-num">0</span>
                     <span class="streak-lbl">วันติด<br>ไม่เกินโควตา</span>
+                </div>
+                <div class="bento-tile bento-week">
+                    <span class="bento-tile-title">7 วันล่าสุด</span>
+                    <div class="week-chart" id="week-chart"></div>
                 </div>
             </div>
             <div class="badges-section">
@@ -1540,15 +1626,27 @@
                 logContainer.innerHTML = '<div class="empty-log">เริ่มลุยงานกันเลย! 🚀</div>'; paginationContainer.innerHTML = '';
             } else {
                 const displayedLogs = showAllLogs ? todayLogs : todayLogs.slice(0, 5);
-                let tableHtml = `<table class="history-table"><thead><tr><th>กิจกรรม</th><th>เริ่ม</th><th>กลับ</th><th>รวม</th><th></th></tr></thead><tbody>`;
-                displayedLogs.forEach(log => {
+                let rowsHtml = '<div class="log-list">';
+                displayedLogs.forEach((log, i) => {
                     const isZero = log.duration === 0;
                     const realIdx = logs.indexOf(log);
-                    tableHtml += `<tr><td><strong>${log.action}</strong></td><td>${log.start}</td><td>${log.end}</td>
-                        <td><span style="color:${isZero ? 'var(--accent)' : 'var(--accent2)'}; font-weight:800;">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span></td>
-                        <td style="white-space:nowrap;"><span style="cursor:pointer; margin-right:8px;" onclick="editLog(${realIdx})">✏️</span><span style="cursor:pointer;" onclick="deleteLog(${realIdx})">🗑️</span></td></tr>`;
+                    rowsHtml += `
+                        <div class="log-row" style="animation-delay:${i * 0.04}s;">
+                            <div class="log-row-main">
+                                <span class="log-action">${log.action}</span>
+                                <span class="log-time">${log.start} → ${log.end}</span>
+                            </div>
+                            <div class="log-row-side">
+                                <span class="log-duration" style="color:${isZero ? 'var(--accent)' : 'var(--accent2)'};">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span>
+                                <span class="log-row-actions">
+                                    <span class="log-icon-btn" onclick="editLog(${realIdx})">✏️</span>
+                                    <span class="log-icon-btn" onclick="deleteLog(${realIdx})">🗑️</span>
+                                </span>
+                            </div>
+                        </div>`;
                 });
-                tableHtml += '</tbody></table>'; logContainer.innerHTML = tableHtml;
+                rowsHtml += '</div>';
+                logContainer.innerHTML = rowsHtml;
 
                 paginationContainer.innerHTML = todayLogs.length > 5 
                     ? `<div class="pagination-btn" onclick="toggleLogPagination()">${showAllLogs ? 'ย่อกลับ 🔼' : `ดูเพิ่มเติม (อีก ${todayLogs.length - 5} รายการ) 🔽`}</div>` 
@@ -1558,10 +1656,12 @@
             const remain = Math.max(0, dailyQuota - totalUsed);
             animateNumber(document.getElementById('quota-used'), totalUsed); animateNumber(document.getElementById('quota-remain'), remain);
             
-            const progressPercent = Math.max(0, (remain / dailyQuota) * 100);
-            const progressFill = document.getElementById('progress-fill');
-            progressFill.style.width = `${progressPercent}%`;
-            progressFill.style.background = progressPercent < 25 ? 'linear-gradient(90deg, #f43f5e, #fb7185)' : 'linear-gradient(90deg, var(--accent), var(--accent2), var(--accent))';
+            const progressRatio = Math.max(0, Math.min(1, remain / dailyQuota));
+            const ringCirc = 2 * Math.PI * 68;
+            const ring = document.getElementById('ring-progress');
+            ring.style.strokeDasharray = ringCirc;
+            ring.style.strokeDashoffset = ringCirc * (1 - progressRatio);
+            ring.style.stroke = progressRatio < 0.25 ? 'url(#ringGradientLow)' : 'url(#ringGradient)';
 
             checkQuotaWarning(remain, dailyQuota);
             renderWeekChartAndStreak(logs, dailyQuota);
