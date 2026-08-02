@@ -907,10 +907,10 @@
 
                 <div class="settings-section">
                     <div class="settings-section-title">🕐 กะการทำงาน</div>
-                    <div class="settings-row">
+                    <label class="settings-row" for="shift-mode-check" style="cursor:pointer;">
                         <span class="settings-row-label">นับเวลาแบบกะ (ไม่รีเซ็ตเที่ยงคืน)</span>
                         <span class="toggle-switch"><input type="checkbox" id="shift-mode-check" onchange="toggleShiftMode(this.checked)"><span class="toggle-slider"></span></span>
-                    </div>
+                    </label>
                     <div class="settings-row" id="shift-boundary-row" style="display:none;">
                         <span class="settings-row-label">เวลาเริ่มกะ</span>
                         <select id="shift-boundary-select" class="quota-input" style="width:auto; padding:6px 10px;" onchange="setShiftBoundary(this.value)"></select>
