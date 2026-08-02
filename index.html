@@ -571,6 +571,8 @@
         .settings-row-label { font-size: 14px; font-weight: 600; color: #334155; }
         body[data-theme="night"] .settings-row-label { color: #e2e8f0; }
         .settings-row-control { display: flex; align-items: center; gap: 8px; }
+        .settings-hint { font-size: 11px; color: #94a3b8; line-height: 1.5; margin: 8px 0 0; }
+        body[data-theme="night"] .settings-hint { color: #64748b; }
         #dialog-input {
             padding: 14px 18px; border-radius: 16px; border: 2px solid #e2e8f0; font-family: 'Kanit'; font-size: 15px;
             outline: none; transition: all 0.3s; background: rgba(255,255,255,0.8); font-weight: 600; width: 100%;
@@ -717,7 +719,7 @@
 
         <div class="dashboard glass-panel">
             <div class="dash-header">
-                <span class="dash-title">📊 โควตาเวลาพักวันนี้</span>
+                <span class="dash-title" id="dash-title">📊 โควตาเวลาพักวันนี้</span>
                 <div class="quota-setting">
                     ตั้งค่าโควตา:
                     <span class="quota-stepper">
@@ -901,6 +903,19 @@
                         <span class="toggle-switch toggle-switch-sm"><input type="checkbox" id="auto-theme-check" onchange="toggleAutoTheme(this.checked)"><span class="toggle-slider"></span></span>
                         <span>🕐 สลับอัตโนมัติตามเวลา</span>
                     </label>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-section-title">🕐 กะการทำงาน</div>
+                    <div class="settings-row">
+                        <span class="settings-row-label">นับเวลาแบบกะ (ไม่รีเซ็ตเที่ยงคืน)</span>
+                        <span class="toggle-switch"><input type="checkbox" id="shift-mode-check" onchange="toggleShiftMode(this.checked)"><span class="toggle-slider"></span></span>
+                    </div>
+                    <div class="settings-row" id="shift-boundary-row" style="display:none;">
+                        <span class="settings-row-label">เวลาเริ่มกะ</span>
+                        <select id="shift-boundary-select" class="quota-input" style="width:auto; padding:6px 10px;" onchange="setShiftBoundary(this.value)"></select>
+                    </div>
+                    <p class="settings-hint">เปิดไว้ถ้าทำงานเป็นกะที่ข้ามเที่ยงคืน เช่น กะเช้า 08:00-20:00 กะดึก 20:00-08:00 โควตาจะรีเซ็ตตอนเริ่มกะใหม่แทนเที่ยงคืน</p>
                 </div>
 
                 <div class="settings-section">
@@ -1342,6 +1357,37 @@
             return `${String(new Date(utc + (3600000 * 7)).getHours()).padStart(2, '0')}:${String(new Date(utc + (3600000 * 7)).getMinutes()).padStart(2, '0')} น.`;
         }
 
+        // --- 🕐 ระบบนับเวลาแบบกะ (สำหรับกะดึกที่ข้ามเที่ยงคืน) ---
+        // เมื่อเปิดโหมดนี้ "วันทำงาน" จะเริ่ม/รีเซ็ตที่ชั่วโมงของกะ (เช่น 08:00 และ 20:00) แทนเที่ยงคืน
+        // ทำให้กะดึก 20:00-08:00 นับเป็นช่วงเวลาต่อเนื่องช่วงเดียว ไม่ถูกตัดแบ่งตอนข้ามวันปฏิทิน
+        function getShiftBoundaryHour() {
+            if (localStorage.getItem('shift_mode') !== 'true') return null;
+            const v = parseInt(localStorage.getItem('shift_boundary_hour'));
+            return isNaN(v) ? 8 : v;
+        }
+        function getWorkDayKey(date = new Date()) {
+            const boundary = getShiftBoundaryHour();
+            if (boundary === null) return date.toDateString();
+            const shiftLenMs = 12 * 60 * 60 * 1000;
+            const baseShiftStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), boundary, 0, 0, 0);
+            const diffMs = date.getTime() - baseShiftStart.getTime();
+            const shiftsPassed = Math.floor(diffMs / shiftLenMs);
+            const shiftStart = new Date(baseShiftStart.getTime() + shiftsPassed * shiftLenMs);
+            return shiftStart.toDateString() + '_' + shiftStart.getHours();
+        }
+        function toggleShiftMode(enabled) {
+            localStorage.setItem('shift_mode', enabled ? 'true' : 'false');
+            const row = document.getElementById('shift-boundary-row');
+            if (row) row.style.display = enabled ? 'flex' : 'none';
+            renderDashboardAndLogs();
+            showToast(enabled ? '⏱️ เปิดโหมดนับเวลาแบบกะแล้ว' : 'กลับไปนับแบบเที่ยงคืนปกติแล้ว', 'success');
+        }
+        function setShiftBoundary(v) {
+            localStorage.setItem('shift_boundary_hour', v);
+            renderDashboardAndLogs();
+            showToast(`ตั้งเวลาเริ่มกะเป็น ${String(v).padStart(2,'0')}:00 / ${String((parseInt(v)+12)%24).padStart(2,'0')}:00 แล้ว`, 'success');
+        }
+
         function performCopy(text) {
             const tempInput = document.createElement("textarea"); tempInput.value = text;
             document.body.appendChild(tempInput); tempInput.select(); document.execCommand("copy"); document.body.removeChild(tempInput);
@@ -1525,7 +1571,7 @@
 
         function saveLog(action, start, end, duration) {
             let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
-            logs.push({ date: new Date().toDateString(), action, start, end, duration });
+            logs.push({ date: new Date().toDateString(), shiftKey: getWorkDayKey(), action, start, end, duration });
             localStorage.setItem('break_logs', JSON.stringify(logs)); renderDashboardAndLogs();
         }
 
@@ -1540,8 +1586,8 @@
         }
 
         async function shareSummaryImage() {
-            const today = new Date().toDateString();
-            const logs = JSON.parse(localStorage.getItem('break_logs') || '[]').filter(log => log.date === today);
+            const today = getWorkDayKey();
+            const logs = JSON.parse(localStorage.getItem('break_logs') || '[]').filter(log => (log.shiftKey || log.date) === today);
             if (logs.length === 0) { showToast('ยังไม่มีประวัติของวันนี้ให้แชร์', 'info'); return; }
 
             const dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
@@ -1636,8 +1682,8 @@
         }
 
         function copySummary() {
-            const today = new Date().toDateString();
-            const logs = JSON.parse(localStorage.getItem('break_logs') || '[]').filter(log => log.date === today);
+            const today = getWorkDayKey();
+            const logs = JSON.parse(localStorage.getItem('break_logs') || '[]').filter(log => (log.shiftKey || log.date) === today);
             if (logs.length === 0) { showToast('ยังไม่มีประวัติของวันนี้ให้คัดลอก', 'info'); return; }
             let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
             let totalUsed = 0; logs.forEach(log => totalUsed += log.duration);
@@ -1667,9 +1713,11 @@
         function toggleLogPagination() { showAllLogs = !showAllLogs; renderDashboardAndLogs(); }
 
         function renderDashboardAndLogs() {
-            const today = new Date().toDateString();
+            const today = getWorkDayKey();
             const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
-            const todayLogs = logs.filter(log => log.date === today).reverse();
+            const todayLogs = logs.filter(log => (log.shiftKey || log.date) === today).reverse();
+            const dashTitleEl = document.getElementById('dash-title');
+            if (dashTitleEl) dashTitleEl.textContent = getShiftBoundaryHour() !== null ? '📊 โควตาเวลาพักกะนี้' : '📊 โควตาเวลาพักวันนี้';
             let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
             document.getElementById('quota-input').value = dailyQuota;
             let totalUsed = 0; todayLogs.forEach(log => totalUsed += log.duration);
@@ -1759,7 +1807,7 @@
 
         function checkQuotaWarning(remain, dailyQuota) {
             if (!notifyEnabled) return;
-            const todayKey = new Date().toDateString();
+            const todayKey = getWorkDayKey();
             if (remain <= 0 && localStorage.getItem('quota_zero_notified') !== todayKey) {
                 localStorage.setItem('quota_zero_notified', todayKey);
                 new Notification('🔋 โควตาหมดแล้ว', { body: `ใช้เวลาพักครบ ${dailyQuota} นาทีของวันนี้แล้ว` });
@@ -1922,12 +1970,31 @@
             });
         }
 
+        function initShiftSettingsUI() {
+            const select = document.getElementById('shift-boundary-select');
+            if (select && select.options.length === 0) {
+                for (let h = 0; h < 24; h++) {
+                    const opt = document.createElement('option');
+                    opt.value = h;
+                    const other = (h + 12) % 24;
+                    opt.textContent = `${String(h).padStart(2,'0')}:00 / ${String(other).padStart(2,'0')}:00`;
+                    select.appendChild(opt);
+                }
+            }
+            const shiftOn = localStorage.getItem('shift_mode') === 'true';
+            const boundary = getShiftBoundaryHour();
+            document.getElementById('shift-mode-check').checked = shiftOn;
+            document.getElementById('shift-boundary-row').style.display = shiftOn ? 'flex' : 'none';
+            if (select) select.value = boundary === null ? 8 : boundary;
+        }
+
         window.onload = () => {
             const autoOn = localStorage.getItem('auto_theme') === 'true';
             const savedTheme = autoOn ? getAutoTheme() : (localStorage.getItem('site_theme') || 'day');
             setSiteTheme(savedTheme);
             const autoCb = document.getElementById('auto-theme-check');
             if (autoCb) autoCb.checked = autoOn;
+            initShiftSettingsUI();
             renderGreeting();
             updateHeaderTexts(); renderActivities(); renderDashboardAndLogs();
         };
