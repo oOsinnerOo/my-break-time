@@ -913,9 +913,9 @@
                     </label>
                     <div class="settings-row" id="shift-boundary-row" style="display:none;">
                         <span class="settings-row-label">เวลาเริ่มกะ</span>
-                        <select id="shift-boundary-select" class="quota-input" style="width:auto; padding:6px 10px;" onchange="setShiftBoundary(this.value)"></select>
+                        <input type="time" id="shift-boundary-input" class="quota-input" style="width:auto; padding:6px 10px;" onchange="setShiftBoundary(this.value)">
                     </div>
-                    <p class="settings-hint">เปิดไว้ถ้าทำงานเป็นกะที่ข้ามเที่ยงคืน เช่น กะเช้า 08:00-20:00 กะดึก 20:00-08:00 โควตาจะรีเซ็ตตอนเริ่มกะใหม่แทนเที่ยงคืน</p>
+                    <p class="settings-hint" id="shift-hint">เปิดไว้ถ้าทำงานเป็นกะที่ข้ามเที่ยงคืน โควตาจะรีเซ็ตตอนเริ่มกะใหม่แทนเที่ยงคืน</p>
                 </div>
 
                 <div class="settings-section">
@@ -1358,34 +1358,58 @@
         }
 
         // --- 🕐 ระบบนับเวลาแบบกะ (สำหรับกะดึกที่ข้ามเที่ยงคืน) ---
-        // เมื่อเปิดโหมดนี้ "วันทำงาน" จะเริ่ม/รีเซ็ตที่ชั่วโมงของกะ (เช่น 08:00 และ 20:00) แทนเที่ยงคืน
-        // ทำให้กะดึก 20:00-08:00 นับเป็นช่วงเวลาต่อเนื่องช่วงเดียว ไม่ถูกตัดแบ่งตอนข้ามวันปฏิทิน
-        function getShiftBoundaryHour() {
+        // เมื่อเปิดโหมดนี้ "วันทำงาน" จะเริ่ม/รีเซ็ตที่เวลาของกะ (เช่น 09:30 และ 21:30) แทนเที่ยงคืน
+        // ทำให้กะดึกที่ข้ามเที่ยงคืนนับเป็นช่วงเวลาต่อเนื่องช่วงเดียว ไม่ถูกตัดแบ่งตอนข้ามวันปฏิทิน
+        function getShiftBoundaryMinutes() {
             if (localStorage.getItem('shift_mode') !== 'true') return null;
-            const v = parseInt(localStorage.getItem('shift_boundary_hour'));
-            return isNaN(v) ? 8 : v;
+            const stored = localStorage.getItem('shift_boundary_time'); // เก็บเป็น "HH:MM"
+            if (!stored || !/^\d{1,2}:\d{2}$/.test(stored)) return 9 * 60 + 30; // ค่าเริ่มต้น 09:30
+            const [h, m] = stored.split(':').map(Number);
+            return h * 60 + m;
         }
         function getWorkDayKey(date = new Date()) {
-            const boundary = getShiftBoundaryHour();
-            if (boundary === null) return date.toDateString();
+            const boundaryMin = getShiftBoundaryMinutes();
+            if (boundaryMin === null) return date.toDateString();
             const shiftLenMs = 12 * 60 * 60 * 1000;
-            const baseShiftStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), boundary, 0, 0, 0);
+            const boundaryHour = Math.floor(boundaryMin / 60);
+            const boundaryMinute = boundaryMin % 60;
+            const baseShiftStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), boundaryHour, boundaryMinute, 0, 0);
             const diffMs = date.getTime() - baseShiftStart.getTime();
             const shiftsPassed = Math.floor(diffMs / shiftLenMs);
             const shiftStart = new Date(baseShiftStart.getTime() + shiftsPassed * shiftLenMs);
-            return shiftStart.toDateString() + '_' + shiftStart.getHours();
+            return shiftStart.toDateString() + '_' + shiftStart.getHours() + '-' + shiftStart.getMinutes();
+        }
+        function updateShiftHint() {
+            const hint = document.getElementById('shift-hint');
+            if (!hint) return;
+            const boundaryMin = getShiftBoundaryMinutes();
+            if (boundaryMin === null) {
+                hint.textContent = 'เปิดไว้ถ้าทำงานเป็นกะที่ข้ามเที่ยงคืน โควตาจะรีเซ็ตตอนเริ่มกะใหม่แทนเที่ยงคืน';
+            } else {
+                const t1 = formatMinutesAsTime(boundaryMin), t2 = formatMinutesAsTime(boundaryMin + 12*60);
+                hint.textContent = `กะแรก ${t1}-${t2} · กะสอง ${t2}-${t1} · โควตาจะรีเซ็ตตอนเริ่มกะใหม่แทนเที่ยงคืน`;
+            }
         }
         function toggleShiftMode(enabled) {
             localStorage.setItem('shift_mode', enabled ? 'true' : 'false');
             const row = document.getElementById('shift-boundary-row');
             if (row) row.style.display = enabled ? 'flex' : 'none';
+            updateShiftHint();
             renderDashboardAndLogs();
             showToast(enabled ? '⏱️ เปิดโหมดนับเวลาแบบกะแล้ว' : 'กลับไปนับแบบเที่ยงคืนปกติแล้ว', 'success');
         }
+        function formatMinutesAsTime(totalMin) {
+            const h = Math.floor(totalMin / 60) % 24, m = totalMin % 60;
+            return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+        }
         function setShiftBoundary(v) {
-            localStorage.setItem('shift_boundary_hour', v);
+            if (!v || !/^\d{1,2}:\d{2}$/.test(v)) return;
+            localStorage.setItem('shift_boundary_time', v);
+            const [h, m] = v.split(':').map(Number);
+            const totalMin = h * 60 + m;
+            updateShiftHint();
             renderDashboardAndLogs();
-            showToast(`ตั้งเวลาเริ่มกะเป็น ${String(v).padStart(2,'0')}:00 / ${String((parseInt(v)+12)%24).padStart(2,'0')}:00 แล้ว`, 'success');
+            showToast(`ตั้งเวลาเริ่มกะเป็น ${formatMinutesAsTime(totalMin)} / ${formatMinutesAsTime(totalMin + 12*60)} แล้ว`, 'success');
         }
 
         function performCopy(text) {
@@ -1717,7 +1741,7 @@
             const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
             const todayLogs = logs.filter(log => (log.shiftKey || log.date) === today).reverse();
             const dashTitleEl = document.getElementById('dash-title');
-            if (dashTitleEl) dashTitleEl.textContent = getShiftBoundaryHour() !== null ? '📊 โควตาเวลาพักกะนี้' : '📊 โควตาเวลาพักวันนี้';
+            if (dashTitleEl) dashTitleEl.textContent = getShiftBoundaryMinutes() !== null ? '📊 โควตาเวลาพักกะนี้' : '📊 โควตาเวลาพักวันนี้';
             let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
             document.getElementById('quota-input').value = dailyQuota;
             let totalUsed = 0; todayLogs.forEach(log => totalUsed += log.duration);
@@ -1971,21 +1995,20 @@
         }
 
         function initShiftSettingsUI() {
-            const select = document.getElementById('shift-boundary-select');
-            if (select && select.options.length === 0) {
-                for (let h = 0; h < 24; h++) {
-                    const opt = document.createElement('option');
-                    opt.value = h;
-                    const other = (h + 12) % 24;
-                    opt.textContent = `${String(h).padStart(2,'0')}:00 / ${String(other).padStart(2,'0')}:00`;
-                    select.appendChild(opt);
-                }
+            // ย้ายค่าเก่าที่เคยเก็บเป็นชั่วโมงล้วน (ก่อนรองรับนาที) มาเป็นฟอร์แมต HH:MM
+            const oldHour = localStorage.getItem('shift_boundary_hour');
+            if (oldHour !== null && !localStorage.getItem('shift_boundary_time')) {
+                localStorage.setItem('shift_boundary_time', `${String(parseInt(oldHour)).padStart(2,'0')}:00`);
+                localStorage.removeItem('shift_boundary_hour');
             }
+
             const shiftOn = localStorage.getItem('shift_mode') === 'true';
-            const boundary = getShiftBoundaryHour();
+            const boundaryMin = getShiftBoundaryMinutes();
             document.getElementById('shift-mode-check').checked = shiftOn;
             document.getElementById('shift-boundary-row').style.display = shiftOn ? 'flex' : 'none';
-            if (select) select.value = boundary === null ? 8 : boundary;
+            const input = document.getElementById('shift-boundary-input');
+            if (input) input.value = formatMinutesAsTime(boundaryMin === null ? 9 * 60 + 30 : boundaryMin);
+            updateShiftHint();
         }
 
         window.onload = () => {
