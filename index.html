@@ -658,8 +658,9 @@
         .btn-export-csv { color: #059669; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(16, 185, 129, 0.2); transition: 0.2s;}
         .btn-share-image { color: #7c3aed; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(124, 58, 237, 0.15); transition: 0.2s;}
         .btn-share-image:hover { transform: scale(1.05); filter: brightness(1.1); }
+        .btn-search-history { color: #0891B2; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(8, 145, 178, 0.15); transition: 0.2s;}
         .btn-clear-history { color: #dc2626; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(239, 68, 68, 0.2); transition: 0.2s;}
-        .btn-copy-summary:hover, .btn-export-csv:hover, .btn-clear-history:hover { transform: scale(1.05); filter: brightness(1.1); }
+        .btn-copy-summary:hover, .btn-export-csv:hover, .btn-clear-history:hover, .btn-search-history:hover { transform: scale(1.05); filter: brightness(1.1); }
 
         .log-list { display: flex; flex-direction: column; gap: 8px; }
         .log-row {
@@ -793,6 +794,7 @@
             <div class="history-title">
                 <span>📜 ประวัติการพัก</span>
                 <div class="history-actions">
+                    <span class="btn-search-history" onclick="openSearchModal()">🔍 ค้นหา</span>
                     <span class="btn-copy-summary" onclick="copySummary()">📋 คัดลอก</span>
                     <span class="btn-share-image" onclick="shareSummaryImage()">🖼️ แชร์รูป</span>
                     <span class="btn-export-csv" onclick="exportCSV()">📥 CSV</span>
@@ -961,6 +963,18 @@
             </div>
             <div class="day-detail-summary" id="day-detail-summary"></div>
             <div class="settings-scroll" id="day-detail-list"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="search-modal" onclick="if(event.target===this) closeSearchModal()">
+        <div class="modal-box day-detail-box">
+            <div class="settings-modal-header">
+                <h3 style="margin:0; font-size:18px; font-weight:800;">🔍 ค้นหาประวัติ</h3>
+                <span class="settings-close-btn" onclick="closeSearchModal()">✕</span>
+            </div>
+            <input type="text" id="search-input" class="quota-input" style="width:100%; text-align:left; padding:12px 14px; font-size:14px; flex-shrink:0;" placeholder="พิมพ์ชื่อกิจกรรม เช่น กาแฟ, ห้องน้ำ..." oninput="renderSearchResults()">
+            <div class="day-detail-summary" id="search-summary"></div>
+            <div class="settings-scroll" id="search-results"></div>
         </div>
     </div>
 
@@ -1169,7 +1183,57 @@
             { id: 5, name: 'เข้าห้องน้ำ', emoji: '🧼', theme: 'blue', limit: 0, isToilet: true }
         ];
 
+        // --- 🛡️ ห่อ localStorage.setItem ให้กันพัง ถ้าพื้นที่เก็บข้อมูลเต็ม (เกิดได้ถ้าใช้มานานมากๆ หรือเบราว์เซอร์บางตัวจำกัดพื้นที่) ---
+        function safeSetItem(key, value) {
+            try {
+                window.localStorage.setItem(key, value);
+                return true;
+            } catch (err) {
+                console.error('บันทึกข้อมูลไม่สำเร็จ:', key, err);
+                if (typeof showToast === 'function') {
+                    showToast('⚠️ พื้นที่เก็บข้อมูลเต็ม การเปลี่ยนแปลงล่าสุดอาจไม่ถูกบันทึก ลองสำรองแล้วล้างข้อมูลเก่าดู', 'error', { duration: 7000 });
+                }
+                return false;
+            }
+        }
+
         let activeBreak = null; let showAllLogs = false; let timerInterval = null;
+
+        // --- 💾 บันทึกสถานะ "กำลังพักอยู่" ไว้ กันหายถ้าโหลดหน้าใหม่/แท็บถูกปิดกลางคัน (พบบ่อยบนมือถือ) ---
+        function persistActiveBreak() {
+            if (activeBreak) safeSetItem('active_break_state', JSON.stringify(activeBreak));
+            else localStorage.removeItem('active_break_state');
+        }
+        function restoreActiveBreakIfAny() {
+            const saved = localStorage.getItem('active_break_state');
+            if (!saved) return;
+            let state;
+            try { state = JSON.parse(saved); } catch (e) { localStorage.removeItem('active_break_state'); return; }
+            const container = document.getElementById('activities-container');
+            const cardElement = container && container.children[state.index];
+            if (!cardElement) { localStorage.removeItem('active_break_state'); return; }
+
+            activeBreak = state;
+            cardElement.classList.add('expanded');
+            const timerDisplay = cardElement.querySelector('.live-timer');
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (!activeBreak) return;
+                const elapsedSecs = Math.floor((Date.now() - activeBreak.startTime) / 1000);
+                timerDisplay.textContent = `${String(Math.floor(elapsedSecs / 60)).padStart(2, '0')}:${String(elapsedSecs % 60).padStart(2, '0')}`;
+                if (!activeBreak.notified && activeBreak.limit > 0 && !activeBreak.isToilet && elapsedSecs >= activeBreak.limit * 60) {
+                    activeBreak.notified = true;
+                    persistActiveBreak();
+                    if (notifyEnabled) {
+                        new Notification('⏰ ถึงเวลาที่ตั้งไว้แล้ว', { body: `${activeBreak.action} เกินลิมิต ${activeBreak.limit} นาทีแล้ว กลับมาได้เลย` });
+                    }
+                }
+            }, 1000);
+            const elapsedSecs = Math.floor((Date.now() - activeBreak.startTime) / 1000);
+            timerDisplay.textContent = `${String(Math.floor(elapsedSecs / 60)).padStart(2, '0')}:${String(elapsedSecs % 60).padStart(2, '0')}`;
+            showToast(`⏱️ กู้คืนสถานะ "${activeBreak.action}" ที่กำลังพักอยู่แล้ว`, 'info', { duration: 4000 });
+        }
+
         let isMuted = localStorage.getItem('is_muted') === 'true';
         let gender = localStorage.getItem('gender') || 'male';
         let editingIndex = -1;
@@ -1197,7 +1261,7 @@
             } catch(e) {}
         }
 
-        function setVolume(v) { soundVolume = parseFloat(v); localStorage.setItem('sound_volume', soundVolume); }
+        function setVolume(v) { soundVolume = parseFloat(v); safeSetItem('sound_volume', soundVolume); }
 
         // --- 🔢 นับเลขวิ่งแบบนุ่มๆ แทนการเปลี่ยนตัวเลขปุ๊บปั๊บ ---
         function animateNumber(el, to) {
@@ -1289,14 +1353,14 @@
             if (event) {
                 event.stopPropagation();
                 if (event.target.closest && event.target.closest('.theme-swatch')) {
-                    localStorage.setItem('auto_theme', 'false');
+                    safeSetItem('auto_theme', 'false');
                     const cb = document.getElementById('auto-theme-check');
                     if (cb) cb.checked = false;
                 }
             }
             if (!theme || theme === 'day') { document.body.removeAttribute('data-theme'); theme = 'day'; }
             else { document.body.setAttribute('data-theme', theme); }
-            localStorage.setItem('site_theme', theme);
+            safeSetItem('site_theme', theme);
             crossfadeThemeBg(theme);
             document.querySelectorAll('.theme-swatch').forEach(s => s.classList.toggle('selected', s.dataset.theme === theme));
             const titleEmoji = document.getElementById('title-emoji');
@@ -1326,7 +1390,7 @@
             return 'night';
         }
         function toggleAutoTheme(enabled) {
-            localStorage.setItem('auto_theme', enabled ? 'true' : 'false');
+            safeSetItem('auto_theme', enabled ? 'true' : 'false');
             if (enabled) { setSiteTheme(getAutoTheme()); showToast('เปิดธีมอัตโนมัติตามเวลาแล้ว ✨', 'success'); }
         }
         setInterval(() => { if (localStorage.getItem('auto_theme') === 'true') setSiteTheme(getAutoTheme()); }, 15 * 60 * 1000);
@@ -1343,21 +1407,21 @@
             else text = '😴 ดึกมากแล้ว ดูแลตัวเองด้วยนะ';
             g.textContent = text;
         }
-        function toggleMute(event) { event.stopPropagation(); isMuted = !isMuted; localStorage.setItem('is_muted', isMuted); updateHeaderTexts(); }
-        function toggleGender(event) { event.stopPropagation(); gender = gender === 'male' ? 'female' : 'male'; localStorage.setItem('gender', gender); updateHeaderTexts(); }
+        function toggleMute(event) { event.stopPropagation(); isMuted = !isMuted; safeSetItem('is_muted', isMuted); updateHeaderTexts(); }
+        function toggleGender(event) { event.stopPropagation(); gender = gender === 'male' ? 'female' : 'male'; safeSetItem('gender', gender); updateHeaderTexts(); }
 
         function toggleNotify(event) {
             event.stopPropagation();
             if (!('Notification' in window)) { showToast('เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน', 'warning'); return; }
             if (notifyEnabled) {
-                notifyEnabled = false; localStorage.setItem('notify_enabled', 'false'); updateHeaderTexts(); return;
+                notifyEnabled = false; safeSetItem('notify_enabled', 'false'); updateHeaderTexts(); return;
             }
             if (Notification.permission === 'granted') {
-                notifyEnabled = true; localStorage.setItem('notify_enabled', 'true'); updateHeaderTexts();
+                notifyEnabled = true; safeSetItem('notify_enabled', 'true'); updateHeaderTexts();
             } else if (Notification.permission !== 'denied') {
                 Notification.requestPermission().then(perm => {
                     notifyEnabled = perm === 'granted';
-                    localStorage.setItem('notify_enabled', notifyEnabled);
+                    safeSetItem('notify_enabled', notifyEnabled);
                     updateHeaderTexts();
                 });
             } else {
@@ -1413,7 +1477,7 @@
             }
         }
         function toggleShiftMode(enabled) {
-            localStorage.setItem('shift_mode', enabled ? 'true' : 'false');
+            safeSetItem('shift_mode', enabled ? 'true' : 'false');
             const row = document.getElementById('shift-boundary-row');
             if (row) row.style.display = enabled ? 'flex' : 'none';
             updateShiftHint();
@@ -1426,7 +1490,7 @@
         }
         function setShiftBoundary(v) {
             if (!v || !/^\d{1,2}:\d{2}$/.test(v)) return;
-            localStorage.setItem('shift_boundary_time', v);
+            safeSetItem('shift_boundary_time', v);
             const [h, m] = v.split(':').map(Number);
             const totalMin = h * 60 + m;
             updateShiftHint();
@@ -1448,7 +1512,7 @@
 
         function updateQuota(val) {
             let quota = parseInt(val); if (isNaN(quota) || quota < 1) quota = 60;
-            localStorage.setItem('daily_quota', quota); renderDashboardAndLogs();
+            safeSetItem('daily_quota', quota); renderDashboardAndLogs();
         }
         function stepQuota(delta) {
             const input = document.getElementById('quota-input');
@@ -1521,7 +1585,7 @@
                     let acts = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
                     const [moved] = acts.splice(srcIndex, 1);
                     acts.splice(targetIndex, 0, moved);
-                    localStorage.setItem('activities', JSON.stringify(acts));
+                    safeSetItem('activities', JSON.stringify(acts));
                     renderActivities();
                 };
                 handle.addEventListener('pointerup', finishDrag);
@@ -1577,14 +1641,14 @@
                 isToilet: document.getElementById('act-istoilet').checked
             };
             if (editingIndex >= 0) activities[editingIndex] = newAct; else activities.push(newAct);
-            localStorage.setItem('activities', JSON.stringify(activities)); closeModal(); renderActivities();
+            safeSetItem('activities', JSON.stringify(activities)); closeModal(); renderActivities();
         }
         
         async function deleteActivity() {
             const ok = await showConfirmDialog('ต้องการลบกิจกรรมนี้ใช่หรือไม่?', 'ลบกิจกรรม', '🗑️');
             if (ok) {
                 let activities = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
-                activities.splice(editingIndex, 1); localStorage.setItem('activities', JSON.stringify(activities));
+                activities.splice(editingIndex, 1); safeSetItem('activities', JSON.stringify(activities));
                 closeModal(); renderActivities();
             }
         }
@@ -1600,7 +1664,8 @@
             const suffix = gender === 'male' ? 'ครับ' : 'ค่ะ'; const now = new Date(); const timeString = getThaiTimeString(now);
             const textToCopy = `${act.name} ${timeString} ${suffix}`; performCopy(textToCopy);
 
-            activeBreak = { action: act.name, startTime: now.getTime(), startStr: timeString, limit: act.limit, isToilet: act.isToilet, notified: false };
+            activeBreak = { index, action: act.name, startTime: now.getTime(), startStr: timeString, limit: act.limit, isToilet: act.isToilet, notified: false };
+            persistActiveBreak();
 
             const timerDisplay = cardElement.querySelector('.live-timer'); timerDisplay.textContent = '00:00';
             if (timerInterval) clearInterval(timerInterval);
@@ -1610,6 +1675,7 @@
                 timerDisplay.textContent = `${String(Math.floor(elapsedSecs / 60)).padStart(2, '0')}:${String(elapsedSecs % 60).padStart(2, '0')}`;
                 if (!activeBreak.notified && activeBreak.limit > 0 && !activeBreak.isToilet && elapsedSecs >= activeBreak.limit * 60) {
                     activeBreak.notified = true;
+                    persistActiveBreak();
                     if (notifyEnabled) {
                         new Notification('⏰ ถึงเวลาที่ตั้งไว้แล้ว', { body: `${activeBreak.action} เกินลิมิต ${activeBreak.limit} นาทีแล้ว กลับมาได้เลย` });
                     }
@@ -1636,6 +1702,7 @@
             }
             saveLog(activeBreak.action, activeBreak.startStr, getThaiTimeString(new Date()), diffMins);
             activeBreak = null;
+            persistActiveBreak();
 
             cardElement.classList.remove('expanded');
             setTimeout(() => { showSuccessOverlay(cardElement, 'ยินดีต้อนรับกลับมา! 🏠', textToCopy, 1500); }, 100);
@@ -1644,7 +1711,7 @@
         function saveLog(action, start, end, duration) {
             let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
             logs.push({ date: new Date().toDateString(), shiftKey: getWorkDayKey(), action, start, end, duration });
-            localStorage.setItem('break_logs', JSON.stringify(logs)); renderDashboardAndLogs();
+            safeSetItem('break_logs', JSON.stringify(logs)); renderDashboardAndLogs();
         }
 
         function drawRoundedRect(ctx, x, y, w, h, r) {
@@ -1784,7 +1851,7 @@
                 const todayKey = getWorkDayKey();
                 let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
                 logs = logs.filter(log => (log.shiftKey || log.date) !== todayKey);
-                localStorage.setItem('break_logs', JSON.stringify(logs));
+                safeSetItem('break_logs', JSON.stringify(logs));
                 renderDashboardAndLogs();
                 showToast('ล้างประวัติวันนี้แล้ว', 'success');
             }
@@ -1861,7 +1928,7 @@
             const d = parseInt(newDuration);
             log.duration = isNaN(d) ? log.duration : Math.max(0, d);
             logs[realIndex] = log;
-            localStorage.setItem('break_logs', JSON.stringify(logs));
+            safeSetItem('break_logs', JSON.stringify(logs));
             renderDashboardAndLogs();
             if (currentDetailDate) renderDayDetailContent();
             showToast('แก้ไขรายการแล้ว', 'success');
@@ -1871,7 +1938,7 @@
             let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
             const removed = logs[realIndex]; if (!removed) return;
             logs.splice(realIndex, 1);
-            localStorage.setItem('break_logs', JSON.stringify(logs));
+            safeSetItem('break_logs', JSON.stringify(logs));
             renderDashboardAndLogs();
             if (currentDetailDate) renderDayDetailContent();
             showToast(`ลบ "${removed.action}" แล้ว`, 'success', {
@@ -1879,7 +1946,7 @@
                 onAction: () => {
                     let currentLogs = JSON.parse(localStorage.getItem('break_logs') || '[]');
                     currentLogs.splice(realIndex, 0, removed);
-                    localStorage.setItem('break_logs', JSON.stringify(currentLogs));
+                    safeSetItem('break_logs', JSON.stringify(currentLogs));
                     renderDashboardAndLogs();
                     if (currentDetailDate) renderDayDetailContent();
                     showToast('กู้คืนรายการแล้ว', 'info');
@@ -1953,14 +2020,67 @@
             listEl.innerHTML = rowsHtml;
         }
 
+        // --- 🔍 ค้นหาประวัติการพักย้อนหลังทั้งหมด ไม่ต้องไล่ดูทีละวัน ---
+        function formatShortDateLabel(dateStr) {
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            const isToday = d.toDateString() === new Date().toDateString();
+            return isToday ? 'วันนี้' : `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()+543}`;
+        }
+        function openSearchModal() {
+            document.getElementById('search-modal').style.display = 'flex';
+            const input = document.getElementById('search-input');
+            input.value = '';
+            renderSearchResults();
+            setTimeout(() => input.focus(), 250);
+        }
+        function closeSearchModal() {
+            document.getElementById('search-modal').style.display = 'none';
+        }
+        function renderSearchResults() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const allLogs = JSON.parse(localStorage.getItem('break_logs') || '[]');
+            let results = query ? allLogs.filter(l => l.action.toLowerCase().includes(query)) : allLogs;
+            results = results.slice().reverse(); // ล่าสุดขึ้นก่อน
+
+            const summaryEl = document.getElementById('search-summary');
+            const listEl = document.getElementById('search-results');
+            summaryEl.textContent = query ? `พบ ${results.length} รายการที่ตรงกับ "${query}"` : `ประวัติทั้งหมด ${allLogs.length} รายการ · พิมพ์เพื่อค้นหา`;
+
+            if (results.length === 0) {
+                listEl.innerHTML = `<div class="empty-log" style="padding: 30px 0;">🔍 ${query ? 'ไม่พบรายการที่ค้นหา' : 'ยังไม่มีประวัติการพัก'}</div>`;
+                return;
+            }
+
+            const showLimit = 100;
+            const displayResults = results.slice(0, showLimit);
+            let html = '<div class="log-list">';
+            displayResults.forEach((log, i) => {
+                const isZero = log.duration === 0;
+                html += `
+                    <div class="log-row" style="animation-delay:${Math.min(i, 15) * 0.02}s; cursor:pointer;" onclick="closeSearchModal(); showDayDetail('${log.date}');">
+                        <div class="log-row-main">
+                            <span class="log-action">${log.action}</span>
+                            <span class="log-time">${formatShortDateLabel(log.date)} · ${log.start} → ${log.end}</span>
+                        </div>
+                        <div class="log-row-side">
+                            <span class="log-duration" style="color:${isZero ? 'var(--accent)' : 'var(--accent2)'};">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span>
+                        </div>
+                    </div>`;
+            });
+            html += '</div>';
+            if (results.length > showLimit) html += `<p style="text-align:center; font-size:11px; color:#94a3b8; margin-top:10px;">แสดง ${showLimit} จาก ${results.length} รายการ ลองพิมพ์คำค้นให้เจาะจงขึ้น</p>`;
+            listEl.innerHTML = html;
+        }
+
         function checkQuotaWarning(remain, dailyQuota) {
             if (!notifyEnabled) return;
             const todayKey = getWorkDayKey();
             if (remain <= 0 && localStorage.getItem('quota_zero_notified') !== todayKey) {
-                localStorage.setItem('quota_zero_notified', todayKey);
+                safeSetItem('quota_zero_notified', todayKey);
                 new Notification('🔋 โควตาหมดแล้ว', { body: `ใช้เวลาพักครบ ${dailyQuota} นาทีของวันนี้แล้ว` });
             } else if (remain > 0 && remain <= 10 && localStorage.getItem('quota_warn_notified') !== todayKey) {
-                localStorage.setItem('quota_warn_notified', todayKey);
+                safeSetItem('quota_warn_notified', todayKey);
                 new Notification('⚠️ โควตาใกล้หมดแล้ว', { body: `เหลือเวลาพักอีกแค่ ${remain} นาทีของวันนี้` });
             }
         }
@@ -2029,7 +2149,7 @@
                 if (streak >= b.days && !earned.includes(b.days)) { earned.push(b.days); newlyEarned = b; }
             });
             if (newlyEarned) {
-                localStorage.setItem('earned_badges', JSON.stringify(earned));
+                safeSetItem('earned_badges', JSON.stringify(earned));
                 fireConfetti(); playSound('welcome');
                 showToast(`ปลดล็อกป้าย ${newlyEarned.icon} ${newlyEarned.label} แล้ว!`, 'success', { duration: 5000 });
             }
@@ -2074,18 +2194,18 @@
                     const data = JSON.parse(e.target.result);
                     const ok = await showConfirmDialog('นำเข้าข้อมูลนี้จะแทนที่ข้อมูลปัจจุบันทั้งหมด ยืนยันหรือไม่?', 'นำเข้าข้อมูล', '📤');
                     if (!ok) return;
-                    if (data.activities) localStorage.setItem('activities', JSON.stringify(data.activities));
-                    if (data.break_logs) localStorage.setItem('break_logs', JSON.stringify(data.break_logs));
-                    if (data.daily_quota) localStorage.setItem('daily_quota', data.daily_quota);
-                    if (typeof data.is_muted !== 'undefined') localStorage.setItem('is_muted', data.is_muted);
-                    if (data.gender) localStorage.setItem('gender', data.gender);
-                    if (typeof data.sound_volume !== 'undefined') localStorage.setItem('sound_volume', data.sound_volume);
-                    if (data.site_theme) localStorage.setItem('site_theme', data.site_theme);
-                    if (typeof data.auto_theme !== 'undefined') localStorage.setItem('auto_theme', data.auto_theme);
-                    if (typeof data.notify_enabled !== 'undefined') localStorage.setItem('notify_enabled', data.notify_enabled);
-                    if (typeof data.shift_mode !== 'undefined') localStorage.setItem('shift_mode', data.shift_mode);
-                    if (data.shift_boundary_time) localStorage.setItem('shift_boundary_time', data.shift_boundary_time);
-                    if (data.earned_badges) localStorage.setItem('earned_badges', JSON.stringify(data.earned_badges));
+                    if (data.activities) safeSetItem('activities', JSON.stringify(data.activities));
+                    if (data.break_logs) safeSetItem('break_logs', JSON.stringify(data.break_logs));
+                    if (data.daily_quota) safeSetItem('daily_quota', data.daily_quota);
+                    if (typeof data.is_muted !== 'undefined') safeSetItem('is_muted', data.is_muted);
+                    if (data.gender) safeSetItem('gender', data.gender);
+                    if (typeof data.sound_volume !== 'undefined') safeSetItem('sound_volume', data.sound_volume);
+                    if (data.site_theme) safeSetItem('site_theme', data.site_theme);
+                    if (typeof data.auto_theme !== 'undefined') safeSetItem('auto_theme', data.auto_theme);
+                    if (typeof data.notify_enabled !== 'undefined') safeSetItem('notify_enabled', data.notify_enabled);
+                    if (typeof data.shift_mode !== 'undefined') safeSetItem('shift_mode', data.shift_mode);
+                    if (data.shift_boundary_time) safeSetItem('shift_boundary_time', data.shift_boundary_time);
+                    if (data.earned_badges) safeSetItem('earned_badges', JSON.stringify(data.earned_badges));
                     showToast('นำเข้าข้อมูลสำเร็จ! กำลังโหลดหน้าใหม่', 'success');
                     setTimeout(() => location.reload(), 1200);
                 } catch (err) {
@@ -2134,7 +2254,7 @@
             // ย้ายค่าเก่าที่เคยเก็บเป็นชั่วโมงล้วน (ก่อนรองรับนาที) มาเป็นฟอร์แมต HH:MM
             const oldHour = localStorage.getItem('shift_boundary_hour');
             if (oldHour !== null && !localStorage.getItem('shift_boundary_time')) {
-                localStorage.setItem('shift_boundary_time', `${String(parseInt(oldHour)).padStart(2,'0')}:00`);
+                safeSetItem('shift_boundary_time', `${String(parseInt(oldHour)).padStart(2,'0')}:00`);
                 localStorage.removeItem('shift_boundary_hour');
             }
 
@@ -2156,7 +2276,31 @@
             initShiftSettingsUI();
             renderGreeting();
             updateHeaderTexts(); renderActivities(); renderDashboardAndLogs();
+            restoreActiveBreakIfAny();
         };
+
+        // --- 🔄 ซิงก์ข้อมูลข้ามแท็บ กันข้อมูลเก่าจากแท็บที่ค้างอยู่ไปทับข้อมูลใหม่โดยไม่ตั้งใจ ---
+        window.addEventListener('storage', (e) => {
+            if (!e.key) return; // ข้าม event ตอน localStorage.clear()
+            const dataKeys = ['break_logs', 'activities', 'daily_quota', 'earned_badges', 'shift_mode', 'shift_boundary_time'];
+            if (dataKeys.includes(e.key)) {
+                if (e.key === 'activities' && !activeBreak) renderActivities(); // ไม่รีเฟรชการ์ดถ้าแท็บนี้กำลังพักอยู่ กันหน้าจอเต็มจอหลุด
+                renderDashboardAndLogs();
+                if (currentDetailDate) renderDayDetailContent();
+            }
+            if (e.key === 'active_break_state') {
+                if (e.newValue && !activeBreak) {
+                    restoreActiveBreakIfAny(); // แท็บอื่นเริ่มพัก ให้แท็บนี้โชว์สถานะเดียวกัน
+                } else if (!e.newValue && activeBreak) {
+                    // แท็บอื่นกดจบการพักไปแล้ว เคลียร์สถานะฝั่งนี้ (ไม่บันทึกซ้ำ เพราะอีกแท็บบันทึกไปแล้ว)
+                    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+                    const container = document.getElementById('activities-container');
+                    const cardElement = container && container.children[activeBreak.index];
+                    if (cardElement) cardElement.classList.remove('expanded');
+                    activeBreak = null;
+                }
+            }
+        });
     </script>
 </body>
 </html>
