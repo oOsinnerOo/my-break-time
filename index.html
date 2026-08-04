@@ -303,7 +303,7 @@
         @keyframes badge-pop { 0% { transform: scale(0.3) rotate(-20deg); } 60% { transform: scale(1.2) rotate(8deg); } 100% { transform: scale(1) rotate(0); } }
         .week-chart { display: flex; align-items: flex-end; gap: 5px; height: 46px; flex: 1; }
         .week-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
-        .week-bar { width: 100%; border-radius: 4px 4px 2px 2px; background: rgba(148, 163, 184, 0.4); min-height: 3px; }
+        .week-bar { width: 100%; border-radius: 4px 4px 2px 2px; background: rgba(148, 163, 184, 0.4); min-height: 3px; cursor: pointer; }
         .week-bar.today { background: linear-gradient(180deg, var(--accent), var(--accent2)); }
         .week-lbl { font-size: 9px; color: #94a3b8; font-weight: 700; }
         .streak-num { font-size: 26px; font-weight: 800; color: #f97316; line-height: 1; }
@@ -398,7 +398,9 @@
         .btn-backup:hover, .btn-import:hover { transform: scale(1.05); filter: brightness(1.1); }
 
         .heatmap-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 4px; }
-        .heatmap-cell { aspect-ratio: 1; border-radius: 5px; background: rgba(148, 163, 184, 0.15); }
+        .heatmap-cell { aspect-ratio: 1; border-radius: 5px; background: rgba(148, 163, 184, 0.15); transition: transform 0.15s; }
+        #heatmap-grid .heatmap-cell { cursor: pointer; }
+        #heatmap-grid .heatmap-cell:hover { transform: scale(1.15); }
         body[data-theme="night"] .heatmap-cell { background: rgba(71, 85, 105, 0.3); }
         .heatmap-cell.lvl-1 { background: rgba(var(--accent-rgb), 0.35); }
         .heatmap-cell.lvl-2 { background: rgba(var(--accent-rgb), 0.6); }
@@ -556,6 +558,13 @@
 
         /* ⚙️ หน้าตั้งค่ารวม */
         .settings-box { padding: 24px; max-height: 82vh; overflow: hidden; }
+        .day-detail-box { padding: 24px; max-height: 82vh; overflow: hidden; }
+        .day-detail-summary {
+            font-size: 13px; color: #64748b; padding-bottom: 12px; margin-bottom: 4px; flex-shrink: 0;
+            border-bottom: 1px dashed rgba(203, 213, 225, 0.6);
+        }
+        body[data-theme="night"] .day-detail-summary { color: #94a3b8; border-bottom-color: rgba(71, 85, 105, 0.6); }
+        .day-detail-summary strong { color: var(--accent); }
         .settings-modal-header { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .settings-close-btn {
             width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -941,6 +950,17 @@
                 </div>
 
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="day-detail-modal" onclick="if(event.target===this) closeDayDetail()">
+        <div class="modal-box day-detail-box">
+            <div class="settings-modal-header">
+                <h3 id="day-detail-title" style="margin:0; font-size:18px; font-weight:800;">📅</h3>
+                <span class="settings-close-btn" onclick="closeDayDetail()">✕</span>
+            </div>
+            <div class="day-detail-summary" id="day-detail-summary"></div>
+            <div class="settings-scroll" id="day-detail-list"></div>
         </div>
     </div>
 
@@ -1843,6 +1863,7 @@
             logs[realIndex] = log;
             localStorage.setItem('break_logs', JSON.stringify(logs));
             renderDashboardAndLogs();
+            if (currentDetailDate) renderDayDetailContent();
             showToast('แก้ไขรายการแล้ว', 'success');
         }
 
@@ -1852,6 +1873,7 @@
             logs.splice(realIndex, 1);
             localStorage.setItem('break_logs', JSON.stringify(logs));
             renderDashboardAndLogs();
+            if (currentDetailDate) renderDayDetailContent();
             showToast(`ลบ "${removed.action}" แล้ว`, 'success', {
                 actionLabel: 'เลิกทำ',
                 onAction: () => {
@@ -1859,9 +1881,76 @@
                     currentLogs.splice(realIndex, 0, removed);
                     localStorage.setItem('break_logs', JSON.stringify(currentLogs));
                     renderDashboardAndLogs();
+                    if (currentDetailDate) renderDayDetailContent();
                     showToast('กู้คืนรายการแล้ว', 'info');
                 }
             });
+        }
+
+        // --- 📅 ดูรายละเอียดประวัติย้อนหลังของแต่ละวัน (กดจากกราฟ 7 วัน หรือ heatmap รายเดือน) ---
+        let currentDetailDate = null;
+        const THAI_MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+        const THAI_WEEKDAYS = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+        function formatThaiDateLabel(dateStr) {
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            const now = new Date();
+            const isToday = d.toDateString() === now.toDateString();
+            const label = `วัน${THAI_WEEKDAYS[d.getDay()]}ที่ ${d.getDate()} ${THAI_MONTHS[d.getMonth()]} ${d.getFullYear() + 543}`;
+            return isToday ? `${label} (วันนี้)` : label;
+        }
+        function showDayDetail(dateStr) {
+            currentDetailDate = dateStr;
+            document.getElementById('day-detail-modal').style.display = 'flex';
+            renderDayDetailContent();
+        }
+        function closeDayDetail() {
+            currentDetailDate = null;
+            document.getElementById('day-detail-modal').style.display = 'none';
+        }
+        function renderDayDetailContent() {
+            if (!currentDetailDate) return;
+            const dateStr = currentDetailDate;
+            const allLogs = JSON.parse(localStorage.getItem('break_logs') || '[]');
+            const dayLogs = allLogs.filter(l => l.date === dateStr);
+            const dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
+
+            document.getElementById('day-detail-title').textContent = `📅 ${formatThaiDateLabel(dateStr)}`;
+
+            const summaryEl = document.getElementById('day-detail-summary');
+            const listEl = document.getElementById('day-detail-list');
+
+            if (dayLogs.length === 0) {
+                summaryEl.textContent = 'ไม่มีบันทึกการพักในวันนี้';
+                listEl.innerHTML = '<div class="empty-log" style="padding: 30px 0;">📭 ไม่มีข้อมูล</div>';
+                return;
+            }
+
+            const totalUsed = dayLogs.reduce((s, l) => s + l.duration, 0);
+            const overQuota = totalUsed > dailyQuota;
+            summaryEl.innerHTML = `ใช้เวลาพักรวม <strong style="${overQuota ? 'color:#f43f5e;' : ''}">${totalUsed} นาที</strong> จากโควตา ${dailyQuota} นาที · ${dayLogs.length} รายการ${overQuota ? ' <span style="color:#f43f5e;">(เกินโควตา ⚠️)</span>' : ''}`;
+
+            let rowsHtml = '<div class="log-list">';
+            dayLogs.forEach((log, i) => {
+                const isZero = log.duration === 0;
+                const realIdx = allLogs.indexOf(log);
+                rowsHtml += `
+                    <div class="log-row" style="animation-delay:${i * 0.04}s;">
+                        <div class="log-row-main">
+                            <span class="log-action">${log.action}</span>
+                            <span class="log-time">${log.start} → ${log.end}</span>
+                        </div>
+                        <div class="log-row-side">
+                            <span class="log-duration" style="color:${isZero ? 'var(--accent)' : 'var(--accent2)'};">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span>
+                            <span class="log-row-actions">
+                                <span class="log-icon-btn" onclick="editLog(${realIdx})">✏️</span>
+                                <span class="log-icon-btn" onclick="deleteLog(${realIdx})">🗑️</span>
+                            </span>
+                        </div>
+                    </div>`;
+            });
+            rowsHtml += '</div>';
+            listEl.innerHTML = rowsHtml;
         }
 
         function checkQuotaWarning(remain, dailyQuota) {
@@ -1889,7 +1978,7 @@
                 else if (total > dailyQuota * 0.25) cls += ' lvl-2';
                 else if (total > 0) cls += ' lvl-1';
                 const dateLbl = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
-                cells.push(`<div class="${cls}" data-tooltip="${dateLbl}: ${total} นาที"></div>`);
+                cells.push(`<div class="${cls}" data-tooltip="${dateLbl}: ${total} นาที" onclick="showDayDetail('${dStr}')"></div>`);
             }
             grid.innerHTML = cells.join('');
         }
@@ -1901,13 +1990,13 @@
                 const d = new Date(); d.setDate(d.getDate() - i);
                 const dStr = d.toDateString();
                 const total = logs.filter(l => l.date === dStr).reduce((s, l) => s + l.duration, 0);
-                days.push({ total, isToday: i === 0, label: dayLbls[d.getDay()] });
+                days.push({ total, isToday: i === 0, label: dayLbls[d.getDay()], dateKey: dStr });
             }
             const max = Math.max(...days.map(d => d.total), 1);
             const chartEl = document.getElementById('week-chart');
             chartEl.innerHTML = days.map(d => `
                 <div class="week-col">
-                    <div class="week-bar ${d.isToday ? 'today' : ''}" style="height:${Math.max((d.total / max) * 100, 4)}%" data-tooltip="${d.total} นาที"></div>
+                    <div class="week-bar ${d.isToday ? 'today' : ''}" style="height:${Math.max((d.total / max) * 100, 4)}%" data-tooltip="${d.total} นาที" onclick="showDayDetail('${d.dateKey}')"></div>
                     <span class="week-lbl">${d.label}</span>
                 </div>`).join('');
 
