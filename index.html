@@ -217,7 +217,70 @@
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .dash-title { font-size: 15px; color: #475569; font-weight: 800; }
         body[data-theme="night"] .dash-title { color: #cbd5e1; }
-        
+
+        /* 🌱 สวนพักผ่อน - ต้นไม้ที่โตขึ้นตามสตรีค เหี่ยวถ้าพักเกินโควตา */
+        .garden-card { padding: 20px 20px 16px; }
+        .garden-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+        .garden-badge-hint {
+            font-size: 11px; font-weight: 700; color: var(--accent); background: rgba(var(--accent-rgb), 0.12);
+            padding: 4px 10px; border-radius: 20px;
+        }
+        .garden-scene { width: 100%; display: flex; justify-content: center; }
+        .garden-svg { width: 100%; max-width: 260px; height: auto; overflow: visible; cursor: pointer; }
+        .garden-caption { text-align: center; font-size: 12px; color: #94a3b8; margin: 6px 0 0; font-weight: 500; }
+        body[data-theme="night"] .garden-caption { color: #64748b; }
+
+        .garden-toggle-btn {
+            width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 13px; background: rgba(148,163,184,0.15); transition: transform 0.2s, background 0.2s;
+        }
+        .garden-toggle-btn:hover { transform: scale(1.15); background: rgba(var(--accent-rgb), 0.18); }
+        .garden-card.collapsed .garden-scene, .garden-card.collapsed .garden-caption { display: none !important; }
+
+        .garden-pot { fill: #B5794A; }
+        .garden-pot-rim { fill: #C98A5A; }
+        body[data-theme="night"] .garden-pot { fill: #7A5432; }
+        body[data-theme="night"] .garden-pot-rim { fill: #8C6238; }
+        .garden-ground { fill: rgba(148, 163, 184, 0.18); }
+
+        .garden-stem-group { transform-origin: 110px 145px; animation: garden-sway 4.5s ease-in-out infinite; transition: transform 0.25s ease-out; }
+        .garden-stem-group.interacting { animation: none; }
+        @keyframes garden-sway { 0%, 100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg); } }
+        .garden-stem { stroke: var(--accent2); stroke-width: 4; stroke-linecap: round; fill: none; transition: stroke 0.6s; }
+        .garden-leaf {
+            fill: var(--accent2); opacity: 0.9; transition: fill 0.6s, opacity 0.6s;
+            animation: garden-leaf-bob 3.2s ease-in-out infinite;
+            transform-box: fill-box; transform-origin: center;
+        }
+        @keyframes garden-leaf-bob { 0%, 100% { transform: rotate(-4deg) scale(1); } 50% { transform: rotate(4deg) scale(1.04); } }
+        .garden-petal { fill: var(--accent); animation: garden-bloom 0.5s cubic-bezier(0.34,1.56,0.64,1) backwards; }
+        .garden-flower-center { fill: #FFD966; animation: garden-bloom 0.5s cubic-bezier(0.34,1.56,0.64,1) backwards; }
+        @keyframes garden-bloom { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .garden-flower-group { animation: garden-flower-sway 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+        @keyframes garden-flower-sway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+
+        .garden-stem-group.wilted { animation: none; transform: rotate(8deg); }
+        .garden-stem-group.wilted .garden-stem { stroke: #A78355; }
+        .garden-stem-group.wilted .garden-leaf { fill: #B5A16C; opacity: 0.6; animation: none; }
+
+        /* 🦋 แมลง/ผีเสื้อบินมาเกาะต้นไม้ */
+        .garden-butterfly { transform-box: view-box; animation: garden-fly 10s ease-in-out infinite; }
+        .garden-butterfly.b2 { animation-duration: 12.5s; animation-direction: reverse; animation-delay: -3s; }
+        @keyframes garden-fly {
+            0%   { transform: translate(14px, 96px); }
+            14%  { transform: translate(150px, 34px); }
+            28%  { transform: translate(112px, 16px); }
+            42%  { transform: translate(107px, 19px); }
+            56%  { transform: translate(113px, 15px); }
+            70%  { transform: translate(190px, 60px); }
+            85%  { transform: translate(50px, 110px); }
+            100% { transform: translate(14px, 96px); }
+        }
+        .garden-butterfly-flap { animation: garden-flap 0.32s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+        @keyframes garden-flap { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(0.42); } }
+        .garden-sparkle { animation: garden-sparkle-twinkle 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+        @keyframes garden-sparkle-twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.15); } }
+
         .quota-setting { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 6px; font-weight: 600;}
         body[data-theme="night"] .quota-setting { color: #94a3b8; }
         .quota-stepper { display: inline-flex; align-items: center; gap: 4px; }
@@ -727,6 +790,20 @@
             <div class="controls-group">
                 <div class="theme-toggle" id="settings-btn" onclick="openSettingsModal()">⚙️ ตั้งค่า</div>
             </div>
+        </div>
+
+        <div class="garden-card glass-panel">
+            <div class="garden-header">
+                <span class="dash-title">🌱 สวนพักผ่อนของคุณ</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="garden-badge-hint" id="garden-streak-hint">0 วัน</span>
+                    <span class="garden-toggle-btn" id="garden-toggle-btn" onclick="toggleGardenVisibility()" title="ซ่อน/แสดงสวน">👁️</span>
+                </div>
+            </div>
+            <div class="garden-scene" id="garden-scene-wrap">
+                <svg viewBox="0 0 220 170" class="garden-svg" id="garden-svg" aria-hidden="true"></svg>
+            </div>
+            <p class="garden-caption" id="garden-caption">พักให้พอดี ต้นไม้จะเติบโตไปกับคุณ 🌱</p>
         </div>
 
         <div class="dashboard glass-panel">
@@ -2132,6 +2209,92 @@
             }
             animateNumber(document.getElementById('streak-num'), streak);
             updateBadges(streak);
+            renderGarden(streak, days[6].total > dailyQuota);
+        }
+
+        // --- 🌱 วาดต้นไม้ในสวนพักผ่อน โตขึ้นตามสตรีค บานเมื่อครบ 7 วัน เหี่ยวถ้าพักเกินโควตาวันนี้ ---
+        // --- 🦋 สร้างผีเสื้อ 1 ตัว (ปีกกระพือ + บินวนรอบต้นไม้) ---
+        function buildButterfly(extraClass, colorVar) {
+            return `
+                <g class="garden-butterfly ${extraClass}">
+                    <g class="garden-butterfly-flap">
+                        <ellipse cx="-4" cy="-2" rx="4.5" ry="6" fill="${colorVar}"></ellipse>
+                        <ellipse cx="4" cy="-2" rx="4.5" ry="6" fill="${colorVar}"></ellipse>
+                        <ellipse cx="-3.5" cy="4" rx="3" ry="4" fill="${colorVar}" opacity="0.8"></ellipse>
+                        <ellipse cx="3.5" cy="4" rx="3" ry="4" fill="${colorVar}" opacity="0.8"></ellipse>
+                        <line x1="0" y1="-6" x2="0" y2="6" stroke="#4a3b2a" stroke-width="1.4" stroke-linecap="round"></line>
+                    </g>
+                </g>`;
+        }
+
+        function renderGarden(streak, isOverQuotaToday) {
+            const svg = document.getElementById('garden-svg');
+            const hint = document.getElementById('garden-streak-hint');
+            const caption = document.getElementById('garden-caption');
+            if (!svg) return;
+
+            hint.textContent = `${streak} วัน`;
+
+            const maxPairs = 6;
+            const leafPairs = Math.min(Math.floor(streak / 2) + (streak > 0 ? 1 : 0), maxPairs);
+            const stemBaseY = 145, stemTopY = stemBaseY - 26 - leafPairs * 14;
+            const hasFlower = streak >= 7;
+            const bigFlower = streak >= 30;
+            const flowerScale = bigFlower ? 1.35 : 1;
+
+            let leavesSvg = '';
+            for (let i = 0; i < leafPairs; i++) {
+                const y = stemBaseY - 22 - i * 14;
+                const delay = (i * 0.18).toFixed(2);
+                leavesSvg += `
+                    <ellipse class="garden-leaf" cx="122" cy="${y}" rx="15" ry="7" transform="rotate(-24 122 ${y})" style="animation-delay:${delay}s"></ellipse>
+                    <ellipse class="garden-leaf" cx="98" cy="${y - 5}" rx="15" ry="7" transform="rotate(24 98 ${y - 5})" style="animation-delay:${(i * 0.18 + 0.09).toFixed(2)}s"></ellipse>`;
+            }
+
+            let flowerSvg = '';
+            if (hasFlower) {
+                const petalAngles = [0, 72, 144, 216, 288];
+                const petals = petalAngles.map((deg, idx) =>
+                    `<ellipse class="garden-petal" cx="110" cy="${stemTopY - 12}" rx="6" ry="10" transform="rotate(${deg} 110 ${stemTopY - 12})" style="animation-delay:${(idx * 0.06).toFixed(2)}s"></ellipse>`
+                ).join('');
+                flowerSvg = `
+                    <g class="garden-flower-group" transform="translate(110 ${stemTopY - 12}) scale(${flowerScale}) translate(-110 -${stemTopY - 12})">
+                        ${petals}
+                        <circle class="garden-flower-center" cx="110" cy="${stemTopY - 12}" r="5.5" style="animation-delay:0.3s"></circle>
+                    </g>`;
+            }
+            const sparklesSvg = bigFlower ? `
+                <circle class="garden-sparkle" cx="70" cy="${stemTopY - 20}" r="2.5" fill="var(--accent)" style="animation-delay:0.2s"></circle>
+                <circle class="garden-sparkle" cx="150" cy="${stemTopY - 5}" r="2" fill="var(--accent2)" style="animation-delay:0.7s"></circle>
+                <circle class="garden-sparkle" cx="130" cy="${stemTopY - 35}" r="2" fill="var(--accent)" style="animation-delay:1.1s"></circle>` : '';
+
+            // 🦋 ผีเสื้อบินมาเกาะ - โผล่มาตั้งแต่เริ่มมีสตรีค เพิ่มเป็น 2 ตัวตอนสตรีคยาวๆ และไม่บินตอนต้นไม้เหี่ยว
+            let butterflySvg = '';
+            if (!isOverQuotaToday && streak >= 1) {
+                butterflySvg += buildButterfly('', 'var(--accent)');
+                if (streak >= 14) butterflySvg += buildButterfly('b2', 'var(--accent2)');
+            }
+
+            svg.innerHTML = `
+                <ellipse class="garden-ground" cx="110" cy="158" rx="85" ry="9"></ellipse>
+                <path class="garden-pot" d="M80 145 L140 145 L131 168 L89 168 Z"></path>
+                <rect class="garden-pot-rim" x="76" y="140" width="68" height="9" rx="4"></rect>
+                <g class="garden-stem-group ${isOverQuotaToday ? 'wilted' : ''}">
+                    <path class="garden-stem" d="M110 145 Q ${isOverQuotaToday ? 128 : 104} ${(145 + stemTopY) / 2} ${isOverQuotaToday ? 122 : 110} ${stemTopY}"></path>
+                    ${leavesSvg}
+                    ${flowerSvg}
+                </g>
+                ${sparklesSvg}
+                ${butterflySvg}
+            `;
+
+            if (caption) {
+                if (isOverQuotaToday) caption.textContent = 'วันนี้พักเกินโควตาไปหน่อย ต้นไม้เหี่ยวนิดนึง 🥀 พรุ่งนี้เริ่มใหม่ได้นะ';
+                else if (streak === 0) caption.textContent = 'พักให้พอดี ต้นไม้จะเติบโตไปกับคุณ 🌱';
+                else if (bigFlower) caption.textContent = `สุดยอด! ต้นไม้บานสะพรั่งเต็มที่แล้ว 🌸✨ (${streak} วันติด)`;
+                else if (hasFlower) caption.textContent = `ต้นไม้เริ่มออกดอกแล้ว! 🌸 (${streak} วันติด)`;
+                else caption.textContent = `ต้นไม้กำลังเติบโต 🌿 (${streak} วันติด)`;
+            }
         }
 
         const BADGE_MILESTONES = [
@@ -2267,6 +2430,44 @@
             updateShiftHint();
         }
 
+        // --- 🖱️ ต้นไม้ขยับตามเมาส์/นิ้วเวลาชี้ใกล้ๆ (ก้านจะเอียงตามตำแหน่งแนวนอนของเมาส์) ---
+        function setupGardenInteraction() {
+            const scene = document.getElementById('garden-scene-wrap');
+            if (!scene) return;
+            scene.addEventListener('pointermove', (e) => {
+                const stem = scene.querySelector('.garden-stem-group');
+                if (!stem) return;
+                stem.classList.add('interacting');
+                const rect = scene.getBoundingClientRect();
+                const relX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                const angle = (relX - 0.5) * 34;
+                stem.style.transform = `rotate(${angle}deg)`;
+            });
+            const resetStem = () => {
+                const stem = scene.querySelector('.garden-stem-group');
+                if (!stem) return;
+                stem.classList.remove('interacting');
+                stem.style.transform = '';
+            };
+            scene.addEventListener('pointerleave', resetStem);
+            scene.addEventListener('pointercancel', resetStem);
+        }
+
+        // --- 👁️ ปุ่มซ่อน/แสดงสวนพักผ่อน ---
+        function applyGardenVisibility(hidden) {
+            const wrap = document.getElementById('garden-scene-wrap');
+            const card = wrap ? wrap.closest('.garden-card') : null;
+            const btn = document.getElementById('garden-toggle-btn');
+            if (card) card.classList.toggle('collapsed', hidden);
+            if (btn) btn.textContent = hidden ? '🙈' : '👁️';
+        }
+        function toggleGardenVisibility() {
+            const hidden = localStorage.getItem('garden_hidden') === 'true';
+            const next = !hidden;
+            safeSetItem('garden_hidden', next ? 'true' : 'false');
+            applyGardenVisibility(next);
+        }
+
         window.onload = () => {
             const autoOn = localStorage.getItem('auto_theme') === 'true';
             const savedTheme = autoOn ? getAutoTheme() : (localStorage.getItem('site_theme') || 'day');
@@ -2277,6 +2478,8 @@
             renderGreeting();
             updateHeaderTexts(); renderActivities(); renderDashboardAndLogs();
             restoreActiveBreakIfAny();
+            setupGardenInteraction();
+            applyGardenVisibility(localStorage.getItem('garden_hidden') === 'true');
         };
 
         // --- 🔄 ซิงก์ข้อมูลข้ามแท็บ กันข้อมูลเก่าจากแท็บที่ค้างอยู่ไปทับข้อมูลใหม่โดยไม่ตั้งใจ ---
