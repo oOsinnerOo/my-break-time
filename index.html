@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแจ้งเวลาพัก - 888 Edition</title>
+    <title>ระบบแจ้งเวลาพัก - Super WOW Edition</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -229,13 +229,7 @@
         .garden-svg { width: 100%; max-width: 260px; height: auto; overflow: visible; cursor: pointer; }
         .garden-caption { text-align: center; font-size: 12px; color: #94a3b8; margin: 6px 0 0; font-weight: 500; }
         body[data-theme="night"] .garden-caption { color: #64748b; }
-
-        .garden-toggle-btn {
-            width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 13px; background: rgba(148,163,184,0.15); transition: transform 0.2s, background 0.2s;
-        }
-        .garden-toggle-btn:hover { transform: scale(1.15); background: rgba(var(--accent-rgb), 0.18); }
-        .garden-card.collapsed .garden-scene, .garden-card.collapsed .garden-caption { display: none !important; }
+        .garden-card.garden-off { display: none !important; }
 
         .garden-pot { fill: #B5794A; }
         .garden-pot-rim { fill: #C98A5A; }
@@ -792,13 +786,10 @@
             </div>
         </div>
 
-        <div class="garden-card glass-panel">
+        <div class="garden-card glass-panel" id="garden-card">
             <div class="garden-header">
                 <span class="dash-title">🌱 สวนพักผ่อนของคุณ</span>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span class="garden-badge-hint" id="garden-streak-hint">0 วัน</span>
-                    <span class="garden-toggle-btn" id="garden-toggle-btn" onclick="toggleGardenVisibility()" title="ซ่อน/แสดงสวน">👁️</span>
-                </div>
+                <span class="garden-badge-hint" id="garden-streak-hint">0 วัน</span>
             </div>
             <div class="garden-scene" id="garden-scene-wrap">
                 <svg viewBox="0 0 220 170" class="garden-svg" id="garden-svg" aria-hidden="true"></svg>
@@ -978,6 +969,15 @@
                         <span class="settings-row-label">แจ้งเตือนผ่านเบราว์เซอร์</span>
                         <div class="notify-toggle" id="notify-toggle" onclick="toggleNotify(event)">🔔 แจ้งเตือน</div>
                     </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-section-title">🌱 สวนพักผ่อน</div>
+                    <label class="settings-row" for="garden-enable-check" style="cursor:pointer;">
+                        <span class="settings-row-label">แสดงต้นไม้ในหน้าหลัก</span>
+                        <span class="toggle-switch"><input type="checkbox" id="garden-enable-check" onchange="toggleGardenEnabled(this.checked)"><span class="toggle-slider"></span></span>
+                    </label>
+                    <p class="settings-hint">ต้นไม้จะโตขึ้นตามสตรีคที่ทำได้ และเหี่ยวถ้าพักเกินโควตา ปิดไว้ได้ถ้าไม่อยากให้กินพื้นที่หน้าจอ</p>
                 </div>
 
                 <div class="settings-section">
@@ -2453,19 +2453,20 @@
             scene.addEventListener('pointercancel', resetStem);
         }
 
-        // --- 👁️ ปุ่มซ่อน/แสดงสวนพักผ่อน ---
-        function applyGardenVisibility(hidden) {
-            const wrap = document.getElementById('garden-scene-wrap');
-            const card = wrap ? wrap.closest('.garden-card') : null;
-            const btn = document.getElementById('garden-toggle-btn');
-            if (card) card.classList.toggle('collapsed', hidden);
-            if (btn) btn.textContent = hidden ? '🙈' : '👁️';
+        // --- 🌱 เปิด/ปิดการแสดงสวนพักผ่อนจากหน้าตั้งค่า (ปิดไว้เป็นค่าเริ่มต้น) ---
+        function isGardenEnabled() {
+            return localStorage.getItem('garden_enabled') === 'true';
         }
-        function toggleGardenVisibility() {
-            const hidden = localStorage.getItem('garden_hidden') === 'true';
-            const next = !hidden;
-            safeSetItem('garden_hidden', next ? 'true' : 'false');
-            applyGardenVisibility(next);
+        function applyGardenVisibility(enabled) {
+            const card = document.getElementById('garden-card');
+            const checkbox = document.getElementById('garden-enable-check');
+            if (card) card.classList.toggle('garden-off', !enabled);
+            if (checkbox) checkbox.checked = enabled;
+        }
+        function toggleGardenEnabled(enabled) {
+            safeSetItem('garden_enabled', enabled ? 'true' : 'false');
+            applyGardenVisibility(enabled);
+            if (enabled) { renderDashboardAndLogs(); showToast('🌱 เปิดแสดงสวนพักผ่อนแล้ว', 'success'); }
         }
 
         window.onload = () => {
@@ -2479,7 +2480,7 @@
             updateHeaderTexts(); renderActivities(); renderDashboardAndLogs();
             restoreActiveBreakIfAny();
             setupGardenInteraction();
-            applyGardenVisibility(localStorage.getItem('garden_hidden') === 'true');
+            applyGardenVisibility(isGardenEnabled());
         };
 
         // --- 🔄 ซิงก์ข้อมูลข้ามแท็บ กันข้อมูลเก่าจากแท็บที่ค้างอยู่ไปทับข้อมูลใหม่โดยไม่ตั้งใจ ---
