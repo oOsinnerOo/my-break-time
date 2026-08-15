@@ -922,7 +922,7 @@
             </div>
             
             <label style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; background: rgba(241, 245, 249, 0.8); padding: 12px 16px; border-radius: 16px; border: 2px dashed #cbd5e1; transition: 0.3s;" id="toilet-label">
-                <span>🌟 ไม่หักโควตาเวลาหลัก</span>
+                <span>🌟 กิจกรรมห้องน้ำ (ฟรี <span id="toilet-free-min-label">10</span> นาที/ครั้ง)</span>
                 <span class="toggle-switch"><input type="checkbox" id="act-istoilet"><span class="toggle-slider"></span></span>
             </label>
 
@@ -969,6 +969,19 @@
                         <span class="settings-row-label">แจ้งเตือนผ่านเบราว์เซอร์</span>
                         <div class="notify-toggle" id="notify-toggle" onclick="toggleNotify(event)">🔔 แจ้งเตือน</div>
                     </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-section-title">🚻 นโยบายเวลาห้องน้ำ</div>
+                    <div class="settings-row">
+                        <span class="settings-row-label">เวลาฟรีต่อครั้ง</span>
+                        <span class="quota-stepper">
+                            <button type="button" class="quota-step-btn" onclick="stepToiletFreeMinutes(-1)">−</button>
+                            <input type="number" id="toilet-free-min-input" class="quota-input" min="0" oninput="updateToiletFreeMinutes(this.value)">
+                            <button type="button" class="quota-step-btn" onclick="stepToiletFreeMinutes(1)">+</button>
+                        </span>
+                    </div>
+                    <p class="settings-hint">เข้าห้องน้ำได้ฟรีครั้งละเท่านี้โดยไม่หักโควตา ถ้าเกินเวลานี้ ส่วนที่เกินจะถูกนำไปหักกับโควตาเวลาพักหลัก</p>
                 </div>
 
                 <div class="settings-section">
@@ -1597,6 +1610,44 @@
             input.value = quota; updateQuota(quota);
         }
 
+        // --- 🚻 นโยบายเวลาห้องน้ำฟรี — ถ้าเข้าห้องน้ำเกินเวลาที่กำหนด ส่วนเกินจะไปหักกับโควตาเวลาพักหลัก ---
+        function getToiletFreeMinutes() {
+            const v = parseInt(localStorage.getItem('toilet_free_minutes'));
+            return isNaN(v) ? 10 : v;
+        }
+        function refreshToiletFreeMinutesUI() {
+            const mins = getToiletFreeMinutes();
+            const input = document.getElementById('toilet-free-min-input');
+            const modalLabel = document.getElementById('toilet-free-min-label');
+            if (input) input.value = mins;
+            if (modalLabel) modalLabel.textContent = mins;
+        }
+        function updateToiletFreeMinutes(val) {
+            let mins = parseInt(val); if (isNaN(mins) || mins < 0) mins = 0;
+            safeSetItem('toilet_free_minutes', mins);
+            refreshToiletFreeMinutesUI();
+            renderDashboardAndLogs();
+        }
+        function stepToiletFreeMinutes(delta) {
+            const input = document.getElementById('toilet-free-min-input');
+            let mins = Math.max(0, (parseInt(input.value) || 0) + delta);
+            updateToiletFreeMinutes(mins);
+        }
+        // นาทีที่ "นับผลต่อโควตา" ของ log แต่ละรายการ - กิจกรรมห้องน้ำจะฟรีตามเวลาที่ตั้งไว้ ส่วนเกินเท่านั้นที่นับ
+        function quotaMinutesForLog(log) {
+            if (log.isToilet) return Math.max(0, log.duration - getToiletFreeMinutes());
+            return log.duration;
+        }
+        // แสดงเวลาจริงที่ใช้เสมอ พร้อมกำกับส่วนที่ฟรี/ส่วนที่เกินสำหรับกิจกรรมห้องน้ำ
+        function formatLogDurationSpan(log) {
+            if (log.isToilet) {
+                const over = quotaMinutesForLog(log);
+                if (over === 0) return `<span class="log-duration" style="color:var(--accent);">${log.duration} น. <span style="font-weight:600; opacity:0.75;">(ฟรี) 🌟</span></span>`;
+                return `<span class="log-duration" style="color:#f43f5e;">${log.duration} น. <span style="font-weight:600; opacity:0.85;">(หัก ${over}) ⚠️</span></span>`;
+            }
+            return `<span class="log-duration" style="color:var(--accent2);">${log.duration} น.</span>`;
+        }
+
         function renderActivities() {
             const container = document.getElementById('activities-container'); container.innerHTML = '';
             let activities = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
@@ -1773,11 +1824,16 @@
 
             const diffMs = new Date().getTime() - activeBreak.startTime;
             let diffMins = Math.max(1, Math.round(diffMs / 60000));
-            if (activeBreak.isToilet) diffMins = 0;
             if (activeBreak.limit > 0 && diffMins > activeBreak.limit) {
                 setTimeout(() => showToast(`⏰ ${activeBreak.action} เกินลิมิต ${activeBreak.limit} นาที (ใช้ไป ${diffMins} นาที)`, 'warning', { duration: 5000 }), 300);
             }
-            saveLog(activeBreak.action, activeBreak.startStr, getThaiTimeString(new Date()), diffMins);
+            if (activeBreak.isToilet) {
+                const freeMin = getToiletFreeMinutes();
+                if (diffMins > freeMin) {
+                    setTimeout(() => showToast(`🚻 เข้าห้องน้ำเกินเวลาฟรี ${freeMin} นาที ส่วนเกิน ${diffMins - freeMin} นาที จะถูกหักจากโควตาเวลาพัก`, 'warning', { duration: 6000 }), 700);
+                }
+            }
+            saveLog(activeBreak.action, activeBreak.startStr, getThaiTimeString(new Date()), diffMins, activeBreak.isToilet);
             activeBreak = null;
             persistActiveBreak();
 
@@ -1785,9 +1841,9 @@
             setTimeout(() => { showSuccessOverlay(cardElement, 'ยินดีต้อนรับกลับมา! 🏠', textToCopy, 1500); }, 100);
         }
 
-        function saveLog(action, start, end, duration) {
+        function saveLog(action, start, end, duration, isToilet) {
             let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
-            logs.push({ date: new Date().toDateString(), shiftKey: getWorkDayKey(), action, start, end, duration });
+            logs.push({ date: new Date().toDateString(), shiftKey: getWorkDayKey(), action, start, end, duration, isToilet: !!isToilet });
             safeSetItem('break_logs', JSON.stringify(logs)); renderDashboardAndLogs();
         }
 
@@ -1807,7 +1863,7 @@
             if (logs.length === 0) { showToast('ยังไม่มีประวัติของวันนี้ให้แชร์', 'info'); return; }
 
             const dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
-            let totalUsed = 0; logs.forEach(l => totalUsed += l.duration);
+            let totalUsed = 0; logs.forEach(l => totalUsed += quotaMinutesForLog(l));
             const remain = Math.max(0, dailyQuota - totalUsed);
             const streak = document.getElementById('streak-num').textContent;
 
@@ -1902,11 +1958,15 @@
             const logs = JSON.parse(localStorage.getItem('break_logs') || '[]').filter(log => (log.shiftKey || log.date) === today);
             if (logs.length === 0) { showToast('ยังไม่มีประวัติของวันนี้ให้คัดลอก', 'info'); return; }
             let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
-            let totalUsed = 0; logs.forEach(log => totalUsed += log.duration);
+            let totalUsed = 0; logs.forEach(log => totalUsed += quotaMinutesForLog(log));
             
             const now = new Date(); const dateStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
             let sumText = `📋 สรุปเวลาพัก ${dateStr} ${gender === 'male' ? 'ครับ' : 'ค่ะ'}\n----------------------------------------\n`;
-            logs.forEach((log, i) => sumText += `${i + 1}. ${log.action} (${log.start} - ${log.end}) | ${log.duration === 0 ? "ไม่หักโควต้า" : `รวม: ${log.duration} น.`}\n`);
+            logs.forEach((log, i) => {
+                const over = quotaMinutesForLog(log);
+                const note = log.isToilet ? (over === 0 ? ' (ฟรี ไม่หักโควต้า)' : ` (หัก ${over} น.)`) : '';
+                sumText += `${i + 1}. ${log.action} (${log.start} - ${log.end}) | รวม: ${log.duration} น.${note}\n`;
+            });
             sumText += `----------------------------------------\n⏱️ โควตาทั้งหมด: ${dailyQuota} นาที\n📊 ใช้ไปแล้ว: ${totalUsed} นาที\n🔋 คงเหลือ: ${Math.max(0, dailyQuota - totalUsed)} นาที`;
             
             performCopy(sumText); showToast('คัดลอกสรุปไปยัง Clipboard แล้ว!', 'success');
@@ -1915,8 +1975,10 @@
         function exportCSV() {
             const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
             if (logs.length === 0) { showToast('ไม่มีข้อมูลประวัติให้ส่งออก', 'info'); return; }
-            let csv = "\uFEFFวันที่,กิจกรรม,เวลาเริ่ม,เวลากลับ,ใช้เวลา (นาที)\n";
-            logs.forEach(log => { csv += `${log.date},${log.action},${log.start},${log.end},${log.duration}\n`; });
+            let csv = "\uFEFFวันที่,กิจกรรม,เวลาเริ่ม,เวลากลับ,ใช้เวลาจริง (นาที),ประเภทห้องน้ำ,นับผลกับโควตา (นาที)\n";
+            logs.forEach(log => {
+                csv += `${log.date},${log.action},${log.start},${log.end},${log.duration},${log.isToilet ? 'ใช่' : ''},${quotaMinutesForLog(log)}\n`;
+            });
             const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
             const a = document.createElement("a"); a.href = url; a.download = `Break_History.csv`; a.click(); URL.revokeObjectURL(url);
             showToast('ส่งออก CSV แล้ว', 'success');
@@ -1943,7 +2005,7 @@
             if (dashTitleEl) dashTitleEl.textContent = getShiftBoundaryMinutes() !== null ? '📊 โควตาเวลาพักกะนี้' : '📊 โควตาเวลาพักวันนี้';
             let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
             document.getElementById('quota-input').value = dailyQuota;
-            let totalUsed = 0; todayLogs.forEach(log => totalUsed += log.duration);
+            let totalUsed = 0; todayLogs.forEach(log => totalUsed += quotaMinutesForLog(log));
 
             const logContainer = document.getElementById('log-container');
             const paginationContainer = document.getElementById('pagination-container');
@@ -1954,7 +2016,6 @@
                 const displayedLogs = showAllLogs ? todayLogs : todayLogs.slice(0, 5);
                 let rowsHtml = '<div class="log-list">';
                 displayedLogs.forEach((log, i) => {
-                    const isZero = log.duration === 0;
                     const realIdx = logs.indexOf(log);
                     rowsHtml += `
                         <div class="log-row" style="animation-delay:${i * 0.04}s;">
@@ -1963,7 +2024,7 @@
                                 <span class="log-time">${log.start} → ${log.end}</span>
                             </div>
                             <div class="log-row-side">
-                                <span class="log-duration" style="color:${isZero ? 'var(--accent)' : 'var(--accent2)'};">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span>
+                                ${formatLogDurationSpan(log)}
                                 <span class="log-row-actions">
                                     <span class="log-icon-btn" onclick="editLog(${realIdx})">✏️</span>
                                     <span class="log-icon-btn" onclick="deleteLog(${realIdx})">🗑️</span>
@@ -2070,13 +2131,14 @@
                 return;
             }
 
-            const totalUsed = dayLogs.reduce((s, l) => s + l.duration, 0);
-            const overQuota = totalUsed > dailyQuota;
-            summaryEl.innerHTML = `ใช้เวลาพักรวม <strong style="${overQuota ? 'color:#f43f5e;' : ''}">${totalUsed} นาที</strong> จากโควตา ${dailyQuota} นาที · ${dayLogs.length} รายการ${overQuota ? ' <span style="color:#f43f5e;">(เกินโควตา ⚠️)</span>' : ''}`;
+            const realTotal = dayLogs.reduce((s, l) => s + l.duration, 0);
+            const quotaTotal = dayLogs.reduce((s, l) => s + quotaMinutesForLog(l), 0);
+            const overQuota = quotaTotal > dailyQuota;
+            const diffNote = realTotal !== quotaTotal ? ` (ใช้เวลาจริงรวม ${realTotal} นาที)` : '';
+            summaryEl.innerHTML = `นับผลกับโควตา <strong style="${overQuota ? 'color:#f43f5e;' : ''}">${quotaTotal} นาที</strong>${diffNote} จากโควตา ${dailyQuota} นาที · ${dayLogs.length} รายการ${overQuota ? ' <span style="color:#f43f5e;">(เกินโควตา ⚠️)</span>' : ''}`;
 
             let rowsHtml = '<div class="log-list">';
             dayLogs.forEach((log, i) => {
-                const isZero = log.duration === 0;
                 const realIdx = allLogs.indexOf(log);
                 rowsHtml += `
                     <div class="log-row" style="animation-delay:${i * 0.04}s;">
@@ -2085,7 +2147,7 @@
                             <span class="log-time">${log.start} → ${log.end}</span>
                         </div>
                         <div class="log-row-side">
-                            <span class="log-duration" style="color:${isZero ? 'var(--accent)' : 'var(--accent2)'};">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span>
+                            ${formatLogDurationSpan(log)}
                             <span class="log-row-actions">
                                 <span class="log-icon-btn" onclick="editLog(${realIdx})">✏️</span>
                                 <span class="log-icon-btn" onclick="deleteLog(${realIdx})">🗑️</span>
@@ -2133,7 +2195,6 @@
             const displayResults = results.slice(0, showLimit);
             let html = '<div class="log-list">';
             displayResults.forEach((log, i) => {
-                const isZero = log.duration === 0;
                 html += `
                     <div class="log-row" style="animation-delay:${Math.min(i, 15) * 0.02}s; cursor:pointer;" onclick="closeSearchModal(); showDayDetail('${log.date}');">
                         <div class="log-row-main">
@@ -2141,7 +2202,7 @@
                             <span class="log-time">${formatShortDateLabel(log.date)} · ${log.start} → ${log.end}</span>
                         </div>
                         <div class="log-row-side">
-                            <span class="log-duration" style="color:${isZero ? 'var(--accent)' : 'var(--accent2)'};">${isZero ? '0 น. 🌟' : log.duration + ' น.'}</span>
+                            ${formatLogDurationSpan(log)}
                         </div>
                     </div>`;
             });
@@ -2168,7 +2229,7 @@
             for (let i = 34; i >= 0; i--) {
                 const d = new Date(); d.setDate(d.getDate() - i);
                 const dStr = d.toDateString();
-                const total = logs.filter(l => l.date === dStr).reduce((s, l) => s + l.duration, 0);
+                const total = logs.filter(l => l.date === dStr).reduce((s, l) => s + quotaMinutesForLog(l), 0);
                 let cls = 'heatmap-cell';
                 if (total > dailyQuota) cls += ' lvl-over';
                 else if (total > dailyQuota * 0.6) cls += ' lvl-3';
@@ -2186,7 +2247,7 @@
             for (let i = 6; i >= 0; i--) {
                 const d = new Date(); d.setDate(d.getDate() - i);
                 const dStr = d.toDateString();
-                const total = logs.filter(l => l.date === dStr).reduce((s, l) => s + l.duration, 0);
+                const total = logs.filter(l => l.date === dStr).reduce((s, l) => s + quotaMinutesForLog(l), 0);
                 days.push({ total, isToday: i === 0, label: dayLbls[d.getDay()], dateKey: dStr });
             }
             const max = Math.max(...days.map(d => d.total), 1);
@@ -2203,7 +2264,7 @@
                 const dStr = d.toDateString();
                 const dayLogs = logs.filter(l => l.date === dStr);
                 if (dayLogs.length === 0) { if (i === 0) continue; break; }
-                const total = dayLogs.reduce((s, l) => s + l.duration, 0);
+                const total = dayLogs.reduce((s, l) => s + quotaMinutesForLog(l), 0);
                 if (total > dailyQuota) break;
                 streak++;
             }
@@ -2340,7 +2401,9 @@
                 notify_enabled: localStorage.getItem('notify_enabled') || 'false',
                 shift_mode: localStorage.getItem('shift_mode') || 'false',
                 shift_boundary_time: localStorage.getItem('shift_boundary_time') || '09:30',
-                earned_badges: JSON.parse(localStorage.getItem('earned_badges') || '[]')
+                earned_badges: JSON.parse(localStorage.getItem('earned_badges') || '[]'),
+                toilet_free_minutes: localStorage.getItem('toilet_free_minutes') || '10',
+                garden_enabled: localStorage.getItem('garden_enabled') || 'false'
             };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -2369,6 +2432,8 @@
                     if (typeof data.shift_mode !== 'undefined') safeSetItem('shift_mode', data.shift_mode);
                     if (data.shift_boundary_time) safeSetItem('shift_boundary_time', data.shift_boundary_time);
                     if (data.earned_badges) safeSetItem('earned_badges', JSON.stringify(data.earned_badges));
+                    if (typeof data.toilet_free_minutes !== 'undefined') safeSetItem('toilet_free_minutes', data.toilet_free_minutes);
+                    if (typeof data.garden_enabled !== 'undefined') safeSetItem('garden_enabled', data.garden_enabled);
                     showToast('นำเข้าข้อมูลสำเร็จ! กำลังโหลดหน้าใหม่', 'success');
                     setTimeout(() => location.reload(), 1200);
                 } catch (err) {
@@ -2476,6 +2541,7 @@
             const autoCb = document.getElementById('auto-theme-check');
             if (autoCb) autoCb.checked = autoOn;
             initShiftSettingsUI();
+            refreshToiletFreeMinutesUI();
             renderGreeting();
             updateHeaderTexts(); renderActivities(); renderDashboardAndLogs();
             restoreActiveBreakIfAny();
