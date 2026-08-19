@@ -836,6 +836,22 @@
         .report-table .report-bar-cell { display: flex; align-items: center; gap: 6px; }
         .report-table .report-bar-mini { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); flex-shrink: 0; }
         .report-empty { text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 0; }
+
+        .report-daily-scroll { max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 0 -4px; padding: 0 4px; }
+        .report-day-row {
+            padding: 10px 12px; border-radius: 14px; background: rgba(148,163,184,0.08); cursor: pointer;
+            transition: transform 0.15s, background 0.15s;
+        }
+        .report-day-row:hover { transform: translateX(3px); background: rgba(var(--accent-rgb), 0.1); }
+        .report-day-row.today { border: 1.5px solid rgba(var(--accent-rgb), 0.4); }
+        .report-day-row.over-quota { background: rgba(244, 63, 94, 0.08); }
+        .report-day-row-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .report-day-date { font-size: 12.5px; font-weight: 700; color: #334155; }
+        body[data-theme="night"] .report-day-date { color: #e2e8f0; }
+        .report-day-total { font-size: 12.5px; font-weight: 800; color: var(--accent); white-space: nowrap; }
+        .report-day-total.over { color: #f43f5e; }
+        .report-day-total.empty { color: #94a3b8; font-weight: 500; }
+        .report-day-activities { font-size: 11px; color: #94a3b8; margin-top: 4px; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -1171,6 +1187,11 @@
                 <div class="report-chart-wrap">
                     <svg id="report-trend-chart" viewBox="0 0 340 150" preserveAspectRatio="none"></svg>
                 </div>
+            </div>
+
+            <div class="report-section glass-panel">
+                <h3 class="report-section-title">📆 รายละเอียดรายวัน</h3>
+                <div id="report-daily-list"></div>
             </div>
 
             <div class="report-section glass-panel">
@@ -2348,6 +2369,7 @@
             `;
 
             renderReportTrendChart(dayBuckets, allLogs, dailyQuota);
+            renderReportDailyList(dayBuckets, allLogs, dailyQuota);
             renderReportWeekdayChart(dayBuckets, allLogs);
             renderReportActivityTable(periodLogs, totalRealMin);
         }
@@ -2389,6 +2411,45 @@
                 }
             });
             svg.innerHTML = bars;
+        }
+
+        function renderReportDailyList(dayBuckets, allLogs, dailyQuota) {
+            const container = document.getElementById('report-daily-list');
+            const todayStr = new Date().toDateString();
+            const reversed = dayBuckets.slice().reverse(); // ล่าสุดขึ้นก่อน
+
+            let html = '<div class="report-daily-scroll">';
+            reversed.forEach(b => {
+                const dayLogs = allLogs.filter(l => l.date === b.dateStr);
+                const isToday = b.dateStr === todayStr;
+                const dateLbl = `${b.date.getDate()} ${THAI_MONTHS[b.date.getMonth()]}${isToday ? ' (วันนี้)' : ''}`;
+
+                if (dayLogs.length === 0) {
+                    html += `<div class="report-day-row" onclick="closeReportPage(); showDayDetail('${b.dateStr}');">
+                        <div class="report-day-row-header">
+                            <span class="report-day-date">${dateLbl}</span>
+                            <span class="report-day-total empty">ไม่มีข้อมูล</span>
+                        </div>
+                    </div>`;
+                    return;
+                }
+
+                const quotaTotal = dayLogs.reduce((s, l) => s + quotaMinutesForLog(l), 0);
+                const isOver = quotaTotal > dailyQuota;
+                const actSummary = {};
+                dayLogs.forEach(l => { actSummary[l.action] = (actSummary[l.action] || 0) + l.duration; });
+                const actText = Object.entries(actSummary).map(([name, mins]) => `${name} ${mins} น.`).join(' · ');
+
+                html += `<div class="report-day-row ${isToday ? 'today' : ''} ${isOver ? 'over-quota' : ''}" onclick="closeReportPage(); showDayDetail('${b.dateStr}');">
+                    <div class="report-day-row-header">
+                        <span class="report-day-date">${dateLbl}</span>
+                        <span class="report-day-total ${isOver ? 'over' : ''}">${quotaTotal} นาที${isOver ? ' ⚠️' : ''}</span>
+                    </div>
+                    <div class="report-day-activities">${actText}</div>
+                </div>`;
+            });
+            html += '</div>';
+            container.innerHTML = html;
         }
 
         function renderReportWeekdayChart(dayBuckets, allLogs) {
