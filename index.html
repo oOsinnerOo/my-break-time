@@ -104,7 +104,7 @@
         .bg-aurora span {
             position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55;
             animation: aurora-drift ease-in-out infinite alternate;
-            transition: background 1.1s ease;
+            transition: background 1.1s ease; will-change: transform;
         }
         .bg-aurora span:nth-child(1) { width: 55vw; height: 55vw; top: -15%; left: -10%; background: radial-gradient(circle, var(--aurora-1), transparent 70%); animation-duration: 22s; }
         .bg-aurora span:nth-child(2) { width: 50vw; height: 50vw; bottom: -20%; right: -10%; background: radial-gradient(circle, var(--aurora-2), transparent 70%); animation-duration: 26s; animation-delay: -6s; }
@@ -139,7 +139,7 @@
             background: radial-gradient(circle at 30% 26%, rgba(255,255,255,0.95), var(--tint, rgba(255,90,140,0.45)) 42%, rgba(255,255,255,0) 78%);
             border: 1px solid rgba(255,255,255,0.45);
             box-shadow: 0 10px 24px -8px var(--glow, rgba(255,90,140,0.4)), inset 0 0 10px rgba(255,255,255,0.35);
-            backdrop-filter: blur(1px);
+            will-change: transform;
         }
         body[data-theme="night"] .bg-bubbles li {
             border-color: rgba(255,255,255,0.15);
@@ -180,7 +180,7 @@
         }
 
         /* 💗 ปุ่มเด้งตอนกด */
-        button, .chip, .icon-btn, .theme-toggle, .mute-toggle, .gender-toggle, .notify-toggle, .pagination-btn { transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s, color 0.3s, box-shadow 0.3s; }
+        button, .icon-btn, .theme-toggle, .mute-toggle, .gender-toggle, .notify-toggle, .pagination-btn { transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s, color 0.3s, box-shadow 0.3s; }
         button:active, .theme-toggle:active, .mute-toggle:active, .gender-toggle:active, .notify-toggle:active { transform: scale(0.9) !important; }
 
         /* 💎 Glassmorphism UI (ดีไซน์กระจกฝ้า) */
@@ -410,7 +410,6 @@
         .theme-toggle:hover, .mute-toggle:hover, .gender-toggle:hover, .notify-toggle:hover { transform: translateY(-2px) scale(1.05); }
         .notify-toggle.active { background: rgba(var(--accent-rgb), 0.25); color: #D6336C; border-color: var(--accent); }
         body[data-theme="night"] .notify-toggle.active { background: rgba(var(--accent-rgb), 0.2); color: var(--accent); }
-        .install-toggle { display: none; }
         .volume-slider { width: 110px; height: 28px; vertical-align: middle; accent-color: var(--accent); cursor: pointer; touch-action: none; }
 
         .theme-swatch-row { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -852,6 +851,17 @@
         .report-day-total.over { color: #f43f5e; }
         .report-day-total.empty { color: #94a3b8; font-weight: 500; }
         .report-day-activities { font-size: 11px; color: #94a3b8; margin-top: 4px; line-height: 1.5; }
+
+        /* ♿️⚡ เคารพการตั้งค่า "ลดการเคลื่อนไหว" ของระบบปฏิบัติการ - ทั้งเพื่อการเข้าถึงและลดการใช้ CPU/แบตเตอรี่ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .bg-bubbles, .bg-sparkles, .bg-aurora, .garden-butterfly { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -1780,6 +1790,20 @@
             if (log.isToilet) return Math.max(0, log.duration - getToiletFreeMinutes());
             return log.duration;
         }
+        // รวมยอดของ log ทุกวันเป็น Map ในรอบเดียว (O(N)) แทนการวน filter ทั้งอาเรย์ซ้ำๆ ทีละวัน (O(วัน×N))
+        // เร็วขึ้นมากเมื่อประวัติสะสมนานหลายเดือน/ปี เพราะ heatmap/กราฟ7วัน/สตรีค/หน้ารายงาน ใช้ข้อมูลชุดเดียวกันนี้ร่วมกันได้เลย
+        function buildDailyStats(logs) {
+            const totals = new Map(), counts = new Map(), byDate = new Map();
+            for (let i = 0; i < logs.length; i++) {
+                const l = logs[i];
+                const q = quotaMinutesForLog(l);
+                totals.set(l.date, (totals.get(l.date) || 0) + q);
+                counts.set(l.date, (counts.get(l.date) || 0) + 1);
+                if (!byDate.has(l.date)) byDate.set(l.date, []);
+                byDate.get(l.date).push(l);
+            }
+            return { totals, counts, byDate };
+        }
         // แสดงเวลาจริงที่ใช้เสมอ พร้อมกำกับส่วนที่ฟรี/ส่วนที่เกินสำหรับกิจกรรมห้องน้ำ
         function formatLogDurationSpan(log) {
             if (log.isToilet) {
@@ -2193,8 +2217,9 @@
             ring.style.stroke = progressRatio < 0.25 ? 'url(#ringGradientLow)' : 'url(#ringGradient)';
 
             checkQuotaWarning(remain, dailyQuota);
-            renderWeekChartAndStreak(logs, dailyQuota);
-            renderHeatmap(logs, dailyQuota);
+            const dailyStats = buildDailyStats(logs);
+            renderWeekChartAndStreak(dailyStats, dailyQuota);
+            renderHeatmap(dailyStats, dailyQuota);
         }
 
         async function editLog(realIndex) {
@@ -2375,6 +2400,7 @@
         }
 
         function renderReportTrendChart(dayBuckets, allLogs, dailyQuota) {
+            const dailyStats = buildDailyStats(allLogs);
             const svg = document.getElementById('report-trend-chart');
             // ถ้าช่วงเวลายาว (90 วัน) รวมเป็นรายสัปดาห์แทนรายวัน กันแท่งบางเกินจนอ่านไม่ออก
             let buckets;
@@ -2382,14 +2408,14 @@
                 buckets = [];
                 for (let i = 0; i < dayBuckets.length; i += 7) {
                     const chunk = dayBuckets.slice(i, i + 7);
-                    const dateSet = new Set(chunk.map(c => c.dateStr));
-                    const total = allLogs.filter(l => dateSet.has(l.date)).reduce((s, l) => s + quotaMinutesForLog(l), 0);
+                    let total = 0;
+                    chunk.forEach(c => { total += dailyStats.totals.get(c.dateStr) || 0; });
                     buckets.push({ label: `${chunk[0].date.getDate()}/${chunk[0].date.getMonth()+1}`, total });
                 }
             } else {
                 buckets = dayBuckets.map(b => ({
                     label: `${b.date.getDate()}`,
-                    total: allLogs.filter(l => l.date === b.dateStr).reduce((s, l) => s + quotaMinutesForLog(l), 0)
+                    total: dailyStats.totals.get(b.dateStr) || 0
                 }));
             }
 
@@ -2414,13 +2440,14 @@
         }
 
         function renderReportDailyList(dayBuckets, allLogs, dailyQuota) {
+            const dailyStats = buildDailyStats(allLogs);
             const container = document.getElementById('report-daily-list');
             const todayStr = new Date().toDateString();
             const reversed = dayBuckets.slice().reverse(); // ล่าสุดขึ้นก่อน
 
             let html = '<div class="report-daily-scroll">';
             reversed.forEach(b => {
-                const dayLogs = allLogs.filter(l => l.date === b.dateStr);
+                const dayLogs = dailyStats.byDate.get(b.dateStr) || [];
                 const isToday = b.dateStr === todayStr;
                 const dateLbl = `${b.date.getDate()} ${THAI_MONTHS[b.date.getMonth()]}${isToday ? ' (วันนี้)' : ''}`;
 
@@ -2434,7 +2461,7 @@
                     return;
                 }
 
-                const quotaTotal = dayLogs.reduce((s, l) => s + quotaMinutesForLog(l), 0);
+                const quotaTotal = dailyStats.totals.get(b.dateStr) || 0;
                 const isOver = quotaTotal > dailyQuota;
                 const actSummary = {};
                 dayLogs.forEach(l => { actSummary[l.action] = (actSummary[l.action] || 0) + l.duration; });
@@ -2453,12 +2480,13 @@
         }
 
         function renderReportWeekdayChart(dayBuckets, allLogs) {
+            const dailyStats = buildDailyStats(allLogs);
             const svg = document.getElementById('report-weekday-chart');
             const sums = [0,0,0,0,0,0,0], counts = [0,0,0,0,0,0,0];
             dayBuckets.forEach(b => {
                 const wd = b.date.getDay();
                 counts[wd]++;
-                sums[wd] += allLogs.filter(l => l.date === b.dateStr).reduce((s, l) => s + quotaMinutesForLog(l), 0);
+                sums[wd] += dailyStats.totals.get(b.dateStr) || 0;
             });
             const averages = sums.map((s, i) => counts[i] > 0 ? s / counts[i] : 0);
 
@@ -2555,13 +2583,13 @@
             }
         }
 
-        function renderHeatmap(logs, dailyQuota) {
+        function renderHeatmap(dailyStats, dailyQuota) {
             const grid = document.getElementById('heatmap-grid');
             const cells = [];
             for (let i = 34; i >= 0; i--) {
                 const d = new Date(); d.setDate(d.getDate() - i);
                 const dStr = d.toDateString();
-                const total = logs.filter(l => l.date === dStr).reduce((s, l) => s + quotaMinutesForLog(l), 0);
+                const total = dailyStats.totals.get(dStr) || 0;
                 let cls = 'heatmap-cell';
                 if (total > dailyQuota) cls += ' lvl-over';
                 else if (total > dailyQuota * 0.6) cls += ' lvl-3';
@@ -2573,13 +2601,13 @@
             grid.innerHTML = cells.join('');
         }
 
-        function renderWeekChartAndStreak(logs, dailyQuota) {
+        function renderWeekChartAndStreak(dailyStats, dailyQuota) {
             const dayLbls = ['อา','จ','อ','พ','พฤ','ศ','ส'];
             const days = [];
             for (let i = 6; i >= 0; i--) {
                 const d = new Date(); d.setDate(d.getDate() - i);
                 const dStr = d.toDateString();
-                const total = logs.filter(l => l.date === dStr).reduce((s, l) => s + quotaMinutesForLog(l), 0);
+                const total = dailyStats.totals.get(dStr) || 0;
                 days.push({ total, isToday: i === 0, label: dayLbls[d.getDay()], dateKey: dStr });
             }
             const max = Math.max(...days.map(d => d.total), 1);
@@ -2594,9 +2622,9 @@
             for (let i = 0; i < 60; i++) {
                 const d = new Date(); d.setDate(d.getDate() - i);
                 const dStr = d.toDateString();
-                const dayLogs = logs.filter(l => l.date === dStr);
-                if (dayLogs.length === 0) { if (i === 0) continue; break; }
-                const total = dayLogs.reduce((s, l) => s + quotaMinutesForLog(l), 0);
+                const hasLogs = dailyStats.counts.has(dStr);
+                if (!hasLogs) { if (i === 0) continue; break; }
+                const total = dailyStats.totals.get(dStr) || 0;
                 if (total > dailyQuota) break;
                 streak++;
             }
