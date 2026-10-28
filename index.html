@@ -8,6 +8,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#FFE8F1">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -629,16 +632,16 @@
         @keyframes gradient-text { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
         .greeting-line { margin: 3px 0 0; font-size: 13.5px; font-weight: 500; color: var(--ink-2); }
 
-        /* 🔘 ปุ่มทรงแคปซูล (ตั้งค่า เสียง แจ้งเตือน ฯลฯ) */
-        .theme-toggle, .mute-toggle, .gender-toggle, .notify-toggle {
+        /* 🔘 ปุ่มทรงแคปซูลบนหัวเว็บ (ตั้งค่า สติกเกอร์ ฯลฯ) */
+        .theme-toggle {
             display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
             font-size: 13px; font-weight: 600; padding: 9px 15px; border-radius: 999px;
             background: var(--surface-solid); color: var(--ink-2); cursor: pointer; user-select: none;
             border: 1px solid var(--line); box-shadow: 0 8px 18px -12px rgba(var(--shadow-rgb), 0.45);
             transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s, color 0.3s, border-color 0.3s;
         }
-        .theme-toggle:hover, .mute-toggle:hover, .gender-toggle:hover, .notify-toggle:hover { transform: translateY(-2px); color: var(--ink); }
-        .theme-toggle:active, .mute-toggle:active, .gender-toggle:active, .notify-toggle:active { transform: scale(0.94); }
+        .theme-toggle:hover { transform: translateY(-2px); color: var(--ink); }
+        .theme-toggle:active { transform: scale(0.94); }
         @media (max-width: 480px) {
             .header-actions { gap: 6px; }
             .header-actions .theme-toggle { width: 42px; height: 42px; padding: 0; justify-content: center; font-size: 18px; }
@@ -647,7 +650,6 @@
             .brand-mark { width: 42px; height: 42px; font-size: 21px; border-radius: 14px; }
             .app-title { font-size: 21px; white-space: nowrap; }
         }
-        .notify-toggle.active { background: rgba(var(--accent-rgb), 0.14); color: var(--accent-ink); border-color: rgba(var(--accent-rgb), 0.45); }
         .volume-slider { width: 110px; height: 28px; vertical-align: middle; accent-color: var(--accent); cursor: pointer; touch-action: none; }
 
         /* 📊 แดชบอร์ดโควตา */
@@ -1117,6 +1119,8 @@
             z-index: 100000; align-items: center; justify-content: center; padding: 16px;
         }
         body.is-dark .modal-overlay { background: rgba(0, 0, 0, 0.5); }
+        /* กล่องยืนยัน/ถามค่า ต้องอยู่บนหน้าต่างอื่นเสมอ (เปิดจากหน้าตั้งค่า รายละเอียดวัน หรือรายงานได้) */
+        #custom-dialog { z-index: 110000; }
         .modal-box {
             background: var(--surface-solid); color: var(--ink); padding: 26px; border-radius: 30px; width: 100%; max-width: 400px;
             display: flex; flex-direction: column; gap: 16px; border: 1px solid var(--surface-edge);
@@ -1141,7 +1145,7 @@
         .settings-modal-header { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .settings-modal-header h3 { font-size: 20px; }
         .settings-close-btn {
-            width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; font-family: inherit;
             cursor: pointer; background: var(--surface-2); border: 1px solid var(--line); font-size: 14px; color: var(--ink-2); flex-shrink: 0;
             transition: transform 0.2s, background-color 0.2s, color 0.2s;
         }
@@ -1154,6 +1158,45 @@
         .settings-row-label { font-size: 14px; font-weight: 600; color: var(--ink); }
         .settings-row-control { display: flex; align-items: center; gap: 8px; }
         .settings-hint { font-size: 12px; color: var(--ink-3); line-height: 1.55; margin: 8px 0 0; }
+        /* ⚙️ แถวในหน้าตั้งค่า: ชื่อ + คำอธิบายสั้นๆ ด้านซ้าย ตัวควบคุมด้านขวา */
+        .settings-switch-row { cursor: pointer; }
+        .theme-swatch-row.is-season { margin-bottom: 12px; }
+        .settings-row-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .settings-row-sub { font-size: 12px; font-weight: 500; color: var(--ink-3); line-height: 1.45; }
+        .settings-row-sub.is-warn { color: var(--danger); }
+        .settings-row-end { justify-content: flex-end; padding-top: 0; }
+        .settings-hint-top { margin: 0 0 12px; }
+        #volume-row.is-disabled { opacity: 0.45; }
+        #volume-row.is-disabled .volume-slider, #volume-row.is-disabled .chip-btn { pointer-events: none; }
+        .segmented { display: inline-flex; flex-shrink: 0; padding: 3px; gap: 2px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); }
+        .segmented button {
+            border: none; background: none; cursor: pointer; padding: 7px 16px; border-radius: 999px;
+            font: inherit; font-size: 13.5px; font-weight: 700; color: var(--ink-2); transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .segmented button[aria-checked="true"] { background: var(--surface-solid); color: var(--accent-ink); box-shadow: 0 4px 10px -6px rgba(var(--shadow-rgb), 0.5); }
+        .settings-details { margin-top: 10px; }
+        .settings-details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent-ink); padding: 4px 0; list-style: none; }
+        .settings-details summary::-webkit-details-marker { display: none; }
+        .settings-details summary::after { content: ' ▾'; }
+        .settings-details[open] summary::after { content: ' ▴'; }
+        .season-dates { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+        .season-dates li { display: flex; justify-content: space-between; gap: 10px; padding: 7px 10px; border-radius: 10px; font-size: 12.5px; color: var(--ink-2); }
+        .season-dates li:nth-child(odd) { background: var(--surface-2); }
+        .season-dates li.is-now { color: var(--accent-ink); font-weight: 700; }
+        .season-dates li span:last-child { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+        .data-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+        .data-btn {
+            display: flex; align-items: center; justify-content: center; gap: 7px; padding: 11px 10px; border-radius: 14px; cursor: pointer;
+            font: inherit; font-size: 13.5px; font-weight: 700; white-space: nowrap; color: var(--ink);
+            background: var(--surface-solid); border: 1px solid var(--line); transition: transform 0.15s, border-color 0.2s, background-color 0.2s;
+        }
+        .data-btn:hover { border-color: rgba(var(--accent-rgb), 0.5); transform: translateY(-1px); }
+        .data-btn.is-danger { grid-column: 1 / -1; color: var(--danger); background: transparent; border-style: dashed; border-color: rgba(var(--danger-rgb), 0.45); }
+        .data-btn.is-danger:hover { background: rgba(var(--danger-rgb), 0.08); }
+
+        /* สวิตช์เอฟเฟกต์จากหน้าตั้งค่า */
+        body.no-parade .parade { display: none; }
+        body.no-stickers .sticker-layer, body.no-stickers #sticker-btn { display: none; }
 
         /* 🎨 ตัวเลือกธีม */
         .theme-swatch-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 6px; }
@@ -1808,6 +1851,15 @@
             }
             .bg-bubbles, .bg-sparkles, .bg-aurora, .garden-butterfly, .hw-bat, .hw-spider, .fg-season { display: none !important; }
         }
+        /* ลดแอนิเมชันจากหน้าตั้งค่า: กฎชุดเดียวกับตอนเครื่องตั้ง "ลดการเคลื่อนไหว" ไว้ */
+        body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+        body.reduce-motion .bg-bubbles, body.reduce-motion .bg-sparkles, body.reduce-motion .bg-aurora, body.reduce-motion .garden-butterfly,
+        body.reduce-motion .hw-bat, body.reduce-motion .hw-spider, body.reduce-motion .fg-season { display: none !important; }
     </style>
 </head>
 <body>
@@ -2061,12 +2113,12 @@
     </div>
 
     <div class="modal-overlay" id="settings-modal" onclick="if(event.target===this) closeSettingsModal()">
-        <div class="modal-box settings-box">
+        <div class="modal-box settings-box" role="dialog" aria-modal="true" aria-labelledby="settings-title">
             <div class="settings-modal-header">
-                <h3>⚙️ ตั้งค่า</h3>
-                <span class="settings-close-btn" onclick="closeSettingsModal()">✕</span>
+                <h3 id="settings-title">⚙️ ตั้งค่า</h3>
+                <button type="button" class="settings-close-btn" onclick="closeSettingsModal()" aria-label="ปิดหน้าตั้งค่า">✕</button>
             </div>
-            <div class="settings-scroll">
+            <div class="settings-scroll" id="settings-scroll">
 
                 <div class="settings-section">
                     <div class="settings-section-title">🎨 ธีม</div>
@@ -2089,29 +2141,58 @@
                         <button type="button" class="theme-swatch swatch-valentine" data-theme="valentine" onclick="setSiteTheme('valentine', event)"><span class="swatch-chip">💝</span><span class="swatch-name">วาเลนไทน์</span></button>
                         <button type="button" class="theme-swatch swatch-cny" data-theme="cny" onclick="setSiteTheme('cny', event)"><span class="swatch-chip">🧧</span><span class="swatch-name">ตรุษจีน</span></button>
                     </div>
-                    <label class="auto-theme-row">
-                        <span class="toggle-switch toggle-switch-sm"><input type="checkbox" id="auto-theme-check" onchange="toggleAutoTheme(this.checked)"><span class="toggle-slider"></span></span>
-                        <span>🕐 สลับอัตโนมัติตามเวลา (กลางวัน ซันเซ็ต กลางคืน)</span>
+                    <label class="settings-row settings-switch-row" for="auto-theme-check">
+                        <span class="settings-row-text"><span class="settings-row-label">สลับธีมตามเวลา</span><span class="settings-row-sub">กลางวัน → ซันเซ็ต → กลางคืน</span></span>
+                        <span class="toggle-switch"><input type="checkbox" id="auto-theme-check" onchange="toggleAutoTheme(this.checked)"><span class="toggle-slider"></span></span>
                     </label>
-                    <p class="settings-hint">ช่วงเทศกาลจะเปลี่ยนเป็นธีมเทศกาลให้อัตโนมัติ (เปลี่ยนกลับได้): ตรุษจีน ช่วงวันตรุษจีน · วาเลนไทน์ 12–15 ก.พ. · สงกรานต์ 10–17 เม.ย. · ฮาโลวีน 20 ต.ค.–1 พ.ย. · ลอยกระทง ช่วงวันเพ็ญเดือน 12 · คริสต์มาส 15–26 ธ.ค. · ปีใหม่ 27 ธ.ค.–3 ม.ค.</p>
+                    <label class="settings-row settings-switch-row" for="season-auto-check">
+                        <span class="settings-row-text"><span class="settings-row-label">เปลี่ยนเป็นธีมเทศกาลอัตโนมัติ</span><span class="settings-row-sub">ช่วงเทศกาลเปลี่ยนให้เอง จบแล้วกลับเป็นธีมเดิม</span></span>
+                        <span class="toggle-switch"><input type="checkbox" id="season-auto-check" onchange="toggleSeasonAuto(this.checked)"><span class="toggle-slider"></span></span>
+                    </label>
+                    <details class="settings-details">
+                        <summary>📅 ดูช่วงวันที่เทศกาล</summary>
+                        <ul class="season-dates" id="season-dates"></ul>
+                    </details>
                 </div>
 
                 <div class="settings-section">
                     <div class="settings-section-title">👤 ทั่วไป</div>
                     <div class="settings-row">
-                        <span class="settings-row-label">คำลงท้าย</span>
-                        <div class="gender-toggle" id="gender-toggle" onclick="toggleGender(event)">👦 ชาย</div>
-                    </div>
-                    <div class="settings-row">
-                        <span class="settings-row-label">เสียงแจ้งเตือน</span>
-                        <div class="settings-row-control">
-                            <span class="mute-toggle" id="mute-toggle" onclick="toggleMute(event)">🔊</span>
-                            <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.1" value="1" title="ระดับเสียง" oninput="setVolume(this.value)">
+                        <span class="settings-row-text"><span class="settings-row-label">คำลงท้ายตอนคัดลอก</span><span class="settings-row-sub" id="gender-example"></span></span>
+                        <div class="segmented" role="radiogroup" aria-label="คำลงท้าย">
+                            <button type="button" role="radio" data-gender="male" onclick="setGender('male')">ครับ</button>
+                            <button type="button" role="radio" data-gender="female" onclick="setGender('female')">ค่ะ</button>
                         </div>
                     </div>
                     <div class="settings-row">
-                        <span class="settings-row-label">แจ้งเตือนผ่านเบราว์เซอร์</span>
-                        <div class="notify-toggle" id="notify-toggle" onclick="toggleNotify(event)">🔔 แจ้งเตือน</div>
+                        <span class="settings-row-text"><span class="settings-row-label">โควตาเวลาพักต่อวัน</span><span class="settings-row-sub">นาที · แก้ที่หน้าหลักได้เหมือนกัน</span></span>
+                        <span class="quota-stepper">
+                            <button type="button" class="quota-step-btn" onclick="stepQuota(-5)" aria-label="ลดโควตา 5 นาที">−</button>
+                            <input type="number" id="settings-quota-input" class="quota-input" min="1" max="1440" onchange="updateQuota(this.value)" aria-label="โควตาเวลาพักต่อวัน (นาที)">
+                            <button type="button" class="quota-step-btn" onclick="stepQuota(5)" aria-label="เพิ่มโควตา 5 นาที">+</button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-section-title">🔔 เสียงและการแจ้งเตือน</div>
+                    <label class="settings-row settings-switch-row" for="sound-check">
+                        <span class="settings-row-label">เปิดเสียง</span>
+                        <span class="toggle-switch"><input type="checkbox" id="sound-check" onchange="setMuted(!this.checked)"><span class="toggle-slider"></span></span>
+                    </label>
+                    <div class="settings-row" id="volume-row">
+                        <label class="settings-row-label" for="volume-slider">ระดับเสียง</label>
+                        <div class="settings-row-control">
+                            <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.1" value="1" oninput="setVolume(this.value)" onchange="previewVolume()">
+                            <button type="button" class="chip-btn" id="sound-test-btn" onclick="testSound()">▶ ลองฟัง</button>
+                        </div>
+                    </div>
+                    <label class="settings-row settings-switch-row" for="notify-check">
+                        <span class="settings-row-text"><span class="settings-row-label">แจ้งเตือนผ่านเบราว์เซอร์</span><span class="settings-row-sub" id="notify-status"></span></span>
+                        <span class="toggle-switch"><input type="checkbox" id="notify-check" onchange="setNotify(this.checked)"><span class="toggle-slider"></span></span>
+                    </label>
+                    <div class="settings-row settings-row-end" id="notify-test-row">
+                        <button type="button" class="chip-btn" onclick="testNotification()">🔔 ทดสอบการแจ้งเตือน</button>
                     </div>
                 </div>
 
@@ -2121,7 +2202,7 @@
                         <span class="settings-row-label">เวลาฟรีต่อครั้ง (นาที)</span>
                         <span class="quota-stepper">
                             <button type="button" class="quota-step-btn" onclick="stepToiletFreeMinutes(-1)" aria-label="ลด 1 นาที">−</button>
-                            <input type="number" id="toilet-free-min-input" class="quota-input" min="0" oninput="updateToiletFreeMinutes(this.value)" aria-label="เวลาฟรีต่อครั้ง (นาที)">
+                            <input type="number" id="toilet-free-min-input" class="quota-input" min="0" max="120" onchange="updateToiletFreeMinutes(this.value)" aria-label="เวลาฟรีต่อครั้ง (นาที)">
                             <button type="button" class="quota-step-btn" onclick="stepToiletFreeMinutes(1)" aria-label="เพิ่ม 1 นาที">+</button>
                         </span>
                     </div>
@@ -2129,22 +2210,37 @@
                 </div>
 
                 <div class="settings-section">
-                    <div class="settings-section-title">🌱 สวนพักผ่อน</div>
-                    <label class="settings-row" for="garden-enable-check" style="cursor:pointer;">
-                        <span class="settings-row-label">แสดงสวนผักและต้นไม้ในหน้าหลัก</span>
+                    <div class="settings-section-title">✨ เอฟเฟกต์และแอนิเมชัน</div>
+                    <label class="settings-row settings-switch-row" for="garden-enable-check">
+                        <span class="settings-row-text"><span class="settings-row-label">สวนผักและต้นไม้</span><span class="settings-row-sub">ต้นไม้โตตามสตรีค ผักโตทุกครั้งที่พักไม่เกินลิมิต</span></span>
                         <span class="toggle-switch"><input type="checkbox" id="garden-enable-check" onchange="toggleGardenEnabled(this.checked)"><span class="toggle-slider"></span></span>
                     </label>
-                    <p class="settings-hint">ต้นไม้โตตามสตรีค (ออกดอกวันที่ 3 บานเต็มที่วันที่ 10) ผักในแปลงโตทุกครั้งที่พักไม่เกินลิมิต วันที่พักเกินโควตาจะมีหนอนโผล่มา ปิดไว้ได้ถ้าไม่อยากให้กินพื้นที่หน้าจอ</p>
+                    <label class="settings-row settings-switch-row" for="parade-check">
+                        <span class="settings-row-text"><span class="settings-row-label">ขบวนเพื่อนท้ายหน้า</span><span class="settings-row-sub">เพื่อนตัวน้อยเดินเล่น แตะหรือลากเล่นได้</span></span>
+                        <span class="toggle-switch"><input type="checkbox" id="parade-check" onchange="setEffect('parade', this.checked)"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="settings-row settings-switch-row" for="tapfx-check">
+                        <span class="settings-row-text"><span class="settings-row-label">เอฟเฟกต์ตอนแตะหน้าจอ</span><span class="settings-row-sub">ประกายเล็กๆ ตามธีมทุกครั้งที่แตะ</span></span>
+                        <span class="toggle-switch"><input type="checkbox" id="tapfx-check" onchange="setEffect('tapfx', this.checked)"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="settings-row settings-switch-row" for="stickers-check">
+                        <span class="settings-row-text"><span class="settings-row-label">สติกเกอร์</span><span class="settings-row-sub">แสดงสติกเกอร์ที่แปะไว้และปุ่ม 🎀</span></span>
+                        <span class="toggle-switch"><input type="checkbox" id="stickers-check" onchange="setEffect('stickers', this.checked)"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="settings-row settings-switch-row" for="reduce-motion-check">
+                        <span class="settings-row-text"><span class="settings-row-label">ลดแอนิเมชัน</span><span class="settings-row-sub" id="reduce-motion-sub">หยุดสิ่งที่ขยับอยู่ตลอด ช่วยประหยัดแบตและไม่รบกวนตอนทำงาน</span></span>
+                        <span class="toggle-switch"><input type="checkbox" id="reduce-motion-check" onchange="setEffect('reduceMotion', this.checked)"><span class="toggle-slider"></span></span>
+                    </label>
                 </div>
 
                 <div class="settings-section">
                     <div class="settings-section-title">🕐 กะการทำงาน</div>
-                    <label class="settings-row" for="shift-mode-check" style="cursor:pointer;">
+                    <label class="settings-row settings-switch-row" for="shift-mode-check">
                         <span class="settings-row-label">นับเวลาแบบกะ (ไม่รีเซ็ตเที่ยงคืน)</span>
                         <span class="toggle-switch"><input type="checkbox" id="shift-mode-check" onchange="toggleShiftMode(this.checked)"><span class="toggle-slider"></span></span>
                     </label>
                     <div class="settings-row" id="shift-boundary-row" style="display:none;">
-                        <span class="settings-row-label">เวลาเริ่มกะ</span>
+                        <label class="settings-row-label" for="shift-boundary-input">เวลาเริ่มกะ</label>
                         <input type="time" id="shift-boundary-input" class="quota-input" style="width:auto; padding:6px 10px;" onchange="setShiftBoundary(this.value)">
                     </div>
                     <p class="settings-hint" id="shift-hint">เปิดไว้ถ้าทำงานเป็นกะที่ข้ามเที่ยงคืน โควตาจะรีเซ็ตตอนเริ่มกะใหม่แทนเที่ยงคืน</p>
@@ -2152,21 +2248,20 @@
 
                 <div class="settings-section">
                     <div class="settings-section-title">💾 ข้อมูล</div>
-                    <div class="settings-row">
-                        <span class="settings-row-label">สำรอง/นำเข้าข้อมูลทั้งหมด</span>
-                        <div class="settings-row-control">
-                            <span class="chip-btn btn-backup" onclick="exportBackup()">💾 สำรอง</span>
-                            <label class="chip-btn btn-import" for="import-file">📤 นำเข้า</label>
-                            <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importBackup(event)">
-                        </div>
+                    <p class="settings-hint settings-hint-top">ข้อมูลทั้งหมดเก็บอยู่ในเบราว์เซอร์เครื่องนี้เท่านั้น สำรองเป็นไฟล์ไว้เพื่อย้ายเครื่องหรือกันข้อมูลหาย</p>
+                    <div class="data-actions">
+                        <button type="button" class="data-btn" onclick="exportBackup()"><span aria-hidden="true">💾</span>สำรองข้อมูล</button>
+                        <button type="button" class="data-btn" onclick="document.getElementById('import-file').click()"><span aria-hidden="true">📤</span>นำเข้าไฟล์</button>
+                        <button type="button" class="data-btn is-danger" onclick="clearAllData()"><span aria-hidden="true">🗑️</span>ล้างข้อมูลทั้งหมด</button>
                     </div>
+                    <input type="file" id="import-file" accept="application/json,.json" hidden onchange="importBackup(event)">
                 </div>
 
-                <div class="settings-section" id="settings-install-section" style="display:none;">
+                <div class="settings-section" id="settings-install-section">
                     <div class="settings-section-title">📲 แอป</div>
                     <div class="settings-row">
-                        <span class="settings-row-label">ติดตั้งเป็นแอปบนเครื่องนี้</span>
-                        <div class="theme-toggle" id="install-btn" onclick="installApp()">ติดตั้ง</div>
+                        <span class="settings-row-text"><span class="settings-row-label">ติดตั้งเป็นแอปบนเครื่องนี้</span><span class="settings-row-sub" id="install-status"></span></span>
+                        <button type="button" class="chip-btn" id="install-btn" onclick="installApp()" style="display:none;">ติดตั้ง</button>
                     </div>
                 </div>
 
@@ -3403,7 +3498,7 @@
                     else landCritter(c);
                 }
             } else if (c.state === 'walk') {
-                if (!PARADE_REDUCED_MOTION) c.x += c.dir * c.speed * dt;
+                if (!motionReduced()) c.x += c.dir * c.speed * dt;
                 if (c.x <= 0) { c.x = 0; c.dir = 1; } else if (c.x >= maxX) { c.x = maxX; c.dir = -1; }
                 c.timer -= dt;
                 if (c.timer <= 0) { setCritterState(c, 'idle'); c.timer = rnd(1.2, 3); }
@@ -3439,7 +3534,7 @@
             }
             applyCritter(c);
         }
-        const PARADE_REDUCED_MOTION = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const PREFERS_REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
         function paradeFrame(t) {
             parade.rafId = 0;
             // แบ่งเวลาเป็นช่วงย่อยๆ เครื่องที่เฟรมเรตต่ำจะได้เดิน/ตกด้วยความเร็วจริง ไม่ช้าลงตามเฟรม
@@ -3451,7 +3546,7 @@
                 parade.snacks.forEach(sn => stepSnack(sn, step));
                 remaining -= step;
             }
-            if (!PARADE_REDUCED_MOTION) paradeSocial();
+            if (!motionReduced()) paradeSocial();
             if (parade.visible && !document.hidden) parade.rafId = requestAnimationFrame(paradeFrame);
             else parade.last = 0;
         }
@@ -3597,7 +3692,7 @@
             }
         }
         document.addEventListener('pointerdown', (e) => {
-            if (PARADE_REDUCED_MOTION || (e.pointerType === 'mouse' && e.button !== 0)) return;
+            if (motionReduced() || !isEffectOn('tapfx') || (e.pointerType === 'mouse' && e.button !== 0)) return;
             spawnTapFx(e.clientX, e.clientY);
         }, { passive: true });
 
@@ -4269,7 +4364,7 @@
                 if (SEASON_THEMES.includes(saved) && !localStorage.getItem('theme_before_season')) safeSetItem('theme_before_season', legacy);
                 localStorage.removeItem('theme_before_halloween');
             }
-            const season = getActiveSeason();
+            const season = isSeasonAutoOn() ? getActiveSeason() : null;
             if (season) {
                 const key = `${season.theme}_switched`;
                 if (localStorage.getItem(key) === String(season.year) || saved === season.theme) return null;
@@ -4319,6 +4414,7 @@
 
         // --- ⚙️ หน้าตั้งค่ารวม ---
         function openSettingsModal() {
+            syncSettingsUI();
             document.getElementById('settings-modal').style.display = 'flex';
         }
         function closeSettingsModal() {
@@ -4330,7 +4426,7 @@
         });
 
         function getAutoTheme() {
-            const season = getActiveSeason();
+            const season = isSeasonAutoOn() ? getActiveSeason() : null;
             if (season) return season.theme;
             const h = new Date().getHours() + new Date().getMinutes() / 60;
             if (h >= 5 && h < 17) return 'day';
@@ -4373,35 +4469,152 @@
             else text = '😴 ดึกมากแล้ว ดูแลตัวเองด้วยนะ';
             g.textContent = text;
         }
-        function toggleMute(event) { event.stopPropagation(); isMuted = !isMuted; safeSetItem('is_muted', isMuted); updateHeaderTexts(); }
-        function toggleGender(event) { event.stopPropagation(); gender = gender === 'male' ? 'female' : 'male'; safeSetItem('gender', gender); updateHeaderTexts(); }
-
-        function toggleNotify(event) {
-            event.stopPropagation();
-            if (!('Notification' in window)) { showToast('เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน', 'warning'); return; }
-            if (notifyEnabled) {
-                notifyEnabled = false; safeSetItem('notify_enabled', 'false'); updateHeaderTexts(); return;
-            }
+        // --- ⚙️ หน้าตั้งค่า ---
+        function setMuted(muted) {
+            isMuted = !!muted; safeSetItem('is_muted', isMuted);
+            updateHeaderTexts();
+            if (!isMuted) playSound('pop');
+        }
+        function setGender(g) {
+            gender = g === 'female' ? 'female' : 'male'; safeSetItem('gender', gender);
+            updateHeaderTexts();
+        }
+        // ลองฟังตอนปล่อยแถบเลื่อน จะได้รู้ว่าดังแค่ไหน
+        function previewVolume() { playSound('pop'); }
+        function testSound() { playSound('alarm'); }
+        function setNotify(on) {
+            if (!on) { notifyEnabled = false; safeSetItem('notify_enabled', 'false'); updateHeaderTexts(); return; }
+            if (!('Notification' in window)) { showToast('เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน', 'warning'); updateHeaderTexts(); return; }
             if (Notification.permission === 'granted') {
-                notifyEnabled = true; safeSetItem('notify_enabled', 'true'); updateHeaderTexts();
-            } else if (Notification.permission !== 'denied') {
-                Notification.requestPermission().then(perm => {
-                    notifyEnabled = perm === 'granted';
-                    safeSetItem('notify_enabled', notifyEnabled);
-                    updateHeaderTexts();
-                });
-            } else {
-                showToast('การแจ้งเตือนถูกปิดกั้นไว้ กรุณาเปิดสิทธิ์ในตั้งค่าเบราว์เซอร์', 'warning', { duration: 4500 });
+                notifyEnabled = true; safeSetItem('notify_enabled', 'true'); updateHeaderTexts(); return;
             }
+            if (Notification.permission === 'denied') {
+                showToast('การแจ้งเตือนถูกบล็อกไว้ กดรูปแม่กุญแจข้างช่องที่อยู่เว็บเพื่ออนุญาตก่อนนะ', 'warning', { duration: 5000 });
+                updateHeaderTexts(); return;
+            }
+            Notification.requestPermission().then(perm => {
+                notifyEnabled = perm === 'granted';
+                safeSetItem('notify_enabled', notifyEnabled ? 'true' : 'false');
+                updateHeaderTexts();
+                if (notifyEnabled) sendNotification('🔔 เปิดการแจ้งเตือนแล้ว', 'จะเตือนเมื่อพักเกินลิมิต หรือโควตาใกล้หมด');
+            });
+        }
+        function testNotification() {
+            if (!notifyEnabled) { showToast('เปิดสวิตช์แจ้งเตือนก่อนนะ', 'info'); return; }
+            sendNotification('🔔 ทดสอบการแจ้งเตือน', 'ถ้าเห็นข้อความนี้ แปลว่าการแจ้งเตือนใช้งานได้แล้ว');
         }
 
+        // เอฟเฟกต์ที่เปิด/ปิดได้ (ค่าเริ่มต้นเปิดหมด ยกเว้นลดแอนิเมชัน)
+        const EFFECT_KEYS = { parade: 'fx_parade', tapfx: 'fx_tap', stickers: 'fx_stickers', reduceMotion: 'reduce_motion' };
+        function isEffectOn(name) {
+            const v = localStorage.getItem(EFFECT_KEYS[name]);
+            return name === 'reduceMotion' ? v === 'true' : v !== 'false';
+        }
+        function applyEffectSettings() {
+            document.body.classList.toggle('no-parade', !isEffectOn('parade'));
+            document.body.classList.toggle('no-stickers', !isEffectOn('stickers'));
+            document.body.classList.toggle('reduce-motion', isEffectOn('reduceMotion'));
+            if (!isEffectOn('stickers')) toggleStickerTray(false);
+        }
+        function setEffect(name, on) {
+            safeSetItem(EFFECT_KEYS[name], on ? 'true' : 'false');
+            applyEffectSettings();
+        }
+        function motionReduced() { return PREFERS_REDUCED_MOTION || document.body.classList.contains('reduce-motion'); }
+
+        // ธีมเทศกาลอัตโนมัติ (ค่าเริ่มต้นเปิด)
+        function isSeasonAutoOn() { return localStorage.getItem('season_auto') !== 'false'; }
+        function toggleSeasonAuto(on) {
+            safeSetItem('season_auto', on ? 'true' : 'false');
+            const season = getActiveSeason();
+            if (!on) {
+                // ปิดระหว่างเทศกาล: ถ้าธีมตอนนี้ถูกเปลี่ยนให้อัตโนมัติ คืนธีมเดิมให้เลย
+                const before = localStorage.getItem('theme_before_season');
+                if (before && SEASON_THEMES.includes(currentTheme())) { setSiteTheme(before); showToast('กลับเป็นธีมเดิมแล้ว', 'success'); }
+                localStorage.removeItem('theme_before_season');
+            } else if (season && currentTheme() !== season.theme && localStorage.getItem('auto_theme') !== 'true') {
+                safeSetItem('theme_before_season', currentTheme());
+                safeSetItem(`${season.theme}_switched`, String(season.year));
+                setSiteTheme(season.theme);
+                showToast(`${THEME_META[season.theme].emoji} ตอนนี้ช่วง${season.label} เปลี่ยนเป็นธีม${season.label}ให้แล้ว`, 'success');
+            }
+            renderSeasonDates();
+        }
+        // ช่วงวันที่ของแต่ละเทศกาล (รอบที่กำลังจะถึงหรือกำลังเป็นอยู่) เรียงตามวันที่
+        function renderSeasonDates() {
+            const list = document.getElementById('season-dates');
+            if (!list) return;
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const fmt = d => `${d.getDate()} ${THAI_MONTHS[d.getMonth()]}`;
+            const rows = SEASONS.map(season => {
+                for (const y of [today.getFullYear() - 1, today.getFullYear(), today.getFullYear() + 1]) {
+                    const [start, end] = season.window(y);
+                    if (end >= today) return { season, start, end, now: start <= today };
+                }
+                return null;
+            }).filter(Boolean).sort((a, b) => a.start - b.start);
+            list.innerHTML = rows.map(r => `<li class="${r.now ? 'is-now' : ''}"><span>${THEME_META[r.season.theme].emoji} ${r.season.label}${r.now ? ' · ตอนนี้' : ''}</span>`
+                + `<span>${fmt(r.start)} – ${fmt(r.end)} ${r.end.getFullYear() + 543}</span></li>`).join('');
+        }
+
+        // ซิงก์ทุกปุ่มในหน้าตั้งค่ากับค่าที่บันทึกไว้
         function updateHeaderTexts() {
-            document.getElementById('mute-toggle').innerHTML = isMuted ? '🔇 เสียง' : '🔊 เสียง';
-            document.getElementById('gender-toggle').innerHTML = gender === 'male' ? '👦 ชาย' : '👩 หญิง';
-            document.getElementById('volume-slider').value = soundVolume;
-            const notifyBtn = document.getElementById('notify-toggle');
-            notifyBtn.innerHTML = notifyEnabled ? '🔔 แจ้งเตือนแล้ว' : '🔕 แจ้งเตือน';
-            notifyBtn.classList.toggle('active', notifyEnabled);
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.checked = v; };
+            set('sound-check', !isMuted);
+            const vol = document.getElementById('volume-slider');
+            if (vol) { vol.value = soundVolume; vol.disabled = isMuted; }
+            const volRow = document.getElementById('volume-row');
+            if (volRow) volRow.classList.toggle('is-disabled', isMuted);
+            document.querySelectorAll('.segmented [data-gender]').forEach(b => b.setAttribute('aria-checked', b.dataset.gender === gender));
+            const example = document.getElementById('gender-example');
+            if (example) example.textContent = `ตัวอย่าง: พักเบรก ${getThaiTimeString()} ${gender === 'male' ? 'ครับ' : 'ค่ะ'}`;
+            // สถานะการแจ้งเตือนของเบราว์เซอร์
+            const supported = 'Notification' in window;
+            const perm = supported ? Notification.permission : 'unsupported';
+            if (notifyEnabled && perm !== 'granted') { notifyEnabled = false; safeSetItem('notify_enabled', 'false'); }
+            set('notify-check', notifyEnabled);
+            const notifyCheck = document.getElementById('notify-check');
+            if (notifyCheck) notifyCheck.disabled = !supported;
+            const status = document.getElementById('notify-status');
+            if (status) {
+                status.classList.toggle('is-warn', perm === 'denied' || perm === 'unsupported');
+                status.textContent = perm === 'unsupported' ? 'เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน'
+                    : perm === 'denied' ? 'ถูกบล็อกในเบราว์เซอร์ · กดรูปแม่กุญแจข้างช่องที่อยู่เว็บเพื่ออนุญาต'
+                    : notifyEnabled ? 'เปิดอยู่ · เตือนเมื่อพักเกินลิมิต หรือโควตาใกล้หมด'
+                    : 'เตือนแม้สลับไปทำงานในแท็บอื่น';
+            }
+            const testRow = document.getElementById('notify-test-row');
+            if (testRow) testRow.style.display = notifyEnabled ? '' : 'none';
+        }
+        function syncSettingsUI() {
+            updateHeaderTexts();
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.checked = v; };
+            set('auto-theme-check', localStorage.getItem('auto_theme') === 'true');
+            set('season-auto-check', isSeasonAutoOn());
+            set('garden-enable-check', isGardenEnabled());
+            set('parade-check', isEffectOn('parade'));
+            set('tapfx-check', isEffectOn('tapfx'));
+            set('stickers-check', isEffectOn('stickers'));
+            set('reduce-motion-check', isEffectOn('reduceMotion') || PREFERS_REDUCED_MOTION);
+            const rm = document.getElementById('reduce-motion-check');
+            if (rm) rm.disabled = PREFERS_REDUCED_MOTION;
+            if (PREFERS_REDUCED_MOTION) document.getElementById('reduce-motion-sub').textContent = 'เปิดอยู่แล้วจากการตั้งค่า "ลดการเคลื่อนไหว" ของเครื่อง';
+            const q = document.getElementById('settings-quota-input');
+            if (q) q.value = parseInt(localStorage.getItem('daily_quota') || '60');
+            refreshToiletFreeMinutesUI();
+            renderSeasonDates();
+            updateInstallUI();
+        }
+
+        // ล้างข้อมูลทั้งหมด: ดาวน์โหลดไฟล์สำรองให้ก่อนเสมอ เผื่อเปลี่ยนใจ
+        async function clearAllData() {
+            const ok = await showConfirmDialog('จะลบประวัติการพัก กิจกรรม สวนผัก สติกเกอร์ และการตั้งค่าทั้งหมดในเบราว์เซอร์นี้ ระบบจะดาวน์โหลดไฟล์สำรองให้ก่อนอัตโนมัติ เผื่ออยากนำกลับมา', 'ล้างข้อมูลทั้งหมด?', '🗑️');
+            if (!ok) return;
+            exportBackup();
+            setTimeout(() => {
+                try { localStorage.clear(); } catch (e) {}
+                location.reload();
+            }, 800);
         }
 
         function getThaiTimeString(dateObj = new Date()) {
@@ -4478,12 +4691,12 @@
 
         function updateQuota(val) {
             let quota = parseInt(val); if (isNaN(quota) || quota < 1) quota = 60;
+            quota = Math.min(1440, quota);
             safeSetItem('daily_quota', quota); renderDashboardAndLogs();
         }
         function stepQuota(delta) {
-            const input = document.getElementById('quota-input');
-            let quota = Math.max(5, (parseInt(input.value) || 60) + delta);
-            input.value = quota; updateQuota(quota);
+            const quota = Math.min(1440, Math.max(5, (parseInt(localStorage.getItem('daily_quota')) || 60) + delta));
+            updateQuota(quota);
         }
 
         // --- 🚻 นโยบายเวลาห้องน้ำฟรี — ถ้าเข้าห้องน้ำเกินเวลาที่กำหนด ส่วนเกินจะไปหักกับโควตาเวลาพักหลัก ---
@@ -4501,6 +4714,7 @@
         }
         function updateToiletFreeMinutes(val) {
             let mins = parseInt(val); if (isNaN(mins) || mins < 0) mins = 0;
+            mins = Math.min(120, mins);
             safeSetItem('toilet_free_minutes', mins);
             refreshToiletFreeMinutesUI();
             renderDashboardAndLogs();
@@ -4533,10 +4747,10 @@
         function formatLogDurationSpan(log) {
             if (log.isToilet) {
                 const over = quotaMinutesForLog(log);
-                if (over === 0) return `<span class="log-duration" style="color:var(--accent-ink);">${log.duration} น. <span style="opacity:0.75;">(ฟรี) 🌟</span></span>`;
-                return `<span class="log-duration" style="color:var(--danger);">${log.duration} น. <span style="opacity:0.85;">(หัก ${over}) ⚠️</span></span>`;
+                if (over === 0) return `<span class="log-duration" style="color:var(--accent-ink);">${Number(log.duration) || 0} น. <span style="opacity:0.75;">(ฟรี) 🌟</span></span>`;
+                return `<span class="log-duration" style="color:var(--danger);">${Number(log.duration) || 0} น. <span style="opacity:0.85;">(หัก ${over}) ⚠️</span></span>`;
             }
-            return `<span class="log-duration">${log.duration} น.</span>`;
+            return `<span class="log-duration">${Number(log.duration) || 0} น.</span>`;
         }
 
         function renderActivities() {
@@ -4565,7 +4779,7 @@
                     <div class="edit-btn" title="แก้ไขกิจกรรม" onclick="openModal(${index}, event)">✏️</div>
                     <div class="floating-emoji"><svg class="break-ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="break-ring-track" cx="60" cy="60" r="54"></circle><circle class="break-ring-fill" cx="60" cy="60" r="54"></circle></svg>${actIconHTML(act.emoji)}</div>
                     <div class="capsule">
-                        <span class="capsule-name">${act.name}</span>
+                        <span class="capsule-name">${escHtml(act.name)}</span>
                         <div class="live-timer">00:00</div>
                         <div class="break-countdown"></div>
                     </div>
@@ -4724,7 +4938,7 @@
                 activeBreak.notified = true;
                 persistActiveBreak();
                 if (notifyEnabled) {
-                    new Notification('⏰ ถึงเวลาที่ตั้งไว้แล้ว', { body: `${activeBreak.action} เกินลิมิต ${activeBreak.limit} นาทีแล้ว กลับมาได้เลย` });
+                    sendNotification('⏰ ถึงเวลาที่ตั้งไว้แล้ว', `${activeBreak.action} เกินลิมิต ${activeBreak.limit} นาทีแล้ว กลับมาได้เลย`);
                 }
             }
         }
@@ -4918,8 +5132,9 @@
             const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
             if (logs.length === 0) { showToast('ไม่มีข้อมูลประวัติให้ส่งออก', 'info'); return; }
             let csv = "\uFEFFวันที่,กิจกรรม,เวลาเริ่ม,เวลากลับ,ใช้เวลาจริง (นาที),ประเภทห้องน้ำ,นับผลกับโควตา (นาที)\n";
+            const cell = v => { let t = String(v ?? ''); if (/^[=+\-@]/.test(t)) t = "'" + t; return `"${t.replace(/"/g, '""')}"`; };
             logs.forEach(log => {
-                csv += `${log.date},${log.action},${log.start},${log.end},${log.duration},${log.isToilet ? 'ใช่' : ''},${quotaMinutesForLog(log)}\n`;
+                csv += [log.date, log.action, log.start, log.end, log.duration, log.isToilet ? 'ใช่' : '', quotaMinutesForLog(log)].map(cell).join(',') + '\n';
             });
             const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
             const a = document.createElement("a"); a.href = url; a.download = `Break_History.csv`; a.click(); URL.revokeObjectURL(url);
@@ -4946,7 +5161,7 @@
             const dashTitleEl = document.getElementById('dash-title');
             if (dashTitleEl) dashTitleEl.textContent = getShiftBoundaryMinutes() !== null ? '📊 เวลาพักกะนี้' : '📊 เวลาพักวันนี้';
             let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
-            document.getElementById('quota-input').value = dailyQuota;
+            ['quota-input', 'settings-quota-input'].forEach(id => { const el = document.getElementById(id); if (el && document.activeElement !== el) el.value = dailyQuota; });
             let totalUsed = 0; todayLogs.forEach(log => totalUsed += quotaMinutesForLog(log));
 
             const logContainer = document.getElementById('log-container');
@@ -4962,8 +5177,8 @@
                     rowsHtml += `
                         <div class="log-row" style="animation-delay:${i * 0.04}s;">
                             <div class="log-row-main">
-                                <span class="log-action">${log.action}</span>
-                                <span class="log-time">${log.start} → ${log.end}</span>
+                                <span class="log-action">${escHtml(log.action)}</span>
+                                <span class="log-time">${escHtml(log.start)} → ${escHtml(log.end)}</span>
                             </div>
                             <div class="log-row-side">
                                 ${formatLogDurationSpan(log)}
@@ -5092,8 +5307,8 @@
                 rowsHtml += `
                     <div class="log-row" style="animation-delay:${i * 0.04}s;">
                         <div class="log-row-main">
-                            <span class="log-action">${log.action}</span>
-                            <span class="log-time">${log.start} → ${log.end}</span>
+                            <span class="log-action">${escHtml(log.action)}</span>
+                            <span class="log-time">${escHtml(log.start)} → ${escHtml(log.end)}</span>
                         </div>
                         <div class="log-row-side">
                             ${formatLogDurationSpan(log)}
@@ -5468,7 +5683,7 @@
             if (card) { card.open = true; reportOpenDays.add(dateStr); updateReportToggleLabel(); }
             else card = [...document.querySelectorAll('#report-daily-list .rd-empty')].find(el => el.dataset.dates.split('|').includes(dateStr));
             if (!card) return;
-            card.scrollIntoView({ behavior: PARADE_REDUCED_MOTION ? 'auto' : 'smooth', block: 'start' });
+            card.scrollIntoView({ behavior: motionReduced() ? 'auto' : 'smooth', block: 'start' });
             card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
         }
 
@@ -5598,10 +5813,10 @@
             let html = '<div class="log-list">';
             displayResults.forEach((log, i) => {
                 html += `
-                    <div class="log-row" style="animation-delay:${Math.min(i, 15) * 0.02}s; cursor:pointer;" onclick="closeSearchModal(); showDayDetail('${log.date}');">
+                    <div class="log-row" style="animation-delay:${Math.min(i, 15) * 0.02}s; cursor:pointer;" data-date="${escHtml(log.date)}" onclick="closeSearchModal(); showDayDetail(this.dataset.date);">
                         <div class="log-row-main">
-                            <span class="log-action">${log.action}</span>
-                            <span class="log-time">${formatShortDateLabel(log.date)} · ${log.start} → ${log.end}</span>
+                            <span class="log-action">${escHtml(log.action)}</span>
+                            <span class="log-time">${escHtml(formatShortDateLabel(log.date))} · ${escHtml(log.start)} → ${escHtml(log.end)}</span>
                         </div>
                         <div class="log-row-side">
                             ${formatLogDurationSpan(log)}
@@ -5618,10 +5833,10 @@
             const todayKey = getWorkDayKey();
             if (remain <= 0 && localStorage.getItem('quota_zero_notified') !== todayKey) {
                 safeSetItem('quota_zero_notified', todayKey);
-                new Notification('🔋 โควตาหมดแล้ว', { body: `ใช้เวลาพักครบ ${dailyQuota} นาทีของวันนี้แล้ว` });
+                sendNotification('🔋 โควตาหมดแล้ว', `ใช้เวลาพักครบ ${dailyQuota} นาทีของวันนี้แล้ว`);
             } else if (remain > 0 && remain <= 10 && localStorage.getItem('quota_warn_notified') !== todayKey) {
                 safeSetItem('quota_warn_notified', todayKey);
-                new Notification('⚠️ โควตาใกล้หมดแล้ว', { body: `เหลือเวลาพักอีกแค่ ${remain} นาทีของวันนี้` });
+                sendNotification('⚠️ โควตาใกล้หมดแล้ว', `เหลือเวลาพักอีกแค่ ${remain} นาทีของวันนี้`);
             }
         }
 
@@ -5808,6 +6023,9 @@
                 earned_badges: JSON.parse(localStorage.getItem('earned_badges') || '[]'),
                 toilet_free_minutes: localStorage.getItem('toilet_free_minutes') || '10',
                 garden_enabled: isGardenEnabled() ? 'true' : 'false',
+                season_auto: isSeasonAutoOn() ? 'true' : 'false',
+                fx_parade: isEffectOn('parade') ? 'true' : 'false', fx_tap: isEffectOn('tapfx') ? 'true' : 'false',
+                fx_stickers: isEffectOn('stickers') ? 'true' : 'false', reduce_motion: isEffectOn('reduceMotion') ? 'true' : 'false',
                 veggie_garden: veg,
                 stickers: JSON.parse(localStorage.getItem('stickers') || '[]')
             };
@@ -5818,72 +6036,119 @@
             a.click(); URL.revokeObjectURL(url);
         }
 
+        // ตรวจและทำความสะอาดข้อมูลจากไฟล์สำรอง: ไฟล์เสียหรือแปลกปลอมจะไม่ทำให้แอปพัง และไม่มีโค้ดแฝงหลุดเข้ามาได้
+        function sanitizeBackup(data) {
+            if (!data || typeof data !== 'object' || Array.isArray(data)) return null;
+            const out = { settings: {} }, report = { skipped: 0 };
+            const bool = v => (v === true || v === 'true') ? 'true' : 'false';
+            const int = (v, min, max) => { const n = Math.round(+v); return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : null; };
+            const TIME_RE = /^\d{1,2}:\d{2}(\s*น\.)?$/;
+            if (Array.isArray(data.activities)) {
+                out.activities = data.activities.filter(a => a && typeof a.name === 'string' && a.name.trim()).slice(0, 60).map((a, i) => ({
+                    id: Number.isFinite(+a.id) ? +a.id : Date.now() + i,
+                    name: a.name.trim().slice(0, 40),
+                    emoji: typeof a.emoji === 'string' && a.emoji.trim() ? a.emoji.trim().slice(0, 16) : '✨',
+                    theme: themes[a.theme] ? a.theme : 'purple',
+                    limit: int(a.limit, 0, 600) || 0,
+                    isToilet: !!a.isToilet
+                }));
+                report.skipped += data.activities.length - out.activities.length;
+            }
+            if (Array.isArray(data.break_logs)) {
+                out.break_logs = [];
+                data.break_logs.forEach(l => {
+                    const d = l && typeof l.date === 'string' ? new Date(l.date) : null;
+                    if (!d || isNaN(d) || typeof l.action !== 'string' || !Number.isFinite(+l.duration)) { report.skipped++; return; }
+                    const date = d.toDateString();
+                    out.break_logs.push({
+                        date,
+                        shiftKey: typeof l.shiftKey === 'string' && /^[A-Za-z0-9 _:-]{1,40}$/.test(l.shiftKey) ? l.shiftKey : date,
+                        action: l.action.trim().slice(0, 60) || 'ไม่ระบุ',
+                        start: typeof l.start === 'string' && TIME_RE.test(l.start.trim()) ? l.start.trim() : '--:--',
+                        end: typeof l.end === 'string' && TIME_RE.test(l.end.trim()) ? l.end.trim() : '--:--',
+                        duration: int(l.duration, 0, 1440),
+                        isToilet: !!l.isToilet
+                    });
+                });
+            }
+            const st = out.settings;
+            if (data.daily_quota !== undefined && int(data.daily_quota, 1, 1440) !== null) st.daily_quota = String(int(data.daily_quota, 1, 1440));
+            if (data.toilet_free_minutes !== undefined && int(data.toilet_free_minutes, 0, 120) !== null) st.toilet_free_minutes = String(int(data.toilet_free_minutes, 0, 120));
+            if (data.sound_volume !== undefined && Number.isFinite(+data.sound_volume)) st.sound_volume = String(Math.min(1, Math.max(0, +data.sound_volume)));
+            if (data.gender === 'male' || data.gender === 'female') st.gender = data.gender;
+            if (typeof data.site_theme === 'string' && THEME_META[data.site_theme]) st.site_theme = data.site_theme;
+            if (typeof data.shift_boundary_time === 'string' && /^\d{1,2}:\d{2}$/.test(data.shift_boundary_time)) st.shift_boundary_time = data.shift_boundary_time;
+            ['is_muted', 'auto_theme', 'notify_enabled', 'shift_mode', 'garden_enabled', 'season_auto', 'fx_parade', 'fx_tap', 'fx_stickers', 'reduce_motion']
+                .forEach(k => { if (data[k] !== undefined) st[k] = bool(data[k]); });
+            if (Array.isArray(data.earned_badges)) out.earned_badges = data.earned_badges.filter(n => Number.isFinite(+n)).map(Number).slice(0, 50);
+            if (Array.isArray(data.stickers)) out.stickers = data.stickers.slice(0, MAX_STICKERS); // loadStickers ตรวจซ้ำทุกช่องตอนโหลด
+            if (data.veggie_garden && typeof data.veggie_garden === 'object' && !Array.isArray(data.veggie_garden)) out.veggie_garden = data.veggie_garden; // loadVeg ตรวจซ้ำตอนโหลด
+            if (!out.activities && !out.break_logs && !Object.keys(st).length) return null;
+            return { out, report };
+        }
         function importBackup(event) {
             const file = event.target.files[0]; if (!file) return;
+            event.target.value = '';
+            if (file.size > 5 * 1024 * 1024) { showToast('ไฟล์ใหญ่เกินไป ไม่น่าใช่ไฟล์สำรองของแอปนี้', 'error'); return; }
             const reader = new FileReader();
             reader.onload = async (e) => {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    const ok = await showConfirmDialog('นำเข้าข้อมูลนี้จะแทนที่ข้อมูลปัจจุบันทั้งหมด ยืนยันหรือไม่?', 'นำเข้าข้อมูล', '📤');
-                    if (!ok) return;
-                    if (data.activities) { safeSetItem('activities', JSON.stringify(data.activities)); localStorage.removeItem('act_icons_v1'); }
-                    if (data.break_logs) safeSetItem('break_logs', JSON.stringify(data.break_logs));
-                    if (data.daily_quota) safeSetItem('daily_quota', data.daily_quota);
-                    if (typeof data.is_muted !== 'undefined') safeSetItem('is_muted', data.is_muted);
-                    if (data.gender) safeSetItem('gender', data.gender);
-                    if (typeof data.sound_volume !== 'undefined') safeSetItem('sound_volume', data.sound_volume);
-                    if (data.site_theme) safeSetItem('site_theme', data.site_theme);
-                    if (typeof data.auto_theme !== 'undefined') safeSetItem('auto_theme', data.auto_theme);
-                    if (typeof data.notify_enabled !== 'undefined') safeSetItem('notify_enabled', data.notify_enabled);
-                    if (typeof data.shift_mode !== 'undefined') safeSetItem('shift_mode', data.shift_mode);
-                    if (data.shift_boundary_time) safeSetItem('shift_boundary_time', data.shift_boundary_time);
-                    if (data.earned_badges) safeSetItem('earned_badges', JSON.stringify(data.earned_badges));
-                    if (typeof data.toilet_free_minutes !== 'undefined') safeSetItem('toilet_free_minutes', data.toilet_free_minutes);
-                    if (typeof data.garden_enabled !== 'undefined') safeSetItem('garden_enabled', data.garden_enabled);
-                    if (Array.isArray(data.stickers)) safeSetItem('stickers', JSON.stringify(data.stickers));
-                    if (data.veggie_garden && typeof data.veggie_garden === 'object') safeSetItem('veggie_garden', JSON.stringify(data.veggie_garden));
-                    showToast('นำเข้าข้อมูลสำเร็จ! กำลังโหลดหน้าใหม่', 'success');
-                    setTimeout(() => location.reload(), 1200);
-                } catch (err) {
-                    showToast('ไฟล์ไม่ถูกต้อง ไม่สามารถนำเข้าได้', 'error');
-                }
+                let parsed = null;
+                try { parsed = sanitizeBackup(JSON.parse(e.target.result)); } catch (err) { parsed = null; }
+                if (!parsed) { showToast('ไฟล์ไม่ถูกต้อง ไม่ใช่ไฟล์สำรองของแอปนี้', 'error'); return; }
+                const { out, report } = parsed;
+                const days = out.break_logs ? new Set(out.break_logs.map(l => l.date)).size : 0;
+                const summary = [
+                    out.activities ? `กิจกรรม ${out.activities.length} อย่าง` : '',
+                    out.break_logs ? `ประวัติการพัก ${out.break_logs.length} รายการ (${days} วัน)` : '',
+                    report.skipped ? `ข้ามรายการที่เสีย ${report.skipped} รายการ` : ''
+                ].filter(Boolean).join(' · ');
+                const ok = await showConfirmDialog(`พบ${summary ? ' ' + summary : 'การตั้งค่า'}\nข้อมูลปัจจุบันในเครื่องนี้จะถูกแทนที่ ยืนยันหรือไม่?`, 'นำเข้าข้อมูล', '📤');
+                if (!ok) return;
+                if (out.activities) { safeSetItem('activities', JSON.stringify(out.activities)); localStorage.removeItem('act_icons_v1'); }
+                if (out.break_logs) safeSetItem('break_logs', JSON.stringify(out.break_logs));
+                Object.entries(out.settings).forEach(([k, v]) => safeSetItem(k, v));
+                if (out.earned_badges) safeSetItem('earned_badges', JSON.stringify(out.earned_badges));
+                if (out.stickers) safeSetItem('stickers', JSON.stringify(out.stickers));
+                if (out.veggie_garden) safeSetItem('veggie_garden', JSON.stringify(out.veggie_garden));
+                showToast('นำเข้าข้อมูลสำเร็จ! กำลังโหลดหน้าใหม่', 'success');
+                setTimeout(() => location.reload(), 1200);
             };
-            reader.readAsText(file); event.target.value = '';
+            reader.readAsText(file);
         }
 
-        try {
-            const manifestData = {
-                name: 'ระบบแจ้งเวลาพัก - Super WOW Edition', short_name: 'Break Time',
-                start_url: '.', display: 'standalone', background_color: '#FFE8F1', theme_color: '#F0487A'
-            };
-            const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
-            const link = document.createElement('link');
-            link.rel = 'manifest'; link.href = URL.createObjectURL(manifestBlob);
-            document.head.appendChild(link);
-        } catch (e) {}
-
+        // --- 📲 ติดตั้งเป็นแอป + ใช้งานออฟไลน์ (manifest.webmanifest และ sw.js อยู่โฟลเดอร์เดียวกับหน้านี้) ---
         let deferredInstallPrompt = null;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); deferredInstallPrompt = e;
-            const section = document.getElementById('settings-install-section');
-            if (section) section.style.display = 'block';
+        const isStandalone = () => (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+        const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        function updateInstallUI() {
+            const status = document.getElementById('install-status'), btn = document.getElementById('install-btn');
+            if (!status || !btn) return;
+            btn.style.display = deferredInstallPrompt && !isStandalone() ? '' : 'none';
+            status.textContent = isStandalone() ? '✅ กำลังใช้งานแบบแอปอยู่ เปิดได้แม้ไม่มีเน็ต'
+                : deferredInstallPrompt ? 'มีไอคอนบนหน้าจอ เปิดเร็ว และใช้ได้แม้ไม่มีเน็ต'
+                : isIOS() ? 'บน iPhone/iPad: แตะปุ่มแชร์ใน Safari แล้วเลือก "เพิ่มไปยังหน้าจอโฮม"'
+                : 'ใช้เมนูของเบราว์เซอร์ แล้วเลือก "ติดตั้งแอป" หรือ "เพิ่มลงในหน้าจอหลัก"';
+        }
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstallPrompt = e; updateInstallUI(); });
+        window.addEventListener('appinstalled', () => {
+            deferredInstallPrompt = null; updateInstallUI();
+            showToast('📲 ติดตั้งแอปแล้ว เปิดได้จากหน้าจอหลักเลย', 'success');
         });
         function installApp() {
             if (!deferredInstallPrompt) return;
             deferredInstallPrompt.prompt();
-            deferredInstallPrompt.userChoice.then(() => {
-                deferredInstallPrompt = null;
-                const section = document.getElementById('settings-install-section');
-                if (section) section.style.display = 'none';
-            });
+            deferredInstallPrompt.userChoice.then(() => { deferredInstallPrompt = null; updateInstallUI(); });
         }
-
-        // ลงทะเบียน Service Worker (ไฟล์ sw.js) เพื่อให้เปิดเว็บได้แม้ไม่มีเน็ตหลังเข้าครั้งแรกแล้ว
-        // ถ้ายังไม่ได้อัปโหลด sw.js ไว้ที่โฟลเดอร์เดียวกัน จะแค่ล้มเหลวเงียบๆ ไม่กระทบการทำงานอื่น
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(() => {});
-            });
+        if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
+        }
+        // แจ้งเตือนผ่านเบราว์เซอร์: Android ต้องส่งผ่าน service worker ส่วนเบราว์เซอร์อื่นสร้าง Notification ได้ตรงๆ
+        function sendNotification(title, body) {
+            if (!('Notification' in window) || Notification.permission !== 'granted') return;
+            const opts = { body, icon: 'icon-192.png', badge: 'icon-192.png', tag: title };
+            try { new Notification(title, opts); } catch (e) {
+                if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistration().then(reg => reg && reg.showNotification(title, opts)).catch(() => {});
+            }
         }
 
         function initShiftSettingsUI() {
@@ -5944,6 +6209,7 @@
 
         window.onload = () => {
             migrateActivityIcons();
+            applyEffectSettings();
             const autoOn = localStorage.getItem('auto_theme') === 'true';
             const seasonal = autoOn ? null : getSeasonalThemeOverride();
             const savedTheme = autoOn ? getAutoTheme() : (seasonal || localStorage.getItem('site_theme') || 'day');

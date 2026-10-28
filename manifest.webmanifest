@@ -1,0 +1,17 @@
+{
+  "name": "Break Recorder · บันทึกเวลาพัก",
+  "short_name": "Break Time",
+  "description": "บันทึกเวลาพัก คัดลอกข้อความแจ้งพักได้ในคลิกเดียว พร้อมโควตาเวลาพักต่อวัน",
+  "lang": "th",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFE8F1",
+  "theme_color": "#F0487A",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
