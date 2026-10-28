@@ -2392,6 +2392,65 @@
         }
         body.reduce-motion .bg-bubbles, body.reduce-motion .bg-sparkles, body.reduce-motion .bg-aurora, body.reduce-motion .garden-butterfly,
         body.reduce-motion .hw-bat, body.reduce-motion .hw-spider, body.reduce-motion .fg-season { display: none !important; }
+        /* 👥 เล่นฟาร์มกับเพื่อน */
+        .farm-friends-btn {
+            grid-column: 1 / -1; flex-direction: row; justify-content: center; gap: 8px; padding: 9px 12px; font-size: 12.5px; color: var(--accent-ink);
+            background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.16), rgba(var(--accent-rgb), 0.05)); border-color: rgba(var(--accent-rgb), 0.35);
+        }
+        .farm-friends-btn .farm-act-icon { font-size: 18px; }
+        .farm-friends-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .farm-friends-btn .farm-dot { right: 10px; }
+        @media (max-width: 480px) { .farm-friends-btn { font-size: 11.5px; padding: 8px 10px; } }
+        .mp-hero { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 18px; background: rgba(var(--accent-rgb), 0.08); border: 1px dashed rgba(var(--accent-rgb), 0.35); }
+        .mp-hero-e { font-size: 34px; line-height: 1; }
+        .mp-hero div { display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+        .mp-hero b { font-size: 14.5px; color: var(--ink); }
+        .mp-avatars, .mp-waves { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+        .mp-av { font: inherit; font-size: 22px; line-height: 1; padding: 7px 0; border-radius: 12px; cursor: pointer; background: var(--surface-solid); border: 1px solid var(--line); transition: transform 0.15s, border-color 0.2s; }
+        .mp-av:hover { transform: translateY(-1px); border-color: rgba(var(--accent-rgb), 0.5); }
+        .mp-av.is-active { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.14); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15); }
+        .mp-join-grid { display: grid; gap: 8px; }
+        @media (min-width: 560px) { .mp-join-grid { grid-template-columns: 1fr 1fr; } }
+        .farm-card.mp-choice { flex-direction: column; align-items: stretch; }
+        .mp-choice .farm-action { width: 100%; }
+        .mp-code-input { text-transform: uppercase; letter-spacing: 4px; font-weight: 800; text-align: center; }
+        .mp-msg { margin: 0; min-height: 1.2em; text-align: center; font-size: 12.5px; font-weight: 700; color: var(--danger); }
+        .mp-room { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 18px; background: var(--surface-2); border: 1px solid var(--line); }
+        .mp-room-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+        .mp-code { font-size: 24px; font-weight: 800; letter-spacing: 4px; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+        .mp-room-btns { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+        .mp-qr { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px; border-radius: 18px; background: var(--surface-2); border: 1px solid var(--line); }
+        .mp-qr .qr-svg { width: 168px; height: 168px; border-radius: 12px; }
+        .mp-mission.is-ready { border-color: rgba(var(--accent-rgb), 0.6); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.12); }
+        .mp-views { flex-wrap: wrap; }
+        .mp-list { display: flex; flex-direction: column; gap: 8px; }
+        .farm-card.mp-friend { flex-direction: column; align-items: stretch; gap: 8px; }
+        .farm-card.mp-friend.is-me { background: rgba(var(--accent-rgb), 0.06); border-style: dashed; }
+        .mp-friend-head { display: flex; align-items: center; gap: 10px; }
+        .mp-avatar { position: relative; flex-shrink: 0; width: 42px; height: 42px; display: grid; place-items: center; font-size: 24px; border-radius: 50%; background: var(--surface-solid); border: 1px solid var(--line); }
+        .mp-dot { position: absolute; right: -1px; bottom: -1px; width: 12px; height: 12px; border-radius: 50%; background: #A7A3B3; border: 2px solid var(--surface-solid); }
+        .mp-dot.is-on { background: #2EB872; }
+        .mp-lv { font-size: 11px; font-weight: 700; color: var(--accent-ink); padding: 1px 6px; border-radius: 999px; background: rgba(var(--accent-rgb), 0.12); white-space: nowrap; }
+        .mp-plots { display: flex; flex-wrap: wrap; gap: 5px; }
+        .mp-plot { position: relative; width: 30px; height: 30px; display: grid; place-items: center; font-size: 17px; border-radius: 9px; background: #A97C55; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16); }
+        .mp-plot.is-empty { background: #CDB394; opacity: 0.65; }
+        .mp-plot.is-golden { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16), 0 0 0 2px #FFC83D; }
+        .mp-plot.has-pest::after { content: '🐛'; position: absolute; right: -6px; top: -7px; font-size: 13px; }
+        .mp-acts { display: flex; flex-wrap: wrap; gap: 5px; }
+        .mp-acts .chip-btn:disabled { opacity: 0.5; cursor: default; transform: none; color: var(--ink-3); border-color: var(--line); }
+        .mp-gift { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 8px 10px; border-radius: 14px; background: var(--surface-solid); border: 1px dashed var(--line); }
+        .mp-gift-items { display: flex; flex-wrap: wrap; gap: 5px; max-height: 132px; overflow-y: auto; }
+        .mp-gift-send { display: flex; align-items: center; gap: 8px; }
+        .mp-gift-send b { min-width: 18px; text-align: center; font-size: 15px; color: var(--ink); }
+        .mp-gift-send .farm-action { margin-left: auto; }
+        .mp-row-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .mp-feed { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+        .mp-feed li { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 8px 12px; border-radius: 14px; font-size: 13px; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--line); }
+        .mp-feed li.is-mine { border-color: rgba(var(--accent-rgb), 0.45); background: rgba(var(--accent-rgb), 0.07); }
+        .mp-feed small { flex-shrink: 0; color: var(--ink-3); font-size: 11px; font-weight: 600; }
+        .mp-foot { line-height: 1.8; }
+        .mp-link { font: inherit; font-weight: 700; color: var(--accent-ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+        .mp-leave.is-armed, .mp-err { color: var(--danger); font-weight: 700; }
     </style>
 </head>
 <body>
@@ -2560,6 +2619,7 @@
                         <button type="button" class="farm-act" onclick="openFarm('ach')"><span class="farm-act-icon">🎖️</span>ภารกิจ<b class="farm-dot" id="fa-ach" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openVegBook()"><span class="farm-act-icon">📖</span>สมุดผัก</button>
                         <button type="button" class="farm-act" onclick="openCheckin()"><span class="farm-act-icon">🎁</span>เช็กอิน<b class="farm-dot" id="fa-checkin" hidden></b></button>
+                        <button type="button" class="farm-act farm-friends-btn" onclick="openFarm('friends')"><span class="farm-act-icon">👥</span><span class="farm-friends-text" id="farm-friends-text">เล่นกับเพื่อน</span><b class="farm-dot" id="fa-friends" hidden></b></button>
                     </div>
                 </div>
             </section>
@@ -5985,17 +6045,18 @@
         }
 
         // 🌾 หน้าต่างฟาร์ม: ออเดอร์ · ยุ้งฉาง · ครัว · สัตว์ · ปุ๋ยหมัก
-        const FARM_TABS = [['orders', '📋', 'ออเดอร์'], ['barn', '🏠', 'ยุ้งฉาง'], ['stall', '🏪', 'แผงขาย'], ['kitchen', '🍳', 'ครัว'], ['animals', '🐔', 'สัตว์'],
+        const FARM_TABS = [['orders', '📋', 'ออเดอร์'], ['friends', '👥', 'เพื่อน'], ['barn', '🏠', 'ยุ้งฉาง'], ['stall', '🏪', 'แผงขาย'], ['kitchen', '🍳', 'ครัว'], ['animals', '🐔', 'สัตว์'],
             ['pond', '🎣', 'บ่อปลา'], ['contest', '🏆', 'ประกวด'], ['compost', '🪱', 'ปุ๋ยหมัก'], ['house', '🏡', 'บ้านไร่'], ['ach', '🎖️', 'ความสำเร็จ'], ['stats', '📊', 'สถิติ']];
         let farmTab = 'orders', kitchenFilter = 'all';
         function setKitchenFilter(f) { kitchenFilter = f; renderFarmPanel(); }
         function openFarm(tab) {
             if (tab) farmTab = tab;
-            renderFarmPanel();
             document.getElementById('farm-modal').style.display = 'flex';
+            renderFarmPanel();
+            if (farmTab === 'friends') mpOnOpen();
         }
         function closeFarm() { cancelFishing(); document.getElementById('farm-modal').style.display = 'none'; }
-        function setFarmTab(tab) { if (tab !== 'pond') cancelFishing(); farmTab = tab; renderFarmPanel(); }
+        function setFarmTab(tab) { if (tab !== 'pond') cancelFishing(); farmTab = tab; renderFarmPanel(); if (tab === 'friends') mpOnOpen(); }
         const itemChip = (k, need) => {
             const it = itemInfo(k), have = countBase(k);
             return `<span class="farm-chip${need !== undefined && have < need ? ' is-short' : ''}">${it.e} ${it.name}${need !== undefined ? ` <b>${Math.min(have, need)}/${need}</b>` : ''}</span>`;
@@ -6014,9 +6075,10 @@
             tabs.innerHTML = FARM_TABS.map(([k, icon, label]) =>
                 `<button type="button" class="report-tab${k === farmTab ? ' active' : ''}" role="tab" aria-selected="${k === farmTab}" onclick="setFarmTab('${k}')"><span>${icon}</span>${label}</button>`).join('');
             const act = tabs.querySelector('.active');
-            if (act) tabs.scrollLeft = Math.max(0, act.offsetLeft - (tabs.clientWidth - act.offsetWidth) / 2);
+            // วัดตำแหน่งเทียบกับแถบแท็บเอง (offsetLeft อ้างอิงกล่องอื่นได้ ทำให้แถบเลื่อนหนีไปไกล)
+            if (act && tabs.clientWidth) tabs.scrollLeft = Math.max(0, tabs.scrollLeft + act.getBoundingClientRect().left - tabs.getBoundingClientRect().left - (tabs.clientWidth - act.offsetWidth) / 2);
             const body = document.getElementById('farm-body');
-            const custom = { stall: renderStallTab, pond: renderPondTab, contest: renderContestTab, house: renderHouseTab, ach: renderAchTab, stats: renderStatsTab }[farmTab];
+            const custom = { friends: renderFriendsTab, stall: renderStallTab, pond: renderPondTab, contest: renderContestTab, house: renderHouseTab, ach: renderAchTab, stats: renderStatsTab }[farmTab];
             if (custom) { body.innerHTML = custom(); updateCoinUI(); return; }
             if (farmTab === 'orders') {
                 body.innerHTML = todaysOrders().map((o, i) => {
@@ -6746,10 +6808,495 @@
             setTimeout(() => {
                 if (isGardenEnabled() && checkinNext()) showToast(`🎁 รางวัลเข้าฟาร์มวันที่ ${checkinNext()} รออยู่!`, 'info', { duration: 8000, actionLabel: 'รับเลย', onAction: openCheckin });
             }, 4500);
+            mpInit();
             document.addEventListener('pointerdown', (e) => {
                 const pk = document.getElementById('veg-picker');
                 if (pk && pk.classList.contains('open') && !pk.contains(e.target) && !e.target.closest('.veg-plot')) closeVegPicker();
             });
+        }
+
+        // --- 👥 เล่นฟาร์มกับเพื่อน: ห้องออนไลน์ผ่าน Supabase แชร์เฉพาะข้อมูลฟาร์ม (ไม่แชร์เวลาพักหรือสถิติการพัก) ---
+        const MP_API = 'https://ghavzirqxisjoxibuawr.supabase.co/rest/v1/rpc/';
+        const MP_KEY = 'sb_publishable_u8XxfnfctxwGe98DtJCTFQ_MMWny9Z5'; // คีย์สาธารณะ: เรียกได้แค่ฟังก์ชัน bt_ ที่ตรวจรหัสผู้เล่นทุกครั้ง
+        const MP_AVATARS = ['🧑‍🌾', '👩‍🌾', '👨‍🌾', '🐰', '🐱', '🐶', '🐻', '🐸', '🦊', '🐼', '🐥', '🦄'];
+        const MP_WAVES = ['👋', '💖', '🌻', '🎉', '☕', '🍀'];
+        const MP_LIMITS = { water: 1, pest: 3, gift: 3, wave: 3 }; // ต่อเพื่อนหนึ่งคนต่อวัน (เซิร์ฟเวอร์ตรวจซ้ำ)
+        const MP_ONLINE_MS = 3 * 60 * 1000;
+        const MP_CODE_RE = /^[A-HJKMNP-Z2-9]{6}$/, MP_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+        const MP_ERRORS = {
+            offline: 'ต่ออินเทอร์เน็ตไม่ได้ ลองใหม่อีกครั้งนะ', no_room: 'ไม่เจอห้องนี้ ลองเช็กรหัสอีกทีนะ', room_full: 'ห้องนี้เต็มแล้ว (สูงสุด 20 คน)',
+            bad_name: 'ใส่ชื่อเล่นก่อนนะ', limit: 'วันนี้ทำครบโควตาแล้ว พรุ่งนี้มาใหม่นะ', no_target: 'เพื่อนคนนี้ออกจากห้องไปแล้ว',
+            busy: 'ระบบยุ่งอยู่ ลองใหม่อีกครั้งนะ', bad_gift: 'ส่งของชิ้นนี้ไม่ได้', no_item: 'ของในยุ้งฉางไม่พอแล้ว', bad_code: 'รหัสห้องมี 6 ตัว ลองเช็กอีกทีนะ'
+        };
+        const TEAM_MISSIONS = [
+            { id: 'harvest', e: '🧺', text: 'เก็บผักผลไม้รวมกันทั้งห้อง', per: 15, unit: 'ชิ้น', val: (p, wk) => p.farm.wk === wk ? p.farm.wh : 0 },
+            { id: 'help', e: '🤝', text: 'ช่วยเพื่อนรดน้ำหรือจับหนอนรวมกัน', per: 3, unit: 'ครั้ง', val: p => p.helps },
+            { id: 'coins', e: '🪙', text: 'หาเหรียญรวมกันทั้งห้อง', per: 100, unit: 'เหรียญ', val: (p, wk) => p.farm.wk === wk ? p.farm.wc : 0 }
+        ];
+        const TEAM_REWARD = { coins: 60, xp: 40 };
+        const MP_BOARDS = { harvest: ['🌾', 'เก็บเกี่ยว', 'ชิ้น'], help: ['🤝', 'ช่วยเพื่อน', 'ครั้ง'], level: ['⭐', 'เลเวล', ''] };
+        const mpOwn = (o, k) => typeof k === 'string' && Object.prototype.hasOwnProperty.call(o, k);
+        const mpCleanName = (s, n = 20) => String(s || '').replace(/[\u0000-\u001f\u007f<>&"]/g, '').trim().slice(0, n);
+        const mpItemOk = k => typeof k === 'string' && /^[a-zA-Z]{1,24}(~[23])?$/.test(k) && [VEGGIES, FARM_PRODUCTS, RECIPES, FISH].some(o => mpOwn(o, baseOf(k))) && !!itemInfo(k);
+
+        function loadFriends() {
+            let v = null;
+            try { v = JSON.parse(localStorage.getItem('farm_friends') || 'null'); } catch (e) {}
+            if (!v || typeof v !== 'object' || Array.isArray(v)) v = {};
+            const inRoom = typeof v.room === 'string' && MP_CODE_RE.test(v.room) && MP_UUID_RE.test(v.player || '') && /^[0-9a-f]{36}$/.test(v.secret || '');
+            return {
+                room: inRoom ? v.room : '', player: inRoom ? v.player : '', secret: inRoom ? v.secret : '',
+                roomName: inRoom && typeof v.roomName === 'string' ? mpCleanName(v.roomName, 30) : '',
+                name: mpCleanName(v.name), avatar: MP_AVATARS.includes(v.avatar) ? v.avatar : MP_AVATARS[0],
+                teamDone: typeof v.teamDone === 'string' ? v.teamDone.slice(0, 10) : '',
+                seenFeed: Number.isFinite(+v.seenFeed) && +v.seenFeed > 0 ? Math.floor(+v.seenFeed) : 0
+            };
+        }
+        let friends = loadFriends();
+        function saveFriends() { safeSetItem('farm_friends', JSON.stringify(friends)); }
+        const mp = { state: null, at: 0, skew: 0, error: '', loading: false, joining: false, sending: false, timer: 0, view: 'friends', board: 'harvest',
+            giftFor: '', giftItem: '', giftQty: 1, waveFor: '', pendingCode: '', leaveArmed: 0, lastPush: '', showQR: false };
+
+        async function mpCall(fn, args) {
+            let res;
+            try {
+                res = await fetch(MP_API + fn, { method: 'POST', headers: { apikey: MP_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(args), cache: 'no-store' });
+            } catch (e) { throw new Error('offline'); }
+            const body = await res.json().catch(() => null);
+            if (!res.ok) throw new Error(body && typeof body.message === 'string' ? body.message : 'http_' + res.status);
+            return body && typeof body === 'object' ? body : {};
+        }
+        const mpErr = e => MP_ERRORS[e && e.message] || 'มีบางอย่างผิดพลาด ลองใหม่อีกครั้งนะ';
+        const mpAuth = () => ({ p_player: friends.player, p_secret: friends.secret });
+        const mpNow = () => Date.now() + mp.skew;
+        const mpAgo = serverTs => thaiAgo(Math.min(Date.now(), serverTs - mp.skew));
+        const mpIsOnline = p => mpNow() - p.seen < MP_ONLINE_MS;
+        const mpOnlineCount = () => mp.state ? mp.state.players.filter(mpIsOnline).length : 0;
+        const mpDone = (to, kind) => (mp.state && mp.state.today[to + ':' + kind]) || 0;
+        const mpTabOpen = () => document.getElementById('farm-modal').style.display === 'flex' && farmTab === 'friends';
+
+        // ข้อมูลฟาร์มที่เพื่อนเห็น: เลเวล ฉายา บ้าน สัตว์ แปลงผัก และยอดของสัปดาห์นี้
+        function mpWeekSum(field) {
+            const wk = weekStartKey();
+            return Object.entries(veg.stats.daily).reduce((s, [d, x]) => s + (d >= wk ? x[field] || 0 : 0), 0);
+        }
+        function friendSnapshot() {
+            return {
+                v: 1, lv: farmLevel(), t: currentTitle().slice(0, 24), h: veg.house,
+                pet: veg.pet ? [veg.pet.kind, veg.pet.name] : 0,
+                p: veg.plots.map(p => p.seed ? [p.type[0], p.seed, p.stage, p.need, p.pest ? 1 : 0, p.golden ? 1 : 0] : 0),
+                an: Object.keys(ANIMALS).filter(a => shop.owned.includes(ANIMALS[a].shopId)),
+                wk: weekStartKey(), wh: mpWeekSum('crops'), wc: mpWeekSum('coins'),
+                tot: sum(veg.harvest) + sum(veg.fruits), ach: Object.keys(veg.ach).length
+            };
+        }
+        // ข้อมูลจากเพื่อนผ่านเน็ตมา ตรวจทุกช่องก่อนแสดง (ชนิดผักต้องมีจริง ตัวเลขต้องอยู่ในช่วง)
+        function cleanFriendFarm(f) {
+            f = f && typeof f === 'object' && !Array.isArray(f) ? f : {};
+            const int = (n, max) => Math.min(max, Math.max(0, Math.floor(+n) || 0));
+            const cats = { v: VEGGIES, t: TREES, f: FLOWERS };
+            return {
+                lv: Math.max(1, int(f.lv, 999)), t: typeof f.t === 'string' ? f.t.slice(0, 24) : '', h: Math.max(1, int(f.h, HOUSE_LEVELS.length)),
+                pet: Array.isArray(f.pet) && mpOwn(PETS, f.pet[0]) ? { kind: f.pet[0], name: mpCleanName(f.pet[1], 12) || PETS[f.pet[0]].name } : null,
+                plots: (Array.isArray(f.p) ? f.p : []).slice(0, FARM_MAX_PLOTS).map(x => {
+                    if (!Array.isArray(x) || !mpOwn(cats, x[0]) || !mpOwn(cats[x[0]], x[1])) return null;
+                    const need = Math.max(2, int(x[3], 9));
+                    return { type: x[0], seed: x[1], stage: Math.min(need, int(x[2], 9)), need, pest: x[4] === 1, golden: x[5] === 1 };
+                }),
+                animals: (Array.isArray(f.an) ? f.an : []).filter(a => mpOwn(ANIMALS, a)).slice(0, 5),
+                wk: typeof f.wk === 'string' ? f.wk.slice(0, 10) : '', wh: int(f.wh, 99999), wc: int(f.wc, 999999),
+                tot: int(f.tot, 1e7), ach: int(f.ach, 999)
+            };
+        }
+        function mpCleanState(s) {
+            const int = (n, max) => Math.min(max, Math.max(0, Math.floor(+n) || 0));
+            const str = (x, n) => typeof x === 'string' ? x.slice(0, n) : '';
+            const players = (Array.isArray(s.players) ? s.players : []).filter(p => p && MP_UUID_RE.test(p.id)).slice(0, 30).map(p => ({
+                id: p.id, name: mpCleanName(p.name) || 'เพื่อน', avatar: mpCleanName(p.avatar, 8) || MP_AVATARS[0], farm: cleanFriendFarm(p.farm),
+                seen: Date.parse(p.seen) || 0, helps: int(p.helps, 9999), gifts: int(p.gifts, 9999)
+            }));
+            const kinds = ['join', 'leave', 'water', 'pest', 'gift', 'wave'];
+            const feed = (Array.isArray(s.feed) ? s.feed : []).filter(e => e && kinds.includes(e.kind)).slice(0, 30).map(e => ({
+                id: int(e.id, Number.MAX_SAFE_INTEGER), kind: e.kind, from: str(e.from, 36), fromName: mpCleanName(e.from_name) || 'เพื่อน',
+                to: str(e.to, 36), toName: mpCleanName(e.to_name), data: e.data && typeof e.data === 'object' ? e.data : {}, at: Date.parse(e.at) || 0
+            }));
+            const today = {};
+            (Array.isArray(s.today) ? s.today : []).forEach(t => { if (t && MP_UUID_RE.test(t.to) && mpOwn(MP_LIMITS, t.kind)) today[t.to + ':' + t.kind] = int(t.n, 99); });
+            const room = s.room && typeof s.room === 'object' ? s.room : {};
+            return { me: str(s.me, 36), roomName: mpCleanName(room.name, 30), players, feed, today, now: Date.parse(s.now) || Date.now() };
+        }
+
+        // 🔄 ซิงก์กับห้อง: ส่งหน้าฟาร์มล่าสุด ดึงสถานะห้อง และรับของ/ความช่วยเหลือที่เพื่อนส่งมา
+        async function mpPush() {
+            const snap = friendSnapshot(), key = JSON.stringify(snap);
+            if (key === mp.lastPush) return;
+            const r = await mpCall('bt_update_farm', { ...mpAuth(), p_farm: snap, p_name: friends.name || null, p_avatar: friends.avatar });
+            if (r.ok) mp.lastPush = key;
+        }
+        async function mpRefresh() {
+            if (!friends.room || mp.loading) return;
+            mp.loading = true;
+            try {
+                try { await mpPush(); } catch (e) { if (e.message === 'bad_player') throw e; }
+                const [st, inbox] = await Promise.allSettled([mpCall('bt_room_state', mpAuth()), mpCall('bt_claim_events', mpAuth())]);
+                if (inbox.status === 'fulfilled' && Array.isArray(inbox.value.events)) mpApplyInbox(inbox.value.events);
+                if (st.status === 'rejected') throw st.reason;
+                mp.state = mpCleanState(st.value); mp.at = Date.now(); mp.skew = mp.state.now - mp.at; mp.error = '';
+                if (mp.state.roomName && mp.state.roomName !== friends.roomName) { friends.roomName = mp.state.roomName; saveFriends(); }
+            } catch (e) {
+                mp.loading = false;
+                if (e.message === 'bad_player') { mpForget('คุณไม่ได้อยู่ในห้องนี้แล้ว เข้าห้องใหม่ได้ด้วยรหัสห้อง'); return; }
+                mp.error = mpErr(e);
+            }
+            mp.loading = false;
+            if (mpTabOpen()) mpMarkSeen();
+            mpRender();
+        }
+        function mpSchedule(ms) { clearTimeout(mp.timer); mp.timer = friends.room ? setTimeout(mpTick, ms) : 0; }
+        async function mpTick() {
+            if (friends.room && !document.hidden) await mpRefresh();
+            mpSchedule(mpTabOpen() ? 15000 : 60000);
+        }
+        // เพื่อนช่วยฟาร์มเรา: รดน้ำ (ผักโตไวขึ้น 20 นาที + ได้ดาว) จับหนอน ส่งของเข้ายุ้งฉาง ทักทาย
+        function mpApplyInbox(events) {
+            const lines = [];
+            let watered = false;
+            events.forEach(ev => {
+                if (!ev || typeof ev !== 'object') return;
+                const who = mpCleanName(ev.from_name) || 'เพื่อน', d = ev.data && typeof ev.data === 'object' ? ev.data : {};
+                if (ev.kind === 'water') {
+                    const grow = veg.plots.filter(p => p.seed && !p.pest && (p.stage < p.need || p.type === 'tree'));
+                    grow.forEach(p => { p.cared = true; if (p.stage < p.need) p.lastGrowAt -= 20 * 60 * 1000; });
+                    if (grow.length) watered = true;
+                    lines.push(`💧 ${who} แวะมารดน้ำให้${grow.length ? `ผัก ${grow.length} แปลง` : ' (ตอนนี้ยังไม่มีผักให้รด)'}`);
+                } else if (ev.kind === 'pest') {
+                    let i = Math.floor(+d.plot);
+                    if (!(veg.plots[i] && veg.plots[i].pest)) i = veg.plots.findIndex(p => p.pest);
+                    if (i >= 0) veg.plots[i].pest = false;
+                    lines.push(i >= 0 ? `🐛 ${who} ช่วยจับหนอนแปลงที่ ${i + 1} ให้` : `🐛 ${who} มาช่วยจับหนอน แต่หนอนหายไปแล้ว`);
+                } else if (ev.kind === 'gift' && mpItemOk(d.item)) {
+                    const n = Math.min(5, Math.max(1, Math.floor(+d.qty) || 1)), it = itemInfo(d.item);
+                    giveItem(d.item, n);
+                    lines.push(`🎁 ${who} ส่ง ${it.e} ${it.name}${starText(it.q)} ×${n} มาให้ (อยู่ในยุ้งฉาง)`);
+                } else if (ev.kind === 'wave' && MP_WAVES.includes(d.e)) lines.push(`${d.e} ${who} ทักทายมา`);
+            });
+            if (!lines.length) return;
+            saveVeg();
+            if (watered) growVeggies('time');
+            renderVeggies(); renderFarmStatus();
+            if (lines.length <= 3) lines.forEach((l, i) => setTimeout(() => showToast(l, 'success', { duration: 5000 }), i * 400));
+            else showToast(`👥 เพื่อนแวะมาที่ฟาร์ม ${lines.length} อย่าง: ${lines.slice(0, 2).join(' · ')} …`, 'success',
+                { duration: 6500, actionLabel: 'ดู', onAction: () => { mp.view = 'feed'; openFarm('friends'); } });
+            if (isGardenEnabled()) mascotSay('เพื่อนแวะมาที่ฟาร์มด้วย! 👥', 3000);
+            playSound('pop');
+        }
+        async function mpSend(kind, to, arg) {
+            const s = mp.state, p = s && s.players.find(x => x.id === to);
+            if (!p || mp.sending) return;
+            let data = {};
+            if (kind === 'pest') {
+                const i = p.farm.plots.findIndex(pl => pl && pl.pest);
+                if (i < 0) return;
+                data = { plot: i };
+            } else if (kind === 'wave') data = { e: MP_WAVES[arg] || MP_WAVES[0] };
+            else if (kind === 'gift') {
+                const k = mp.giftItem, n = Math.min(5, Math.max(1, mp.giftQty));
+                if (!mpItemOk(k) || (veg.inv[k] || 0) < n) { showToast(MP_ERRORS.no_item, 'warning'); return; }
+                data = { item: k, qty: n };
+                takeExact(k, n); saveVeg(); // หักของก่อน ส่งไม่สำเร็จจะคืนให้
+            }
+            mp.sending = true;
+            try {
+                await mpCall('bt_send_action', { ...mpAuth(), p_to: to, p_kind: kind, p_data: data });
+                s.today[to + ':' + kind] = mpDone(to, kind) + 1;
+                if (kind === 'water') { p.helps++; addCoins(3); addXP(4); showToast(`💧 รดน้ำให้ฟาร์มของ ${p.name} แล้ว ได้ 🪙3 + 4 XP`, 'success'); }
+                else if (kind === 'pest') { p.farm.plots[data.plot].pest = false; p.helps++; addCoins(4); addXP(4); showToast(`🐛 ช่วยจับหนอนให้ ${p.name} แล้ว ได้ 🪙4 + 4 XP`, 'success'); }
+                else if (kind === 'gift') {
+                    const it = itemInfo(data.item);
+                    p.gifts++; Object.assign(mp, { giftFor: '', giftItem: '', giftQty: 1 }); addXP(3);
+                    showToast(`🎁 ส่ง ${it.e} ${it.name} ×${data.qty} ให้ ${p.name} แล้ว`, 'success');
+                } else { mp.waveFor = ''; showToast(`${data.e} ทักทาย ${p.name} แล้ว`, 'success'); }
+                playSound('pop');
+                s.feed.unshift({ id: 0, kind, from: s.me, fromName: friends.name, to, toName: p.name, data, at: mpNow() });
+            } catch (e) {
+                if (kind === 'gift') { giveItem(data.item, data.qty); saveVeg(); }
+                if (e.message === 'bad_player') { mp.sending = false; mpForget('คุณไม่ได้อยู่ในห้องนี้แล้ว เข้าห้องใหม่ได้ด้วยรหัสห้อง'); return; }
+                showToast(mpErr(e), 'warning');
+                if (e.message === 'no_target') setTimeout(mpRefresh, 300);
+            }
+            mp.sending = false;
+            mpRender();
+        }
+
+        // 🚪 สร้าง/เข้า/ออกห้อง
+        function mpShowMsg() { const m = document.getElementById('mp-msg'); if (m) m.textContent = mp.error; }
+        function mpReadName() {
+            const el = document.getElementById('mp-name'), name = mpCleanName(el && el.value);
+            if (!name) { mp.error = MP_ERRORS.bad_name; mpShowMsg(); if (el) el.focus(); return ''; }
+            friends.name = name; saveFriends();
+            return name;
+        }
+        function mpPickAvatar(i) {
+            friends.avatar = MP_AVATARS[i] || MP_AVATARS[0]; saveFriends();
+            document.querySelectorAll('.mp-avatars .mp-av').forEach((b, j) => { b.classList.toggle('is-active', j === i); b.setAttribute('aria-checked', String(j === i)); });
+        }
+        function mpBusy(on, text) {
+            mp.joining = on;
+            document.querySelectorAll('.mp-join-grid button').forEach(b => { b.disabled = on; });
+            if (on) { mp.error = ''; const m = document.getElementById('mp-msg'); if (m) m.textContent = text; }
+        }
+        async function mpCreate() {
+            if (mp.joining) return;
+            const name = mpReadName();
+            if (!name) return;
+            const roomName = mpCleanName((document.getElementById('mp-room-name') || {}).value, 30);
+            mpBusy(true, 'กำลังสร้างห้อง… 🌱');
+            try { mpEnter(await mpCall('bt_create_room', { p_name: name, p_avatar: friends.avatar, p_room_name: roomName })); }
+            catch (e) { mpBusy(false); mp.error = mpErr(e); mpShowMsg(); }
+        }
+        async function mpJoin() {
+            if (mp.joining) return;
+            const name = mpReadName();
+            if (!name) return;
+            const code = String((document.getElementById('mp-code') || {}).value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (!MP_CODE_RE.test(code)) { mp.error = MP_ERRORS.bad_code; mpShowMsg(); return; }
+            mpBusy(true, 'กำลังเข้าห้อง… 🚪');
+            try { mpEnter(await mpCall('bt_join_room', { p_code: code, p_name: name, p_avatar: friends.avatar })); }
+            catch (e) { mpBusy(false); mp.error = mpErr(e); mpShowMsg(); }
+        }
+        function mpEnter(r) {
+            if (!r || !MP_CODE_RE.test(r.code) || !MP_UUID_RE.test(r.player) || !/^[0-9a-f]{36}$/.test(r.secret)) throw new Error('busy');
+            Object.assign(friends, { room: r.code, player: r.player, secret: r.secret, roomName: mpCleanName(r.room_name, 30), seenFeed: 0 });
+            saveFriends();
+            Object.assign(mp, { state: null, at: 0, error: '', joining: false, view: 'friends', lastPush: '', pendingCode: '', showQR: false });
+            showToast(`🎉 เข้าห้อง ${r.code} แล้ว ชวนเพื่อนมาเล่นด้วยกันเลย`, 'success', { duration: 5000 });
+            playSound('welcome');
+            mpRender();
+            mpRefresh();
+            mpSchedule(15000);
+        }
+        async function mpLeave() {
+            if (mp.leaveArmed < Date.now()) { mp.leaveArmed = Date.now() + 4000; mpRender(); setTimeout(mpRender, 4100); return; }
+            mp.leaveArmed = 0;
+            try { await mpCall('bt_leave_room', mpAuth()); }
+            catch (e) { if (e.message !== 'bad_player') { showToast(mpErr(e), 'warning'); return; } }
+            mpForget('ออกจากห้องแล้ว กลับเข้ามาใหม่ได้ด้วยรหัสห้องเดิมนะ');
+        }
+        function mpForget(msg) {
+            Object.assign(friends, { room: '', player: '', secret: '', roomName: '', seenFeed: 0 });
+            saveFriends();
+            Object.assign(mp, { state: null, at: 0, error: '', giftFor: '', waveFor: '', showQR: false, leaveArmed: 0, lastPush: '' });
+            clearTimeout(mp.timer);
+            if (msg) showToast(msg, 'info');
+            mpRender();
+        }
+        const mpInviteLink = () => `${location.origin}${location.pathname}#join=${friends.room}`;
+        async function mpShareInvite() {
+            const url = mpInviteLink(), text = `มาเล่นฟาร์มน้อยพักใจด้วยกัน! 🌱 เข้าห้องรหัส ${friends.room}`;
+            if (navigator.share) {
+                try { await navigator.share({ title: 'ฟาร์มน้อยพักใจ', text, url }); return; }
+                catch (e) { if (e && e.name === 'AbortError') return; }
+            }
+            try { await navigator.clipboard.writeText(`${text}\n${url}`); showToast('📋 คัดลอกลิงก์ชวนเพื่อนแล้ว ส่งให้เพื่อนได้เลย', 'success'); }
+            catch (e) { showToast(`รหัสห้อง ${friends.room} · ${url}`, 'info', { duration: 9000 }); }
+        }
+        function mpClaimTeam() {
+            const s = mp.state;
+            if (!s) return;
+            const m = teamMission(s);
+            if (!m.done || m.claimed) return;
+            friends.teamDone = m.wk; saveFriends();
+            addCoins(TEAM_REWARD.coins); addXP(TEAM_REWARD.xp);
+            fireConfetti(); playSound('welcome');
+            showToast(`🎯 ภารกิจทีมสำเร็จ! ได้ 🪙${TEAM_REWARD.coins} + ${TEAM_REWARD.xp} XP`, 'success', { duration: 5000 });
+            mpRender();
+        }
+        // ภารกิจทีมหมุนเวียนทุกสัปดาห์ (ทุกเครื่องในห้องได้ภารกิจเดียวกัน) เป้าหมายโตตามจำนวนคน
+        function teamMission(s) {
+            const wk = weekStartKey();
+            let h = 11;
+            for (const ch of wk) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+            const m = TEAM_MISSIONS[h % TEAM_MISSIONS.length], goal = m.per * Math.max(2, s.players.length);
+            const progress = s.players.reduce((a, p) => a + m.val(p, wk), 0);
+            return { ...m, wk, goal, progress: Math.min(goal, progress), done: progress >= goal, claimed: friends.teamDone === wk };
+        }
+        function mpUnseen() {
+            if (!friends.room || !mp.state) return 0;
+            return mp.state.feed.filter(e => e.id > friends.seenFeed && e.from !== mp.state.me).length;
+        }
+        function mpMarkSeen() {
+            if (!mp.state) return;
+            const top = Math.max(0, ...mp.state.feed.map(e => e.id));
+            if (top > friends.seenFeed) { friends.seenFeed = top; saveFriends(); }
+        }
+
+        // 🖼️ หน้าแท็บเพื่อน
+        function mpSetView(v) { mp.view = v; renderFarmPanel(); }
+        function mpSetBoard(b) { mp.board = mpOwn(MP_BOARDS, b) ? b : 'harvest'; renderFarmPanel(); }
+        function mpToggleQR() { mp.showQR = !mp.showQR; renderFarmPanel(); }
+        function mpToggleGift(id) { Object.assign(mp, { giftFor: mp.giftFor === id ? '' : id, waveFor: '', giftItem: '', giftQty: 1 }); renderFarmPanel(); }
+        function mpToggleWave(id) { Object.assign(mp, { waveFor: mp.waveFor === id ? '' : id, giftFor: '' }); renderFarmPanel(); }
+        function mpPickGift(k) { mp.giftItem = k; mp.giftQty = 1; renderFarmPanel(); }
+        function mpGiftQty(d) { mp.giftQty = Math.min(Math.min(5, veg.inv[mp.giftItem] || 1), Math.max(1, mp.giftQty + d)); renderFarmPanel(); }
+        function mpRender() { if (mpTabOpen()) renderFarmPanel(); renderFriendsBtn(); }
+        function mpOnOpen() {
+            mpMarkSeen(); renderFriendsBtn();
+            if (!friends.room) return;
+            if (Date.now() - mp.at > 8000) mpRefresh();
+            mpSchedule(15000);
+        }
+        function renderFriendsBtn() {
+            const t = document.getElementById('farm-friends-text'), dot = document.getElementById('fa-friends');
+            if (!t || !dot) return;
+            const s = mp.state;
+            t.textContent = !friends.room ? 'เล่นกับเพื่อน · สร้างห้องหรือใส่รหัสห้องเพื่อน'
+                : s ? `เพื่อนในห้อง ${friends.room} · ${s.players.length} คน · ออนไลน์ ${mpOnlineCount()}` : `เพื่อนในห้อง ${friends.room}`;
+            const n = mpUnseen();
+            dot.hidden = !n; dot.textContent = n > 9 ? '9+' : String(n);
+        }
+        function renderFriendsTab() {
+            if (!friends.room) return mpJoinView();
+            const s = mp.state;
+            const head = `<div class="mp-room">
+                    <div class="mp-room-main"><span class="farm-card-sub">${friends.roomName ? 'ห้อง ' + escHtml(friends.roomName) : 'รหัสห้องของเรา'}</span>
+                        <b class="mp-code">${friends.room}</b>
+                        <span class="farm-card-sub">${s ? `${s.players.length} คน · ออนไลน์ ${mpOnlineCount()} คน` : 'กำลังโหลด…'}</span></div>
+                    <div class="mp-room-btns"><button type="button" class="chip-btn" onclick="mpShareInvite()">🔗 ชวนเพื่อน</button>
+                        <button type="button" class="chip-btn${mp.showQR ? ' is-active' : ''}" onclick="mpToggleQR()">📱 QR</button></div></div>`
+                + (mp.showQR ? `<div class="mp-qr">${qrSVG(mpInviteLink())}<span class="farm-card-sub">ให้เพื่อนสแกนเพื่อเข้าห้อง ${friends.room}</span></div>` : '')
+                + (mp.pendingCode && mp.pendingCode !== friends.room ? `<p class="farm-news">มีลิงก์ชวนเข้าห้อง ${escHtml(mp.pendingCode)} · ต้องออกจากห้องนี้ก่อนถึงจะเข้าห้องใหม่ได้</p>` : '');
+            if (!s) return head + `<p class="rp-empty">${mp.error ? '⚠️ ' + escHtml(mp.error) : 'กำลังโหลดห้อง… 🌱'}</p>` + mpFooter();
+            const views = [['friends', '🧑‍🌾', 'ฟาร์มเพื่อน'], ['board', '🏆', 'อันดับ'], ['feed', '📰', 'ความเคลื่อนไหว']];
+            const body = mp.view === 'board' ? mpBoardView(s) : mp.view === 'feed' ? mpFeedView(s) : mpFriendsView(s);
+            return head + mpMissionCard(s)
+                + `<div class="kitchen-filter mp-views" role="tablist" aria-label="มุมมองห้อง">${views.map(([k, e, l]) =>
+                    `<button type="button" class="chip-btn${mp.view === k ? ' is-active' : ''}" role="tab" aria-selected="${mp.view === k}" onclick="mpSetView('${k}')">${e} ${l}</button>`).join('')}</div>`
+                + body + mpFooter();
+        }
+        function mpJoinView() {
+            return `<div class="mp-hero"><span class="mp-hero-e" aria-hidden="true">👥</span><div><b>เล่นฟาร์มกับเพื่อน</b>
+                    <span>ชวนเพื่อนเข้าห้องเดียวกัน แวะดูฟาร์มกัน ช่วยรดน้ำ จับหนอน ส่งของขวัญ แข่งอันดับ และทำภารกิจทีมทุกสัปดาห์</span></div></div>
+                <div class="pet-adopt mp-form">
+                    <label class="farm-card-title" for="mp-name">ชื่อเล่นที่เพื่อนจะเห็น</label>
+                    <input type="text" id="mp-name" class="field" maxlength="20" autocomplete="nickname" placeholder="เช่น มายด์" value="${escHtml(friends.name)}">
+                    <div class="mp-avatars" role="radiogroup" aria-label="รูปประจำตัว">${MP_AVATARS.map((a, i) =>
+                        `<button type="button" class="mp-av${a === friends.avatar ? ' is-active' : ''}" role="radio" aria-checked="${a === friends.avatar}" aria-label="รูป ${a}" onclick="mpPickAvatar(${i})">${a}</button>`).join('')}</div>
+                </div>
+                <div class="mp-join-grid">
+                    <div class="farm-card mp-choice"><div class="farm-card-main"><span class="farm-card-title">✨ สร้างห้องใหม่</span>
+                        <span class="farm-card-sub">ได้รหัส 6 ตัวไว้ส่งให้เพื่อน (ห้องละไม่เกิน 20 คน)</span>
+                        <input type="text" id="mp-room-name" class="field" maxlength="30" placeholder="ตั้งชื่อห้อง (ไม่ใส่ก็ได้)"></div>
+                        <button type="button" class="shop-buy farm-action" onclick="mpCreate()">สร้างห้อง</button></div>
+                    <div class="farm-card mp-choice"><div class="farm-card-main"><span class="farm-card-title">🔑 มีรหัสห้องจากเพื่อน</span>
+                        <span class="farm-card-sub">ใส่รหัส 6 ตัวที่เพื่อนส่งมา</span>
+                        <input type="text" id="mp-code" class="field mp-code-input" maxlength="6" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="ABC234" value="${escHtml(mp.pendingCode)}"></div>
+                        <button type="button" class="shop-buy farm-action" onclick="mpJoin()">เข้าห้อง</button></div>
+                </div>
+                <p class="mp-msg" id="mp-msg" role="status" aria-live="polite">${escHtml(mp.error)}</p>
+                <p class="shop-note">🔒 เพื่อนจะเห็นแค่ข้อมูลฟาร์ม (ชื่อเล่น เลเวล แปลงผัก สัตว์) ไม่เห็นเวลาพักหรือสถิติการพักของคุณ · ต้องต่ออินเทอร์เน็ต</p>`;
+        }
+        function mpFooter() {
+            const armed = mp.leaveArmed > Date.now();
+            return `<p class="shop-note mp-foot">${mp.error && mp.state ? `<span class="mp-err">⚠️ ${escHtml(mp.error)}</span> · ` : mp.at ? `อัปเดตล่าสุด ${thaiAgo(mp.at)} · ` : ''}`
+                + `<button type="button" class="mp-link" onclick="mpRefresh()">🔄 รีเฟรช</button> · `
+                + `<button type="button" class="mp-link mp-leave${armed ? ' is-armed' : ''}" onclick="mpLeave()">${armed ? 'แตะอีกครั้งเพื่อออกจากห้อง' : 'ออกจากห้อง'}</button><br>`
+                + `คุณคือ ${escHtml(friends.avatar)} ${escHtml(friends.name || 'ชาวสวน')} · เพื่อนเห็นแค่ข้อมูลฟาร์ม ไม่เห็นเวลาพัก 🔒</p>`;
+        }
+        function mpMissionCard(s) {
+            const m = teamMission(s), pct = Math.round(m.progress / m.goal * 100);
+            return `<div class="farm-card mp-mission${m.done && !m.claimed ? ' is-ready' : ''}"><span class="barn-emoji" aria-hidden="true">${m.e}</span>
+                <div class="farm-card-main"><span class="farm-card-title">🎯 ภารกิจทีมสัปดาห์นี้: ${m.text}</span>
+                    <span class="farm-xp ach-meter" role="progressbar" aria-valuemin="0" aria-valuemax="${m.goal}" aria-valuenow="${m.progress}" aria-label="ความคืบหน้าภารกิจทีม"><span style="width:${pct}%"></span></span>
+                    <span class="farm-card-sub">${m.progress.toLocaleString('th-TH')}/${m.goal.toLocaleString('th-TH')} ${m.unit} · รางวัลทุกคน 🪙${TEAM_REWARD.coins} + ${TEAM_REWARD.xp} XP</span></div>
+                ${m.claimed ? '<span class="farm-done">รับแล้ว ✓</span>' : `<button type="button" class="shop-buy farm-action" ${m.done ? '' : 'disabled'} onclick="mpClaimTeam()">${m.done ? 'รับรางวัล 🎁' : 'ยังไม่ครบ'}</button>`}</div>`;
+        }
+        function mpPlotTile(pl) {
+            if (!pl) return '<span class="mp-plot is-empty" title="แปลงว่าง"></span>';
+            const cat = pl.type === 't' ? TREES : pl.type === 'f' ? FLOWERS : VEGGIES, info = cat[pl.seed], ready = pl.stage >= pl.need;
+            const e = ready ? info.e : pl.stage === 0 ? '🌰' : pl.type === 't' ? '🌳' : '🌱';
+            const tip = `${info.name}${ready ? ' พร้อมเก็บ' : ` ระยะ ${pl.stage}/${pl.need}`}${pl.pest ? ' · มีหนอน' : ''}`;
+            return `<span class="mp-plot${pl.pest ? ' has-pest' : ''}${pl.golden && ready ? ' is-golden' : ''}" title="${tip}">${e}</span>`;
+        }
+        function mpFriendCard(p, isMe) {
+            const f = p.farm, online = mpIsOnline(p), house = HOUSE_LEVELS[f.h - 1] || HOUSE_LEVELS[0];
+            const pests = f.plots.filter(pl => pl && pl.pest).length;
+            const growing = f.plots.some(pl => pl && !pl.pest && (pl.stage < pl.need || pl.type === 't'));
+            const left = k => MP_LIMITS[k] - mpDone(p.id, k);
+            const extras = [house.e, f.pet ? PETS[f.pet.kind].e : '', ...f.animals.map(a => ANIMALS[a].e)].filter(Boolean).join(' ');
+            let acts = '';
+            if (!isMe) {
+                const canWater = left('water') > 0 && growing, canPest = left('pest') > 0 && pests > 0;
+                acts = `<div class="mp-acts">
+                    <button type="button" class="chip-btn" ${canWater ? '' : 'disabled'} onclick="mpSend('water', '${p.id}')">${left('water') > 0 ? '💧 รดน้ำให้' : '💧 รดแล้ววันนี้'}</button>
+                    <button type="button" class="chip-btn" ${canPest ? '' : 'disabled'} onclick="mpSend('pest', '${p.id}')">🐛 จับหนอน${pests ? ` (${pests})` : ''}</button>
+                    <button type="button" class="chip-btn${mp.giftFor === p.id ? ' is-active' : ''}" ${left('gift') > 0 ? '' : 'disabled'} onclick="mpToggleGift('${p.id}')">🎁 ส่งของ</button>
+                    <button type="button" class="chip-btn${mp.waveFor === p.id ? ' is-active' : ''}" ${left('wave') > 0 ? '' : 'disabled'} onclick="mpToggleWave('${p.id}')">👋 ทักทาย</button></div>`
+                    + (mp.waveFor === p.id ? `<div class="mp-waves">${MP_WAVES.map((w, i) => `<button type="button" class="mp-av" onclick="mpSend('wave', '${p.id}', ${i})" aria-label="ส่ง ${w}">${w}</button>`).join('')}</div>` : '')
+                    + (mp.giftFor === p.id ? mpGiftPanel(p) : '');
+            }
+            return `<div class="farm-card mp-friend${isMe ? ' is-me' : ''}">
+                <div class="mp-friend-head"><span class="mp-avatar">${escHtml(p.avatar)}<i class="mp-dot${online ? ' is-on' : ''}" aria-hidden="true"></i></span>
+                    <div class="farm-card-main"><span class="farm-card-title">${escHtml(p.name)}${isMe ? ' <small class="farm-card-sub">(คุณ)</small>' : ''} <small class="mp-lv">Lv ${f.lv}</small></span>
+                        <span class="farm-card-sub">${f.t ? '🎖️ ' + escHtml(f.t) + ' · ' : ''}${online ? '🟢 ออนไลน์' : 'เข้ามาล่าสุด ' + mpAgo(p.seen)} · ${extras}</span></div></div>
+                <div class="mp-plots" aria-label="แปลงผักของ ${escHtml(p.name)}">${f.plots.length ? f.plots.map(mpPlotTile).join('') : '<span class="farm-card-sub">ยังไม่ได้อัปเดตหน้าฟาร์ม</span>'}</div>
+                ${acts}</div>`;
+        }
+        function mpGiftPanel(p) {
+            const keys = barnKeys().filter(mpItemOk);
+            if (!keys.length) return '<p class="farm-card-sub mp-gift">ยุ้งฉางยังว่างอยู่ เก็บผักก่อนค่อยมาส่งนะ 🌱</p>';
+            const k = keys.includes(mp.giftItem) ? mp.giftItem : '', qty = k ? Math.min(Math.min(5, veg.inv[k]), Math.max(1, mp.giftQty)) : 1;
+            return `<div class="mp-gift"><span class="farm-card-sub">เลือกของจากยุ้งฉางส่งให้ ${escHtml(p.name)} (วันละ 3 ครั้ง ครั้งละไม่เกิน 5 ชิ้น)</span>
+                <div class="mp-gift-items">${keys.map(x => { const it = itemInfo(x); return `<button type="button" class="chip-btn${x === k ? ' is-active' : ''}" onclick="mpPickGift('${x}')">${it.e} ${it.name}${starText(it.q)} ×${veg.inv[x]}</button>`; }).join('')}</div>
+                ${k ? `<div class="mp-gift-send"><button type="button" class="chip-btn" onclick="mpGiftQty(-1)" aria-label="ลดจำนวน">−</button><b>${qty}</b>
+                    <button type="button" class="chip-btn" onclick="mpGiftQty(1)" aria-label="เพิ่มจำนวน">+</button>
+                    <button type="button" class="shop-buy farm-action" onclick="mpSend('gift', '${p.id}')">ส่ง ${itemInfo(k).e}×${qty} 🎁</button></div>` : ''}</div>`;
+        }
+        function mpFriendsView(s) {
+            const me = s.players.find(p => p.id === s.me);
+            const others = s.players.filter(p => p.id !== s.me).sort((a, b) => mpIsOnline(b) - mpIsOnline(a) || b.seen - a.seen);
+            return (others.length ? '' : `<p class="farm-news">ยังไม่มีเพื่อนในห้อง ส่งรหัส <b>${friends.room}</b> หรือกด 🔗 ชวนเพื่อน ได้เลย</p>`)
+                + `<div class="mp-list">${others.map(p => mpFriendCard(p, false)).join('')}${me ? mpFriendCard(me, true) : ''}</div>`
+                + '<p class="shop-note">รดน้ำให้เพื่อน 🪙3 · จับหนอนให้ 🪙4 (+XP) · ของขวัญเข้ายุ้งฉางเพื่อนทันทีที่เพื่อนเปิดเว็บ</p>';
+        }
+        function mpBoardVal(p, k) { return k === 'help' ? p.helps : k === 'level' ? p.farm.lv : p.farm.wk === weekStartKey() ? p.farm.wh : 0; }
+        function mpBoardView(s) {
+            const k = mp.board, medal = ['🥇', '🥈', '🥉'];
+            const rows = [...s.players].sort((a, b) => mpBoardVal(b, k) - mpBoardVal(a, k) || a.name.localeCompare(b.name, 'th'));
+            return `<div class="kitchen-filter">${Object.entries(MP_BOARDS).map(([id, [e, l]]) =>
+                    `<button type="button" class="chip-btn${k === id ? ' is-active' : ''}" onclick="mpSetBoard('${id}')">${e} ${l}</button>`).join('')}</div>
+                <div class="contest-board">${rows.map((p, i) => {
+                    const v = mpBoardVal(p, k);
+                    return `<div class="contest-row${p.id === s.me ? ' is-me' : ''}"><span>${medal[i] || i + 1}</span>
+                        <span class="mp-row-name">${escHtml(p.avatar)} ${escHtml(p.name)}${p.id === s.me ? ' (คุณ)' : ''}</span><b>${k === 'level' ? 'Lv ' + v : `${v.toLocaleString('th-TH')} ${MP_BOARDS[k][2]}`}</b></div>`;
+                }).join('')}</div>
+                <p class="shop-note">${k === 'level' ? 'เลเวลฟาร์มตอนนี้' : 'นับตั้งแต่วันจันทร์ เริ่มนับใหม่ทุกสัปดาห์'}</p>`;
+        }
+        function mpFeedText(e, me) {
+            const a = escHtml(e.from && e.from === me ? 'คุณ' : e.fromName), b = escHtml(e.to === me ? 'คุณ' : e.toName);
+            if (e.kind === 'join') return `🎉 ${a} เข้าห้องมาแล้ว`;
+            if (e.kind === 'leave') return `🚪 ${a} ออกจากห้อง`;
+            if (e.kind === 'water') return `💧 ${a} รดน้ำให้ฟาร์มของ ${b}`;
+            if (e.kind === 'pest') return `🐛 ${a} ช่วยจับหนอนให้ ${b}`;
+            if (e.kind === 'gift') {
+                const it = mpItemOk(e.data.item) ? itemInfo(e.data.item) : null;
+                return `🎁 ${a} ส่ง${it ? ` ${it.e} ${it.name}` : 'ของขวัญ'} ×${Math.min(5, Math.max(1, Math.floor(+e.data.qty) || 1))} ให้ ${b}`;
+            }
+            return `${MP_WAVES.includes(e.data.e) ? e.data.e : '👋'} ${a} ทักทาย ${b}`;
+        }
+        function mpFeedView(s) {
+            if (!s.feed.length) return '<p class="rp-empty">ยังไม่มีความเคลื่อนไหว ลองช่วยเพื่อนรดน้ำดูสิ 💧</p>';
+            return `<ul class="mp-feed">${s.feed.map(e => `<li${e.to === s.me && e.from !== s.me ? ' class="is-mine"' : ''}><span>${mpFeedText(e, s.me)}</span><small>${mpAgo(e.at)}</small></li>`).join('')}</ul>`;
+        }
+        function mpInit() {
+            const m = /^#join=([A-Za-z0-9]{6})$/.exec(location.hash);
+            if (m) {
+                history.replaceState(null, '', location.pathname + location.search);
+                mp.pendingCode = m[1].toUpperCase();
+                setTimeout(() => openFarm('friends'), 600);
+            }
+            renderFriendsBtn();
+            if (friends.room) mpSchedule(2500);
+            document.addEventListener('visibilitychange', () => { if (!document.hidden && friends.room && Date.now() - mp.at > 30000) mpSchedule(400); });
         }
 
         // --- 🛍️ ร้านค้า: ใช้เหรียญจากฟาร์มและชาเลนจ์ แลกสติกเกอร์ ของแต่งมาสคอต ของแต่งสวน เมล็ดหายาก และอุปกรณ์ฟาร์ม ---
@@ -9263,7 +9810,7 @@
 
         // --- 💾 บันทึกง่าย + กันข้อมูลหาย: ปุ่มบันทึกหน้าแรก · จุดกู้คืนอัตโนมัติ 7 วัน · บันทึกลงไฟล์อัตโนมัติ · เตือนสำรอง · ดูก่อนกู้คืน ---
         const SNAP_DAYS = 7, SNAP_SAFETY = 3, BACKUP_REMIND_DAYS = 7;
-        const SAFE_IGNORE_KEYS = ['active_break_state', 'phone_qr_open', 'phone_qr_mode', 'last_backup_at', 'backup_reminded_day', 'autosave_at'];
+        const SAFE_IGNORE_KEYS = ['active_break_state', 'phone_qr_open', 'phone_qr_mode', 'last_backup_at', 'backup_reminded_day', 'autosave_at', 'farm_friends'];
         const thaiAgo = (ms) => {
             if (!ms) return 'ยังไม่เคย';
             const d = new Date(ms), diff = Date.now() - ms, today = new Date(); today.setHours(0, 0, 0, 0);
@@ -9862,6 +10409,7 @@
             if (e.key === 'veggie_garden') { veg = loadVeg(); renderVeggies(); }
             if (e.key === 'shop_state') { shop = loadShop().st; applyShopItems(); }
             if (e.key === 'challenges') { chal = loadChallenges(); renderChallenges(); }
+            if (e.key === 'farm_friends') { const was = friends.room; friends = loadFriends(); if (friends.room !== was) { mp.state = null; mp.lastPush = ''; mpSchedule(500); } mpRender(); }
             if (e.key === 'active_break_state') {
                 if (e.newValue && !activeBreak) {
                     restoreActiveBreakIfAny(); // แท็บอื่นเริ่มพัก ให้แท็บนี้โชว์สถานะเดียวกัน
