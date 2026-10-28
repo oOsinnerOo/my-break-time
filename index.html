@@ -229,6 +229,58 @@
             --aurora-1: #A3201F; --aurora-2: #8A4A0E; --aurora-3: #B03A2E; --aurora-4: #5A0E30;
         }
 
+        /* 💙 วันแม่ — ฟ้าอ่อน ขาวมะลิ */
+        body[data-theme="mothersday"] {
+            --bg-solid: #E3EFFF;
+            --bg-gradient: linear-gradient(165deg, #F5FAFF 0%, #E3EFFF 42%, #D3E5FF 74%, #EEF4FF 100%);
+            --ink: #172A4A; --ink-2: #445A7E; --ink-3: #5F7398;
+            --line: rgba(68, 90, 126, 0.14);
+            --shadow-rgb: 40, 70, 130;
+            --accent: #2F6FDB; --accent-rgb: 47, 111, 219; --accent-ink: #1E56B8;
+            --accent2: #F28DB2; --accent2-rgb: 242, 141, 178;
+            --aurora-1: #CFE3FF; --aurora-2: #FFFFFF; --aurora-3: #FFE2EE; --aurora-4: #DDEBFF;
+        }
+        /* 💛 วันพ่อ — เหลืองทอง ดอกพุทธรักษา */
+        body[data-theme="fathersday"] {
+            --bg-solid: #FFF1C7;
+            --bg-gradient: linear-gradient(165deg, #FFFBEB 0%, #FFF1C7 42%, #FFE7A6 74%, #FFF6DB 100%);
+            --ink: #3A2A06; --ink-2: #6E5418; --ink-3: #85672A;
+            --line: rgba(110, 84, 24, 0.15);
+            --shadow-rgb: 130, 90, 10;
+            --accent: #E09B00; --accent-rgb: 224, 155, 0; --accent-ink: #8F5D00;
+            --accent2: #FF7A3D; --accent2-rgb: 255, 122, 61;
+            --on-accent: #3A2A06;
+            --aurora-1: #FFE08A; --aurora-2: #FFF3C4; --aurora-3: #FFD0A8; --aurora-4: #FFF0B3;
+        }
+        /* 🕯️ ออกพรรษา — ฟ้าสนธยา แสงเทียน บั้งไฟพญานาค */
+        body[data-theme="okphansa"] {
+            --bg-solid: #241A44;
+            --bg-gradient: linear-gradient(175deg, #140F2E 0%, #241A44 45%, #3B2350 75%, #5A2D3E 100%);
+            --ink: #FFF3E2; --ink-2: #E8D6C0; --ink-3: #C9B39C;
+            --line: rgba(255, 210, 160, 0.14);
+            --surface: rgba(40, 28, 70, 0.6); --surface-2: rgba(255, 210, 160, 0.07);
+            --surface-solid: rgba(38, 27, 66, 0.97); --surface-edge: rgba(255, 177, 61, 0.2);
+            --field: rgba(255, 255, 255, 0.07);
+            --shadow-rgb: 6, 2, 16;
+            --accent: #FFB13D; --accent-rgb: 255, 177, 61; --accent-ink: #FFC56E;
+            --accent2: #FF7A5C; --accent2-rgb: 255, 122, 92;
+            --on-accent: #2A1606;
+            --danger: #FF8FA0; --danger-rgb: 255, 143, 160;
+            --streak: #FFC56E;
+            --aurora-1: #5B2A6E; --aurora-2: #8A4A1E; --aurora-3: #3A2A7A; --aurora-4: #6E2A3E;
+        }
+        /* 🌧️ หน้าฝน — ฟ้าครึ้ม เม็ดฝน ใบไม้สด */
+        body[data-theme="rainy"] {
+            --bg-solid: #E2EAF2;
+            --bg-gradient: linear-gradient(170deg, #F1F5F9 0%, #E2EAF2 40%, #D3DFEA 72%, #E6EFEA 100%);
+            --ink: #1C2A38; --ink-2: #4A5C6E; --ink-3: #607488;
+            --line: rgba(74, 92, 110, 0.15);
+            --shadow-rgb: 40, 60, 85;
+            --accent: #2F7FC1; --accent-rgb: 47, 127, 193; --accent-ink: #1F639E;
+            --accent2: #3FAE7A; --accent2-rgb: 63, 174, 122;
+            --aurora-1: #CFE0EE; --aurora-2: #D8EFE2; --aurora-3: #E8E3F5; --aurora-4: #DCE8F2;
+        }
+
         * { box-sizing: border-box; }
         /* เปลี่ยนธีมแล้วสีค่อยๆ ไล่เปลี่ยนตาม (คอมโพเนนต์ที่ประกาศ transition เองจะใช้ของตัวเองแทน) */
         body, body * { transition: background-color 0.45s ease, border-color 0.35s ease, color 0.35s ease; }
@@ -341,7 +393,9 @@
         .bg-season svg, .fg-season svg { display: block; width: 100%; height: auto; overflow: visible; }
         body[data-theme="halloween"] .bg-bubbles, body[data-theme="loykrathong"] .bg-bubbles,
         body[data-theme="christmas"] .bg-bubbles, body[data-theme="newyear"] .bg-bubbles,
-        body[data-theme="valentine"] .bg-bubbles, body[data-theme="cny"] .bg-bubbles { display: none; }
+        body[data-theme="valentine"] .bg-bubbles, body[data-theme="cny"] .bg-bubbles,
+        body[data-theme="mothersday"] .bg-bubbles, body[data-theme="fathersday"] .bg-bubbles,
+        body[data-theme="okphansa"] .bg-bubbles, body[data-theme="rainy"] .bg-bubbles { display: none; }
 
         /* ชิ้นส่วนที่ใช้ร่วมกัน: ของที่ร่วงลงมา (หิมะ ดอกไม้) และของที่ลอยขึ้น (โคมลอย ลูกโป่ง) */
         .sd-fall { position: absolute; top: -24px; width: var(--s, 8px); animation: sd-fall var(--d, 12s) linear infinite; will-change: transform; }
@@ -359,6 +413,26 @@
             100% { transform: translate(calc(var(--sway, 30px) * -0.5), calc(-100vh - 90px)); opacity: 0; }
         }
         @keyframes sd-wave { from { transform: rotate(-22deg); } to { transform: rotate(18deg); } }
+        /* 💙💛 วันแม่ วันพ่อ: ดอกมะลิ/ดอกพุทธรักษาร่วง หัวใจลอย */
+        .md-jasmine svg { filter: drop-shadow(0 1px 2px rgba(60, 90, 140, 0.35)); }
+        /* 🕯️ ออกพรรษา: ลูกไฟลอยขึ้นจากแม่น้ำ เทียนวิบวับ */
+        .op-orb { aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 42% 38%, #FFF6D6 0%, #FFC56E 30%, #FF7A5C 58%, rgba(255, 90, 92, 0) 72%); }
+        .op-river {
+            position: absolute; left: 0; right: 0; bottom: 0; height: 14vh; min-height: 80px;
+            background: linear-gradient(180deg, rgba(90, 40, 90, 0) 0, rgba(120, 50, 90, 0.4) 30px, rgba(60, 22, 64, 0.62) 100%);
+        }
+        .op-candle { position: absolute; bottom: 2.5vh; width: clamp(34px, 4vw, 48px); }
+        .op-candle.c1 { left: 3vw; } .op-candle.c2 { right: 3vw; width: clamp(28px, 3.2vw, 40px); }
+        .op-candle svg { filter: drop-shadow(0 0 12px rgba(255, 177, 61, 0.55)); }
+        /* 🌧️ หน้าฝน: เม็ดฝนเฉียงๆ เมฆหน้ายิ้มลอยผ่าน */
+        .rn-drop {
+            position: absolute; top: -30px; width: 2px; height: var(--len, 14px); border-radius: 2px;
+            background: linear-gradient(180deg, rgba(47, 127, 193, 0), rgba(47, 127, 193, 0.55));
+            animation: rn-fall var(--d, 1.2s) linear infinite; will-change: transform;
+        }
+        @keyframes rn-fall { from { transform: translate(0, 0) rotate(10deg); } to { transform: translate(-7vw, calc(100vh + 60px)) rotate(10deg); } }
+        .rn-cloud { position: absolute; top: var(--top, 4vh); left: -150px; width: var(--s, 110px); animation: rn-drift var(--d, 80s) linear infinite; will-change: transform; }
+        @keyframes rn-drift { from { transform: translateX(0); } to { transform: translateX(calc(100vw + 300px)); } }
 
         /* 🌕 พระจันทร์ (ฮาโลวีน ลอยกระทง): มือถืออยู่หลังปุ่มตั้งค่า แท็บเล็ตอยู่ข้างเนื้อหา คอมอยู่เหนือแป้นกิจกรรม */
         .sd-moon {
@@ -569,6 +643,7 @@
         .dashboard { order: 1; }
         .keypad-section { order: 2; }
         .report-cta { order: 3; }
+        .challenge-card { order: 4; }
         .garden-card { order: 4; }
         .history-section { order: 5; }
         .heatmap-section { order: 6; }
@@ -1051,7 +1126,7 @@
         }
         .history-actions { display: flex; gap: 6px; flex-wrap: wrap; font-family: var(--font-body); }
         .chip-btn {
-            display: inline-flex; align-items: center; gap: 4px; cursor: pointer; user-select: none;
+            display: inline-flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; font-family: inherit;
             font-size: 12.5px; font-weight: 600; padding: 6px 11px; border-radius: 999px;
             background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line);
             transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), color 0.2s, border-color 0.2s, background-color 0.2s;
@@ -1142,6 +1217,111 @@
             border-bottom: 1px dashed var(--line);
         }
         .day-detail-summary strong { color: var(--accent-ink); }
+        /* 🛍️ ร้านค้า */
+        .shop-box { max-height: 86vh; overflow: hidden; }
+        .shop-head-right { display: flex; align-items: center; gap: 8px; }
+        .coin-pill { display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 14px;
+            background: rgba(var(--accent-rgb), 0.12); color: var(--accent-ink); font-family: var(--font-display); }
+        .shop-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 16px; background: var(--surface-2); flex-shrink: 0; }
+        .shop-tabs .report-tab { padding: 8px 2px; font-size: 12px; }
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; overflow-y: auto; min-height: 0; padding: 2px; }
+        .shop-item { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 8px; border-radius: 18px; background: var(--surface-2); border: 1px solid var(--line); text-align: center; }
+        .shop-item.owned { border-color: rgba(var(--accent-rgb), 0.35); }
+        .shop-preview { font-size: 36px; line-height: 1.1; }
+        .shop-preview.is-pack { font-size: 24px; letter-spacing: 2px; }
+        .shop-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+        .shop-buy {
+            display: flex; flex-direction: column; align-items: center; width: 100%; padding: 7px 6px; border-radius: 12px; border: none; cursor: pointer;
+            font: inherit; font-size: 13px; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--on-accent);
+            transition: transform 0.15s, filter 0.15s;
+        }
+        .shop-buy:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.05); }
+        .shop-buy:disabled { cursor: default; background: var(--line); color: var(--ink-3); }
+        .shop-buy small { font-size: 10.5px; font-weight: 600; }
+        .shop-buy.is-owned { background: var(--surface-solid); color: var(--accent-ink); border: 1.5px solid rgba(var(--accent-rgb), 0.5); }
+        .shop-buy.is-on { background: rgba(var(--accent-rgb), 0.16); color: var(--accent-ink); }
+        .shop-owned { font-size: 12px; font-weight: 700; color: var(--accent-ink); padding: 7px 0; }
+        .shop-note { margin: 0; font-size: 12px; color: var(--ink-3); text-align: center; flex-shrink: 0; }
+        .veg-head-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+        .mascot-body { position: relative; }
+        .mascot-hat { position: absolute; left: 50%; bottom: 56%; transform: translateX(-46%) rotate(-10deg); font-size: 22px; line-height: 1; pointer-events: none; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.18)); }
+        .garden-scene { position: relative; }
+        .garden-decor { position: absolute; inset: 0; pointer-events: none; }
+        .garden-decor-item { position: absolute; line-height: 1; filter: drop-shadow(0 2px 2px rgba(var(--shadow-rgb), 0.25)); animation: garden-decor-bob 3.2s ease-in-out infinite alternate; }
+        .garden-decor-item:nth-child(2n) { animation-delay: -1.4s; }
+        @keyframes garden-decor-bob { from { transform: translateY(0) rotate(-3deg); } to { transform: translateY(-3px) rotate(3deg); } }
+
+        /* 🏆 ชาเลนจ์ประจำสัปดาห์ */
+        .challenge-card { padding: 18px 20px; border-radius: var(--radius-lg, 28px); }
+        .challenge-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .ch-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 0; border-bottom: 1px dashed var(--line); }
+        .ch-row:last-child { border-bottom: none; }
+        .ch-icon { width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; background: rgba(var(--accent-rgb), 0.12); }
+        .ch-row.is-claimed .ch-icon { filter: grayscale(0.3); opacity: 0.7; }
+        .ch-text { display: block; font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.35; }
+        .ch-row.is-claimed .ch-text { color: var(--ink-3); }
+        .ch-bar { height: 6px; margin-top: 6px; border-radius: 3px; background: rgba(var(--accent-rgb), 0.14); overflow: hidden; }
+        .ch-bar span { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.6s ease; }
+        .ch-side { font-size: 12px; font-weight: 700; color: var(--ink-3); white-space: nowrap; }
+        .ch-done { font-size: 12px; font-weight: 700; color: var(--accent-ink); white-space: nowrap; }
+        .ch-claim {
+            border: none; cursor: pointer; padding: 7px 12px; border-radius: 999px; font: inherit; font-size: 12.5px; font-weight: 800; white-space: nowrap;
+            background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--on-accent); animation: ch-pulse 1.4s ease-in-out infinite;
+        }
+        @keyframes ch-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.45); } 50% { box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0); } }
+        .challenge-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; font-size: 12px; color: var(--ink-3); font-weight: 600; }
+
+        /* 🫧 ระหว่างพัก: ปุ่มหายใจ ยืดเส้น เสียงผ่อนคลาย */
+        .break-relax { display: none; }
+        .action-card.expanded .break-relax { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2; }
+        .relax-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .relax-chip {
+            border: none; cursor: pointer; padding: 9px 15px; border-radius: 999px; font: inherit; font-size: 14px; font-weight: 700;
+            background: rgba(255, 255, 255, 0.65); color: var(--key-ink); box-shadow: 0 6px 14px -10px rgba(0, 0, 0, 0.4); transition: transform 0.15s, background-color 0.2s;
+        }
+        body.is-dark .relax-chip { background: rgba(255, 255, 255, 0.12); color: #FFFFFF; }
+        .relax-chip:hover { transform: translateY(-2px); }
+        .relax-chip.is-on { background: var(--key-edge); color: #FFFFFF; }
+        .ambient-menu { display: none; gap: 6px; flex-wrap: wrap; justify-content: center; }
+        .ambient-menu.open { display: flex; }
+        .ambient-menu .relax-chip { font-size: 13px; padding: 7px 12px; }
+        .relax-overlay {
+            display: none; position: fixed; inset: 0; z-index: 10050; align-items: center; justify-content: center; padding: 16px;
+            background: rgba(var(--shadow-rgb), 0.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        }
+        .relax-overlay.open { display: flex; }
+        .relax-box { position: relative; width: min(420px, 100%); padding: 26px 22px 22px; border-radius: 30px; text-align: center; background: var(--surface-solid); border: 1px solid var(--line); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.5); }
+        .relax-box h3 { margin: 0 0 6px; font-size: 19px; color: var(--ink); }
+        .relax-close { position: absolute; top: 14px; right: 14px; }
+        .relax-sub { margin: 8px 0 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
+        .breath-stage { position: relative; width: 210px; height: 210px; margin: 14px auto 4px; display: flex; align-items: center; justify-content: center; }
+        .breath-circle {
+            position: absolute; inset: 0; border-radius: 50%; transform: scale(0.55); transition-property: transform, box-shadow; transition-timing-function: ease-in-out;
+            background: radial-gradient(circle at 40% 35%, rgba(255, 255, 255, 0.9), rgba(var(--accent-rgb), 0.35) 55%, rgba(var(--accent-rgb), 0.55));
+            box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.3);
+        }
+        .breath-circle.is-in { transform: scale(1); }
+        .breath-circle.is-hold { transform: scale(1); box-shadow: 0 0 0 12px rgba(var(--accent-rgb), 0.12); }
+        .breath-circle.is-out { transform: scale(0.55); }
+        .breath-circle.is-done { transform: scale(0.8); transition-duration: 0.8s; }
+        .breath-text { position: relative; font-family: var(--font-display); font-size: 18px; font-weight: 600; color: var(--ink); }
+        .stretch-emoji { font-size: 64px; line-height: 1.1; margin: 10px 0 2px; animation: emoji-float 3.2s ease-in-out infinite; }
+        .stretch-title { margin: 4px 0 0; font-size: 17px; color: var(--ink); }
+        .stretch-timer { margin: 12px auto 8px; font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--accent-ink); }
+        .stretch-timer span { font-size: 30px; }
+        .stretch-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
+        .stretch-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+        .stretch-dots i.done { background: rgba(var(--accent-rgb), 0.5); }
+        .stretch-dots i.now { background: var(--accent); transform: scale(1.3); }
+        /* ➕ ฟอร์มเพิ่ม/แก้ไขรายการพัก */
+        .lf-times { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: 8px; }
+        .lf-arrow { padding-bottom: 13px; font-weight: 700; color: var(--ink-3); }
+        .lf-summary { margin: 0; padding: 10px 12px; border-radius: 14px; font-size: 13.5px; font-weight: 600; text-align: center; background: rgba(var(--accent-rgb), 0.1); color: var(--accent-ink); }
+        .lf-summary.is-error { background: rgba(var(--danger-rgb), 0.1); color: var(--danger); }
+        select.field { appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 34px;
+            background-image: linear-gradient(45deg, transparent 50%, var(--ink-3) 50%), linear-gradient(135deg, var(--ink-3) 50%, transparent 50%);
+            background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
+        .day-detail-actions { display: flex; justify-content: flex-end; flex-shrink: 0; margin: -4px 0 8px; }
         .settings-modal-header { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .settings-modal-header h3 { font-size: 20px; }
         .settings-close-btn {
@@ -1233,6 +1413,10 @@
         .theme-subtitle { font-size: 12.5px; font-weight: 600; color: var(--ink-3); margin: 18px 0 10px; }
         .swatch-valentine { --sw-bg: linear-gradient(165deg, #FFF3F6, #FFD3E1); --sw-a: #E0245E; --sw-b: #FF7AA8; }
         .swatch-cny { --sw-bg: linear-gradient(170deg, #6A1018, #8E2A1E); --sw-a: #FFC145; --sw-b: #FF7A4A; }
+        .swatch-rainy { --sw-bg: linear-gradient(160deg, #F1F5F9, #D3DFEA); --sw-a: #2F7FC1; --sw-b: #3FAE7A; }
+        .swatch-mothersday { --sw-bg: linear-gradient(160deg, #F5FAFF, #D3E5FF); --sw-a: #2F6FDB; --sw-b: #F28DB2; }
+        .swatch-fathersday { --sw-bg: linear-gradient(160deg, #FFFBEB, #FFE7A6); --sw-a: #E09B00; --sw-b: #FF7A3D; }
+        .swatch-okphansa { --sw-bg: linear-gradient(170deg, #140F2E, #5A2D3E); --sw-a: #FFB13D; --sw-b: #FF7A5C; }
         .auto-theme-row { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 600; color: var(--ink-2); cursor: pointer; margin-top: 16px; }
 
         /* 🔘 สวิตช์เปิดปิด แทน checkbox ธรรมดา */
@@ -1526,6 +1710,10 @@
         body[data-theme="halloween"] .parade-ground { --ground: linear-gradient(180deg, #3B2150, #2A1640); --ground-line: rgba(255, 138, 31, 0.35); }
         body[data-theme="valentine"] .parade-ground { --ground: linear-gradient(180deg, #FFC7D8, #FFB0C8); --ground-line: #FFE1EA; }
         body[data-theme="cny"] .parade-ground { --ground: linear-gradient(180deg, #A8261F, #7E1A1C); --ground-line: rgba(255, 193, 69, 0.55); }
+        body[data-theme="mothersday"] .parade-ground { --ground: linear-gradient(180deg, #CFE3FF, #B7D3FA); --ground-line: #E6F0FF; }
+        body[data-theme="fathersday"] .parade-ground { --ground: linear-gradient(180deg, #FFE08A, #F9CF5C); --ground-line: #FFF0B8; }
+        body[data-theme="okphansa"] .parade-ground { --ground: linear-gradient(180deg, #3A2560, #2A1A48); --ground-line: rgba(255, 177, 61, 0.4); }
+        body[data-theme="rainy"] .parade-ground { --ground: linear-gradient(180deg, #A9D8A0, #86C27E); --ground-line: #C9EBC2; }
         body[data-theme="loykrathong"] .parade-ground, body[data-theme="songkran"] .parade-ground {
             --ground: linear-gradient(180deg, rgba(80, 170, 220, 0.55), rgba(30, 110, 170, 0.7)); --ground-line: rgba(190, 235, 255, 0.7);
         }
@@ -1727,7 +1915,8 @@
             transform: translate(-50%, -50%) rotate(-20deg);
         }
         body.is-dark .sky-body.sun { opacity: 0.6; }
-        body[data-theme="halloween"] .sky-body, body[data-theme="loykrathong"] .sky-body { display: none; }
+        body[data-theme="halloween"] .sky-body, body[data-theme="loykrathong"] .sky-body, body[data-theme="okphansa"] .sky-body,
+        body[data-theme="rainy"] .sky-body { display: none; }
         .sky-stars { position: absolute; left: 0; right: 0; top: 0; height: 55%; opacity: 0; transition: opacity 1.5s; }
         body.sky-night.is-dark .sky-stars { opacity: 1; }
         .sky-star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 0 4px rgba(255, 255, 255, 0.8); animation: sky-twinkle var(--d, 3s) ease-in-out infinite; animation-delay: var(--delay, 0s); }
@@ -1771,8 +1960,8 @@
 
         /* 🥕 แปลงผักพักใจ */
         .veg-section { position: relative; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); }
-        .veg-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
-        .veg-title { font-size: 13.5px; font-weight: 700; color: var(--ink-2); }
+        .veg-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px 8px; margin-bottom: 4px; }
+        .veg-title { font-size: 13.5px; font-weight: 700; color: var(--ink-2); white-space: nowrap; }
         .veg-plots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
         .veg-plot {
             position: relative; padding: 0 0 18px; border: none; background: none; cursor: pointer; border-radius: 16px;
@@ -1975,6 +2164,18 @@
                 <div class="report-cta-arrow">›</div>
             </div>
 
+            <section class="challenge-card glass-panel" id="challenge-card">
+                <div class="challenge-head">
+                    <span class="dash-title">🏆 ชาเลนจ์สัปดาห์นี้</span>
+                    <span class="garden-badge-hint" id="challenge-left"></span>
+                </div>
+                <div id="challenge-list"></div>
+                <div class="challenge-foot">
+                    <span id="challenge-note"></span>
+                    <button type="button" class="chip-btn" onclick="openShop()">🛍️ ร้านค้า 🪙<b data-coins>0</b></button>
+                </div>
+            </section>
+
             <section class="garden-card glass-panel" id="garden-card">
                 <div class="garden-header">
                     <span class="dash-title">🌱 สวนพักผ่อนของคุณ</span>
@@ -1987,7 +2188,10 @@
                 <div class="veg-section">
                     <div class="veg-head">
                         <span class="veg-title">🥕 แปลงผักพักใจ</span>
-                        <button type="button" class="chip-btn" onclick="openVegBook()">🧺 ผลผลิต <b id="veg-total">0</b></button>
+                        <span class="veg-head-actions">
+                            <button type="button" class="chip-btn" onclick="openVegBook()">🧺 ผลผลิต <b id="veg-total">0</b></button>
+                            <button type="button" class="chip-btn" onclick="openShop()">🛍️ ร้านค้า 🪙<b data-coins>0</b></button>
+                        </span>
                     </div>
                     <div class="veg-picker" id="veg-picker"></div>
                     <div class="veg-plots" id="veg-plots"></div>
@@ -2032,6 +2236,7 @@
                 <div class="history-title">
                     <span>📜 ประวัติการพัก</span>
                     <div class="history-actions">
+                        <button type="button" class="chip-btn btn-add-log" onclick="openLogForm()">➕ เพิ่มย้อนหลัง</button>
                         <span class="chip-btn btn-search-history" onclick="openSearchModal()">🔍 ค้นหา</span>
                         <span class="chip-btn btn-copy-summary" onclick="copySummary()">📋 คัดลอก</span>
                         <span class="chip-btn btn-share-image" onclick="shareSummaryImage()">🖼️ แชร์รูป</span>
@@ -2130,12 +2335,16 @@
                         <button type="button" class="theme-swatch swatch-minimal" data-theme="minimal" onclick="setSiteTheme('minimal', event)"><span class="swatch-chip">🤍</span><span class="swatch-name">มินิมอล</span></button>
                         <button type="button" class="theme-swatch swatch-night" data-theme="night" onclick="setSiteTheme('night', event)"><span class="swatch-chip">🌙</span><span class="swatch-name">กลางคืน</span></button>
                         <button type="button" class="theme-swatch swatch-galaxy" data-theme="galaxy" onclick="setSiteTheme('galaxy', event)"><span class="swatch-chip">🪐</span><span class="swatch-name">กาแล็กซี</span></button>
+                        <button type="button" class="theme-swatch swatch-rainy" data-theme="rainy" onclick="setSiteTheme('rainy', event)"><span class="swatch-chip">🌧️</span><span class="swatch-name">หน้าฝน</span></button>
                     </div>
                     <div class="theme-subtitle">ธีมเทศกาล</div>
                     <div class="theme-swatch-row is-season">
                         <button type="button" class="theme-swatch swatch-songkran" data-theme="songkran" onclick="setSiteTheme('songkran', event)"><span class="swatch-chip">💦</span><span class="swatch-name">สงกรานต์</span></button>
+                        <button type="button" class="theme-swatch swatch-mothersday" data-theme="mothersday" onclick="setSiteTheme('mothersday', event)"><span class="swatch-chip">💙</span><span class="swatch-name">วันแม่</span></button>
+                        <button type="button" class="theme-swatch swatch-okphansa" data-theme="okphansa" onclick="setSiteTheme('okphansa', event)"><span class="swatch-chip">🕯️</span><span class="swatch-name">ออกพรรษา</span></button>
                         <button type="button" class="theme-swatch swatch-halloween" data-theme="halloween" onclick="setSiteTheme('halloween', event)"><span class="swatch-chip">🎃</span><span class="swatch-name">ฮาโลวีน</span></button>
                         <button type="button" class="theme-swatch swatch-loykrathong" data-theme="loykrathong" onclick="setSiteTheme('loykrathong', event)"><span class="swatch-chip">🪷</span><span class="swatch-name">ลอยกระทง</span></button>
+                        <button type="button" class="theme-swatch swatch-fathersday" data-theme="fathersday" onclick="setSiteTheme('fathersday', event)"><span class="swatch-chip">💛</span><span class="swatch-name">วันพ่อ</span></button>
                         <button type="button" class="theme-swatch swatch-christmas" data-theme="christmas" onclick="setSiteTheme('christmas', event)"><span class="swatch-chip">🎄</span><span class="swatch-name">คริสต์มาส</span></button>
                         <button type="button" class="theme-swatch swatch-newyear" data-theme="newyear" onclick="setSiteTheme('newyear', event)"><span class="swatch-chip">🎆</span><span class="swatch-name">ปีใหม่</span></button>
                         <button type="button" class="theme-swatch swatch-valentine" data-theme="valentine" onclick="setSiteTheme('valentine', event)"><span class="swatch-chip">💝</span><span class="swatch-name">วาเลนไทน์</span></button>
@@ -2276,6 +2485,7 @@
                 <span class="settings-close-btn" onclick="closeDayDetail()">✕</span>
             </div>
             <div class="day-detail-summary" id="day-detail-summary"></div>
+            <div class="day-detail-actions"><button type="button" class="chip-btn" onclick="openLogForm(-1, currentDetailDate)">➕ เพิ่มรายการวันนี้</button></div>
             <div class="settings-scroll" id="day-detail-list"></div>
         </div>
     </div>
@@ -2303,6 +2513,69 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="log-form-modal" onclick="if(event.target===this) closeLogForm()">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="log-form-title">
+            <div class="settings-modal-header">
+                <h3 id="log-form-title">➕ เพิ่มรายการพัก</h3>
+                <button type="button" class="settings-close-btn" onclick="closeLogForm()" aria-label="ปิด">✕</button>
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="lf-activity">กิจกรรม</label>
+                <select id="lf-activity" class="field" onchange="onLogFormActivity()"></select>
+            </div>
+            <div class="input-group" id="lf-custom-wrap" style="display:none;">
+                <label class="input-label" for="lf-custom">ชื่อกิจกรรม</label>
+                <input type="text" id="lf-custom" class="field" maxlength="40" placeholder="เช่น ประชุมสั้น">
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="lf-date">วันที่</label>
+                <input type="date" id="lf-date" class="field" oninput="updateLogFormSummary()">
+            </div>
+            <div class="lf-times">
+                <div class="input-group">
+                    <label class="input-label" for="lf-start">เวลาเริ่ม</label>
+                    <input type="time" id="lf-start" class="field" oninput="updateLogFormSummary()">
+                </div>
+                <span class="lf-arrow" aria-hidden="true">→</span>
+                <div class="input-group">
+                    <label class="input-label" for="lf-end">เวลากลับ</label>
+                    <input type="time" id="lf-end" class="field" oninput="updateLogFormSummary()">
+                </div>
+            </div>
+            <label class="toggle-card" for="lf-toilet">
+                <span>🚻 เป็นการเข้าห้องน้ำ (ฟรี <span class="toilet-free-min">10</span> นาทีแรก)</span>
+                <span class="toggle-switch"><input type="checkbox" id="lf-toilet" onchange="updateLogFormSummary()"><span class="toggle-slider"></span></span>
+            </label>
+            <p class="lf-summary" id="lf-summary" aria-live="polite"></p>
+            <div class="modal-btn-group">
+                <button type="button" class="modal-btn btn-primary" onclick="saveLogForm()">💾 บันทึก</button>
+                <button type="button" class="modal-btn btn-secondary" onclick="closeLogForm()">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="shop-modal" onclick="if(event.target===this) closeShop()">
+        <div class="modal-box shop-box" role="dialog" aria-modal="true" aria-labelledby="shop-title">
+            <div class="settings-modal-header">
+                <h3 id="shop-title">🛍️ ร้านค้าน่ารัก</h3>
+                <div class="shop-head-right">
+                    <span class="coin-pill" aria-label="เหรียญที่มี">🪙 <b data-coins>0</b></span>
+                    <button type="button" class="settings-close-btn" onclick="closeShop()" aria-label="ปิด">✕</button>
+                </div>
+            </div>
+            <div class="shop-tabs" id="shop-tabs" role="tablist" aria-label="หมวดสินค้า"></div>
+            <div class="shop-grid" id="shop-grid"></div>
+            <p class="shop-note">ได้เหรียญจากการเก็บผัก (ผักทอง ✨ = 5 เหรียญ · ผักหายาก = 2) และทำชาเลนจ์ประจำสัปดาห์</p>
+        </div>
+    </div>
+
+    <div class="relax-overlay" id="relax-overlay" role="dialog" aria-modal="true" aria-labelledby="relax-title" onclick="if(event.target===this) closeRelax()">
+        <div class="relax-box">
+            <button type="button" class="settings-close-btn relax-close" onclick="closeRelax()" aria-label="ปิด">✕</button>
+            <div id="relax-content"></div>
+        </div>
+    </div>
+
     <div class="toast-container" id="toast-container"></div>
 
     <div class="break-buddies" id="break-buddies" aria-hidden="true"></div>
@@ -2316,6 +2589,7 @@
         <div class="sticker-grid" id="sticker-grid"></div>
         <div class="sticker-tray-foot">
             <span class="chip-btn chip-danger" role="button" tabindex="0" onclick="clearStickers()">🗑️ เอาออกทั้งหมด</span>
+            <button type="button" class="chip-btn" onclick="toggleStickerTray(false); openShop('sticker');">🛍️ ซื้อเพิ่ม</button>
             <button type="button" class="modal-btn btn-primary" onclick="toggleStickerTray(false)">เสร็จแล้ว</button>
         </div>
     </div>
@@ -2704,7 +2978,8 @@
             newyear: ['✨', '🎉', '⭐'],
             songkran: ['💦', '💧', '✨'],
             valentine: ['💖', '💕', '✨'],
-            cny: ['✨', '🏮', '🌸']
+            cny: ['✨', '🏮', '🌸'],
+            mothersday: ['💙', '🤍', '✨'], fathersday: ['💛', '🌼', '✨'], okphansa: ['✨', '🕯️', '⭐'], rainy: ['💧', '☔', '🌈']
         };
         function renderSparkles(theme) {
             const container = document.getElementById('bg-sparkles');
@@ -2749,7 +3024,11 @@
             newyear: ['#FFC94A', '#FF5DA2', '#A68BFA', '#3CD3F2', '#FFF3C4', '#FFD777'],
             songkran: ['#0093C4', '#36B1E4', '#F2558F', '#FFD24D', '#BDEBFF', '#FFFFFF'],
             valentine: ['#E0245E', '#FF7AA8', '#FFC2D4', '#FFFFFF', '#FF4D6D', '#FFD6A5'],
-            cny: ['#FFC145', '#E5262B', '#FF7A4A', '#FFD27A', '#FFF4E0', '#C21D22']
+            cny: ['#FFC145', '#E5262B', '#FF7A4A', '#FFD27A', '#FFF4E0', '#C21D22'],
+            mothersday: ['#2F6FDB', '#8DB8FF', '#FFFFFF', '#F28DB2', '#CFE3FF', '#FFD66B'],
+            fathersday: ['#E09B00', '#FFD23F', '#FF7A3D', '#FFFFFF', '#FFE8A3', '#3A9867'],
+            okphansa: ['#FFB13D', '#FF7A5C', '#FFE08A', '#B69BFF', '#FFFFFF', '#FF5DA2'],
+            rainy: ['#2F7FC1', '#3FAE7A', '#8ED1FF', '#FFFFFF', '#FFD66B', '#B9C6D8']
         };
         // ธีมเทศกาล: โปรยของประจำเทศกาลปนไปกับกระดาษสี
         const SEASON_CONFETTI = {
@@ -2759,7 +3038,8 @@
             newyear: ['🎉', '🎊', '✨', '🥳'],
             songkran: ['💦', '💧', '🌼'],
             valentine: ['💖', '💌', '🌹', '💕'],
-            cny: ['🧧', '🍊', '🏮', '✨']
+            cny: ['🧧', '🍊', '🏮', '✨'],
+            mothersday: ['💙', '🤍', '🌼'], fathersday: ['💛', '🌼', '✨'], okphansa: ['🕯️', '✨', '🏮'], rainy: ['💧', '☔', '🌈']
         };
         function fireConfetti() {
             const theme = document.body.getAttribute('data-theme') || 'day';
@@ -2850,6 +3130,8 @@
         let dragSrcIndex = null;
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // เบราว์เซอร์ปิดเสียงไว้จนกว่าจะแตะหน้าเว็บครั้งแรก ปลุกให้เองตอนแตะ/กดคีย์
+        ['pointerdown', 'keydown'].forEach(evt => document.addEventListener(evt, () => { if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {}); }, { passive: true }));
         function playSound(type) {
             if (isMuted || soundVolume <= 0) return;
             if (type === 'alarm') {
@@ -2928,6 +3210,10 @@
                     newyear: [{f:523,t:0,d:0.12,type:'square'},{f:784,t:0.12,d:0.12,type:'square'},{f:1047,t:0.24,d:0.35,type:'triangle'}],
                     songkran: [{f:1200,t:0,d:0.07,type:'sine'},{f:900,t:0.08,d:0.07,type:'sine'},{f:1400,t:0.17,d:0.09,type:'sine'},{f:1100,t:0.28,d:0.12,type:'sine'}],
                     valentine: [{f:784,t:0,d:0.18,type:'sine'},{f:988,t:0.14,d:0.18,type:'sine'},{f:1175,t:0.28,d:0.45,type:'sine'}],
+                    mothersday: [{f:659,t:0,d:0.25,type:'sine'},{f:784,t:0.16,d:0.25,type:'sine'},{f:988,t:0.32,d:0.5,type:'sine'}],
+                    fathersday: [{f:523,t:0,d:0.16,type:'triangle'},{f:659,t:0.14,d:0.16,type:'triangle'},{f:784,t:0.28,d:0.16,type:'triangle'},{f:1047,t:0.42,d:0.4,type:'triangle'}],
+                    okphansa: [{f:392,t:0,d:0.6,type:'sine'},{f:587,t:0.25,d:0.6,type:'sine'},{f:784,t:0.5,d:0.8,type:'sine'}],
+                    rainy: [{f:1319,t:0,d:0.06,type:'sine'},{f:988,t:0.12,d:0.06,type:'sine'},{f:1175,t:0.2,d:0.06,type:'sine'},{f:880,t:0.34,d:0.1,type:'sine'}],
                     cny: [{f:587,t:0,d:0.1,type:'triangle'},{f:659,t:0.1,d:0.1,type:'triangle'},{f:784,t:0.2,d:0.1,type:'triangle'},{f:880,t:0.3,d:0.1,type:'triangle'},{f:1175,t:0.42,d:0.35,type:'triangle'}]
                 };
                 (notes[theme] || notes.day).forEach(n => {
@@ -2971,7 +3257,11 @@
             newyear: { emoji: '🎆', meta: '#11163A', dark: true, bg: ['#090B22', '#1C1846', '#2B1747'] },
             songkran: { emoji: '💦', meta: '#D8F2FB', dark: false, bg: ['#F0FBFF', '#CDEBF8', '#FFF1DE'] },
             valentine: { emoji: '💝', meta: '#FFE1EA', dark: false, bg: ['#FFF3F6', '#FFD3E1', '#FFE9F0'] },
-            cny: { emoji: '🧧', meta: '#6A1018', dark: true, bg: ['#4A0A10', '#7E1A1C', '#8E2A1E'] }
+            cny: { emoji: '🧧', meta: '#6A1018', dark: true, bg: ['#4A0A10', '#7E1A1C', '#8E2A1E'] },
+            mothersday: { emoji: '💙', meta: '#E3EFFF', dark: false, bg: ['#F5FAFF', '#D3E5FF', '#EEF4FF'] },
+            fathersday: { emoji: '💛', meta: '#FFF1C7', dark: false, bg: ['#FFFBEB', '#FFE7A6', '#FFF6DB'] },
+            okphansa: { emoji: '🕯️', meta: '#241A44', dark: true, bg: ['#140F2E', '#3B2350', '#5A2D3E'] },
+            rainy: { emoji: '🌧️', meta: '#E2EAF2', dark: false, bg: ['#F1F5F9', '#D3DFEA', '#E6EFEA'] }
         };
         function currentTheme() { return document.body.getAttribute('data-theme') || 'day'; }
 
@@ -3112,6 +3402,16 @@
             <path d="M18 34q2 2 4 0" stroke="#4A0A10" stroke-width="1.2" fill="none" stroke-linecap="round"/>
         </svg>`;
         const CN_ENVELOPE = `<svg viewBox="0 0 30 40"><rect x="1" y="1" width="28" height="38" rx="4" fill="#E5262B"/><path d="M1 8Q15 20 29 8V5Q29 1 25 1H5Q1 1 1 5Z" fill="#C21D22"/><circle cx="15" cy="16" r="5" fill="#FFC145"/><path d="M12.5 16H17.5M15 13.5V18.5" stroke="#C21D22" stroke-width="1.2"/></svg>`;
+        // 🌼 ดอกมะลิ (วันแม่) · 🕯️ เทียนน้อย (ออกพรรษา) · ☁️ เมฆฝนหน้ายิ้ม (หน้าฝน)
+        const MD_JASMINE = `<svg viewBox="-12 -12 24 24">${[0, 72, 144, 216, 288].map(a => `<path d="M0 0Q-3.8-6 0-11.2Q3.8-6 0 0Z" fill="#FFFFFF" stroke="#D6E4F5" stroke-width="0.6" transform="rotate(${a})"/>`).join('')}<circle r="2.1" fill="#F2E38E"/></svg>`;
+        const OP_CANDLE = `<svg viewBox="0 0 40 64">
+            <ellipse cx="20" cy="60.5" rx="15" ry="3.2" fill="#B77A24"/><path d="M5 55H35L32 61H8Z" fill="#E0A84A"/>
+            <rect x="10" y="21" width="20" height="35" rx="6" fill="#FFF1D6"/><rect x="10" y="21" width="20" height="8" rx="4" fill="#FFE2A8"/>
+            <path d="M20 21V15.5" stroke="#5A3A1A" stroke-width="1.4" stroke-linecap="round"/>
+            <path class="lk-flame" d="M20 3Q26.5 10.5 20 16.5Q13.5 10.5 20 3Z" fill="#FFB13D"/><path class="lk-flame" d="M20 7.5Q23.4 11.5 20 15Q16.6 11.5 20 7.5Z" fill="#FFF3C4"/>
+            ${icFace(20, 39, 0.7)}
+        </svg>`;
+        const RN_CLOUD = `<svg viewBox="0 0 90 50"><path d="M20 45Q3 45 5.5 31Q8 19.5 21 21Q24 5 41 6Q57 7 60 20Q74 16 80.5 27.5Q88.5 41 74 45Z" fill="#FFFFFF" opacity="0.94"/>${icFace(43, 30, 0.85)}</svg>`;
         const rnd = (min, max) => min + Math.random() * (max - min);
         // สร้างของที่ร่วงลงมา (หิมะ ดอกไม้) n ชิ้น
         function fallingItems(n, cls, inner, size) {
@@ -3293,7 +3593,13 @@
             teddy: { body: '#C69C72', belly: '#EBD3B5', ears: 'bear', accent: '#EBC3A5', heart: true },
             loveBunny: { body: '#FFC2D6', belly: '#FFE6EE', ears: 'bunny', heart: true },
             luckyCat: { body: '#FFFFFF', belly: '#FFF4E6', ears: 'cat', collar: true, paw: true },
-            tangerine: { body: '#FF9A2E', belly: '#FFC977', leaf: true }
+            tangerine: { body: '#FF9A2E', belly: '#FFC977', leaf: true },
+            momElephant: { body: '#A9C7EA', accent: '#C6DBF3', trunk: true, bigEar: true, heart: true },
+            babyElephant: { body: '#C3D8F0', accent: '#DCE8F7', trunk: true, bigEar: true },
+            dadBear: { body: '#D9A55B', belly: '#F3D9A6', ears: 'bear', accent: '#F0CC8E', heart: true },
+            cubBear: { body: '#E8BE7A', belly: '#F8E6C0', ears: 'bear', accent: '#F5D7A4' },
+            firefly: { body: '#6E5BD6', belly: '#FFE27A', antenna: true, accent: '#FFE066', wings: true },
+            frog: { body: '#7CCB5E', belly: '#D4F2B8', ears: 'bear', accent: '#9BDB7E' }
         };
         // รายชื่อเพื่อนในขบวนของแต่ละธีม (says = คำพูดตอนแตะ, pop = อิโมจิที่เด้งออกมา)
         const CR = {
@@ -3326,7 +3632,14 @@
             teddy: { name: 'หมีเท็ดดี้', svg: critterSVG(P.teddy), says: ['รักนะ 💖', 'กอดหน่อย~', 'Happy Valentine\'s!'], pop: ['💖', '💕'], gait: 'waddle' },
             loveBunny: { name: 'กระต่ายหัวใจ', svg: critterSVG(P.loveBunny), says: ['ให้หัวใจดวงนี้ 💝', 'ฮ็อป ฮ็อป~'], pop: ['💗', '🌹'], gait: 'hop' },
             luckyCat: { name: 'แมวกวัก', svg: critterSVG(P.luckyCat), says: ['เฮงๆ รวยๆ 🧧', 'กวักโชคให้นะ~'], pop: ['🧧', '✨'] },
-            tangerine: { name: 'ส้มน้อย', svg: critterSVG(P.tangerine), says: ['ส้มมงคล 🍊', 'ซินเจียยู่อี่!'], pop: ['🍊', '✨'], gait: 'hop' }
+            tangerine: { name: 'ส้มน้อย', svg: critterSVG(P.tangerine), says: ['ส้มมงคล 🍊', 'ซินเจียยู่อี่!'], pop: ['🍊', '✨'], gait: 'hop' },
+            momElephant: { name: 'แม่ช้าง', svg: critterSVG(P.momElephant), says: ['รักลูกนะ 💙', 'วันแม่ หอมมะลิ 🌼', 'กอดแม่หน่อย~'], pop: ['💙', '🤍'], gait: 'waddle', size: 60 },
+            babyElephant: { name: 'ลูกช้าง', svg: critterSVG(P.babyElephant), says: ['รักแม่ที่สุด 💙', 'แม่จ๋า~'], pop: ['💙', '✨'], gait: 'hop', size: 42 },
+            dadBear: { name: 'พ่อหมี', svg: critterSVG(P.dadBear), says: ['รักลูกนะ 💛', 'พ่อภูมิใจในตัวลูก', 'พักบ้างนะลูก'], pop: ['💛', '🌼'], gait: 'waddle', size: 60 },
+            cubBear: { name: 'ลูกหมี', svg: critterSVG(P.cubBear), says: ['รักพ่อที่สุด 💛', 'พ่อคือฮีโร่!'], pop: ['💛', '✨'], gait: 'hop', size: 42 },
+            candle: { name: 'เทียนน้อย', svg: OP_CANDLE, says: ['สว่างไสว 🕯️', 'ขอให้ใจสงบนะ', 'ออกพรรษาแล้ว~'], pop: ['✨', '🕯️'], gait: 'hop', size: 44 },
+            firefly: { name: 'หิ่งห้อย', svg: critterSVG(P.firefly), says: ['วิบวับ ✨', 'คืนนี้สวยจัง', 'ไปดูบั้งไฟกัน!'], pop: ['✨', '💛'], gait: 'float' },
+            frog: { name: 'กบน้อย', svg: critterSVG(P.frog), says: ['อ๊บ อ๊บ!', 'ฝนตกแล้ว ☔', 'ชอบหน้าฝนจัง'], pop: ['💧', '🌧️'], gait: 'hop' }
         };
         const PARADE_ROSTERS = {
             day: [CR.chick, CR.bunny], sunset: [CR.orangeCat, CR.pinkBunny], ocean: [CR.crab, CR.seal],
@@ -3334,13 +3647,16 @@
             galaxy: [CR.greenAlien, CR.purpleAlien], halloween: [CR.ghost, CR.pumpkin, CR.witchCat],
             loykrathong: [CR.krathong], christmas: [CR.snowman, CR.penguin, CR.reindeer],
             newyear: [CR.partyYellow, CR.partyPink, CR.partyPurple], songkran: [CR.elephant, CR.duck],
-            valentine: [CR.teddy, CR.loveBunny], cny: [CR.luckyCat, CR.tangerine]
+            valentine: [CR.teddy, CR.loveBunny], cny: [CR.luckyCat, CR.tangerine],
+            mothersday: [CR.momElephant, CR.babyElephant], fathersday: [CR.dadBear, CR.cubBear],
+            okphansa: [CR.candle, CR.firefly], rainy: [CR.frog, CR.duck, CR.mushroom]
         };
         // เพื่อนประจำตัวในแดชบอร์ด (ต้องเป็นตัวกลมๆ ที่เปลี่ยนสีหน้าได้)
         const MASCOTS = {
             day: P.chick, sunset: P.orangeCat, ocean: P.seal, forest: P.hedgehog, minimal: P.mochiA, night: P.blackCat,
             galaxy: P.greenAlien, halloween: P.witchCat, loykrathong: P.pinkBunny, christmas: P.penguin, newyear: P.partyYellow,
-            songkran: P.elephant, valentine: P.teddy, cny: P.luckyCat
+            songkran: P.elephant, valentine: P.teddy, cny: P.luckyCat,
+            mothersday: P.momElephant, fathersday: P.dadBear, okphansa: P.firefly, rainy: P.frog
         };
         const PARADE_HELD_LINES = ['ว้าย~', 'ปล่อยน้า~', 'ลอยได้แล้ว!', 'ว้าว สูงจัง!', 'เวียนหัว~'];
         const PARADE_GRAVITY = 2200;
@@ -3592,6 +3908,7 @@
             if (body.dataset.key === key) return;
             body.dataset.key = key;
             body.innerHTML = critterSVG({ ...(MASCOTS[theme] || MASCOTS.day), mood });
+            renderMascotHat();
             el.className = 'mascot mood-' + mood;
         }
         function updateMascot(remain, quota, used) {
@@ -3670,7 +3987,8 @@
         const TAP_FX = {
             day: ['💖', '✨'], sunset: ['🌸', '✨'], ocean: ['bubble'], forest: ['🍃', '🌿'], minimal: ['dot'], night: ['⭐', '✨'],
             galaxy: ['⭐', 'dot'], halloween: ['🍬', '🍭', '✨'], loykrathong: ['✨', '🪷'], christmas: ['snow'], newyear: ['confetti'],
-            songkran: ['drop'], valentine: ['💖', '💕'], cny: ['✨', '🧧']
+            songkran: ['drop'], valentine: ['💖', '💕'], cny: ['✨', '🧧'],
+            mothersday: ['💙', '🤍'], fathersday: ['💛', '✨'], okphansa: ['✨', 'dot'], rainy: ['drop', 'bubble']
         };
         const TAP_SHAPES = ['dot', 'snow', 'bubble', 'drop', 'confetti'];
         function spawnTapFx(x, y) {
@@ -3699,7 +4017,8 @@
         // --- 🧺 ขนมสำหรับป้อนเพื่อนในขบวน + เพื่อนทักทาย/วิ่งไล่กัน ---
         const SNACKS = {
             day: '🌽', sunset: '🐟', ocean: '🐟', forest: '🍓', minimal: '🍡', night: '🐟', galaxy: '🍩', halloween: '🍬',
-            loykrathong: '🌼', christmas: '🍪', newyear: '🍰', songkran: '🍉', valentine: '🍫', cny: '🍊'
+            loykrathong: '🌼', christmas: '🍪', newyear: '🍰', songkran: '🍉', valentine: '🍫', cny: '🍊',
+            mothersday: '🍮', fathersday: '🍯', okphansa: '🍙', rainy: '🍵'
         };
         const SNACK_LINES = ['อร่อย! 😋', 'ง่ำ ง่ำ~', 'ขอบคุณนะ 💖', 'อิ่มแล้ว~', 'อร่อยมากกก'];
         const PARADE_GREETINGS = ['สวัสดี! 👋', 'หวัดดีจ้า~', 'ไปไหนมา?', 'เจออีกแล้ว!'];
@@ -3726,6 +4045,7 @@
         }
         function eatSnack(c, sn) {
             removeSnack(sn);
+            if (sn.isVeg) bumpChallenge('feed');
             if (c.target === sn) c.target = null;
             setCritterState(c, 'idle'); c.timer = 1.8;
             critterSay(c, pick(sn.isVeg ? ['ผักสดๆ อร่อย! 😋', 'กรอบอร่อย~', 'ปลูกเองเหรอ เก่งจัง!'] : SNACK_LINES), 1600);
@@ -3871,6 +4191,12 @@
                 case 'valentine': return [[64, stemTopY + 10, '#FF4D6D'], [148, stemTopY - 4, '#FF7AA8'], [80, stemTopY - 22, '#E0245E']]
                     .map(([x, y, c]) => nestSvg(vlHeart(c), x, y, 16, 15, 'garden-float')).join('');
                 case 'cny': return nestSvg(CN_LANTERN, 150, 30, 22, 40, 'garden-float') + nestSvg(critterSVG(P.tangerine), 38, 126, 32, 36);
+                case 'mothersday': return [[62, stemTopY + 8], [150, stemTopY - 6], [80, stemTopY - 22]].map(([x, y]) => nestSvg(MD_JASMINE, x, y, 15, 15, 'garden-float')).join('')
+                    + nestSvg(critterSVG(P.babyElephant), 148, 126, 32, 36);
+                case 'fathersday': return [[62, stemTopY + 8, '#FFD23F'], [150, stemTopY - 6, '#FFB21E']].map(([x, y, c]) => nestSvg(skFlower(c), x, y, 16, 16, 'garden-float')).join('')
+                    + nestSvg(critterSVG(P.cubBear), 148, 126, 32, 36);
+                case 'okphansa': return nestSvg(OP_CANDLE, 38, 120, 26, 42) + nestSvg(OP_CANDLE, 156, 126, 20, 34);
+                case 'rainy': return nestSvg(RN_CLOUD, 132, 18, 54, 30, 'garden-float') + nestSvg(critterSVG(P.frog), 36, 128, 30, 34);
                 default: return '';
             }
         }
@@ -3921,7 +4247,8 @@
             day: ['🌻', '🐣', '☀️', '🌷'], sunset: ['🌅', '🐈', '🍑', '🌺'], ocean: ['🐠', '🐚', '🦀', '🌊'], forest: ['🌿', '🍄', '🦔', '🌳'],
             minimal: ['🤍', '🫧', '☁️', '🍡'], night: ['🌙', '🦉', '💤', '🌌'], galaxy: ['🪐', '🚀', '👽', '🌟'],
             halloween: ['🎃', '👻', '🦇', '🍬'], loykrathong: ['🪷', '🌕', '🕯️', '🎐'], christmas: ['🎄', '⛄', '🎁', '🔔'],
-            newyear: ['🎆', '🎉', '🥂', '🎊'], songkran: ['💦', '🌼', '🐘', '🍉'], valentine: ['💝', '🌹', '💌', '🍫'], cny: ['🧧', '🍊', '🏮', '🐉']
+            newyear: ['🎆', '🎉', '🥂', '🎊'], songkran: ['💦', '🌼', '🐘', '🍉'], valentine: ['💝', '🌹', '💌', '🍫'], cny: ['🧧', '🍊', '🏮', '🐉'],
+            mothersday: ['💙', '🌼', '🐘', '🤍'], fathersday: ['💛', '🌻', '🐻', '👑'], okphansa: ['🕯️', '🏮', '🌕', '✨'], rainy: ['☔', '🌧️', '🐸', '🌈']
         };
         const MAX_STICKERS = 60;
         let stickers = [];
@@ -3990,7 +4317,7 @@
             const grid = document.getElementById('sticker-grid');
             if (!grid) return;
             grid.innerHTML = '';
-            [...(STICKERS_THEME[currentTheme()] || []), ...STICKERS_BASE].forEach(emoji => {
+            [...(STICKERS_THEME[currentTheme()] || []), ...STICKERS_BASE, ...ownedStickerEmojis()].forEach(emoji => {
                 const btn = document.createElement('button');
                 btn.type = 'button'; btn.className = 'sticker-opt'; btn.textContent = emoji;
                 btn.setAttribute('aria-label', `แปะสติกเกอร์ ${emoji}`);
@@ -4043,11 +4370,15 @@
             carrot: { e: '🥕', name: 'แครอท' }, tomato: { e: '🍅', name: 'มะเขือเทศ' }, corn: { e: '🌽', name: 'ข้าวโพด' },
             cabbage: { e: '🥬', name: 'ผักกาด' }, chili: { e: '🌶️', name: 'พริก' }, strawberry: { e: '🍓', name: 'สตรอว์เบอร์รี' },
             pumpkin: { e: '🎃', name: 'ฟักทอง' }, watermelon: { e: '🍉', name: 'แตงโม' }, tangerine: { e: '🍊', name: 'ส้ม' },
-            broccoli: { e: '🥦', name: 'บรอกโคลี' }, grape: { e: '🍇', name: 'องุ่น' }, cherry: { e: '🍒', name: 'เชอร์รี' }, banana: { e: '🍌', name: 'กล้วย' }
+            broccoli: { e: '🥦', name: 'บรอกโคลี' }, grape: { e: '🍇', name: 'องุ่น' }, cherry: { e: '🍒', name: 'เชอร์รี' }, banana: { e: '🍌', name: 'กล้วย' },
+            blueberry: { e: '🫐', name: 'บลูเบอร์รี' }, lemon: { e: '🍋', name: 'มะนาว' }, coconut: { e: '🥥', name: 'มะพร้าว' }, mushroom: { e: '🍄', name: 'เห็ด' },
+            pineapple: { e: '🍍', name: 'สับปะรด' }, peach: { e: '🍑', name: 'พีช' }, avocado: { e: '🥑', name: 'อะโวคาโด' }, eggplant: { e: '🍆', name: 'มะเขือม่วง' }, kiwi: { e: '🥝', name: 'กีวี' }
         };
         const BASE_VEGGIES = ['carrot', 'tomato', 'corn', 'cabbage', 'chili', 'strawberry'];
+        const RARE_VEGGIES = ['pineapple', 'peach', 'avocado', 'eggplant', 'kiwi']; // ซื้อเมล็ดได้ที่ร้านค้า
         // เมล็ดพิเศษที่ปลูกได้เฉพาะตอนใช้ธีมเทศกาลนั้น
-        const SEASON_VEGGIE = { halloween: 'pumpkin', songkran: 'watermelon', cny: 'tangerine', christmas: 'broccoli', newyear: 'grape', valentine: 'cherry', loykrathong: 'banana' };
+        const SEASON_VEGGIE = { halloween: 'pumpkin', songkran: 'watermelon', cny: 'tangerine', christmas: 'broccoli', newyear: 'grape', valentine: 'cherry', loykrathong: 'banana',
+            mothersday: 'blueberry', fathersday: 'lemon', okphansa: 'coconut', rainy: 'mushroom' };
         const VEG_READY = 3, VEG_GROW_MS = 60 * 60 * 1000, VEG_WATER_COOLDOWN = 30 * 60 * 1000, VEG_PANTRY_MAX = 30;
         const VEG_STAGE_NAMES = ['เมล็ด', 'ต้นอ่อน', 'กำลังโต'];
         const VEG_PEST = `<svg viewBox="0 0 40 20"><path d="M29 4.5l-1.5-3M33 4.5l1.5-3" stroke="#6BA84A" stroke-width="1.2" stroke-linecap="round"/>
@@ -4166,9 +4497,10 @@
             if (!pk) return;
             pk.dataset.plot = i;
             const seasonal = SEASON_VEGGIE[currentTheme()];
-            const seeds = seasonal ? [seasonal, ...BASE_VEGGIES] : BASE_VEGGIES;
+            const rare = ownedRareSeeds();
+            const seeds = [...(seasonal ? [seasonal] : []), ...BASE_VEGGIES, ...rare];
             pk.innerHTML = '<span class="veg-picker-title">เลือกเมล็ดผัก 🌱</span>' + seeds.map(k =>
-                `<button type="button" class="veg-seed${k === seasonal ? ' is-season' : ''}" data-seed="${k}"><span>${VEGGIES[k].e}</span>${VEGGIES[k].name}${k === seasonal ? ' ✨' : ''}</button>`).join('');
+                `<button type="button" class="veg-seed${k === seasonal || rare.includes(k) ? ' is-season' : ''}" data-seed="${k}"><span>${VEGGIES[k].e}</span>${VEGGIES[k].name}${k === seasonal ? ' ✨' : rare.includes(k) ? ' 💎' : ''}</button>`).join('');
             pk.querySelectorAll('.veg-seed').forEach(b => b.addEventListener('click', () => plantVeg(b.dataset.seed)));
             pk.classList.add('open');
         }
@@ -4194,7 +4526,10 @@
             saveVeg();
             const crop = el.querySelector('.veg-crop');
             if (crop) crop.classList.add('harvested');
-            vegFx(el, golden ? ['✨', '🌟', '✨'] : ['✨', VEGGIES[key].e]);
+            const coins = golden ? 5 : RARE_VEGGIES.includes(key) ? 2 : 1;
+            addCoins(coins);
+            bumpChallenge('harvest'); if (golden) bumpChallenge('golden');
+            vegFx(el, golden ? ['✨', '🌟', '🪙'] : ['✨', VEGGIES[key].e, '🪙']);
             playSound('welcome');
             mascotSay(golden ? `ว้าว! ได้${VEGGIES[key].name}ทองคำ ✨` : `เก็บ${VEGGIES[key].name}ได้แล้ว! เอาไปป้อนเพื่อนท้ายหน้าได้นะ`, 3000);
             setTimeout(renderVeggies, 650);
@@ -4237,6 +4572,7 @@
             playSound('pop');
             growVeggies('time');
             setVegProgress('รดน้ำแล้ว ผักจะโตเร็วขึ้น 💧');
+            bumpChallenge('water');
             updateVegTools();
         }
         // วันที่พักเกินโควตา หนอนจะโผล่มาในแปลงที่ยังไม่โตเต็มที่ (ผักไม่ตาย แค่หยุดโตจนกว่าจะไล่)
@@ -4262,7 +4598,7 @@
         }
         function openVegBook() {
             const grid = document.getElementById('veg-book-grid');
-            const keys = [...BASE_VEGGIES, ...Object.values(SEASON_VEGGIE)];
+            const keys = [...BASE_VEGGIES, ...Object.values(SEASON_VEGGIE), ...RARE_VEGGIES];
             grid.innerHTML = keys.map(k => {
                 const n = veg.harvest[k] || 0;
                 return `<div class="veg-book-item${n ? '' : ' locked'}"><span>${VEGGIES[k].e}</span><small>${VEGGIES[k].name}</small><b>${n}</b></div>`;
@@ -4286,6 +4622,405 @@
             });
         }
 
+        // --- 🛍️ ร้านค้า: ใช้เหรียญจากการเก็บผักและชาเลนจ์ แลกสติกเกอร์ ของแต่งมาสคอต ของแต่งสวน และเมล็ดหายาก ---
+        const SHOP_TABS = [['sticker', '🎀 สติกเกอร์'], ['hat', '👑 หมวก'], ['decor', '🌻 แต่งสวน'], ['seed', '💎 เมล็ด']];
+        const SHOP_ITEMS = {
+            'pack-cute':   { cat: 'sticker', name: 'แพ็กสัตว์น่ารัก', price: 12, emojis: ['🦄', '🐼', '🐰', '🐹', '🐧', '🦊'] },
+            'pack-food':   { cat: 'sticker', name: 'แพ็กของกิน', price: 12, emojis: ['🍣', '🍜', '🧁', '🍡', '🍙', '🧋'] },
+            'pack-sky':    { cat: 'sticker', name: 'แพ็กท้องฟ้า', price: 12, emojis: ['🌈', '☁️', '🌙', '🪐', '🌠', '☀️'] },
+            'pack-flower': { cat: 'sticker', name: 'แพ็กดอกไม้', price: 12, emojis: ['🌷', '🌻', '🌺', '💐', '🌼', '🌹'] },
+            'pack-love':   { cat: 'sticker', name: 'แพ็กหัวใจ', price: 10, emojis: ['💗', '💞', '💘', '💝', '💓', '💕'] },
+            'hat-bow':     { cat: 'hat', name: 'โบว์ชมพู', price: 8, emoji: '🎀' },
+            'hat-flower':  { cat: 'hat', name: 'ดอกไม้ทัดหัว', price: 8, emoji: '🌸' },
+            'hat-star':    { cat: 'hat', name: 'ดาวน้อย', price: 8, emoji: '⭐' },
+            'hat-cap':     { cat: 'hat', name: 'หมวกแก๊ป', price: 12, emoji: '🧢' },
+            'hat-tophat':  { cat: 'hat', name: 'หมวกทรงสูง', price: 15, emoji: '🎩' },
+            'hat-grad':    { cat: 'hat', name: 'หมวกรับปริญญา', price: 18, emoji: '🎓' },
+            'hat-crown':   { cat: 'hat', name: 'มงกุฎ', price: 25, emoji: '👑' },
+            'decor-sunflower': { cat: 'decor', name: 'ทานตะวัน', price: 10, emoji: '🌻', pos: 'left:5%; bottom:12%; font-size:30px;' },
+            'decor-snail':     { cat: 'decor', name: 'หอยทาก', price: 8, emoji: '🐌', pos: 'left:22%; bottom:4%; font-size:19px;' },
+            'decor-mushroom':  { cat: 'decor', name: 'เห็ดน้อย', price: 8, emoji: '🍄', pos: 'right:6%; bottom:9%; font-size:24px;' },
+            'decor-ladybug':   { cat: 'decor', name: 'เต่าทอง', price: 8, emoji: '🐞', pos: 'left:57%; top:38%; font-size:15px;' },
+            'decor-lantern':   { cat: 'decor', name: 'โคมไฟ', price: 12, emoji: '🏮', pos: 'right:9%; top:4%; font-size:24px;' },
+            'decor-fountain':  { cat: 'decor', name: 'น้ำพุ', price: 20, emoji: '⛲', pos: 'right:22%; bottom:4%; font-size:27px;' },
+            'seed-pineapple':  { cat: 'seed', name: 'สับปะรด', price: 15, veg: 'pineapple' },
+            'seed-peach':      { cat: 'seed', name: 'พีช', price: 15, veg: 'peach' },
+            'seed-avocado':    { cat: 'seed', name: 'อะโวคาโด', price: 15, veg: 'avocado' },
+            'seed-eggplant':   { cat: 'seed', name: 'มะเขือม่วง', price: 15, veg: 'eggplant' },
+            'seed-kiwi':       { cat: 'seed', name: 'กีวี', price: 15, veg: 'kiwi' }
+        };
+        function loadShop() {
+            let v = null;
+            try { v = JSON.parse(localStorage.getItem('shop_state') || 'null'); } catch (e) {}
+            const fresh = !v || typeof v !== 'object' || Array.isArray(v);
+            if (fresh) v = {};
+            const owned = [...new Set((Array.isArray(v.owned) ? v.owned : []).filter(id => SHOP_ITEMS[id]))];
+            const st = {
+                coins: Math.max(0, Math.floor(+v.coins || 0)), owned,
+                hat: owned.includes(v.hat) && SHOP_ITEMS[v.hat].cat === 'hat' ? v.hat : null,
+                decor: (Array.isArray(v.decor) ? v.decor : []).filter(id => owned.includes(id) && SHOP_ITEMS[id].cat === 'decor')
+            };
+            // เปิดร้านครั้งแรก: ให้เหรียญย้อนหลังจากผักที่เคยเก็บไว้ก่อนมีร้าน (ผักทองได้เพิ่มอีก 4)
+            if (fresh) st.coins = Object.values(veg.harvest).reduce((a, b) => a + b, 0) + 4 * veg.golden;
+            return { st, fresh };
+        }
+        let shop;
+        { const loaded = loadShop(); shop = loaded.st; if (loaded.fresh) safeSetItem('shop_state', JSON.stringify(shop)); }
+        function saveShop() { safeSetItem('shop_state', JSON.stringify(shop)); }
+        function addCoins(n) { shop.coins += n; saveShop(); updateCoinUI(); }
+        function updateCoinUI() { document.querySelectorAll('[data-coins]').forEach(el => { el.textContent = shop.coins; }); }
+        function ownedStickerEmojis() { return shop.owned.filter(id => SHOP_ITEMS[id].cat === 'sticker').flatMap(id => SHOP_ITEMS[id].emojis); }
+        function ownedRareSeeds() { return shop.owned.filter(id => SHOP_ITEMS[id].cat === 'seed').map(id => SHOP_ITEMS[id].veg); }
+        let shopTab = 'sticker';
+        function openShop(tab) {
+            if (tab) shopTab = tab;
+            renderShop();
+            document.getElementById('shop-modal').style.display = 'flex';
+        }
+        function closeShop() { document.getElementById('shop-modal').style.display = 'none'; }
+        function setShopTab(tab) { shopTab = tab; renderShop(); }
+        function renderShop() {
+            document.getElementById('shop-tabs').innerHTML = SHOP_TABS.map(([k, label]) =>
+                `<button type="button" class="report-tab${k === shopTab ? ' active' : ''}" role="tab" aria-selected="${k === shopTab}" onclick="setShopTab('${k}')">${label}</button>`).join('');
+            document.getElementById('shop-grid').innerHTML = Object.entries(SHOP_ITEMS).filter(([, it]) => it.cat === shopTab).map(([id, it]) => {
+                const owned = shop.owned.includes(id);
+                const preview = it.cat === 'sticker' ? it.emojis.slice(0, 3).join('') : it.cat === 'seed' ? VEGGIES[it.veg].e : it.emoji;
+                let action;
+                if (!owned) {
+                    const short = it.price - shop.coins;
+                    action = short > 0 ? `<button type="button" class="shop-buy" disabled>🪙 ${it.price}<small>ขาดอีก ${short}</small></button>`
+                        : `<button type="button" class="shop-buy" onclick="buyShopItem('${id}')">🪙 ${it.price}</button>`;
+                } else if (it.cat === 'hat') {
+                    action = shop.hat === id ? `<button type="button" class="shop-buy is-on" onclick="toggleShopItem('${id}')">ใส่อยู่ · ถอด</button>`
+                        : `<button type="button" class="shop-buy is-owned" onclick="toggleShopItem('${id}')">ใส่ให้มาสคอต</button>`;
+                } else if (it.cat === 'decor') {
+                    action = shop.decor.includes(id) ? `<button type="button" class="shop-buy is-on" onclick="toggleShopItem('${id}')">วางอยู่ · เก็บ</button>`
+                        : `<button type="button" class="shop-buy is-owned" onclick="toggleShopItem('${id}')">วางในสวน</button>`;
+                } else action = `<span class="shop-owned">${it.cat === 'seed' ? 'ปลูกได้แล้ว ✓' : 'อยู่ในถาดสติกเกอร์ ✓'}</span>`;
+                return `<div class="shop-item${owned ? ' owned' : ''}"><span class="shop-preview${it.cat === 'sticker' ? ' is-pack' : ''}">${preview}</span><span class="shop-name">${it.name}</span>${action}</div>`;
+            }).join('');
+            updateCoinUI();
+        }
+        function buyShopItem(id) {
+            const it = SHOP_ITEMS[id];
+            if (!it || shop.owned.includes(id) || shop.coins < it.price) return;
+            shop.coins -= it.price;
+            shop.owned.push(id);
+            if (it.cat === 'hat') shop.hat = id;
+            if (it.cat === 'decor') shop.decor.push(id);
+            saveShop(); applyShopItems(); renderShop();
+            playSound('welcome');
+            const where = { sticker: 'ไปแปะได้ที่ปุ่ม 🎀 สติกเกอร์', hat: 'ใส่ให้มาสคอตแล้ว', decor: 'วางในสวนแล้ว', seed: 'เลือกปลูกได้ที่แปลงว่าง' }[it.cat];
+            showToast(`🛍️ ได้ ${it.name} แล้ว! ${where}`, 'success');
+            if (it.cat === 'hat') { mascotSay(`ว้าว ${it.emoji} ใหม่! ขอบคุณนะ`, 2600); cheerMascot(); }
+        }
+        function toggleShopItem(id) {
+            const it = SHOP_ITEMS[id];
+            if (!it || !shop.owned.includes(id)) return;
+            if (it.cat === 'hat') shop.hat = shop.hat === id ? null : id;
+            if (it.cat === 'decor') shop.decor = shop.decor.includes(id) ? shop.decor.filter(x => x !== id) : [...shop.decor, id];
+            saveShop(); applyShopItems(); renderShop(); playSound('pop');
+        }
+        function renderMascotHat() {
+            const body = document.getElementById('mascot-body');
+            if (!body) return;
+            let hat = document.getElementById('mascot-hat');
+            if (!shop.hat) { if (hat) hat.remove(); return; }
+            if (!hat) { hat = document.createElement('span'); hat.id = 'mascot-hat'; hat.className = 'mascot-hat'; hat.setAttribute('aria-hidden', 'true'); body.appendChild(hat); }
+            hat.textContent = SHOP_ITEMS[shop.hat].emoji;
+        }
+        function renderGardenDecor() {
+            const wrap = document.getElementById('garden-scene-wrap');
+            if (!wrap) return;
+            let box = document.getElementById('garden-decor');
+            if (!box) { box = document.createElement('div'); box.id = 'garden-decor'; box.className = 'garden-decor'; box.setAttribute('aria-hidden', 'true'); wrap.appendChild(box); }
+            box.innerHTML = shop.decor.map(id => `<span class="garden-decor-item" style="${SHOP_ITEMS[id].pos}">${SHOP_ITEMS[id].emoji}</span>`).join('');
+        }
+        function applyShopItems() {
+            renderMascotHat(); renderGardenDecor(); updateCoinUI();
+            const tray = document.getElementById('sticker-tray');
+            if (tray && tray.classList.contains('open')) renderStickerTray();
+        }
+
+        // --- 🏆 ชาเลนจ์ประจำสัปดาห์: สัปดาห์ละ 3 อย่าง (งาน · สวน · ผ่อนคลาย) ทำครบได้เหรียญ ---
+        const CHALLENGE_POOL = [
+            { id: 'quota5', kind: 'work', icon: '🎯', text: 'อยู่ในโควตา 5 วัน', goal: 5, reward: 15, stat: 'daysWithin' },
+            { id: 'quotaRun3', kind: 'work', icon: '🔥', text: 'อยู่ในโควตาติดกัน 3 วันทำงาน', goal: 3, reward: 12, stat: 'bestRun' },
+            { id: 'toiletFree5', kind: 'work', icon: '🚻', text: 'เข้าห้องน้ำไม่เกินเวลาฟรี 5 ครั้ง', goal: 5, reward: 10, stat: 'toiletFree' },
+            { id: 'breaks3days', kind: 'work', icon: '☕', text: 'พักอย่างน้อยวันละ 3 ครั้ง ครบ 3 วัน', goal: 3, reward: 10, stat: 'days3breaks' },
+            { id: 'harvest5', kind: 'fun', icon: '🥕', text: 'เก็บผัก 5 ชิ้น', goal: 5, reward: 10, counter: 'harvest' },
+            { id: 'golden1', kind: 'fun', icon: '✨', text: 'เก็บผักทองได้ 1 ชิ้น', goal: 1, reward: 15, counter: 'golden' },
+            { id: 'feed5', kind: 'fun', icon: '🧺', text: 'ป้อนผักให้เพื่อนท้ายหน้า 5 ครั้ง', goal: 5, reward: 8, counter: 'feed' },
+            { id: 'water3', kind: 'fun', icon: '💧', text: 'รดน้ำผัก 3 ครั้ง', goal: 3, reward: 6, counter: 'water' },
+            { id: 'relax3', kind: 'calm', icon: '🫧', text: 'ฝึกหายใจหรือยืดเส้นระหว่างพัก 3 ครั้ง', goal: 3, reward: 12, counter: 'relax' },
+            { id: 'stretch2', kind: 'calm', icon: '🙆', text: 'ยืดเส้นจนครบชุด 2 ครั้ง', goal: 2, reward: 12, counter: 'stretch' },
+            { id: 'sound2', kind: 'calm', icon: '🎧', text: 'ฟังเสียงผ่อนคลายระหว่างพัก 2 ครั้ง', goal: 2, reward: 8, counter: 'sound' }
+        ];
+        const CHALLENGE_BONUS = 10;
+        const CHALLENGE_COUNTERS = ['harvest', 'golden', 'feed', 'water', 'relax', 'stretch', 'sound'];
+        function weekStartKey(d = new Date()) {
+            const s = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            s.setDate(s.getDate() - ((s.getDay() + 6) % 7)); // สัปดาห์เริ่มวันจันทร์
+            return `${s.getFullYear()}-${pad2(s.getMonth() + 1)}-${pad2(s.getDate())}`;
+        }
+        function loadChallenges() {
+            let v = null;
+            try { v = JSON.parse(localStorage.getItem('challenges') || 'null'); } catch (e) {}
+            const week = weekStartKey();
+            if (!v || typeof v !== 'object' || v.week !== week) return { week, claimed: [], counters: {}, bonus: false };
+            const counters = {};
+            CHALLENGE_COUNTERS.forEach(k => { const n = Math.floor(+(v.counters || {})[k]); if (n > 0) counters[k] = n; });
+            return { week, claimed: (Array.isArray(v.claimed) ? v.claimed : []).filter(id => CHALLENGE_POOL.some(c => c.id === id)), counters, bonus: !!v.bonus };
+        }
+        let chal = loadChallenges();
+        function saveChallenges() { safeSetItem('challenges', JSON.stringify(chal)); }
+        function ensureChallengeWeek() { if (chal.week !== weekStartKey()) { chal = loadChallenges(); saveChallenges(); } }
+        // เลือก 3 ชาเลนจ์ของสัปดาห์แบบคงที่ (ทุกเครื่อง/ทุกครั้งที่เปิดได้ชุดเดียวกันทั้งสัปดาห์)
+        function weekChallenges(week = chal.week) {
+            let h = 7;
+            for (const ch of week) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+            return ['work', 'fun', 'calm'].map((kind, k) => {
+                const list = CHALLENGE_POOL.filter(c => c.kind === kind);
+                return list[(h >>> (k * 4)) % list.length];
+            });
+        }
+        function bumpChallenge(counter, n = 1) {
+            ensureChallengeWeek();
+            chal.counters[counter] = (chal.counters[counter] || 0) + n;
+            saveChallenges(); renderChallenges();
+        }
+        // สถิติการพักของสัปดาห์นี้ (ใช้กับชาเลนจ์ฝั่งงาน)
+        function weekBreakStats() {
+            const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
+            const quota = parseInt(localStorage.getItem('daily_quota') || '60');
+            const start = new Date(chal.week + 'T00:00:00'), today = new Date(); today.setHours(23, 59, 59, 999);
+            const days = new Map();
+            let toiletFree = 0;
+            logs.forEach(l => {
+                const d = new Date(l.date);
+                if (isNaN(d) || d < start || d > today) return;
+                const key = d.toDateString();
+                const day = days.get(key) || { date: d, total: 0, count: 0 };
+                day.total += quotaMinutesForLog(l); day.count++;
+                days.set(key, day);
+                if (l.isToilet && quotaMinutesForLog(l) === 0) toiletFree++;
+            });
+            const list = [...days.values()].sort((a, b) => a.date - b.date);
+            let run = 0, bestRun = 0;
+            list.forEach(d => { run = d.total <= quota ? run + 1 : 0; bestRun = Math.max(bestRun, run); });
+            return { daysWithin: list.filter(d => d.total <= quota).length, bestRun, toiletFree, days3breaks: list.filter(d => d.count >= 3).length };
+        }
+        function challengeProgress(c, stats) { return Math.min(c.goal, c.counter ? (chal.counters[c.counter] || 0) : stats[c.stat]); }
+        function renderChallenges() {
+            const list = document.getElementById('challenge-list');
+            if (!list) return;
+            ensureChallengeWeek();
+            const stats = weekBreakStats(), picks = weekChallenges();
+            list.innerHTML = picks.map(c => {
+                const p = challengeProgress(c, stats), done = p >= c.goal, claimed = chal.claimed.includes(c.id);
+                const side = claimed ? '<span class="ch-done">✓ รับแล้ว</span>'
+                    : done ? `<button type="button" class="ch-claim" onclick="claimChallenge('${c.id}')">รับ 🪙${c.reward}</button>`
+                    : `<span class="ch-side">${p}/${c.goal} · 🪙${c.reward}</span>`;
+                return `<div class="ch-row${done ? ' is-done' : ''}${claimed ? ' is-claimed' : ''}"><span class="ch-icon" aria-hidden="true">${c.icon}</span>`
+                    + `<div class="ch-main"><span class="ch-text">${c.text}</span><div class="ch-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${c.goal}" aria-valuenow="${p}"><span style="width:${(p / c.goal * 100).toFixed(0)}%"></span></div></div>${side}</div>`;
+            }).join('');
+            const daysLeft = 7 - ((new Date().getDay() + 6) % 7);
+            document.getElementById('challenge-left').textContent = daysLeft <= 1 ? 'วันสุดท้าย!' : `เหลือ ${daysLeft} วัน`;
+            const claimedCount = picks.filter(c => chal.claimed.includes(c.id)).length;
+            document.getElementById('challenge-note').textContent = chal.bonus ? '🎉 ครบทั้ง 3 แล้ว ได้โบนัสสัปดาห์นี้แล้ว' : `ทำครบทั้ง 3 รับโบนัสอีก 🪙${CHALLENGE_BONUS} (${claimedCount}/3)`;
+            updateCoinUI();
+        }
+        function claimChallenge(id) {
+            ensureChallengeWeek();
+            const c = weekChallenges().find(x => x.id === id);
+            if (!c || chal.claimed.includes(id) || challengeProgress(c, weekBreakStats()) < c.goal) return;
+            chal.claimed.push(id);
+            let reward = c.reward;
+            const allDone = weekChallenges().every(x => chal.claimed.includes(x.id));
+            if (allDone && !chal.bonus) { chal.bonus = true; reward += CHALLENGE_BONUS; }
+            saveChallenges(); addCoins(reward); renderChallenges();
+            playSound('welcome'); fireConfetti();
+            showToast(allDone ? `🏆 ครบทั้ง 3 ชาเลนจ์! ได้ ${reward} เหรียญ (รวมโบนัส)` : `🏆 สำเร็จ! ได้ ${reward} เหรียญ`, 'success');
+            mascotSay(allDone ? 'เก่งมาก ครบทุกชาเลนจ์เลย! 🏆' : 'เย้! ได้เหรียญแล้ว 🪙', 2600);
+        }
+
+        // --- 🫧 ระหว่างพัก: หายใจผ่อนคลาย · ยืดเส้นสั้นๆ · เสียงผ่อนคลาย (สร้างเสียงสดๆ ไม่ต้องโหลดไฟล์) ---
+        const BREATH_PHASES = [['หายใจเข้า…', 4, 'in'], ['กลั้นไว้…', 3, 'hold'], ['หายใจออกช้าๆ…', 6, 'out']];
+        const BREATH_ROUNDS = 3;
+        const STRETCHES = [
+            { e: '🙆', t: 'ยืดแขนขึ้นฟ้า', d: 'ประสานมือ ยืดแขนขึ้นเหนือหัว ค้างไว้ หายใจลึกๆ', s: 15 },
+            { e: '🔄', t: 'หมุนไหล่', d: 'หมุนไหล่ไปข้างหลังช้าๆ 10 รอบ แล้วหมุนกลับมาข้างหน้า', s: 15 },
+            { e: '🙇', t: 'ยืดคอ', d: 'เอียงหัวไปทางขวา ค้างไว้สักพัก แล้วสลับไปทางซ้าย', s: 20 },
+            { e: '🤲', t: 'ยืดข้อมือ', d: 'เหยียดแขนตรง ใช้มืออีกข้างดึงนิ้วเข้าหาตัวเบาๆ แล้วสลับข้าง', s: 20 },
+            { e: '👀', t: 'พักสายตา 20-20-20', d: 'มองไกลๆ สัก 6 เมตร นาน 20 วินาที แล้วกะพริบตาช้าๆ', s: 20 }
+        ];
+        const relax = { mode: null, timers: [], step: 0 };
+        function clearRelaxTimers() { relax.timers.forEach(t => clearTimeout(t)); relax.timers = []; }
+        function openRelax(mode, ev) {
+            if (ev) ev.stopPropagation();
+            clearRelaxTimers();
+            relax.mode = mode; relax.step = 0;
+            document.getElementById('relax-overlay').classList.add('open');
+            if (mode === 'breath') startBreathing(); else showStretch(0);
+        }
+        function closeRelax() {
+            clearRelaxTimers();
+            relax.mode = null;
+            document.getElementById('relax-overlay').classList.remove('open');
+        }
+        function startBreathing() {
+            const box = document.getElementById('relax-content');
+            box.innerHTML = `<h3 id="relax-title">🫧 หายใจผ่อนคลาย</h3>
+                <div class="breath-stage"><div class="breath-circle" id="breath-circle"></div><span class="breath-text" id="breath-text">เตรียมตัว…</span></div>
+                <p class="relax-sub" id="breath-count">นั่งสบายๆ ทำตามวงกลมไปพร้อมกัน</p>`;
+            let t = 1500;
+            for (let r = 0; r < BREATH_ROUNDS; r++) {
+                BREATH_PHASES.forEach(([text, secs, cls]) => {
+                    relax.timers.push(setTimeout(() => {
+                        const circle = document.getElementById('breath-circle');
+                        if (!circle) return;
+                        circle.style.transitionDuration = secs + 's';
+                        circle.className = 'breath-circle is-' + cls;
+                        document.getElementById('breath-text').textContent = text;
+                        document.getElementById('breath-count').textContent = `รอบที่ ${r + 1} จาก ${BREATH_ROUNDS}`;
+                    }, t));
+                    t += secs * 1000;
+                });
+            }
+            relax.timers.push(setTimeout(() => {
+                document.getElementById('breath-text').textContent = 'เยี่ยมเลย 😊';
+                document.getElementById('breath-count').textContent = 'รู้สึกเบาขึ้นไหม พักต่อได้ตามสบายนะ';
+                document.getElementById('breath-circle').className = 'breath-circle is-done';
+                playSound('welcome');
+                bumpChallenge('relax');
+            }, t));
+        }
+        function showStretch(i) {
+            clearRelaxTimers();
+            relax.step = i;
+            const box = document.getElementById('relax-content');
+            if (i >= STRETCHES.length) {
+                box.innerHTML = `<h3 id="relax-title">🙆 ยืดเส้นครบแล้ว!</h3><div class="stretch-emoji">🎉</div>
+                    <p class="relax-sub">ร่างกายสดชื่นขึ้นแล้ว กลับไปทำงานต่อได้อย่างสบายตัว</p>
+                    <div class="modal-btn-group"><button type="button" class="modal-btn btn-primary" onclick="closeRelax()">เสร็จแล้ว</button></div>`;
+                playSound('welcome');
+                bumpChallenge('relax'); bumpChallenge('stretch');
+                return;
+            }
+            const st = STRETCHES[i];
+            box.innerHTML = `<h3 id="relax-title">🙆 ยืดเส้นสั้นๆ</h3>
+                <div class="stretch-emoji">${st.e}</div><h4 class="stretch-title">${st.t}</h4><p class="relax-sub">${st.d}</p>
+                <div class="stretch-timer"><span id="stretch-left">${st.s}</span> วินาที</div>
+                <div class="stretch-dots" aria-label="ท่าที่ ${i + 1} จาก ${STRETCHES.length}">${STRETCHES.map((_, k) => `<i class="${k < i ? 'done' : k === i ? 'now' : ''}"></i>`).join('')}</div>
+                <div class="modal-btn-group"><button type="button" class="modal-btn btn-primary" onclick="showStretch(${i + 1})">ท่าถัดไป →</button></div>`;
+            for (let k = 1; k <= st.s; k++) {
+                relax.timers.push(setTimeout(() => {
+                    const left = document.getElementById('stretch-left');
+                    if (left) left.textContent = st.s - k;
+                    if (k === st.s) { playSound('pop'); showStretch(i + 1); }
+                }, k * 1000));
+            }
+        }
+
+        // เสียงผ่อนคลาย: ฝน (noise กรองความถี่ + เม็ดฝนเปาะแปะ) · คลื่น (เสียงทุ้มดังเบาสลับกันช้าๆ) · ลม (ความถี่เลื่อนไปมา)
+        const AMBIENT_KINDS = [['rain', '🌧️ ฝนตก'], ['waves', '🌊 คลื่นทะเล'], ['wind', '🍃 ลมเย็น']];
+        const ambient = { kind: null, master: null, nodes: [], timers: [], countedFor: null };
+        function makeNoise(type) {
+            const len = audioCtx.sampleRate * 2, buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate), data = buf.getChannelData(0);
+            let last = 0, b0 = 0, b1 = 0, b2 = 0;
+            for (let i = 0; i < len; i++) {
+                const w = Math.random() * 2 - 1;
+                if (type === 'brown') { last = (last + 0.02 * w) / 1.02; data[i] = last * 3.5; }
+                else { b0 = 0.99765 * b0 + w * 0.099; b1 = 0.963 * b1 + w * 0.2965; b2 = 0.57 * b2 + w * 1.0526; data[i] = (b0 + b1 + b2 + w * 0.1848) * 0.18; }
+            }
+            const src = audioCtx.createBufferSource(); src.buffer = buf; src.loop = true;
+            return src;
+        }
+        function startAmbient(kind) {
+            if (isMuted || soundVolume <= 0) { showToast('เปิดเสียงในหน้าตั้งค่าก่อนนะ 🔊', 'info'); return; }
+            stopAmbient(true);
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const now = audioCtx.currentTime;
+                const master = audioCtx.createGain();
+                master.gain.setValueAtTime(0.0001, now);
+                master.gain.exponentialRampToValueAtTime(0.5 * soundVolume, now + 1.5);
+                master.connect(audioCtx.destination);
+                const nodes = [];
+                const lfo = (freq, depth, target) => {
+                    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                    o.frequency.value = freq; g.gain.value = depth; o.connect(g); g.connect(target); o.start(); nodes.push(o);
+                };
+                if (kind === 'rain') {
+                    const n = makeNoise('pink'), hp = audioCtx.createBiquadFilter(), lp = audioCtx.createBiquadFilter();
+                    hp.type = 'highpass'; hp.frequency.value = 500; lp.type = 'lowpass'; lp.frequency.value = 7000;
+                    n.connect(hp); hp.connect(lp); lp.connect(master); n.start(); nodes.push(n);
+                    const drip = () => {
+                        if (ambient.kind !== 'rain') return;
+                        const t = audioCtx.currentTime, o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                        o.type = 'sine'; o.frequency.setValueAtTime(1800 + Math.random() * 2200, t); o.frequency.exponentialRampToValueAtTime(600, t + 0.06);
+                        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.05, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+                        o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.08);
+                        ambient.timers.push(setTimeout(drip, 120 + Math.random() * 520));
+                    };
+                    ambient.timers.push(setTimeout(drip, 400));
+                } else if (kind === 'waves') {
+                    const n = makeNoise('brown'), lp = audioCtx.createBiquadFilter(), swell = audioCtx.createGain();
+                    lp.type = 'lowpass'; lp.frequency.value = 900; swell.gain.value = 0.55;
+                    n.connect(lp); lp.connect(swell); swell.connect(master); n.start(); nodes.push(n);
+                    lfo(0.09, 0.45, swell.gain); lfo(0.09, 350, lp.frequency);
+                } else {
+                    const n = makeNoise('pink'), bp = audioCtx.createBiquadFilter();
+                    bp.type = 'bandpass'; bp.frequency.value = 520; bp.Q.value = 0.9;
+                    n.connect(bp); bp.connect(master); n.start(); nodes.push(n);
+                    lfo(0.06, 320, bp.frequency);
+                }
+                Object.assign(ambient, { kind, master, nodes });
+            } catch (e) { return; }
+            // นับชาเลนจ์ครั้งเดียวต่อการพักหนึ่งครั้ง
+            const breakId = activeBreak ? activeBreak.startTime : null;
+            if (breakId && ambient.countedFor !== breakId) { ambient.countedFor = breakId; bumpChallenge('sound'); }
+            renderAmbientButtons();
+        }
+        function stopAmbient(immediate) {
+            ambient.timers.forEach(t => clearTimeout(t)); ambient.timers = [];
+            const { master, nodes } = ambient;
+            ambient.kind = null; ambient.master = null; ambient.nodes = [];
+            if (master) {
+                try {
+                    const now = audioCtx.currentTime;
+                    master.gain.cancelScheduledValues(now);
+                    master.gain.setValueAtTime(Math.max(0.0001, master.gain.value), now);
+                    master.gain.exponentialRampToValueAtTime(0.0001, now + (immediate ? 0.05 : 0.8));
+                    setTimeout(() => { nodes.forEach(n => { try { n.stop(); } catch (e) {} }); master.disconnect(); }, immediate ? 80 : 900);
+                } catch (e) {}
+            }
+            renderAmbientButtons();
+        }
+        function toggleAmbientMenu(ev) {
+            if (ev) ev.stopPropagation();
+            const card = ev && ev.target.closest('.action-card');
+            const menu = card && card.querySelector('.ambient-menu');
+            if (menu) { menu.classList.toggle('open'); renderAmbientButtons(); }
+        }
+        function pickAmbient(kind, ev) {
+            if (ev) ev.stopPropagation();
+            if (!kind || ambient.kind === kind) stopAmbient(); else startAmbient(kind);
+        }
+        function renderAmbientButtons() {
+            document.querySelectorAll('.ambient-menu').forEach(menu => {
+                menu.innerHTML = AMBIENT_KINDS.map(([k, label]) => `<button type="button" class="relax-chip${ambient.kind === k ? ' is-on' : ''}" onclick="pickAmbient('${k}', event)">${label}</button>`).join('')
+                    + (ambient.kind ? `<button type="button" class="relax-chip" onclick="pickAmbient(null, event)">⏹ ปิดเสียง</button>` : '');
+            });
+            document.querySelectorAll('.relax-sound-btn').forEach(b => b.classList.toggle('is-on', !!ambient.kind));
+        }
+        // จบการพักแล้ว ปิดเสียงและหน้าต่างผ่อนคลายให้เอง
+        function stopRelaxForBreakEnd() {
+            stopAmbient();
+            closeRelax();
+            document.querySelectorAll('.ambient-menu.open').forEach(m => m.classList.remove('open'));
+        }
+
         SEASON_DECOR.valentine = () => {
             const colors = ['#E0245E', '#FF4D6D', '#FF7AA8', '#FFB3C7', '#FF8FA3'];
             let hearts = '';
@@ -4307,6 +5042,42 @@
                 front: fallingItems(2, 'cn-envelope', CN_ENVELOPE, [22, 28])
             };
         };
+        function rainDrops(n) {
+            let html = '';
+            for (let i = 0; i < n; i++) {
+                const d = rnd(0.9, 1.6);
+                html += `<span class="rn-drop" style="left:${rnd(0, 104).toFixed(1)}%; --len:${rnd(10, 18).toFixed(0)}px; --d:${d.toFixed(2)}s; animation-delay:-${rnd(0, d).toFixed(2)}s;"></span>`;
+            }
+            return html;
+        }
+        const risingItems = (n, cls, inner, size, dur) => {
+            let html = '';
+            for (let i = 0; i < n; i++) {
+                const d = rnd(dur[0], dur[1]);
+                html += `<div class="sd-rise ${cls}" style="left:${rnd(3, 95).toFixed(1)}%; --s:${rnd(size[0], size[1]).toFixed(0)}px; --d:${d.toFixed(1)}s; --sway:${rnd(-40, 40).toFixed(0)}px; animation-delay:-${rnd(0, d).toFixed(1)}s;">${typeof inner === 'function' ? inner(i) : inner}</div>`;
+            }
+            return html;
+        };
+        SEASON_DECOR.mothersday = () => ({
+            back: fallingItems(14, 'md-jasmine', MD_JASMINE, [12, 20]) + risingItems(7, 'vl-heart', i => vlHeart(['#8DB8FF', '#2F6FDB', '#BCD6FF'][i % 3]), [12, 24], [18, 28]),
+            front: fallingItems(3, 'md-jasmine', MD_JASMINE, [18, 24])
+        });
+        SEASON_DECOR.fathersday = () => ({
+            back: fallingItems(12, 'sk-flower', i => skFlower(i % 2 ? '#FFD23F' : '#FFB21E'), [13, 21]) + risingItems(7, 'vl-heart', i => vlHeart(['#FFC21A', '#FF9F1C', '#FFE066'][i % 3]), [12, 24], [18, 28]),
+            front: fallingItems(3, 'sk-flower', () => skFlower('#FFD23F'), [18, 24])
+        });
+        SEASON_DECOR.okphansa = () => ({
+            back: `<div class="sd-moon"></div><div class="op-river">${lkWave('w1', 'rgba(255,177,61,0.12)')}${lkWave('w2', 'rgba(182,155,255,0.12)')}</div>`
+                + risingItems(9, 'op-orb', '', [10, 22], [12, 20])
+                + `<div class="op-candle c1">${OP_CANDLE}</div><div class="op-candle c2">${OP_CANDLE}</div>`,
+            front: risingItems(2, 'op-orb', '', [16, 24], [14, 20])
+        });
+        SEASON_DECOR.rainy = () => ({
+            back: rainDrops(36)
+                + `<div class="rn-cloud" style="--top:3vh; --s:120px; --d:90s; animation-delay:-20s;">${RN_CLOUD}</div>`
+                + `<div class="rn-cloud" style="--top:12vh; --s:86px; --d:120s; animation-delay:-75s;">${RN_CLOUD}</div>`,
+            front: rainDrops(6)
+        });
         function renderSeasonDecor(theme) {
             const back = document.getElementById('bg-season'), front = document.getElementById('fg-season');
             if (!back || !front || back.dataset.theme === theme) return;
@@ -4327,6 +5098,15 @@
             return new Date(bangkok.getUTCFullYear(), bangkok.getUTCMonth(), bangkok.getUTCDate());
         }
         // วันตรุษจีน = วันจันทร์ดับดวงแรกตั้งแต่ 21 ม.ค. (เวลาจีน) — ประมาณแบบเดียวกับลอยกระทง คลาดได้ ±1 วัน
+        // วันออกพรรษา = วันเพ็ญเดือน 11 คือพระจันทร์เต็มดวงก่อนวันลอยกระทงหนึ่งรอบเดือน (คลาดได้ ±1 วัน)
+        function okPhansaDate(year) {
+            const SYNODIC_MS = 29.530588853 * 864e5;
+            const REF_FULL_MOON = Date.UTC(2000, 0, 21, 4, 40);
+            const from = Date.UTC(year, 9, 29);
+            const loyMoon = REF_FULL_MOON + Math.ceil((from - REF_FULL_MOON) / SYNODIC_MS) * SYNODIC_MS;
+            const bangkok = new Date(loyMoon - SYNODIC_MS + 7 * 36e5);
+            return new Date(bangkok.getUTCFullYear(), bangkok.getUTCMonth(), bangkok.getUTCDate());
+        }
         function chineseNewYearDate(year) {
             const SYNODIC_MS = 29.530588853 * 864e5;
             const REF_NEW_MOON = Date.UTC(2000, 0, 6, 18, 14);
@@ -4338,7 +5118,11 @@
         const SEASONS = [
             { theme: 'songkran',    label: 'สงกรานต์',   window: y => [new Date(y, 3, 10), new Date(y, 3, 17)] },
             { theme: 'loykrathong', label: 'ลอยกระทง',   window: y => { const d = loyKrathongDate(y); return [new Date(d.getFullYear(), d.getMonth(), d.getDate() - 5), new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)]; } },
+            { theme: 'mothersday',  label: 'วันแม่',     window: y => [new Date(y, 7, 10), new Date(y, 7, 13)] },
+            // ออกพรรษาอยู่ก่อนฮาโลวีน เพราะบางปีตรงกับช่วงฮาโลวีน ให้วันออกพรรษาได้ธีมของตัวเอง
+            { theme: 'okphansa',    label: 'ออกพรรษา',   window: y => { const d = okPhansaDate(y); return [new Date(d.getFullYear(), d.getMonth(), d.getDate() - 1), new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)]; } },
             { theme: 'halloween',   label: 'ฮาโลวีน',    window: y => [new Date(y, 9, 20), new Date(y, 10, 1)] },
+            { theme: 'fathersday',  label: 'วันพ่อ',     window: y => [new Date(y, 11, 3), new Date(y, 11, 6)] },
             { theme: 'christmas',   label: 'คริสต์มาส', window: y => [new Date(y, 11, 15), new Date(y, 11, 26)] },
             { theme: 'newyear',     label: 'ปีใหม่',     window: y => [new Date(y, 11, 27), new Date(y + 1, 0, 3)] },
             { theme: 'valentine',   label: 'วาเลนไทน์', window: y => [new Date(y, 1, 12), new Date(y, 1, 15)] },
@@ -4447,6 +5231,10 @@
             newyear: ['🎆 ใกล้ปีใหม่แล้ว สู้อีกนิดนะ', '🍽️ พักเที่ยงก่อน เก็บแรงไว้ฉลองปีใหม่', '🥂 พักสักหน่อย ปีนี้เหนื่อยมาเยอะแล้ว', '🎇 ใกล้เลิกงานแล้ว เตรียมตัวฉลองได้เลย', '🌙 ดึกแล้ว พักผ่อนเยอะๆ ก่อนปีใหม่นะ'],
             valentine: ['💝 Happy Valentine\'s! วันนี้ใจดีกับตัวเองด้วยนะ', '🍫 พักเที่ยงแล้ว กินช็อกโกแลตสักชิ้นไหม', '💌 พักสักหน่อย ส่งข้อความหาคนที่คิดถึงก็ได้นะ', '🌹 ใกล้เลิกงานแล้ว มีนัดหรือเปล่าเอ่ย', '🌙 ดึกแล้ว รักตัวเองด้วยการพักผ่อนนะ'],
             cny: ['🧧 ซินเจียยู่อี่ ซินนี้ฮวดไช้! ขอให้ปีนี้ปังๆ', '🍊 พักเที่ยงแล้ว กินส้มเอาฤกษ์เอาชัยกัน', '🏮 พักสักหน่อย ขอให้เฮงๆ รวยๆ', '🐉 ใกล้เลิกงานแล้ว กลับไปไหว้ขอพรกัน', '🌙 ดึกแล้ว พักผ่อนเยอะๆ จะได้เฮงทั้งปีนะ'],
+            mothersday: ['💙 สุขสันต์วันแม่ อย่าลืมโทรหาแม่นะ', '🍚 พักเที่ยงแล้ว ส่งรูปข้าวให้แม่ดูหน่อยไหม', '🌼 บ่ายนี้หอมมะลิ พักสายตาบ้างนะ', '🏠 ใกล้เลิกงานแล้ว กลับไปกอดแม่กัน', '🌙 ดึกแล้ว แม่เป็นห่วงนะ พักผ่อนบ้าง'],
+            fathersday: ['💛 สุขสันต์วันพ่อ ขอบคุณพ่อนะ', '🍚 พักเที่ยงแล้ว ชวนพ่อกินข้าวด้วยกันไหม', '🌼 บ่ายนี้สดใสเหมือนดอกพุทธรักษา', '🏠 ใกล้เลิกงานแล้ว กลับไปหาพ่อกัน', '🌙 ดึกแล้ว พักผ่อนบ้างนะ พ่อเป็นห่วง'],
+            okphansa: ['🕯️ วันออกพรรษา ขอให้ใจสงบ สบายใจทั้งวัน', '🍙 พักเที่ยงแล้ว อิ่มบุญอิ่มท้องนะ', '✨ บ่ายนี้พักสักนิด หายใจลึกๆ', '🏮 ใกล้เลิกงานแล้ว คืนนี้ไปดูบั้งไฟกันไหม', '🌕 คืนวันออกพรรษา ทำงานดึกอย่าลืมพักนะ'],
+            rainy: ['🌧️ เช้าฝนพรำ พกร่มด้วยนะ', '🍜 ฝนตกแบบนี้ พักเที่ยงกินอะไรอุ่นๆ ดีไหม', '🍵 บ่ายฝนพรำ ชงชาอุ่นๆ พักสักแก้ว', '☔ ใกล้เลิกงานแล้ว ระวังฝนตอนกลับบ้านนะ', '🌙 ฟังเสียงฝน ทำงานดึกอย่าลืมพัก'],
             songkran: ['💦 สุขสันต์วันสงกรานต์! ขอให้สดชื่นทั้งวัน', '🍧 พักเที่ยงแล้ว หาอะไรเย็นๆ กินกันเถอะ', '🌼 อากาศร้อน พักดื่มน้ำเย็นๆ บ้างนะ', '🐘 ใกล้เลิกงานแล้ว ระวังโดนสาดน้ำระหว่างทางนะ', '🌙 ดึกแล้ว เล่นน้ำมาเหนื่อย พักผ่อนนะ']
         };
         function renderGreeting() {
@@ -4787,6 +5575,14 @@
                     <div class="back-box" role="button" tabindex="0" onclick="endBreak(${index}, this.parentElement, event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();endBreak(${index}, this.parentElement, event);}">
                         <div class="back-title">🏠 กลับมาแล้ว</div>
                     </div>
+                    <div class="break-relax" role="group" aria-label="ผ่อนคลายระหว่างพัก">
+                        <div class="relax-row">
+                            <button type="button" class="relax-chip" onclick="openRelax('breath', event)">🫧 หายใจ</button>
+                            <button type="button" class="relax-chip" onclick="openRelax('stretch', event)">🙆 ยืดเส้น</button>
+                            <button type="button" class="relax-chip relax-sound-btn" onclick="toggleAmbientMenu(event)">🎧 เสียงผ่อนคลาย</button>
+                        </div>
+                        <div class="ambient-menu"></div>
+                    </div>
                     <div class="success-overlay">
                         <div class="success-title result-title">คัดลอกสำเร็จ! ✨</div>
                         <div class="success-text result-text"></div>
@@ -5000,6 +5796,7 @@
             setTimeout(() => { showSuccessOverlay(cardElement, 'ยินดีต้อนรับกลับมา! 🏠', textToCopy, 1500); }, 100);
             cheerMascot();
             if (goodBreak) { growVeggies('break'); setTimeout(waterGarden, 400); }
+            stopRelaxForBreakEnd();
         }
 
         function saveLog(action, start, end, duration, isToilet) {
@@ -5217,24 +6014,112 @@
             renderWeekChartAndStreak(dailyStats, dailyQuota);
             renderHeatmap(dailyStats, dailyQuota);
             if (isReportOpen()) renderReportPage(); // แก้/ลบรายการจากหน้ารายงาน ให้ตัวเลขอัปเดตทันที
+            renderChallenges();
         }
 
-        async function editLog(realIndex) {
-            let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
-            const log = logs[realIndex]; if (!log) return;
-            const newAction = await showPromptDialog('ชื่อกิจกรรม', log.action, 'แก้ไขรายการ', '✏️');
-            if (newAction === null) return;
-            const newDuration = await showPromptDialog('เวลาที่ใช้ (นาที)', log.duration, 'แก้ไขรายการ', '⏱️');
-            if (newDuration === null) return;
-            log.action = newAction.trim() || log.action;
-            const d = parseInt(newDuration);
-            log.duration = isNaN(d) ? log.duration : Math.max(0, d);
-            logs[realIndex] = log;
+        // --- ➕ เพิ่มรายการพักย้อนหลัง (ลืมกด) และแก้ไขเวลาเริ่ม/จบ ---
+        let logFormIndex = -1;
+        const LF_CUSTOM = '__custom';
+        function pad2(n) { return String(n).padStart(2, '0'); }
+        function clockToMin(t) { const m = /^(\d{1,2}):(\d{2})/.exec(t || ''); return m ? (+m[1]) * 60 + (+m[2]) : null; }
+        function minToClock(min) { return `${pad2(Math.floor(min / 60) % 24)}:${pad2(min % 60)}`; }
+        function dateToInputValue(d) { return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`; }
+        // ลำดับเวลาจริงของแต่ละรายการ ใช้แทรกรายการย้อนหลังให้อยู่ถูกที่
+        function logSortKey(l) {
+            const day = new Date(l.date).getTime() || 0, s = clockToMin(l.start);
+            return day + (s === null ? 0 : s) * 60000;
+        }
+        function openLogForm(index = -1, dateStr = null) {
+            const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
+            const acts = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
+            const log = index >= 0 ? logs[index] : null;
+            if (index >= 0 && !log) return;
+            logFormIndex = index;
+            const sel = document.getElementById('lf-activity');
+            const names = [...new Set(acts.map(a => a.name))];
+            sel.innerHTML = names.map(n => `<option value="${escHtml(n)}">${escHtml(actIconText(acts.find(a => a.name === n).emoji))} ${escHtml(n)}</option>`).join('')
+                + `<option value="${LF_CUSTOM}">✏️ อื่นๆ (พิมพ์เอง)</option>`;
+            const now = new Date();
+            if (log) {
+                sel.value = names.includes(log.action) ? log.action : LF_CUSTOM;
+                document.getElementById('lf-custom').value = names.includes(log.action) ? '' : log.action;
+                document.getElementById('lf-date').value = dateToInputValue(new Date(log.date));
+                const s = clockToMin(log.start), e = clockToMin(log.end);
+                document.getElementById('lf-start').value = s === null ? '' : minToClock(s);
+                document.getElementById('lf-end').value = e === null ? (s === null ? '' : minToClock(s + log.duration)) : minToClock(e);
+                document.getElementById('lf-toilet').checked = !!log.isToilet;
+            } else {
+                sel.value = names[0] || LF_CUSTOM;
+                document.getElementById('lf-custom').value = '';
+                const day = dateStr ? new Date(dateStr) : now;
+                const isToday = day.toDateString() === now.toDateString();
+                const endMin = isToday ? now.getHours() * 60 + now.getMinutes() : 12 * 60 + 15;
+                document.getElementById('lf-date').value = dateToInputValue(day);
+                document.getElementById('lf-start').value = minToClock(Math.max(0, endMin - 15));
+                document.getElementById('lf-end').value = minToClock(endMin);
+                const act = acts.find(a => a.name === sel.value);
+                document.getElementById('lf-toilet').checked = !!(act && act.isToilet);
+            }
+            document.getElementById('log-form-title').textContent = log ? '✏️ แก้ไขรายการพัก' : '➕ เพิ่มรายการย้อนหลัง';
+            document.getElementById('lf-custom-wrap').style.display = sel.value === LF_CUSTOM ? '' : 'none';
+            document.getElementById('lf-date').max = dateToInputValue(now);
+            refreshToiletFreeMinutesUI();
+            updateLogFormSummary();
+            document.getElementById('log-form-modal').style.display = 'flex';
+        }
+        function closeLogForm() { document.getElementById('log-form-modal').style.display = 'none'; }
+        function onLogFormActivity() {
+            const sel = document.getElementById('lf-activity');
+            const acts = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
+            const act = acts.find(a => a.name === sel.value);
+            document.getElementById('lf-custom-wrap').style.display = sel.value === LF_CUSTOM ? '' : 'none';
+            if (act) document.getElementById('lf-toilet').checked = !!act.isToilet;
+            if (sel.value === LF_CUSTOM) document.getElementById('lf-custom').focus();
+            updateLogFormSummary();
+        }
+        // อ่านค่าจากฟอร์ม คืน { log } หรือ { error } (วันที่ของรายการ = วันที่กลับมา เหมือนตอนกดพักจริง)
+        function readLogForm() {
+            const sel = document.getElementById('lf-activity').value;
+            const name = (sel === LF_CUSTOM ? document.getElementById('lf-custom').value : sel).trim().slice(0, 40);
+            const dm = /^(\d{4})-(\d{2})-(\d{2})$/.exec(document.getElementById('lf-date').value);
+            const s = clockToMin(document.getElementById('lf-start').value), e = clockToMin(document.getElementById('lf-end').value);
+            if (!dm) return { error: 'เลือกวันที่ก่อนนะ' };
+            if (s === null || e === null) return { error: 'ใส่เวลาเริ่มและเวลากลับให้ครบก่อนนะ' };
+            let duration = e - s;
+            if (duration < 0) duration += 1440; // ข้ามเที่ยงคืน
+            if (duration === 0) return { error: 'เวลาเริ่มกับเวลากลับต้องไม่ใช่เวลาเดียวกัน' };
+            if (duration > 720) return { error: 'พักนานเกิน 12 ชั่วโมง ตรวจเวลาอีกครั้งนะ' };
+            const start = new Date(+dm[1], +dm[2] - 1, +dm[3], Math.floor(s / 60), s % 60);
+            const end = new Date(start.getTime() + duration * 60000);
+            if (end > new Date()) return { error: 'เวลากลับยังมาไม่ถึง เพิ่มได้เฉพาะรายการที่ผ่านมาแล้ว', duration };
+            if (!name) return { error: 'ใส่ชื่อกิจกรรมก่อนนะ', duration };
+            const isToilet = document.getElementById('lf-toilet').checked;
+            return { duration, log: { date: end.toDateString(), shiftKey: getWorkDayKey(end), action: name, start: `${minToClock(s)} น.`, end: `${minToClock(e)} น.`, duration, isToilet } };
+        }
+        function updateLogFormSummary() {
+            const out = document.getElementById('lf-summary');
+            const r = readLogForm();
+            out.classList.toggle('is-error', !!r.error);
+            if (r.error) { out.textContent = '⚠️ ' + r.error; return; }
+            const charged = quotaMinutesForLog(r.log);
+            out.textContent = `⏱️ ใช้เวลา ${r.duration} นาที` + (r.log.isToilet ? (charged ? ` · หักโควตา ${charged} นาที` : ' · ฟรี ไม่หักโควตา') : '');
+        }
+        function saveLogForm() {
+            const r = readLogForm();
+            if (r.error) { updateLogFormSummary(); showToast(r.error, 'warning'); return; }
+            const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
+            const editing = logFormIndex >= 0 && logs[logFormIndex];
+            if (editing) logs.splice(logFormIndex, 1);
+            const key = logSortKey(r.log);
+            const at = logs.findIndex(l => logSortKey(l) > key);
+            if (at === -1) logs.push(r.log); else logs.splice(at, 0, r.log);
             safeSetItem('break_logs', JSON.stringify(logs));
+            closeLogForm();
             renderDashboardAndLogs();
             if (currentDetailDate) renderDayDetailContent();
-            showToast('แก้ไขรายการแล้ว', 'success');
+            showToast(editing ? 'บันทึกการแก้ไขแล้ว' : `เพิ่ม "${r.log.action}" ${r.log.start} แล้ว`, 'success');
         }
+        function editLog(realIndex) { openLogForm(realIndex); }
 
         function deleteLog(realIndex) {
             let logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
@@ -6027,6 +6912,7 @@
                 fx_parade: isEffectOn('parade') ? 'true' : 'false', fx_tap: isEffectOn('tapfx') ? 'true' : 'false',
                 fx_stickers: isEffectOn('stickers') ? 'true' : 'false', reduce_motion: isEffectOn('reduceMotion') ? 'true' : 'false',
                 veggie_garden: veg,
+                shop_state: shop, challenges: chal,
                 stickers: JSON.parse(localStorage.getItem('stickers') || '[]')
             };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -6083,6 +6969,8 @@
             if (Array.isArray(data.earned_badges)) out.earned_badges = data.earned_badges.filter(n => Number.isFinite(+n)).map(Number).slice(0, 50);
             if (Array.isArray(data.stickers)) out.stickers = data.stickers.slice(0, MAX_STICKERS); // loadStickers ตรวจซ้ำทุกช่องตอนโหลด
             if (data.veggie_garden && typeof data.veggie_garden === 'object' && !Array.isArray(data.veggie_garden)) out.veggie_garden = data.veggie_garden; // loadVeg ตรวจซ้ำตอนโหลด
+            if (data.shop_state && typeof data.shop_state === 'object' && !Array.isArray(data.shop_state)) out.shop_state = data.shop_state; // loadShop ตรวจซ้ำตอนโหลด
+            if (data.challenges && typeof data.challenges === 'object' && !Array.isArray(data.challenges)) out.challenges = data.challenges; // loadChallenges ตรวจซ้ำตอนโหลด
             if (!out.activities && !out.break_logs && !Object.keys(st).length) return null;
             return { out, report };
         }
@@ -6110,6 +6998,8 @@
                 if (out.earned_badges) safeSetItem('earned_badges', JSON.stringify(out.earned_badges));
                 if (out.stickers) safeSetItem('stickers', JSON.stringify(out.stickers));
                 if (out.veggie_garden) safeSetItem('veggie_garden', JSON.stringify(out.veggie_garden));
+                if (out.shop_state) safeSetItem('shop_state', JSON.stringify(out.shop_state));
+                if (out.challenges) safeSetItem('challenges', JSON.stringify(out.challenges));
                 showToast('นำเข้าข้อมูลสำเร็จ! กำลังโหลดหน้าใหม่', 'success');
                 setTimeout(() => location.reload(), 1200);
             };
@@ -6238,6 +7128,8 @@
             initSky();
             loadStickers(); renderStickers();
             initVeggies();
+            applyShopItems();
+            renderChallenges();
             initReportPage();
         };
 
@@ -6251,6 +7143,8 @@
                 if (currentDetailDate) renderDayDetailContent();
             }
             if (e.key === 'veggie_garden') { veg = loadVeg(); renderVeggies(); }
+            if (e.key === 'shop_state') { shop = loadShop().st; applyShopItems(); }
+            if (e.key === 'challenges') { chal = loadChallenges(); renderChallenges(); }
             if (e.key === 'active_break_state') {
                 if (e.newValue && !activeBreak) {
                     restoreActiveBreakIfAny(); // แท็บอื่นเริ่มพัก ให้แท็บนี้โชว์สถานะเดียวกัน
@@ -6262,6 +7156,7 @@
                     if (cardElement) cardElement.classList.remove('expanded', 'has-target', 'is-warn', 'is-over');
                     document.body.classList.remove('on-break', 'break-over');
                     activeBreak = null;
+                    stopRelaxForBreakEnd();
                 }
             }
         });
