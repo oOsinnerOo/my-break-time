@@ -1290,7 +1290,7 @@
         }
         .toast-action-btn:active { transform: scale(0.92); }
 
-        /* 📊 หน้ารายงานสรุปแบบเต็มจอ */
+        /* 📊 หน้ารายงานสรุปแบบแดชบอร์ด */
         .report-page {
             display: none; position: fixed; inset: 0; z-index: 90000;
             background: var(--bg-gradient); color: var(--ink);
@@ -1299,62 +1299,156 @@
         @keyframes report-page-in { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         .report-header {
             display: flex; align-items: center; justify-content: space-between; gap: 12px;
-            padding: max(16px, env(safe-area-inset-top)) 20px 14px; flex-shrink: 0;
-            width: 100%; max-width: 560px; margin: 0 auto;
+            padding: max(14px, env(safe-area-inset-top)) 20px 10px; flex-shrink: 0;
+            width: 100%; max-width: 1180px; margin: 0 auto;
         }
         .report-back-btn {
-            font-size: 14px; font-weight: 700; color: var(--accent-ink); cursor: pointer; padding: 8px 12px;
+            font: inherit; font-size: 14px; font-weight: 700; color: var(--accent-ink); cursor: pointer; padding: 8px 12px;
             border-radius: 999px; background: var(--surface-solid); border: 1px solid var(--line); min-width: 72px; text-align: center; flex-shrink: 0;
         }
+        .report-head-text { text-align: center; min-width: 0; }
         .report-page-title { font-size: 18px; margin: 0; color: var(--ink); }
+        .report-range { display: block; font-size: 12px; font-weight: 600; color: var(--ink-3); margin-top: 2px; }
         .report-header-spacer { width: 72px; flex-shrink: 0; }
-        .report-scroll { flex: 1; overflow-y: auto; padding: 0 20px 40px; display: flex; flex-direction: column; gap: 14px; max-width: 560px; margin: 0 auto; width: 100%; }
+        .report-scroll {
+            flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 4px 20px 48px; width: 100%; max-width: 1180px; margin: 0 auto;
+            display: flex; flex-direction: column; gap: 14px;
+        }
 
-        .report-period-tabs { display: flex; gap: 6px; background: var(--surface); border: 1px solid var(--surface-edge); padding: 5px; border-radius: 18px; }
+        .report-period-tabs { display: flex; gap: 6px; background: var(--surface); border: 1px solid var(--surface-edge); padding: 5px; border-radius: 18px; width: 100%; max-width: 420px; }
         .report-tab {
             flex: 1; border: none; background: transparent; padding: 9px 0; border-radius: 13px; cursor: pointer;
-            font-size: 13.5px; font-weight: 700; color: var(--ink-2); transition: background-color 0.2s, color 0.2s;
+            font: inherit; font-size: 13.5px; font-weight: 700; color: var(--ink-2); transition: background-color 0.2s, color 0.2s;
         }
         .report-tab.active { background: var(--surface-solid); color: var(--accent-ink); box-shadow: 0 6px 14px -8px rgba(var(--shadow-rgb), 0.45); }
 
-        .report-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .report-stat-card { padding: 14px; text-align: center; border-radius: 22px; }
-        .report-stat-val { display: block; font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
-        .report-stat-lbl { display: block; font-size: 12px; color: var(--ink-3); font-weight: 600; margin-top: 3px; }
-
-        .report-section { padding: 18px; border-radius: 24px; }
-        .report-section-title { font-size: 14.5px; color: var(--ink); margin: 0 0 12px; }
-        .report-chart-wrap { width: 100%; }
-        .report-chart-wrap svg { width: 100%; height: auto; overflow: visible; }
-        .report-bar { fill: var(--accent); transition: height 0.5s cubic-bezier(0.34,1.56,0.64,1), y 0.5s cubic-bezier(0.34,1.56,0.64,1); }
-        .report-bar.over { fill: var(--danger); }
-        .report-bar-label { font-size: 8px; fill: var(--ink-3); font-family: var(--font-body); }
-        .report-axis-line { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 3; }
-
-        .report-table-wrap { overflow-x: auto; }
-        .report-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .report-table th { text-align: left; color: var(--ink-3); font-weight: 700; padding: 6px 8px; border-bottom: 2px solid var(--line); white-space: nowrap; }
-        .report-table td { padding: 9px 8px; border-bottom: 1px solid var(--line); color: var(--ink); font-weight: 600; }
-        .report-table tr:last-child td { border-bottom: none; }
-        .report-table .report-bar-cell { display: flex; align-items: center; gap: 6px; }
-        .report-table .report-bar-mini { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); flex-shrink: 0; }
-        .report-pct { color: var(--ink-3); font-weight: 500; }
-        .report-empty { text-align: center; color: var(--ink-3); font-size: 13px; padding: 20px 0; }
-
-        .report-daily-scroll { max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 0 -4px; padding: 0 4px; }
-        .report-day-row {
-            padding: 10px 12px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); cursor: pointer;
-            transition: transform 0.15s, background-color 0.15s;
+        .rp-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .rp-kpi { display: flex; flex-direction: column; gap: 3px; min-width: 0; padding: 14px 16px; border-radius: 22px; }
+        .rp-kpi.hero { grid-column: 1 / -1; }
+        .rp-kpi-label { font-size: 12.5px; font-weight: 700; color: var(--ink-3); }
+        .rp-kpi-value { font-family: var(--font-display); font-size: 26px; font-weight: 600; line-height: 1.15; color: var(--ink); overflow-wrap: anywhere; }
+        .rp-kpi-value small { font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--ink-3); margin-left: 4px; }
+        .rp-kpi.hero .rp-kpi-value { font-size: 48px; line-height: 1.05; }
+        .rp-kpi-sub { font-size: 12px; font-weight: 600; color: var(--ink-3); line-height: 1.45; }
+        .rp-kpi-sub.bad { color: var(--danger); }
+        .rp-delta { font-size: 12px; font-weight: 700; color: var(--ink-2); }
+        .rp-kpi-meter { height: 6px; margin-top: 6px; border-radius: 3px; background: rgba(var(--accent-rgb), 0.16); overflow: hidden; }
+        .rp-kpi-meter span { display: block; height: 100%; border-radius: 3px; background: var(--accent); }
+        @media (min-width: 900px) {
+            .rp-kpis { grid-template-columns: minmax(0, 1.5fr) repeat(4, minmax(0, 1fr)); }
+            .rp-kpi.hero { grid-column: auto; }
         }
-        .report-day-row:hover { transform: translateX(3px); background: rgba(var(--accent-rgb), 0.08); }
-        .report-day-row.today { border: 1.5px solid rgba(var(--accent-rgb), 0.45); }
-        .report-day-row.over-quota { background: rgba(var(--danger-rgb), 0.07); }
-        .report-day-row-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-        .report-day-date { font-size: 13px; font-weight: 700; color: var(--ink); }
-        .report-day-total { font-family: var(--font-display); font-size: 13.5px; font-weight: 500; color: var(--accent-ink); white-space: nowrap; }
-        .report-day-total.over { color: var(--danger); }
-        .report-day-total.empty { color: var(--ink-3); font-family: var(--font-body); font-weight: 500; }
-        .report-day-activities { font-size: 12px; color: var(--ink-3); margin-top: 4px; line-height: 1.5; }
+
+        .report-section { padding: 18px; border-radius: 24px; min-width: 0; }
+        .rp-sec-head { display: flex; align-items: center; justify-content: space-between; gap: 6px 12px; flex-wrap: wrap; margin-bottom: 12px; }
+        .rp-sec-head h3 { font-size: 15px; margin: 0; color: var(--ink); }
+        .rp-sec-sub { font-size: 12px; font-weight: 600; color: var(--ink-3); }
+        .rp-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; font-weight: 600; color: var(--ink-2); }
+        .rp-key { display: inline-flex; align-items: center; gap: 6px; }
+        .rp-swatch { width: 10px; height: 10px; border-radius: 3px; background: var(--c); flex-shrink: 0; }
+        .rp-swatch.line { width: 14px; height: 0; border-radius: 0; background: none; border-top: 2px dashed var(--ink-2); }
+        .rp-swatch.tick { width: 2px; height: 12px; border-radius: 1px; background: var(--ink-2); }
+        .rp-chart { position: relative; width: 100%; }
+        .rp-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+        .rp-grid-line { stroke: var(--line); stroke-width: 1; }
+        .rp-axis { font-size: 11px; fill: var(--ink-3); font-family: var(--font-body); font-variant-numeric: tabular-nums; }
+        .rp-axis.is-today { fill: var(--ink); font-weight: 700; }
+        .rp-quota-line { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; pointer-events: none; }
+        .rp-bar { fill: var(--accent); transition: opacity 0.15s; }
+        /* ในโควตาเป็นสีอ่อน เกินโควตาเป็นสีเข้มเต็ม: แยกกันได้ด้วยความอ่อนเข้ม แม้ธีมที่สีหลักเป็นโทนแดงชมพู */
+        .rp-bar.ok { opacity: 0.5; }
+        .rp-bar.over { fill: var(--danger); }
+        .rp-bar.dim { fill: var(--ink-3); opacity: 0.35; }
+        .rp-col { cursor: pointer; outline: none; }
+        .rp-hit { fill: transparent; }
+        .rp-col:hover .rp-hit, .rp-col:focus-visible .rp-hit { fill: rgba(var(--accent-rgb), 0.1); }
+        .rp-col:hover .rp-bar, .rp-col:focus-visible .rp-bar { opacity: 0.78; }
+        .rp-col:hover .rp-bar.ok, .rp-col:focus-visible .rp-bar.ok { opacity: 0.35; }
+        .rp-val { font-size: 11.5px; font-weight: 700; fill: var(--ink); font-family: var(--font-body); pointer-events: none; }
+        .rp-empty { text-align: center; color: var(--ink-3); font-size: 13px; padding: 18px 0; }
+
+        .rp-tip {
+            position: fixed; left: 0; top: 0; z-index: 90010; pointer-events: none; max-width: 230px; padding: 8px 11px; border-radius: 12px;
+            background: var(--surface-solid); border: 1px solid var(--line); box-shadow: 0 12px 26px -12px rgba(var(--shadow-rgb), 0.55);
+            font-size: 12px; font-weight: 600; color: var(--ink-2); line-height: 1.45; opacity: 0; transition: opacity 0.12s;
+        }
+        .rp-tip.show { opacity: 1; }
+        .rp-tip b { display: block; font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--ink); }
+
+        .rp-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+        .rp-side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+        @media (min-width: 980px) { .rp-grid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: start; } }
+
+        /* แยกรายวัน: จัดกลุ่มเป็นสัปดาห์ แต่ละวันเป็นการ์ดของตัวเอง */
+        .rd-legend { margin-bottom: 14px; }
+        .rd-week + .rd-week { margin-top: 20px; }
+        .rd-week-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 10px; flex-wrap: wrap; padding: 0 2px 8px; margin-bottom: 10px; border-bottom: 1px solid var(--line); }
+        .rd-week-title { font-size: 13.5px; font-weight: 800; color: var(--ink); }
+        .rd-week-range { margin-left: 6px; font-size: 12px; font-weight: 600; color: var(--ink-3); }
+        .rd-week-sum { font-size: 12px; font-weight: 600; color: var(--ink-3); }
+        .rd-week-sum b { font-family: var(--font-display); font-weight: 600; color: var(--ink); }
+        .rd-days { display: flex; flex-direction: column; gap: 10px; }
+        .rd-day { border-radius: 18px; background: var(--surface-2); border: 1px solid var(--line); scroll-margin-top: 12px; }
+        .rd-day.is-today { border-color: rgba(var(--accent-rgb), 0.55); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.12); }
+        .rd-day.flash, .rd-empty.flash { animation: rd-flash 1.4s ease; }
+        @keyframes rd-flash { 0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0); } 25% { box-shadow: 0 0 0 5px rgba(var(--accent-rgb), 0.4); } }
+        .rd-main { min-width: 0; }
+        .rd-sum { list-style: none; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 14px; cursor: pointer; border-radius: 18px; }
+        .rd-sum::-webkit-details-marker { display: none; }
+        .rd-sum:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+        .rd-date { width: 50px; padding: 6px 0 5px; border-radius: 14px; text-align: center; line-height: 1.1; background: rgba(var(--accent-rgb), 0.12); }
+        .rd-day.is-over .rd-date { background: rgba(var(--danger-rgb), 0.12); }
+        .rd-date small { display: block; font-size: 10.5px; font-weight: 700; color: var(--ink-3); }
+        .rd-date b { display: block; font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--ink); }
+        .rd-title { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13.5px; font-weight: 800; color: var(--ink); }
+        .rd-tag { padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 800; background: var(--accent); color: var(--on-accent); }
+        .rd-meter { display: block; position: relative; height: 10px; margin: 8px 0 6px; border-radius: 5px; background: rgba(var(--accent-rgb), 0.1); }
+        .rd-segs { position: absolute; inset: 0; display: flex; gap: 2px; }
+        .rd-seg { flex: 0 1 auto; height: 100%; min-width: 3px; background: var(--c); }
+        .rd-seg:first-child { border-radius: 5px 0 0 5px; }
+        .rd-seg:last-child { border-radius: 0 5px 5px 0; }
+        .rd-seg:only-child { border-radius: 5px; }
+        .rd-quota { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--ink-2); }
+        .rd-meta { display: block; font-size: 12px; font-weight: 600; color: var(--ink-3); }
+        .rd-more { white-space: nowrap; }
+        .rd-chev { display: inline-block; margin-left: 2px; transition: transform 0.2s; }
+        .rd-day[open] .rd-chev { transform: rotate(180deg); }
+        .rd-total { text-align: right; white-space: nowrap; }
+        .rd-total b { font-family: var(--font-display); font-size: 21px; font-weight: 600; color: var(--ink); }
+        .rd-total small { font-size: 12px; font-weight: 600; color: var(--ink-3); margin-left: 2px; }
+        .rd-badge { display: block; margin-top: 2px; font-size: 11.5px; font-weight: 800; color: var(--accent-ink); }
+        .rd-day.is-over .rd-badge { color: var(--danger); }
+        .rd-body { margin: 0 14px; padding: 4px 0 12px; border-top: 1px dashed var(--line); }
+        .rd-list { list-style: none; margin: 0; padding: 0; }
+        .rd-item { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+        .rd-item:last-child { border-bottom: none; }
+        .rd-time { font-size: 12.5px; font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+        .rd-act { display: flex; align-items: center; gap: 7px; min-width: 0; font-weight: 600; color: var(--ink); }
+        .rd-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .rd-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
+        .rd-dur { text-align: right; white-space: nowrap; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+        .rd-chip { margin-left: 5px; padding: 1px 7px; border-radius: 999px; font-size: 10.5px; font-weight: 800; }
+        .rd-chip.free { background: rgba(var(--accent-rgb), 0.14); color: var(--accent-ink); }
+        .rd-chip.cut { background: rgba(var(--danger-rgb), 0.12); color: var(--danger); }
+        .rd-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--ink-3); }
+        .rd-empty { scroll-margin-top: 12px; display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 14px; border: 1px dashed var(--line); font-size: 12.5px; font-weight: 600; color: var(--ink-3); }
+        @media (max-width: 480px) {
+            .report-header, .report-scroll { padding-left: 14px; padding-right: 14px; }
+            .rd-sum { gap: 10px; padding: 11px 12px; }
+            .rd-date { width: 44px; }
+            .rd-item { grid-template-columns: 84px minmax(0, 1fr) auto; gap: 8px; }
+        }
+
+        /* แยกตามกิจกรรม */
+        .ra-row + .ra-row { margin-top: 12px; }
+        .ra-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 13px; }
+        .ra-name { display: flex; align-items: center; gap: 7px; min-width: 0; font-weight: 700; color: var(--ink); }
+        .ra-name span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ra-val { white-space: nowrap; font-family: var(--font-display); font-weight: 600; color: var(--ink); }
+        .ra-val small { margin-left: 3px; font-family: var(--font-body); font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
+        .ra-track { margin: 6px 0 4px; }
+        .ra-bar { height: 8px; min-width: 3px; border-radius: 0 4px 4px 0; background: var(--c); }
+        .ra-meta { font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
 
         .muted-note { text-align: center; font-size: 12px; color: var(--ink-3); margin-top: 10px; }
         .text-danger { color: var(--danger); }
@@ -1809,7 +1903,7 @@
                 <div class="report-cta-icon">📊</div>
                 <div class="report-cta-text">
                     <span class="report-cta-title">รายงานสรุปแบบละเอียด</span>
-                    <span class="report-cta-sub">ดูแนวโน้ม แยกตามกิจกรรมและวันในสัปดาห์</span>
+                    <span class="report-cta-sub">แดชบอร์ดแยกรายวัน กิจกรรม และช่วงเวลาที่พัก</span>
                 </div>
                 <div class="report-cta-arrow">›</div>
             </div>
@@ -2126,47 +2220,64 @@
 
     <div class="report-page" id="report-page">
         <div class="report-header">
-            <span class="report-back-btn" onclick="closeReportPage()">← กลับ</span>
-            <h2 class="report-page-title">📊 รายงานสรุป</h2>
+            <button type="button" class="report-back-btn" onclick="closeReportPage()">← กลับ</button>
+            <div class="report-head-text">
+                <h2 class="report-page-title">📊 รายงานสรุป</h2>
+                <span class="report-range" id="report-range"></span>
+            </div>
             <span class="report-header-spacer"></span>
         </div>
-        <div class="report-scroll">
+        <div class="report-scroll" id="report-scroll">
 
-            <div class="report-period-tabs" id="report-period-tabs">
-                <button type="button" class="report-tab active" data-period="7" onclick="setReportPeriod(7)">7 วัน</button>
-                <button type="button" class="report-tab" data-period="30" onclick="setReportPeriod(30)">30 วัน</button>
-                <button type="button" class="report-tab" data-period="90" onclick="setReportPeriod(90)">3 เดือน</button>
+            <div class="report-period-tabs" id="report-period-tabs" role="tablist" aria-label="ช่วงเวลาของรายงาน">
+                <button type="button" class="report-tab active" role="tab" data-period="7" onclick="setReportPeriod(7)">7 วัน</button>
+                <button type="button" class="report-tab" role="tab" data-period="30" onclick="setReportPeriod(30)">30 วัน</button>
+                <button type="button" class="report-tab" role="tab" data-period="90" onclick="setReportPeriod(90)">3 เดือน</button>
             </div>
 
-            <div class="report-stats-grid" id="report-stats-grid"></div>
+            <div class="rp-kpis" id="report-kpis"></div>
 
-            <div class="report-section glass-panel">
-                <h3 class="report-section-title">📈 แนวโน้มรายวัน (นับผลกับโควตา)</h3>
-                <div class="report-chart-wrap">
-                    <svg id="report-trend-chart" viewBox="0 0 340 150" preserveAspectRatio="none"></svg>
+            <section class="report-section glass-panel">
+                <div class="rp-sec-head">
+                    <h3 id="report-trend-title">📈 เวลาพักรายวัน</h3>
+                    <div class="rp-legend">
+                        <span class="rp-key"><span class="rp-swatch" style="--c: var(--accent); opacity: 0.5"></span>ในโควตา</span>
+                        <span class="rp-key"><span class="rp-swatch" style="--c: var(--danger)"></span>⚠ เกินโควตา</span>
+                        <span class="rp-key"><span class="rp-swatch line"></span><span id="report-quota-key">โควตา</span></span>
+                    </div>
                 </div>
-            </div>
+                <div class="rp-chart" id="report-trend-chart"></div>
+                <p class="rp-sec-sub" style="margin: 8px 0 0;">นับเฉพาะเวลาที่หักโควตา · แตะแท่งเพื่อเลื่อนไปดูรายละเอียดวันนั้น</p>
+            </section>
 
-            <div class="report-section glass-panel">
-                <h3 class="report-section-title">📆 รายละเอียดรายวัน</h3>
-                <div id="report-daily-list"></div>
-            </div>
+            <div class="rp-grid">
+                <section class="report-section glass-panel">
+                    <div class="rp-sec-head">
+                        <h3>📆 แยกรายวัน</h3>
+                        <button type="button" class="chip-btn" id="report-toggle-days" onclick="toggleAllReportDays()">ขยายทั้งหมด</button>
+                    </div>
+                    <div class="rp-legend rd-legend" id="report-day-legend"></div>
+                    <div id="report-daily-list"></div>
+                </section>
 
-            <div class="report-section glass-panel">
-                <h3 class="report-section-title">📅 ค่าเฉลี่ยตามวันในสัปดาห์</h3>
-                <div class="report-chart-wrap">
-                    <svg id="report-weekday-chart" viewBox="0 0 340 130" preserveAspectRatio="none"></svg>
-                </div>
-            </div>
-
-            <div class="report-section glass-panel">
-                <h3 class="report-section-title">📋 แยกตามกิจกรรม</h3>
-                <div class="report-table-wrap">
-                    <table class="report-table" id="report-activity-table"></table>
+                <div class="rp-side">
+                    <section class="report-section glass-panel">
+                        <div class="rp-sec-head"><h3>🧩 แยกตามกิจกรรม</h3><span class="rp-sec-sub">เวลาจริงที่ใช้</span></div>
+                        <div id="report-activity"></div>
+                    </section>
+                    <section class="report-section glass-panel">
+                        <div class="rp-sec-head"><h3>📅 เฉลี่ยตามวันในสัปดาห์</h3><span class="rp-sec-sub">นาทีต่อวัน</span></div>
+                        <div class="rp-chart" id="report-weekday-chart"></div>
+                    </section>
+                    <section class="report-section glass-panel">
+                        <div class="rp-sec-head"><h3>⏰ ช่วงเวลาที่เริ่มพัก</h3><span class="rp-sec-sub">จำนวนครั้งตามชั่วโมง</span></div>
+                        <div class="rp-chart" id="report-hour-chart"></div>
+                    </section>
                 </div>
             </div>
 
         </div>
+        <div class="rp-tip" id="report-tip" role="tooltip"></div>
     </div>
 
 
@@ -4698,6 +4809,7 @@
             const dailyStats = buildDailyStats(logs);
             renderWeekChartAndStreak(dailyStats, dailyQuota);
             renderHeatmap(dailyStats, dailyQuota);
+            if (isReportOpen()) renderReportPage(); // แก้/ลบรายการจากหน้ารายงาน ให้ตัวเลขอัปเดตทันที
         }
 
         async function editLog(realIndex) {
@@ -4822,196 +4934,456 @@
             document.getElementById('search-modal').style.display = 'none';
         }
 
-        // --- 📊 หน้ารายงานสรุปแบบเต็มจอ ---
+        // --- 📊 หน้ารายงานสรุปแบบแดชบอร์ด: ตัวเลขสรุป กราฟรายวัน แยกรายวันเป็นสัปดาห์ กิจกรรม วันในสัปดาห์ และช่วงเวลา ---
         let reportPeriodDays = 7;
+        let reportOpenPeriod = null;
+        const reportOpenDays = new Set(); // จำว่าวันไหนกางอยู่ ตอนข้อมูลเปลี่ยนจะได้ไม่หุบเอง
         const REPORT_WEEKDAY_LABELS = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
+        // สีประจำกิจกรรมตามลำดับในรายการกิจกรรม (ชุดสีที่ตรวจแล้วว่าคนตาบอดสีแยกได้) สีติดกับกิจกรรม ไม่เปลี่ยนตามอันดับ
+        const REPORT_COLORS = {
+            light: ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#6250d6', '#e34948'],
+            dark: ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181', '#008300', '#9085e9', '#e66767']
+        };
 
+        function escHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+        function isReportOpen() {
+            const el = document.getElementById('report-page');
+            return !!el && el.style.display === 'flex';
+        }
         function openReportPage() {
             document.getElementById('report-page').style.display = 'flex';
             document.body.style.overflow = 'hidden';
+            reportOpenPeriod = null;
             setReportPeriod(reportPeriodDays);
+            document.getElementById('report-scroll').scrollTop = 0;
         }
         function closeReportPage() {
             document.getElementById('report-page').style.display = 'none';
             document.body.style.overflow = '';
+            hideReportTip();
         }
         function setReportPeriod(days) {
             reportPeriodDays = days;
-            document.querySelectorAll('.report-tab').forEach(t => t.classList.toggle('active', parseInt(t.dataset.period) === days));
+            document.querySelectorAll('.report-tab').forEach(t => {
+                const on = parseInt(t.dataset.period) === days;
+                t.classList.toggle('active', on);
+                t.setAttribute('aria-selected', on);
+            });
             renderReportPage();
+        }
+
+        function reportStartMinutes(log) {
+            const m = /(\d{1,2}):(\d{2})/.exec(log.start || '');
+            return m ? (+m[1]) * 60 + (+m[2]) : null;
+        }
+        function reportClock(str) { return String(str || '').replace(/\s*น\.?\s*$/, ''); }
+        function reportDateLabel(d) { return `${d.getDate()} ${THAI_MONTHS[d.getMonth()]}`; }
+        function reportHours(mins) {
+            const h = Math.floor(mins / 60), m = mins % 60;
+            return h ? `${h} ชม.${m ? ` ${m} นาที` : ''}` : `${m} นาที`;
+        }
+        function reportWeekStart(d) {
+            const s = new Date(d);
+            s.setDate(s.getDate() - ((s.getDay() + 6) % 7)); // สัปดาห์เริ่มวันจันทร์
+            return s;
+        }
+        function reportActivityLookup() {
+            const acts = JSON.parse(localStorage.getItem('activities')) || defaultActivities;
+            const pal = document.body.classList.contains('is-dark') ? REPORT_COLORS.dark : REPORT_COLORS.light;
+            const map = new Map();
+            acts.forEach((a, i) => {
+                if (!map.has(a.name)) map.set(a.name, { emoji: a.emoji || '📝', color: pal[i] || 'var(--ink-3)', order: i });
+            });
+            // กิจกรรมที่ถูกลบไปแล้วแต่ยังมีในประวัติ ใช้สีเทาเหมือนกันหมด
+            return name => map.get(name) || { emoji: '📝', color: 'var(--ink-3)', order: 999 };
+        }
+        function buildReportDays(stats, fromDaysAgo, count) {
+            const days = [];
+            const base = new Date(); base.setHours(12, 0, 0, 0);
+            for (let i = fromDaysAgo + count - 1; i >= fromDaysAgo; i--) {
+                const d = new Date(base); d.setDate(d.getDate() - i);
+                const dateStr = d.toDateString();
+                const logs = (stats.byDate.get(dateStr) || []).slice()
+                    .sort((a, b) => (reportStartMinutes(a) ?? 0) - (reportStartMinutes(b) ?? 0));
+                days.push({ date: d, dateStr, logs, total: stats.totals.get(dateStr) || 0, real: logs.reduce((s, l) => s + l.duration, 0) });
+            }
+            return days;
+        }
+        function summarizeReportDays(days, quota) {
+            const active = days.filter(d => d.logs.length);
+            const total = days.reduce((s, d) => s + d.total, 0);
+            let longest = null;
+            days.forEach(d => d.logs.forEach(l => { if (!longest || l.duration > longest.log.duration) longest = { log: l, date: d.date }; }));
+            const within = active.filter(d => d.total <= quota).length;
+            return {
+                total, real: days.reduce((s, d) => s + d.real, 0), count: days.reduce((s, d) => s + d.logs.length, 0),
+                active: active.length, within, over: active.length - within,
+                avg: active.length ? Math.round(total / active.length) : 0, longest
+            };
         }
 
         function renderReportPage() {
             const allLogs = JSON.parse(localStorage.getItem('break_logs') || '[]');
-            const dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
-
-            // สร้างช่วงวันที่ของช่วงเวลาที่เลือก (เก่าสุด -> ล่าสุด)
-            const dayBuckets = [];
-            for (let i = reportPeriodDays - 1; i >= 0; i--) {
-                const d = new Date(); d.setDate(d.getDate() - i);
-                dayBuckets.push({ date: d, dateStr: d.toDateString() });
-            }
-            const validDateSet = new Set(dayBuckets.map(b => b.dateStr));
-            const periodLogs = allLogs.filter(l => validDateSet.has(l.date));
-
-            // --- การ์ดสรุปตัวเลข ---
-            const totalQuotaMin = periodLogs.reduce((s, l) => s + quotaMinutesForLog(l), 0);
-            const totalRealMin = periodLogs.reduce((s, l) => s + l.duration, 0);
-            const avgPerDay = Math.round(totalQuotaMin / reportPeriodDays);
-            const sessionCount = periodLogs.length;
-            const actTotals = {};
-            periodLogs.forEach(l => { actTotals[l.action] = (actTotals[l.action] || 0) + l.duration; });
-            const topActEntry = Object.entries(actTotals).sort((a, b) => b[1] - a[1])[0];
-            const topActName = topActEntry ? topActEntry[0] : '—';
-
-            document.getElementById('report-stats-grid').innerHTML = `
-                <div class="report-stat-card glass-panel"><span class="report-stat-val">${totalQuotaMin}</span><span class="report-stat-lbl">นาทีรวม (นับผลโควตา)</span></div>
-                <div class="report-stat-card glass-panel"><span class="report-stat-val">${avgPerDay}</span><span class="report-stat-lbl">เฉลี่ยต่อวัน (นาที)</span></div>
-                <div class="report-stat-card glass-panel"><span class="report-stat-val">${sessionCount}</span><span class="report-stat-lbl">จำนวนครั้งที่พัก</span></div>
-                <div class="report-stat-card glass-panel"><span class="report-stat-val" style="font-size:15px;">${topActName}</span><span class="report-stat-lbl">กิจกรรมที่ใช้บ่อยสุด</span></div>
-            `;
-
-            renderReportTrendChart(dayBuckets, allLogs, dailyQuota);
-            renderReportDailyList(dayBuckets, allLogs, dailyQuota);
-            renderReportWeekdayChart(dayBuckets, allLogs);
-            renderReportActivityTable(periodLogs, totalRealMin);
+            const quota = parseInt(localStorage.getItem('daily_quota') || '60');
+            const stats = buildDailyStats(allLogs);
+            const days = buildReportDays(stats, 0, reportPeriodDays);
+            const prevDays = buildReportDays(stats, reportPeriodDays, reportPeriodDays);
+            const lookup = reportActivityLookup();
+            const first = days[0].date, last = days[days.length - 1].date;
+            document.getElementById('report-range').textContent = `${reportDateLabel(first)} – ${reportDateLabel(last)} ${last.getFullYear() + 543}`;
+            document.getElementById('report-quota-key').textContent = `โควตา ${quota} นาที/วัน`;
+            hideReportTip();
+            renderReportKpis(summarizeReportDays(days, quota), summarizeReportDays(prevDays, quota), quota, lookup);
+            renderReportTrend(days, quota);
+            renderReportDays(days, quota, lookup);
+            renderReportActivities(days, lookup);
+            renderReportWeekdays(days);
+            renderReportHours(days);
         }
 
-        function renderReportTrendChart(dayBuckets, allLogs, dailyQuota) {
-            const dailyStats = buildDailyStats(allLogs);
-            const svg = document.getElementById('report-trend-chart');
-            // ถ้าช่วงเวลายาว (90 วัน) รวมเป็นรายสัปดาห์แทนรายวัน กันแท่งบางเกินจนอ่านไม่ออก
-            let buckets;
-            if (dayBuckets.length > 31) {
-                buckets = [];
-                for (let i = 0; i < dayBuckets.length; i += 7) {
-                    const chunk = dayBuckets.slice(i, i + 7);
-                    let total = 0;
-                    chunk.forEach(c => { total += dailyStats.totals.get(c.dateStr) || 0; });
-                    buckets.push({ label: `${chunk[0].date.getDate()}/${chunk[0].date.getMonth()+1}`, total });
-                }
-            } else {
-                buckets = dayBuckets.map(b => ({
-                    label: `${b.date.getDate()}`,
-                    total: dailyStats.totals.get(b.dateStr) || 0
-                }));
-            }
-
-            const chartX = 10, chartW = 320, chartTop = 10, chartBottom = 120, chartH = chartBottom - chartTop;
-            const max = Math.max(...buckets.map(b => b.total), dailyQuota, 1);
-            const gap = 3;
-            const barW = Math.max((chartW - gap * (buckets.length - 1)) / buckets.length, 1);
-            const showLabelEvery = Math.ceil(buckets.length / 10);
-
-            let bars = `<line class="report-axis-line" x1="${chartX}" y1="${chartBottom}" x2="${chartX + chartW}" y2="${chartBottom}"></line>`;
-            buckets.forEach((b, i) => {
-                const h = Math.max((b.total / max) * chartH, b.total > 0 ? 3 : 0);
-                const x = chartX + i * (barW + gap);
-                const y = chartBottom - h;
-                const isOver = b.total > dailyQuota;
-                bars += `<rect class="report-bar ${isOver ? 'over' : ''}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" rx="2"><title>${b.label}: ${b.total} นาที</title></rect>`;
-                if (i % showLabelEvery === 0 || i === buckets.length - 1) {
-                    bars += `<text class="report-bar-label" x="${(x + barW/2).toFixed(1)}" y="132" text-anchor="middle">${b.label}</text>`;
-                }
-            });
-            svg.innerHTML = bars;
-        }
-
-        function renderReportDailyList(dayBuckets, allLogs, dailyQuota) {
-            const dailyStats = buildDailyStats(allLogs);
-            const container = document.getElementById('report-daily-list');
-            const todayStr = new Date().toDateString();
-            const reversed = dayBuckets.slice().reverse(); // ล่าสุดขึ้นก่อน
-
-            let html = '<div class="report-daily-scroll">';
-            reversed.forEach(b => {
-                const dayLogs = dailyStats.byDate.get(b.dateStr) || [];
-                const isToday = b.dateStr === todayStr;
-                const dateLbl = `${b.date.getDate()} ${THAI_MONTHS[b.date.getMonth()]}${isToday ? ' (วันนี้)' : ''}`;
-
-                if (dayLogs.length === 0) {
-                    html += `<div class="report-day-row" onclick="closeReportPage(); showDayDetail('${b.dateStr}');">
-                        <div class="report-day-row-header">
-                            <span class="report-day-date">${dateLbl}</span>
-                            <span class="report-day-total empty">ไม่มีข้อมูล</span>
-                        </div>
-                    </div>`;
-                    return;
-                }
-
-                const quotaTotal = dailyStats.totals.get(b.dateStr) || 0;
-                const isOver = quotaTotal > dailyQuota;
-                const actSummary = {};
-                dayLogs.forEach(l => { actSummary[l.action] = (actSummary[l.action] || 0) + l.duration; });
-                const actText = Object.entries(actSummary).map(([name, mins]) => `${name} ${mins} น.`).join(' · ');
-
-                html += `<div class="report-day-row ${isToday ? 'today' : ''} ${isOver ? 'over-quota' : ''}" onclick="closeReportPage(); showDayDetail('${b.dateStr}');">
-                    <div class="report-day-row-header">
-                        <span class="report-day-date">${dateLbl}</span>
-                        <span class="report-day-total ${isOver ? 'over' : ''}">${quotaTotal} นาที${isOver ? ' ⚠️' : ''}</span>
-                    </div>
-                    <div class="report-day-activities">${actText}</div>
+        function renderReportKpis(s, prev, quota, lookup) {
+            const span = reportPeriodDays === 90 ? '3 เดือน' : `${reportPeriodDays} วัน`;
+            const delta = (now, before, unit) => {
+                if (!prev.count) return '<span class="rp-kpi-sub">ช่วงก่อนหน้ายังไม่มีข้อมูล</span>';
+                const diff = now - before;
+                if (diff === 0) return `<span class="rp-delta">เท่ากับ ${span}ก่อนหน้า</span>`;
+                return `<span class="rp-delta">${diff > 0 ? '▲' : '▼'} ${Math.abs(diff)} ${unit} จาก ${span}ก่อนหน้า</span>`;
+            };
+            const longest = s.longest;
+            const longAct = longest ? lookup(longest.log.action) : null;
+            const withinPct = s.active ? Math.round((s.within / s.active) * 100) : 0;
+            document.getElementById('report-kpis').innerHTML = `
+                <div class="rp-kpi hero glass-panel">
+                    <span class="rp-kpi-label">เวลาพักรวม (นับผลโควตา)</span>
+                    <span class="rp-kpi-value">${s.total}<small>นาที</small></span>
+                    ${s.total >= 60 ? `<span class="rp-kpi-sub">≈ ${reportHours(s.total)}${s.real !== s.total ? ` · เวลาจริง ${s.real} นาที` : ''}</span>` : (s.real !== s.total ? `<span class="rp-kpi-sub">เวลาจริง ${s.real} นาที</span>` : '')}
+                    ${delta(s.total, prev.total, 'นาที')}
+                </div>
+                <div class="rp-kpi glass-panel">
+                    <span class="rp-kpi-label">เฉลี่ยต่อวันที่พัก</span>
+                    <span class="rp-kpi-value">${s.avg}<small>นาที</small></span>
+                    <span class="rp-kpi-sub">โควตา ${quota} นาที/วัน</span>
+                    ${delta(s.avg, prev.avg, 'นาที')}
+                </div>
+                <div class="rp-kpi glass-panel">
+                    <span class="rp-kpi-label">วันที่อยู่ในโควตา</span>
+                    <span class="rp-kpi-value">${s.within}<small>/ ${s.active} วัน</small></span>
+                    <div class="rp-kpi-meter" role="img" aria-label="อยู่ในโควตา ${withinPct}%"><span style="width:${withinPct}%"></span></div>
+                    <span class="rp-kpi-sub ${s.over ? 'bad' : ''}">${s.over ? `⚠ เกินโควตา ${s.over} วัน` : (s.active ? '✓ ไม่เกินเลยสักวัน' : 'ยังไม่มีข้อมูล')}</span>
+                </div>
+                <div class="rp-kpi glass-panel">
+                    <span class="rp-kpi-label">จำนวนครั้งที่พัก</span>
+                    <span class="rp-kpi-value">${s.count}<small>ครั้ง</small></span>
+                    <span class="rp-kpi-sub">${s.active ? `เฉลี่ย ${(s.count / s.active).toFixed(1)} ครั้ง/วัน` : '—'}</span>
+                    ${delta(s.count, prev.count, 'ครั้ง')}
+                </div>
+                <div class="rp-kpi glass-panel">
+                    <span class="rp-kpi-label">พักนานที่สุด</span>
+                    <span class="rp-kpi-value">${longest ? longest.log.duration : 0}<small>นาที</small></span>
+                    <span class="rp-kpi-sub">${longest ? `${longAct.emoji} ${escHtml(longest.log.action)} · ${reportDateLabel(longest.date)}` : '—'}</span>
                 </div>`;
-            });
-            html += '</div>';
-            container.innerHTML = html;
         }
 
-        function renderReportWeekdayChart(dayBuckets, allLogs) {
-            const dailyStats = buildDailyStats(allLogs);
-            const svg = document.getElementById('report-weekday-chart');
-            const sums = [0,0,0,0,0,0,0], counts = [0,0,0,0,0,0,0];
-            dayBuckets.forEach(b => {
-                const wd = b.date.getDay();
-                counts[wd]++;
-                sums[wd] += dailyStats.totals.get(b.dateStr) || 0;
-            });
-            const averages = sums.map((s, i) => counts[i] > 0 ? s / counts[i] : 0);
-
-            const chartX = 10, chartW = 320, chartTop = 10, chartBottom = 100, chartH = chartBottom - chartTop;
-            const max = Math.max(...averages, 1);
-            const gap = 8;
-            const barW = (chartW - gap * 6) / 7;
-
-            let bars = `<line class="report-axis-line" x1="${chartX}" y1="${chartBottom}" x2="${chartX + chartW}" y2="${chartBottom}"></line>`;
-            averages.forEach((avg, i) => {
-                const h = Math.max((avg / max) * chartH, avg > 0 ? 3 : 0);
-                const x = chartX + i * (barW + gap);
-                const y = chartBottom - h;
-                bars += `<rect class="report-bar" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" rx="3"><title>${REPORT_WEEKDAY_LABELS[i]}: เฉลี่ย ${avg.toFixed(1)} นาที</title></rect>`;
-                bars += `<text class="report-bar-label" x="${(x + barW/2).toFixed(1)}" y="114" text-anchor="middle">${REPORT_WEEKDAY_LABELS[i]}</text>`;
-            });
-            svg.innerHTML = bars;
+        // ปลายแท่งมน 4px ฐานเหลี่ยม
+        function reportBarPath(x, y, w, h) {
+            if (h <= 0) return '';
+            const r = Math.min(4, w / 2, h);
+            return `M${x.toFixed(1)},${(y + h).toFixed(1)}V${(y + r).toFixed(1)}Q${x.toFixed(1)},${y.toFixed(1)} ${(x + r).toFixed(1)},${y.toFixed(1)}`
+                + `H${(x + w - r).toFixed(1)}Q${(x + w).toFixed(1)},${y.toFixed(1)} ${(x + w).toFixed(1)},${(y + r).toFixed(1)}V${(y + h).toFixed(1)}Z`;
         }
-
-        function renderReportActivityTable(periodLogs, grandTotal) {
-            const table = document.getElementById('report-activity-table');
-            if (periodLogs.length === 0) {
-                table.innerHTML = '<tr><td class="report-empty">ยังไม่มีข้อมูลในช่วงนี้</td></tr>';
-                return;
+        function reportScale(maxVal) {
+            const steps = [1, 2, 5, 10, 15, 20, 30, 60, 90, 120, 180, 240, 480];
+            const step = steps.find(s => maxVal / s <= 4) || Math.ceil(maxVal / 4 / 60) * 60;
+            return { step, max: Math.max(step, Math.ceil(maxVal / step) * step) };
+        }
+        // กราฟแท่งแนวตั้งใช้ร่วมกัน: mode 'status' = เกินโควตาเป็นสีเตือน, 'emphasis' = เน้นแท่งสูงสุด ที่เหลือเป็นสีจาง
+        function renderReportColumns(el, items, opts) {
+            const W = Math.max(260, Math.round(el.clientWidth || 600)), H = opts.height;
+            const padL = 32, padR = 6, padT = 18, axisH = 22;
+            const plotW = W - padL - padR, plotH = H - padT - axisH;
+            const { step, max } = reportScale(Math.max(opts.quota || 0, ...items.map(it => it.value), 1));
+            const y = v => padT + plotH - (v / max) * plotH;
+            const band = plotW / items.length;
+            const bw = Math.max(2, Math.min(24, band - 2, band * 0.72));
+            const every = Math.max(1, Math.ceil(items.length / Math.max(1, Math.floor(plotW / (opts.labelWidth || 40)))));
+            const peak = items.reduce((best, it, i) => (it.value > (items[best]?.value ?? -1) ? i : best), 0);
+            let svg = '';
+            for (let v = 0; v <= max; v += step) {
+                svg += `<line class="rp-grid-line" x1="${padL}" x2="${W - padR}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/>`
+                    + `<text class="rp-axis" x="${padL - 6}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end">${v}</text>`;
             }
-            const groups = {};
-            periodLogs.forEach(l => {
-                if (!groups[l.action]) groups[l.action] = { count: 0, real: 0, quota: 0 };
-                groups[l.action].count++;
-                groups[l.action].real += l.duration;
-                groups[l.action].quota += quotaMinutesForLog(l);
+            items.forEach((it, i) => {
+                const x0 = padL + i * band, cx = x0 + band / 2, h = it.value > 0 ? Math.max(2, plotH - (y(it.value) - padT)) : 0;
+                const cls = opts.mode === 'status' ? (it.value > opts.quota ? 'over' : 'ok') : (i === peak ? '' : 'dim');
+                svg += `<g class="rp-col" tabindex="0" role="img" aria-label="${escHtml(it.tipL)}: ${escHtml(it.tipV)}" data-tip-v="${escHtml(it.tipV)}" data-tip-l="${escHtml(it.tipL)}"${it.target ? ` data-target="${it.target}"` : ''}>`
+                    + `<rect class="rp-hit" x="${x0.toFixed(1)}" y="${padT}" width="${band.toFixed(1)}" height="${plotH}" rx="6"/>`
+                    + `<path class="rp-bar ${cls}" d="${reportBarPath(cx - bw / 2, padT + plotH - h, bw, h)}"/></g>`;
+                const fromEnd = items.length - 1 - i;
+                if (fromEnd % every === 0) svg += `<text class="rp-axis${it.today ? ' is-today' : ''}" x="${cx.toFixed(1)}" y="${H - 5}" text-anchor="middle">${it.label}</text>`;
             });
-            const rows = Object.entries(groups).sort((a, b) => b[1].real - a[1].real);
-            const maxReal = Math.max(...rows.map(r => r[1].real), 1);
+            if (opts.quota) svg += `<line class="rp-quota-line" x1="${padL}" x2="${W - padR}" y1="${y(opts.quota).toFixed(1)}" y2="${y(opts.quota).toFixed(1)}"/>`;
+            // ติดตัวเลขเฉพาะแท่งสูงสุดแท่งเดียว ที่เหลือดูจากแกนหรือชี้ดู
+            if (items[peak] && items[peak].value > 0) {
+                const px = padL + peak * band + band / 2;
+                svg += `<text class="rp-val" x="${Math.min(W - 12, Math.max(padL + 10, px)).toFixed(1)}" y="${(y(items[peak].value) - 6).toFixed(1)}" text-anchor="middle">${items[peak].value}</text>`;
+            }
+            el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="group" aria-label="${escHtml(opts.label)}">${svg}</svg>`;
+        }
 
-            let html = '<thead><tr><th>กิจกรรม</th><th>ครั้ง</th><th>รวม (นาที)</th></tr></thead><tbody>';
-            rows.forEach(([name, g]) => {
-                const pct = grandTotal > 0 ? Math.round((g.real / grandTotal) * 100) : 0;
-                const barWidth = Math.max((g.real / maxReal) * 60, 4);
-                html += `<tr>
-                    <td>${name}</td>
-                    <td>${g.count}</td>
-                    <td><div class="report-bar-cell"><span>${g.real}</span><div class="report-bar-mini" style="width:${barWidth.toFixed(0)}px;"></div><span class="report-pct">${pct}%</span></div></td>
-                </tr>`;
+        function renderReportTrend(days, quota) {
+            const el = document.getElementById('report-trend-chart');
+            const todayStr = new Date().toDateString();
+            let items;
+            if (days.length > 31) {
+                // 3 เดือน: รวมเป็นรายสัปดาห์ (เฉลี่ยต่อวันที่พัก) แท่งจะได้ไม่บางจนอ่านไม่ออก
+                items = [];
+                for (let end = days.length; end > 0; end -= 7) {
+                    const chunk = days.slice(Math.max(0, end - 7), end);
+                    const active = chunk.filter(d => d.logs.length);
+                    const sum = chunk.reduce((s, d) => s + d.total, 0);
+                    const avg = active.length ? Math.round(sum / active.length) : 0;
+                    const a = chunk[0].date, b = chunk[chunk.length - 1].date;
+                    items.unshift({
+                        value: avg, label: `${a.getDate()}/${a.getMonth() + 1}`,
+                        tipV: active.length ? `เฉลี่ย ${avg} นาที/วัน` : 'ไม่มีการพัก',
+                        tipL: `${reportDateLabel(a)} – ${reportDateLabel(b)} · รวม ${sum} นาที · พัก ${active.length} วัน`,
+                        target: (active[active.length - 1] || chunk[chunk.length - 1]).dateStr
+                    });
+                }
+                document.getElementById('report-trend-title').textContent = '📈 เวลาพักเฉลี่ยรายสัปดาห์';
+            } else {
+                items = days.map(d => ({
+                    value: d.total,
+                    label: days.length <= 7 ? `${REPORT_WEEKDAY_LABELS[d.date.getDay()]} ${d.date.getDate()}` : `${d.date.getDate()}`,
+                    today: d.dateStr === todayStr,
+                    tipV: d.logs.length ? `${d.total} นาที${d.total > quota ? ` (เกิน ${d.total - quota})` : ''}` : 'ไม่มีการพัก',
+                    tipL: `วัน${THAI_WEEKDAYS[d.date.getDay()]} ${reportDateLabel(d.date)} · ${d.logs.length} ครั้ง`,
+                    target: d.dateStr
+                }));
+                document.getElementById('report-trend-title').textContent = '📈 เวลาพักรายวัน';
+            }
+            renderReportColumns(el, items, { height: 220, quota, mode: 'status', labelWidth: days.length <= 7 ? 44 : 30, label: 'กราฟเวลาพักรายวันเทียบโควตา' });
+        }
+
+        function renderReportDays(days, quota, lookup) {
+            const list = document.getElementById('report-daily-list');
+            const todayStr = new Date().toDateString();
+            const active = days.filter(d => d.logs.length);
+            if (reportOpenPeriod !== reportPeriodDays) {
+                // เปิดหน้า/เปลี่ยนช่วง: 7 วันกางทุกวัน ช่วงยาวกางแค่ 2 วันล่าสุดที่มีการพัก
+                reportOpenDays.clear();
+                (reportPeriodDays <= 7 ? active : active.slice(-2)).forEach(d => reportOpenDays.add(d.dateStr));
+                reportOpenPeriod = reportPeriodDays;
+            }
+            const scaleMax = Math.max(quota, ...days.map(d => d.total), 1);
+            const quotaPct = (quota / scaleMax) * 100;
+
+            // คำอธิบายสีกิจกรรมที่มีในช่วงนี้
+            const names = [...new Set(active.flatMap(d => d.logs.map(l => l.action)))].sort((a, b) => lookup(a).order - lookup(b).order || a.localeCompare(b));
+            document.getElementById('report-day-legend').innerHTML = names.map(n => {
+                const m = lookup(n);
+                return `<span class="rp-key"><span class="rp-swatch" style="--c:${m.color}"></span>${m.emoji} ${escHtml(n)}</span>`;
+            }).join('') + (names.length ? '<span class="rp-key"><span class="rp-swatch tick"></span>เส้นโควตา</span>' : '');
+
+            const thisWeek = reportWeekStart(new Date()).toDateString();
+            const lastWeekDate = reportWeekStart(new Date()); lastWeekDate.setDate(lastWeekDate.getDate() - 7);
+            const weeks = [];
+            days.slice().reverse().forEach(d => {
+                const ws = reportWeekStart(d.date);
+                if (!weeks.length || weeks[weeks.length - 1].key !== ws.toDateString()) weeks.push({ key: ws.toDateString(), start: ws, days: [] });
+                weeks[weeks.length - 1].days.push(d);
             });
-            html += '</tbody>';
-            table.innerHTML = html;
+
+            const dayCard = d => {
+                const over = d.total > quota, isToday = d.dateStr === todayStr;
+                const acts = new Map();
+                d.logs.forEach(l => acts.set(l.action, (acts.get(l.action) || 0) + quotaMinutesForLog(l)));
+                const segs = [...acts.entries()].filter(([, m]) => m > 0).sort((a, b) => lookup(a[0]).order - lookup(b[0]).order).map(([n, m]) => {
+                    const meta = lookup(n);
+                    return `<span class="rd-seg" style="--c:${meta.color};width:${((m / scaleMax) * 100).toFixed(2)}%" data-tip-v="${m} นาที" data-tip-l="${meta.emoji} ${escHtml(n)}"></span>`;
+                }).join('');
+                const longest = Math.max(...d.logs.map(l => l.duration));
+                const items = d.logs.map(l => {
+                    const meta = lookup(l.action), q = quotaMinutesForLog(l);
+                    const chip = l.isToilet ? (q === 0 ? '<span class="rd-chip free">ฟรี</span>' : `<span class="rd-chip cut">หัก ${q}</span>`) : '';
+                    return `<li class="rd-item"><span class="rd-time">${escHtml(reportClock(l.start))} – ${escHtml(reportClock(l.end))}</span>`
+                        + `<span class="rd-act"><span class="rd-dot" style="--c:${meta.color}"></span><span>${meta.emoji}</span><span class="rd-name">${escHtml(l.action)}</span></span>`
+                        + `<span class="rd-dur">${l.duration} น.${chip}</span></li>`;
+                }).join('');
+                return `<details class="rd-day${isToday ? ' is-today' : ''}${over ? ' is-over' : ''}" data-date="${d.dateStr}"${reportOpenDays.has(d.dateStr) ? ' open' : ''}>
+                    <summary class="rd-sum">
+                        <span class="rd-date"><small>${REPORT_WEEKDAY_LABELS[d.date.getDay()]}.</small><b>${d.date.getDate()}</b><small>${THAI_MONTHS[d.date.getMonth()]}</small></span>
+                        <span class="rd-main">
+                            <span class="rd-title">วัน${THAI_WEEKDAYS[d.date.getDay()]}ที่ ${d.date.getDate()} ${THAI_MONTHS[d.date.getMonth()]}${isToday ? '<span class="rd-tag">วันนี้</span>' : ''}</span>
+                            <span class="rd-meter" role="img" aria-label="นับโควตา ${d.total} จาก ${quota} นาที"><span class="rd-segs">${segs}</span><span class="rd-quota" style="left:${quotaPct.toFixed(2)}%"></span></span>
+                            <span class="rd-meta">${d.logs.length} ครั้ง · ยาวสุด ${longest} นาที · <span class="rd-more">ดูรายการ<span class="rd-chev">▾</span></span></span>
+                        </span>
+                        <span class="rd-total"><b>${d.total}</b><small>/ ${quota} น.</small><span class="rd-badge">${over ? `⚠ เกิน ${d.total - quota} น.` : `✓ เหลือ ${quota - d.total} น.`}</span></span>
+                    </summary>
+                    <div class="rd-body">
+                        <ol class="rd-list">${items}</ol>
+                        <div class="rd-foot"><span>${d.real !== d.total ? `เวลาจริงรวม ${d.real} นาที (ห้องน้ำได้ฟรีบางส่วน)` : `เวลาจริงรวม ${d.real} นาที`}</span>
+                            <button type="button" class="chip-btn" onclick="showDayDetail('${d.dateStr}')">✏️ แก้ไขรายการ</button></div>
+                    </div>
+                </details>`;
+            };
+            // วันที่ไม่ได้พักติดกันหลายวัน รวมเป็นแถวเดียว
+            const emptyRun = run => {
+                const a = run[run.length - 1].date, b = run[0].date;
+                const when = run.length === 1 ? `วัน${THAI_WEEKDAYS[a.getDay()]}ที่ ${reportDateLabel(a)}` : `${REPORT_WEEKDAY_LABELS[a.getDay()]}. ${reportDateLabel(a)} – ${REPORT_WEEKDAY_LABELS[b.getDay()]}. ${reportDateLabel(b)} (${run.length} วัน)`;
+                return `<div class="rd-empty" data-dates="${run.map(d => d.dateStr).join('|')}">😴 ${when} · ไม่มีบันทึกการพัก</div>`;
+            };
+
+            list.innerHTML = weeks.map(w => {
+                const end = new Date(w.start); end.setDate(end.getDate() + 6);
+                const title = w.key === thisWeek ? 'สัปดาห์นี้' : (w.key === lastWeekDate.toDateString() ? 'สัปดาห์ที่แล้ว' : 'สัปดาห์');
+                const wActive = w.days.filter(d => d.logs.length);
+                const wTotal = w.days.reduce((s, d) => s + d.total, 0);
+                const wOver = wActive.filter(d => d.total > quota).length;
+                let body = '', run = [];
+                w.days.forEach(d => {
+                    if (!d.logs.length) { run.push(d); return; }
+                    if (run.length) { body += emptyRun(run); run = []; }
+                    body += dayCard(d);
+                });
+                if (run.length) body += emptyRun(run);
+                return `<div class="rd-week">
+                    <div class="rd-week-head">
+                        <span class="rd-week-title">${title}<span class="rd-week-range">${reportDateLabel(w.start)} – ${reportDateLabel(end)}</span></span>
+                        <span class="rd-week-sum">${wActive.length ? `รวม <b>${wTotal}</b> นาที · เฉลี่ย <b>${Math.round(wTotal / wActive.length)}</b> นาที/วัน${wOver ? ` · ⚠ เกิน ${wOver} วัน` : ''}` : 'ไม่มีการพัก'}</span>
+                    </div>
+                    <div class="rd-days">${body}</div>
+                </div>`;
+            }).join('');
+            updateReportToggleLabel();
+        }
+        function updateReportToggleLabel() {
+            const all = document.querySelectorAll('#report-daily-list .rd-day');
+            const btn = document.getElementById('report-toggle-days');
+            btn.style.display = all.length ? '' : 'none';
+            btn.textContent = [...all].every(d => d.open) ? 'ย่อทั้งหมด' : 'ขยายทั้งหมด';
+        }
+        function toggleAllReportDays() {
+            const all = [...document.querySelectorAll('#report-daily-list .rd-day')];
+            const open = !all.every(d => d.open);
+            all.forEach(d => { d.open = open; if (open) reportOpenDays.add(d.dataset.date); else reportOpenDays.delete(d.dataset.date); });
+            updateReportToggleLabel();
+        }
+        function jumpToReportDay(dateStr) {
+            let card = document.querySelector(`#report-daily-list .rd-day[data-date="${dateStr}"]`);
+            if (card) { card.open = true; reportOpenDays.add(dateStr); updateReportToggleLabel(); }
+            else card = [...document.querySelectorAll('#report-daily-list .rd-empty')].find(el => el.dataset.dates.split('|').includes(dateStr));
+            if (!card) return;
+            card.scrollIntoView({ behavior: PARADE_REDUCED_MOTION ? 'auto' : 'smooth', block: 'start' });
+            card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
+        }
+
+        function renderReportActivities(days, lookup) {
+            const el = document.getElementById('report-activity');
+            const groups = new Map();
+            days.forEach(d => d.logs.forEach(l => {
+                const g = groups.get(l.action) || { count: 0, real: 0 };
+                g.count++; g.real += l.duration; groups.set(l.action, g);
+            }));
+            if (!groups.size) { el.innerHTML = '<div class="rp-empty">ยังไม่มีข้อมูลในช่วงนี้</div>'; return; }
+            const rows = [...groups.entries()].sort((a, b) => b[1].real - a[1].real);
+            const total = rows.reduce((s, [, g]) => s + g.real, 0), maxReal = rows[0][1].real || 1;
+            el.innerHTML = rows.map(([name, g]) => {
+                const m = lookup(name);
+                return `<div class="ra-row">
+                    <div class="ra-top"><span class="ra-name"><span class="rd-dot" style="--c:${m.color}"></span><span>${m.emoji}</span><span>${escHtml(name)}</span></span>
+                        <span class="ra-val">${g.real}<small>นาที</small></span></div>
+                    <div class="ra-track"><div class="ra-bar" style="--c:${m.color};width:${((g.real / maxReal) * 100).toFixed(1)}%"></div></div>
+                    <div class="ra-meta">${g.count} ครั้ง · เฉลี่ย ${Math.round(g.real / g.count)} นาที/ครั้ง · ${total ? Math.round((g.real / total) * 100) : 0}% ของเวลาทั้งหมด</div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderReportWeekdays(days) {
+            const el = document.getElementById('report-weekday-chart');
+            const sums = [0, 0, 0, 0, 0, 0, 0], counts = [0, 0, 0, 0, 0, 0, 0];
+            days.forEach(d => { const wd = d.date.getDay(); counts[wd]++; sums[wd] += d.total; });
+            const items = [1, 2, 3, 4, 5, 6, 0].map(wd => {
+                const avg = counts[wd] ? Math.round(sums[wd] / counts[wd]) : 0;
+                return { value: avg, label: REPORT_WEEKDAY_LABELS[wd], tipV: `เฉลี่ย ${avg} นาที`, tipL: `วัน${THAI_WEEKDAYS[wd]} (จาก ${counts[wd]} วัน)` };
+            });
+            renderReportColumns(el, items, { height: 170, mode: 'emphasis', label: 'เวลาพักเฉลี่ยตามวันในสัปดาห์' });
+        }
+
+        function renderReportHours(days) {
+            const el = document.getElementById('report-hour-chart');
+            const counts = new Array(24).fill(0), mins = new Array(24).fill(0);
+            days.forEach(d => d.logs.forEach(l => {
+                const s = reportStartMinutes(l);
+                if (s === null) return;
+                const h = Math.floor(s / 60) % 24; counts[h]++; mins[h] += l.duration;
+            }));
+            const used = counts.map((c, h) => (c ? h : -1)).filter(h => h >= 0);
+            if (!used.length) { el.innerHTML = '<div class="rp-empty">ยังไม่มีข้อมูลในช่วงนี้</div>'; return; }
+            let lo = Math.min(...used), hi = Math.max(...used);
+            while (hi - lo < 7) { if (lo > 0) lo--; if (hi - lo < 7 && hi < 23) hi++; if (lo === 0 && hi === 23) break; }
+            const items = [];
+            for (let h = lo; h <= hi; h++) {
+                items.push({ value: counts[h], label: `${h}`, tipV: `${counts[h]} ครั้ง${counts[h] ? ` · รวม ${mins[h]} นาที` : ''}`, tipL: `${String(h).padStart(2, '0')}:00 – ${String(h).padStart(2, '0')}:59 น.` });
+            }
+            renderReportColumns(el, items, { height: 170, mode: 'emphasis', labelWidth: 26, label: 'จำนวนครั้งที่เริ่มพักตามชั่วโมง' });
+        }
+
+        // ป้ายบอกค่าเวลาชี้หรือโฟกัสที่แท่งกราฟ (ใช้ textContent เสมอ)
+        function showReportTip(target, x, y) {
+            const tip = document.getElementById('report-tip');
+            tip.textContent = '';
+            const b = document.createElement('b'); b.textContent = target.dataset.tipV;
+            tip.append(b, document.createTextNode(target.dataset.tipL));
+            tip.classList.add('show');
+            const r = tip.getBoundingClientRect();
+            const left = Math.min(window.innerWidth - r.width - 8, Math.max(8, x - r.width / 2));
+            const top = y - r.height - 14 < 8 ? y + 18 : y - r.height - 14;
+            tip.style.transform = `translate(${left.toFixed(0)}px, ${top.toFixed(0)}px)`;
+        }
+        function hideReportTip() {
+            const tip = document.getElementById('report-tip');
+            if (tip) tip.classList.remove('show');
+        }
+        function initReportPage() {
+            const page = document.getElementById('report-page');
+            page.addEventListener('pointermove', e => {
+                const t = e.target.closest('[data-tip-v]');
+                if (t && e.pointerType !== 'touch') showReportTip(t, e.clientX, e.clientY); else hideReportTip();
+            });
+            page.addEventListener('pointerleave', hideReportTip);
+            page.addEventListener('focusin', e => {
+                const t = e.target.closest('[data-tip-v]');
+                if (!t) return;
+                const r = t.getBoundingClientRect();
+                showReportTip(t, r.left + r.width / 2, r.top);
+            });
+            page.addEventListener('focusout', hideReportTip);
+            page.addEventListener('click', e => {
+                const t = e.target.closest('.rp-col[data-target]');
+                if (t) jumpToReportDay(t.dataset.target);
+            });
+            page.addEventListener('keydown', e => {
+                const t = e.target.closest && e.target.closest('.rp-col[data-target]');
+                if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); jumpToReportDay(t.dataset.target); }
+                if (e.key === 'Escape') closeReportPage();
+            });
+            document.getElementById('report-scroll').addEventListener('scroll', hideReportTip, { passive: true });
+            // จำว่ากาง/หุบวันไหนไว้ (event toggle ไม่ bubble เลยต้องดักแบบ capture)
+            document.getElementById('report-daily-list').addEventListener('toggle', e => {
+                const d = e.target;
+                if (!d.classList || !d.classList.contains('rd-day')) return;
+                if (d.open) reportOpenDays.add(d.dataset.date); else reportOpenDays.delete(d.dataset.date);
+                updateReportToggleLabel();
+            }, true);
+            let resizeTimer = null;
+            window.addEventListener('resize', () => {
+                if (!isReportOpen()) return;
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(renderReportPage, 160);
+            });
         }
 
         function renderSearchResults() {
@@ -5407,6 +5779,7 @@
             initSky();
             loadStickers(); renderStickers();
             initVeggies();
+            initReportPage();
         };
 
         // --- 🔄 ซิงก์ข้อมูลข้ามแท็บ กันข้อมูลเก่าจากแท็บที่ค้างอยู่ไปทับข้อมูลใหม่โดยไม่ตั้งใจ ---
