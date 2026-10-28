@@ -1229,15 +1229,30 @@
         .field:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.15); }
         body.is-dark .field { color-scheme: dark; }
 
+        /* ไอคอนกิจกรรมวาดเอง ขนาดตามตัวอักษรรอบๆ ใช้แทนอิโมจิได้ทุกที่ */
+        .act-ic { display: inline-block; width: 1.25em; height: 1.25em; vertical-align: -0.28em; flex-shrink: 0; overflow: visible; }
+        .floating-emoji .act-ic { width: 1.62em; height: 1.62em; }
+        .action-card.expanded.has-target .floating-emoji .act-ic { width: 1.2em; height: 1.2em; }
+        .icon-field { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; padding: 6px 10px; cursor: pointer; font-size: 26px; line-height: 1; min-height: 47px; }
+        .icon-field-caret { font-size: 11px; color: var(--ink-3); }
         .emoji-picker {
-            display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 60; margin-top: 6px;
-            background: var(--surface-solid); border-radius: 16px; padding: 8px; border: 1px solid var(--line);
-            box-shadow: 0 18px 34px -14px rgba(var(--shadow-rgb), 0.45);
-            grid-template-columns: repeat(6, 1fr); gap: 2px; max-height: 168px; overflow-y: auto;
+            display: none; margin: -4px 0 14px; padding: 10px; border-radius: 18px;
+            background: var(--surface-2); border: 1px solid var(--line); max-height: 300px; overflow-y: auto;
         }
-        .emoji-picker.open { display: grid; }
-        .emoji-opt { background: none; border: none; font-size: 19px; padding: 6px 0; border-radius: 8px; cursor: pointer; transition: transform 0.15s, background-color 0.15s; }
-        .emoji-opt:hover { background: rgba(var(--accent-rgb), 0.14); transform: scale(1.2); }
+        .emoji-picker.open { display: block; animation: slideUp 0.25s ease; }
+        .icon-picker-title { display: block; margin: 2px 2px 6px; font-size: 12px; font-weight: 700; color: var(--ink-3); }
+        .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: 4px; margin-bottom: 10px; }
+        .emoji-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(36px, 1fr)); gap: 2px; margin-bottom: 10px; }
+        .icon-opt, .emoji-opt {
+            background: none; border: 2px solid transparent; border-radius: 12px; cursor: pointer; line-height: 1;
+            transition: transform 0.15s, background-color 0.15s, border-color 0.15s;
+        }
+        .icon-opt { font-size: 28px; padding: 5px 0; }
+        .emoji-opt { font-size: 20px; padding: 6px 0; }
+        .icon-opt:hover, .emoji-opt:hover { background: rgba(var(--accent-rgb), 0.12); transform: scale(1.12); }
+        .icon-opt.selected, .emoji-opt.selected { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.12); }
+        .icon-custom { display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+        .icon-custom .field { width: 76px; padding: 8px; text-align: center; font-size: 18px; }
 
         .color-picker-container { display: flex; gap: 12px; margin-top: 4px; flex-wrap: wrap; justify-content: center; }
         .color-dot {
@@ -1996,16 +2011,19 @@
             </div>
 
             <div style="display: flex; gap: 12px;">
-                <div class="input-group" style="flex: 1; position: relative;">
-                    <span class="input-label">อิโมจิ</span>
-                    <input type="text" id="act-emoji" class="field" placeholder="☕" style="text-align: center; font-size: 20px; padding: 10px;" onfocus="showEmojiPicker()">
-                    <div class="emoji-picker" id="emoji-picker"></div>
+                <div class="input-group" style="flex: 1;">
+                    <span class="input-label">ไอคอน</span>
+                    <button type="button" id="act-emoji-btn" class="field icon-field" onclick="toggleEmojiPicker()" aria-haspopup="true" aria-expanded="false" aria-label="เลือกไอคอน">
+                        <span id="act-emoji-preview"></span><span class="icon-field-caret">▾</span>
+                    </button>
+                    <input type="hidden" id="act-emoji">
                 </div>
                 <div class="input-group" style="flex: 2;">
                     <span class="input-label">เตือนเมื่อเกิน (นาที)</span>
                     <input type="number" id="act-limit" class="field" placeholder="0 = ไม่จำกัด">
                 </div>
             </div>
+            <div class="emoji-picker" id="emoji-picker"></div>
 
             <div class="input-group">
                 <span class="input-label">เลือกสีปุ่ม 🎨</span>
@@ -2284,21 +2302,194 @@
     <canvas id="share-canvas" width="600" height="750" style="display:none;"></canvas>
 
     <script>
-        // --- 😀 ตัวเลือกอิโมจิด่วน สำหรับตอนสร้าง/แก้ไขกิจกรรม ---
-        const EMOJI_PICKER_LIST = ['☕','🍵','🧋','🥤','🍔','🍕','🍜','🍱','🍪','🍩','🚬','🚽','🚶','🏃','🧘','💬','📱','🎮','🛌','😴','🎧','📖','✏️','🧹','🌿','🚗','🏠','💊','🩺','🎵','📞','🧊'];
-        function showEmojiPicker() {
-            const picker = document.getElementById('emoji-picker');
-            picker.innerHTML = EMOJI_PICKER_LIST.map(e => `<button type="button" class="emoji-opt" onclick="pickEmoji('${e}')">${e}</button>`).join('');
-            picker.classList.add('open');
+        // --- 🎨 ไอคอนกิจกรรมวาดเอง: หน้าตาเหมือนกันทุกเครื่อง (อิโมจิของแต่ละระบบหน้าตาไม่เหมือนกัน บางตัวดูหม่น) ---
+        const IC_INK = '#2B2140';
+        function icFace(x, y, s = 1, mood = 'ok') {
+            const f = n => (n * s).toFixed(2);
+            let eyes;
+            if (mood === 'sleepy') eyes = `<path d="M${x - 7 * s} ${y}q2 ${f(1.8)} 4 0M${x + 3 * s} ${y}q2 ${f(1.8)} 4 0" stroke="${IC_INK}" stroke-width="${f(1.5)}" fill="none" stroke-linecap="round"/>`;
+            else if (mood === 'happy') eyes = `<path d="M${x - 7 * s} ${y + 0.8 * s}q2 ${f(-2.8)} 4 0M${x + 3 * s} ${y + 0.8 * s}q2 ${f(-2.8)} 4 0" stroke="${IC_INK}" stroke-width="${f(1.6)}" fill="none" stroke-linecap="round"/>`;
+            else eyes = `<ellipse cx="${x - 5 * s}" cy="${y}" rx="${f(2.1)}" ry="${f(2.7)}" fill="${IC_INK}"/><ellipse cx="${x + 5 * s}" cy="${y}" rx="${f(2.1)}" ry="${f(2.7)}" fill="${IC_INK}"/>`
+                + `<circle cx="${x - 4.3 * s}" cy="${y - 1 * s}" r="${f(0.8)}" fill="#FFF"/><circle cx="${x + 5.7 * s}" cy="${y - 1 * s}" r="${f(0.8)}" fill="#FFF"/>`;
+            const blush = `<ellipse cx="${x - 9 * s}" cy="${y + 3.6 * s}" rx="${f(2.6)}" ry="${f(1.6)}" fill="#FF8FB0" opacity="0.7"/><ellipse cx="${x + 9 * s}" cy="${y + 3.6 * s}" rx="${f(2.6)}" ry="${f(1.6)}" fill="#FF8FB0" opacity="0.7"/>`;
+            const mouth = mood === 'sleepy' ? `<ellipse cx="${x}" cy="${y + 3.8 * s}" rx="${f(1.1)}" ry="${f(1)}" fill="${IC_INK}"/>`
+                : `<path d="M${x - 2 * s} ${y + 2.8 * s}q${f(2)} ${f(2.4)} ${f(4)} 0" stroke="${IC_INK}" stroke-width="${f(1.4)}" fill="none" stroke-linecap="round"/>`;
+            return eyes + blush + mouth;
         }
-        function pickEmoji(e) {
-            document.getElementById('act-emoji').value = e;
-            document.getElementById('emoji-picker').classList.remove('open');
+        const IC_SHADOW = '<ellipse cx="32" cy="60.5" rx="17" ry="2.6" fill="#2B2140" opacity="0.1"/>';
+        const IC_STEAM = (x, y, c = '#B7A3C9') => `<path d="M${x} ${y}q-3 -4 0 -7t0 -7M${x + 7} ${y + 1}q-3 -4 0 -7t0 -7" stroke="${c}" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.75"/>`;
+        const ACT_ICONS = {
+            'shaved-ice': { label: 'น้ำแข็งใส', alt: '🍧', svg: IC_SHADOW
+                + '<path d="M44 14L56 3" stroke="#FFC94A" stroke-width="3" stroke-linecap="round"/><ellipse cx="57" cy="2.6" rx="3.2" ry="2.2" fill="#FFC94A" transform="rotate(-40 57 2.6)"/>'
+                + '<path d="M9 36Q7 24 16 19Q18 9 27 9Q32 4 38 9Q47 9 48.5 19Q57 24 55 36Z" fill="#FFFFFF"/>'
+                + '<path d="M9.4 31Q9 23 16 19Q18 9 27 9Q25 15 26 20Q20 21 19 27Q18 31 15 30Q14 34 11.5 33Q10 33 9.4 31Z" fill="#FF8FB8"/>'
+                + '<path d="M38 9Q47 9 48.5 19Q55.6 23 54.7 31Q53 33 51 31.5Q50 34 47.5 32.5Q46.5 27 43 25Q41 20 42 15Q41 11 38 9Z" fill="#7CC8FF"/>'
+                + '<path d="M27 9Q32 4 38 9Q41 11 42 15Q38 19 33 18.5Q28 18 26 20Q25 15 27 9Z" fill="#FFE07A"/>'
+                + '<circle cx="21" cy="24" r="1.2" fill="#FFF" opacity="0.85"/><circle cx="47" cy="25" r="1.2" fill="#FFF" opacity="0.85"/><circle cx="33" cy="13" r="1.1" fill="#FFF" opacity="0.85"/>'
+                + '<path d="M32.5 4Q34.5 0.5 38 0.5" stroke="#3E9A5E" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="31.5" cy="6" r="4.2" fill="#F0354E"/><circle cx="30.2" cy="4.6" r="1.2" fill="#FFF" opacity="0.8"/>'
+                + '<path d="M8 35H56Q55 48.5 41 52V55H44.5Q47 55 47 57.2V58.8H17V57.2Q17 55 19.5 55H23V52Q9 48.5 8 35Z" fill="#B48CFF"/>'
+                + '<path d="M8 35H56Q55.8 38 55.2 40H8.8Q8.2 38 8 35Z" fill="#9A6BF5"/>'
+                + '<path d="M14 42Q15.5 47 21 49.5" stroke="#D9C7FF" stroke-width="2.2" fill="none" stroke-linecap="round"/>' + icFace(32, 44.5, 0.85) },
+            'rice': { label: 'ข้าวสวย', alt: '🍚', svg: IC_SHADOW + IC_STEAM(25, 14)
+                + '<path d="M47 22L60 6" stroke="#B9753B" stroke-width="3" stroke-linecap="round"/><path d="M50.5 24L62 10.5" stroke="#D08D50" stroke-width="3" stroke-linecap="round"/>'
+                + '<path d="M11 33Q12 17.5 32 17Q52 17.5 53 33Z" fill="#FFFFFF"/>'
+                + '<g fill="#EADFD2"><ellipse cx="22" cy="26" rx="1.6" ry="0.9" transform="rotate(-20 22 26)"/><ellipse cx="30" cy="22" rx="1.6" ry="0.9" transform="rotate(15 30 22)"/><ellipse cx="38" cy="25" rx="1.6" ry="0.9" transform="rotate(-10 38 25)"/><ellipse cx="44" cy="29" rx="1.6" ry="0.9" transform="rotate(25 44 29)"/><ellipse cx="17" cy="30" rx="1.6" ry="0.9" transform="rotate(10 17 30)"/><ellipse cx="33" cy="29" rx="1.6" ry="0.9" transform="rotate(-25 33 29)"/></g>'
+                + '<path d="M7 32H57Q56.5 48.5 45 54.5Q39 57.5 32 57.5Q25 57.5 19 54.5Q7.5 48.5 7 32Z" fill="#5E9BFF"/>'
+                + '<path d="M7 32H57Q56.9 35 56.3 37.5H7.7Q7.1 35 7 32Z" fill="#9CC3FF"/>'
+                + '<path d="M13 47q3 -3 6 0t6 0t6 0t6 0t6 0t6 0" stroke="#FFFFFF" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.65"/>'
+                + '<rect x="24" y="55" width="16" height="4.6" rx="2.3" fill="#4479E0"/>' + icFace(32, 42.5, 0.9) },
+            'onigiri': { label: 'ข้าวปั้น', alt: '🍙', svg: IC_SHADOW
+                + '<path d="M32 7Q36.5 7 39.5 12.5L53.5 40Q57 47.5 49.5 51.5Q32 58 14.5 51.5Q7 47.5 10.5 40L24.5 12.5Q27.5 7 32 7Z" fill="#FFFFFF"/>'
+                + '<path d="M53.5 40Q57 47.5 49.5 51.5Q32 58 14.5 51.5Q10 49 10 44.5Q20 52 32 52Q46 52 54.2 43Z" fill="#E9E4F0"/>'
+                + '<path d="M23 37H41V55.4Q32 57 23 55.4Z" fill="#2E5A44"/><path d="M26 41H38" stroke="#3F7559" stroke-width="1.2" stroke-linecap="round"/>'
+                + '<g fill="#E8DCC8"><ellipse cx="22" cy="24" rx="0.9" ry="1.5" transform="rotate(30 22 24)"/><ellipse cx="42" cy="23" rx="0.9" ry="1.5" transform="rotate(-30 42 23)"/><ellipse cx="34" cy="15" rx="0.9" ry="1.5"/></g>' + icFace(32, 28, 0.9) },
+            'coffee': { label: 'กาแฟ', alt: '☕', svg: IC_SHADOW + IC_STEAM(25, 16)
+                + '<path d="M45 30Q55.5 30 55.5 39Q55.5 48 45 48" stroke="#FFC9A3" stroke-width="5.4" fill="none" stroke-linecap="round"/>'
+                + '<path d="M12 24H47V47Q47 57 37 57H22Q12 57 12 47Z" fill="#FFF3E4"/>'
+                + '<path d="M12 44H47V47Q47 57 37 57H22Q12 57 12 47Z" fill="#FFE3C8"/>'
+                + '<ellipse cx="29.5" cy="24.5" rx="17.5" ry="4.2" fill="#8A5A3C"/><path d="M29.5 26.6c-1.6-2.2-5.4-1.2-4.4 1.6 0.6 1.6 4.4 3.6 4.4 3.6s3.8-2 4.4-3.6c1-2.8-2.8-3.8-4.4-1.6z" fill="#F4D6B4" transform="translate(0 -4)"/>'
+                + icFace(29.5, 38, 0.95) },
+            'boba': { label: 'ชานมไข่มุก', alt: '🧋', svg: IC_SHADOW
+                + '<path d="M37 21L41.5 2.5" stroke="#FF6F9C" stroke-width="4.4" stroke-linecap="round"/>'
+                + '<path d="M16 22H48L43.5 56.5Q43 58.6 40.8 58.6H23.2Q21 58.6 20.5 56.5Z" fill="#E3BC94"/>'
+                + '<path d="M16 22H48L47.2 28H16.8Z" fill="#F2D8BC"/>'
+                + '<g fill="#4A2F3B"><circle cx="25" cy="53" r="2.6"/><circle cx="31" cy="54.5" r="2.6"/><circle cx="37" cy="53" r="2.6"/><circle cx="28" cy="49" r="2.6"/><circle cx="34" cy="49.5" r="2.6"/></g>'
+                + '<path d="M14 23Q14 12.5 32 12Q50 12.5 50 23Z" fill="#FFFFFF" opacity="0.85"/><rect x="13" y="20.5" width="38" height="4.4" rx="2.2" fill="#FFFFFF"/>'
+                + icFace(32, 36, 0.95) },
+            'noodle': { label: 'ก๋วยเตี๋ยว', alt: '🍜', svg: IC_SHADOW + IC_STEAM(19, 17)
+                + '<path d="M34 6L45 30M39.5 4.5L48 29" stroke="#B9753B" stroke-width="2.6" stroke-linecap="round"/>'
+                + '<path d="M40 12q-2 4 0 8t0 8M43.5 11q-2 4 0 8t0 8" stroke="#FFD66B" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
+                + '<ellipse cx="32" cy="32" rx="25" ry="5.6" fill="#F7B955"/>'
+                + '<path d="M14 32q3 -3 6 0t6 0t6 0t6 0" stroke="#FFE7A3" stroke-width="2" fill="none" stroke-linecap="round"/>'
+                + '<ellipse cx="45" cy="31" rx="5.4" ry="3.6" fill="#FFFFFF"/><ellipse cx="45" cy="31" rx="2.4" ry="1.8" fill="#FFB52E"/>'
+                + '<circle cx="20" cy="30.5" r="1.4" fill="#5CB85C"/><circle cx="27" cy="33.5" r="1.2" fill="#5CB85C"/>'
+                + '<path d="M7 33H57Q56.5 49 45 55Q39 58 32 58Q25 58 19 55Q7.5 49 7 33Z" fill="#FF7A7A"/>'
+                + '<path d="M13 41H51" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="3 3" opacity="0.6"/>'
+                + '<rect x="24" y="55.5" width="16" height="4.4" rx="2.2" fill="#E45858"/>' + icFace(32, 46.5, 0.85) },
+            'bag': { label: 'ซื้อของ', alt: '🛍️', svg: IC_SHADOW
+                + '<rect x="15" y="5" width="7" height="30" rx="3.5" fill="#F1C07A" transform="rotate(-14 18.5 20)"/><path d="M15.6 10.5l5 1.6M14.6 15.8l5 1.6M13.8 21l5 1.6" stroke="#D69A4E" stroke-width="1.6" stroke-linecap="round" transform="rotate(-14 18.5 20) translate(2.5 -1)"/>'
+                + '<path d="M40 26Q35 15 43 9Q47 18 42 26Z" fill="#5CB85C"/><path d="M42 26Q47 13 55 14Q52 23 44 27Z" fill="#7CCB5E"/>'
+                + '<circle cx="31" cy="22" r="7" fill="#FF5A5F"/><path d="M31 15.5q1.5 -3.5 4.5 -3.5" stroke="#3E9A5E" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="28.6" cy="19.6" r="1.6" fill="#FFF" opacity="0.6"/>'
+                + '<path d="M12 26H52L48.5 56.6Q48.2 58.6 46 58.6H18Q15.8 58.6 15.5 56.6Z" fill="#E7B57B"/>'
+                + '<path d="M12 26H52L51.5 31H12.5Z" fill="#D49D60"/>' + icFace(32, 42.5, 0.95) },
+            'paper': { label: 'ทิชชู่', alt: '🧻', svg: IC_SHADOW
+                + '<path d="M45 22H53Q55 22 55 24V57Q55 59 53 59H45Z" fill="#FFFFFF"/><path d="M45 40.5H55" stroke="#C3D3E8" stroke-width="1.3" stroke-dasharray="2 2"/>'
+                + '<circle cx="50" cy="31" r="1.4" fill="#8ED1FF"/><circle cx="50" cy="50" r="1.4" fill="#8ED1FF"/>'
+                + '<path d="M11 18V50Q11 57 29 57Q47 57 47 50V18Z" fill="#FFFFFF"/>'
+                + '<path d="M38 18V56.2Q47 54.5 47 50V18Z" fill="#E6EEF8"/>'
+                + '<ellipse cx="29" cy="18" rx="18" ry="6.5" fill="#F4F8FC"/><ellipse cx="29" cy="18" rx="6.6" ry="2.6" fill="#A9B9CF"/><ellipse cx="29" cy="18.8" rx="4" ry="1.4" fill="#8094B0"/>'
+                + '<path d="M11 18Q11 24.5 29 24.5Q47 24.5 47 18" stroke="#DCE5F0" stroke-width="1.4" fill="none"/>'
+                + '<circle cx="9" cy="9" r="3" fill="none" stroke="#7FC4F5" stroke-width="1.5"/><circle cx="15" cy="5" r="1.8" fill="none" stroke="#7FC4F5" stroke-width="1.3"/>'
+                + icFace(26.5, 37.5, 0.95) },
+            'soap': { label: 'สบู่ล้างมือ', alt: '🧼', svg: IC_SHADOW
+                + '<circle cx="15" cy="15" r="6" fill="#DFF3FF" stroke="#8ED1FF" stroke-width="1.6"/><circle cx="27" cy="9" r="3.6" fill="#DFF3FF" stroke="#8ED1FF" stroke-width="1.4"/><circle cx="45" cy="13" r="5" fill="#DFF3FF" stroke="#8ED1FF" stroke-width="1.5"/>'
+                + '<rect x="8" y="24" width="48" height="32" rx="13" fill="#FF8FB8"/><rect x="8" y="24" width="48" height="11" rx="5.5" fill="#FFB3CF"/>'
+                + '<circle cx="14.5" cy="13.5" r="1.6" fill="#FFF"/>' + icFace(32, 41, 1) },
+            'sleep': { label: 'งีบหลับ', alt: '😴', svg: IC_SHADOW
+                + '<path d="M36 8Q19 10 16 27Q14 46 33 53Q48 57 56 44Q45 47 38 41Q28 33 30 21Q31.5 13 36 8Z" fill="#FFD66B"/>'
+                + '<path d="M16 27Q14 46 33 53Q48 57 56 44Q48 51 36 49Q21 46 16 27Z" fill="#FFC23D"/>'
+                + '<path d="M44 9H52L44 18H52M51 23H56L51 28.5H56" stroke="#9A86D6" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+                + icFace(25, 35, 0.85, 'sleepy') },
+            'walk': { label: 'เดินเล่น', alt: '👟', svg: IC_SHADOW
+                + '<path d="M3 30H12M1 37H10M4 44H11" stroke="#B7A3C9" stroke-width="2.4" stroke-linecap="round"/>'
+                + '<path d="M16 22Q16 17 21 17H29Q33 17 34 21L36 28Q46 30 53 35Q59 39 58 45V48H14Z" fill="#FF7A90"/>'
+                + '<path d="M21 17H29Q33 17 34 21L35.2 25.5Q27 27 22 22Z" fill="#FF9EAE"/>'
+                + '<path d="M14 46H58V50Q58 54 54 54H18Q14 54 14 50Z" fill="#FFFFFF"/><path d="M14 50H58" stroke="#E3E7EF" stroke-width="1.4"/>'
+                + '<path d="M33 30L37 28M35 34L40 31.5M38 37.5L43 35" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>'
+                + icFace(24, 34, 0.85) },
+            'phone': { label: 'โทรศัพท์', alt: '📱', svg: IC_SHADOW
+                + '<rect x="16" y="6" width="30" height="52" rx="8" fill="#6E7BFF"/><rect x="19.5" y="11" width="23" height="40" rx="4" fill="#EEF0FF"/>'
+                + '<rect x="27" y="53" width="8" height="2.4" rx="1.2" fill="#B9C0FF"/>'
+                + '<path d="M50 9c-1.6-2.4-6-1.4-5 1.6 0.6 1.8 5 4.2 5 4.2s4.4-2.4 5-4.2c1-3-3.4-4-5-1.6z" fill="#FF6F9C" transform="translate(3 3)"/>'
+                + icFace(31, 30, 0.9, 'happy') },
+            'chat': { label: 'คุยงาน', alt: '💬', svg: IC_SHADOW
+                + '<path d="M28 30H52Q58 30 58 36V45Q58 51 52 51H50L51 57L44 51H28Q22 51 22 45V36Q22 30 28 30Z" fill="#FFB3CF"/>'
+                + '<path d="M40 42.5c-1.4-2-5.2-1.2-4.4 1.4 0.5 1.6 4.4 3.6 4.4 3.6s3.9-2 4.4-3.6c0.8-2.6-3-3.4-4.4-1.4z" fill="#FF5C8D" transform="translate(0 -3)"/>'
+                + '<path d="M12 8H38Q44 8 44 14V25Q44 31 38 31H20L13 37L14 31H12Q6 31 6 25V14Q6 8 12 8Z" fill="#8ED1FF"/>'
+                + '<circle cx="17" cy="19.5" r="2.4" fill="#FFFFFF"/><circle cx="25" cy="19.5" r="2.4" fill="#FFFFFF"/><circle cx="33" cy="19.5" r="2.4" fill="#FFFFFF"/>' },
+            'pill': { label: 'กินยา', alt: '💊', svg: IC_SHADOW
+                + '<g transform="rotate(-35 32 34)"><rect x="9" y="22" width="46" height="24" rx="12" fill="#FFFFFF"/><path d="M32 22H43Q55 22 55 34Q55 46 43 46H32Z" fill="#FF7A9C"/><rect x="14" y="25.5" width="14" height="3.4" rx="1.7" fill="#E9EEF6"/></g>'
+                + '<path d="M50 7l1.4 3.6 3.6 1.4-3.6 1.4-1.4 3.6-1.4-3.6-3.6-1.4 3.6-1.4z" fill="#FFD66B"/>'
+                + icFace(23.5, 38, 0.8) },
+            'water': { label: 'ดื่มน้ำ', alt: '💧', svg: IC_SHADOW
+                + '<path d="M44 4Q49 11 49 14.5A5 5 0 0 1 39 14.5Q39 11 44 4Z" fill="#5BB8F5"/>'
+                + '<path d="M14 18H44L40.5 56Q40.2 58.6 37.5 58.6H20.5Q17.8 58.6 17.5 56Z" fill="#E9F6FF"/>'
+                + '<path d="M15.6 31Q22 28.5 29 31T42.5 31L40.5 56Q40.2 58.6 37.5 58.6H20.5Q17.8 58.6 17.5 56Z" fill="#7CCBFA"/>'
+                + '<path d="M18.5 22L20.8 50" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" opacity="0.8"/>'
+                + icFace(29, 42, 0.85) },
+            'cupcake': { label: 'ขนม', alt: '🧁', svg: IC_SHADOW
+                + '<path d="M14 34Q11 26 18 23Q18 14 28 14Q31 7 38 11Q47 12 46 22Q53 25 50 34Z" fill="#FFE1EC"/>'
+                + '<path d="M14 34Q11 26 18 23Q22 27 32 27Q42 27 46 22Q53 25 50 34Z" fill="#FFC6DA"/>'
+                + '<circle cx="35" cy="9" r="4" fill="#F0354E"/><circle cx="33.8" cy="7.8" r="1.2" fill="#FFF" opacity="0.8"/>'
+                + '<g stroke-width="1.8" stroke-linecap="round"><path d="M22 19l2 1.4" stroke="#7CC6FF"/><path d="M40 18l-1.6 1.8" stroke="#FFD66B"/><path d="M29 22l2.2-0.6" stroke="#7CCB5E"/></g>'
+                + '<path d="M13 33H51L46 56.5Q45.6 58.6 43.4 58.6H20.6Q18.4 58.6 18 56.5Z" fill="#FF8FB8"/>'
+                + '<path d="M20 33L23 58.6M28 33L29 58.6M36 33L35 58.6M44 33L41 58.6" stroke="#FFB3CF" stroke-width="2.6"/>' + icFace(32, 44, 0.9) },
+            'music': { label: 'ฟังเพลง', alt: '🎧', svg: IC_SHADOW
+                + '<path d="M12 38V32Q12 12 32 12Q52 12 52 32V38" stroke="#8C7BFF" stroke-width="5" fill="none" stroke-linecap="round"/>'
+                + '<rect x="6" y="32" width="14" height="22" rx="7" fill="#A897FF"/><rect x="44" y="32" width="14" height="22" rx="7" fill="#A897FF"/>'
+                + '<rect x="14" y="35" width="6" height="16" rx="3" fill="#FF8FB8"/><rect x="44" y="35" width="6" height="16" rx="3" fill="#FF8FB8"/>'
+                + '<path d="M29 24V40M29 24L38 21.5V36" stroke="#FFB547" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="26.5" cy="40.5" rx="3.4" ry="2.6" fill="#FFB547"/><ellipse cx="35.5" cy="36.5" rx="3.4" ry="2.6" fill="#FFB547"/>' }
+        };
+        function isActIcon(v) { return typeof v === 'string' && v.startsWith('ic:') && !!ACT_ICONS[v.slice(3)]; }
+        // ใช้ในที่ที่แสดง HTML ได้: ไอคอนวาดเองเป็น SVG ส่วนอิโมจิธรรมดาแสดงเป็นตัวอักษร
+        function actIconHTML(v) {
+            if (isActIcon(v)) return `<svg class="act-ic" viewBox="0 0 64 64" aria-hidden="true">${ACT_ICONS[v.slice(3)].svg}</svg>`;
+            return escHtml(v || '✨');
+        }
+        // ใช้ในข้อความล้วน (แจ้งเตือน/คัดลอก): ไอคอนวาดเองใช้อิโมจิใกล้เคียงแทน
+        function actIconText(v) { return isActIcon(v) ? ACT_ICONS[v.slice(3)].alt : (v || '✨'); }
+
+        // อิโมจิตั้งต้นเดิมของกิจกรรม เปลี่ยนเป็นไอคอนวาดเองให้ครั้งเดียว (ถ้าเลือกอิโมจิพวกนี้เองทีหลังจะไม่ถูกเปลี่ยนอีก)
+        const LEGACY_ICON_MAP = { '🍧': 'ic:shaved-ice', '🍙': 'ic:rice', '🍀': 'ic:coffee', '🍭': 'ic:bag', '🧼': 'ic:paper' };
+        function migrateActivityIcons() {
+            if (localStorage.getItem('act_icons_v1') === 'true') return;
+            try {
+                const acts = JSON.parse(localStorage.getItem('activities'));
+                if (Array.isArray(acts)) {
+                    let changed = false;
+                    acts.forEach(a => { if (a && LEGACY_ICON_MAP[a.emoji]) { a.emoji = LEGACY_ICON_MAP[a.emoji]; changed = true; } });
+                    if (changed) safeSetItem('activities', JSON.stringify(acts));
+                }
+            } catch (e) {}
+            safeSetItem('act_icons_v1', 'true');
+        }
+
+        // --- 😀 ตัวเลือกไอคอน/อิโมจิ สำหรับตอนสร้าง/แก้ไขกิจกรรม ---
+        const EMOJI_PICKER_LIST = ['☕','🍵','🧋','🥤','🍔','🍕','🍜','🍱','🍪','🍩','🚬','🚽','🚶','🏃','🧘','💬','📱','🎮','🛌','😴','🎧','📖','✏️','🧹','🌿','🚗','🏠','💊','🩺','🎵','📞','🧊'];
+        function setActEmoji(v) {
+            document.getElementById('act-emoji').value = v;
+            document.getElementById('act-emoji-preview').innerHTML = actIconHTML(v);
+            document.querySelectorAll('#emoji-picker [data-v]').forEach(b => b.classList.toggle('selected', b.dataset.v === v));
+        }
+        function toggleEmojiPicker() {
+            const picker = document.getElementById('emoji-picker');
+            const open = !picker.classList.contains('open');
+            if (open && !picker.dataset.ready) {
+                picker.innerHTML = '<span class="icon-picker-title">ไอคอนน่ารัก ✨</span><div class="icon-grid">'
+                    + Object.keys(ACT_ICONS).map(k => `<button type="button" class="icon-opt" data-v="ic:${k}" title="${ACT_ICONS[k].label}" aria-label="${ACT_ICONS[k].label}">${actIconHTML('ic:' + k)}</button>`).join('')
+                    + '</div><span class="icon-picker-title">อิโมจิ</span><div class="emoji-grid">'
+                    + EMOJI_PICKER_LIST.map(e => `<button type="button" class="emoji-opt" data-v="${e}">${e}</button>`).join('')
+                    + '</div><label class="icon-custom"><span>หรือพิมพ์อิโมจิเอง</span><input type="text" id="act-emoji-custom" class="field" maxlength="8" placeholder="😊" autocomplete="off"></label>';
+                picker.querySelectorAll('[data-v]').forEach(b => b.addEventListener('click', () => { setActEmoji(b.dataset.v); closeEmojiPicker(); }));
+                picker.querySelector('#act-emoji-custom').addEventListener('input', e => { const v = e.target.value.trim(); if (v) setActEmoji(v); });
+                picker.dataset.ready = '1';
+            }
+            picker.classList.toggle('open', open);
+            document.getElementById('act-emoji-btn').setAttribute('aria-expanded', open);
+            if (open) {
+                const v = document.getElementById('act-emoji').value;
+                picker.querySelectorAll('[data-v]').forEach(b => b.classList.toggle('selected', b.dataset.v === v));
+            }
+        }
+        function closeEmojiPicker() {
+            const picker = document.getElementById('emoji-picker');
+            if (!picker) return;
+            picker.classList.remove('open');
+            document.getElementById('act-emoji-btn').setAttribute('aria-expanded', 'false');
         }
         document.addEventListener('click', (ev) => {
-            if (!ev.target.closest('#emoji-picker') && ev.target.id !== 'act-emoji') {
-                const p = document.getElementById('emoji-picker'); if (p) p.classList.remove('open');
-            }
+            // ใช้ composedPath เพราะปุ่มที่กดอาจถูกวาดใหม่ระหว่างคลิกจนหลุดจากหน้าไปแล้ว
+            if (!ev.composedPath().some(el => el.id === 'emoji-picker' || el.id === 'act-emoji-btn')) closeEmojiPicker();
         });
 
 
@@ -2512,11 +2703,11 @@
         };
 
         const defaultActivities = [
-            { id: 1, name: 'ไปเอาอาหาร', emoji: '🍧', theme: 'purple', limit: 0, isToilet: false },
-            { id: 2, name: 'กินข้าว', emoji: '🍙', theme: 'yellow', limit: 0, isToilet: false },
-            { id: 3, name: 'พักเบรก', emoji: '🍀', theme: 'green', limit: 0, isToilet: false },
-            { id: 4, name: 'ซื้ออาหาร', emoji: '🍭', theme: 'pink', limit: 0, isToilet: false },
-            { id: 5, name: 'เข้าห้องน้ำ', emoji: '🧼', theme: 'blue', limit: 0, isToilet: true }
+            { id: 1, name: 'ไปเอาอาหาร', emoji: 'ic:shaved-ice', theme: 'purple', limit: 0, isToilet: false },
+            { id: 2, name: 'กินข้าว', emoji: 'ic:rice', theme: 'yellow', limit: 0, isToilet: false },
+            { id: 3, name: 'พักเบรก', emoji: 'ic:coffee', theme: 'green', limit: 0, isToilet: false },
+            { id: 4, name: 'ซื้ออาหาร', emoji: 'ic:bag', theme: 'pink', limit: 0, isToilet: false },
+            { id: 5, name: 'เข้าห้องน้ำ', emoji: 'ic:paper', theme: 'blue', limit: 0, isToilet: true }
         ];
 
         // --- 🛡️ ห่อ localStorage.setItem ให้กันพัง ถ้าพื้นที่เก็บข้อมูลเต็ม (เกิดได้ถ้าใช้มานานมากๆ หรือเบราว์เซอร์บางตัวจำกัดพื้นที่) ---
@@ -4372,7 +4563,7 @@
                 card.innerHTML = `
                     <div class="drag-handle" title="ลากเพื่อจัดเรียงลำดับ">⠿</div>
                     <div class="edit-btn" title="แก้ไขกิจกรรม" onclick="openModal(${index}, event)">✏️</div>
-                    <div class="floating-emoji"><svg class="break-ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="break-ring-track" cx="60" cy="60" r="54"></circle><circle class="break-ring-fill" cx="60" cy="60" r="54"></circle></svg>${act.emoji}</div>
+                    <div class="floating-emoji"><svg class="break-ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="break-ring-track" cx="60" cy="60" r="54"></circle><circle class="break-ring-fill" cx="60" cy="60" r="54"></circle></svg>${actIconHTML(act.emoji)}</div>
                     <div class="capsule">
                         <span class="capsule-name">${act.name}</span>
                         <div class="live-timer">00:00</div>
@@ -4441,7 +4632,7 @@
                 const act = activities[index];
                 document.getElementById('modal-title').textContent = 'แก้ไขกิจกรรม';
                 document.getElementById('act-name').value = act.name;
-                document.getElementById('act-emoji').value = act.emoji || '';
+                setActEmoji(act.emoji || '✨');
                 document.getElementById('act-limit').value = act.limit || '';
                 document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
                 let dotToSelect = document.querySelector(`.color-dot[data-color="${act.theme || 'purple'}"]`);
@@ -4450,16 +4641,17 @@
                 document.getElementById('btn-delete').style.display = 'block';
             } else {
                 document.getElementById('modal-title').textContent = 'สร้างกิจกรรมใหม่';
-                document.getElementById('act-name').value = ''; document.getElementById('act-emoji').value = '✨'; document.getElementById('act-limit').value = '';
+                document.getElementById('act-name').value = ''; setActEmoji('ic:coffee'); document.getElementById('act-limit').value = '';
                 document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
                 document.querySelector('.color-dot[data-color="purple"]').classList.add('selected');
                 document.getElementById('act-istoilet').checked = false; document.getElementById('btn-delete').style.display = 'none';
             }
 
+            closeEmojiPicker();
             document.getElementById('activity-modal').style.display = 'flex';
         }
 
-        function closeModal() { document.getElementById('activity-modal').style.display = 'none'; }
+        function closeModal() { closeEmojiPicker(); document.getElementById('activity-modal').style.display = 'none'; }
 
         document.querySelectorAll('.color-dot').forEach(dot => {
             dot.onclick = (e) => { document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected')); e.target.classList.add('selected'); }
@@ -4559,7 +4751,7 @@
             persistActiveBreak();
             startBreakTicker(cardElement);
 
-            showSuccessOverlay(cardElement, `เริ่มพักแล้ว! ${act.emoji}`, textToCopy);
+            showSuccessOverlay(cardElement, `เริ่มพักแล้ว! ${actIconText(act.emoji)}`, textToCopy);
             setTimeout(() => cardElement.classList.add('expanded'), 150);
         }
 
@@ -4994,10 +5186,10 @@
             const pal = document.body.classList.contains('is-dark') ? REPORT_COLORS.dark : REPORT_COLORS.light;
             const map = new Map();
             acts.forEach((a, i) => {
-                if (!map.has(a.name)) map.set(a.name, { emoji: a.emoji || '📝', color: pal[i] || 'var(--ink-3)', order: i });
+                if (!map.has(a.name)) map.set(a.name, { emoji: actIconHTML(a.emoji || '📝'), text: actIconText(a.emoji || '📝'), color: pal[i] || 'var(--ink-3)', order: i });
             });
             // กิจกรรมที่ถูกลบไปแล้วแต่ยังมีในประวัติ ใช้สีเทาเหมือนกันหมด
-            return name => map.get(name) || { emoji: '📝', color: 'var(--ink-3)', order: 999 };
+            return name => map.get(name) || { emoji: '📝', text: '📝', color: 'var(--ink-3)', order: 999 };
         }
         function buildReportDays(stats, fromDaysAgo, count) {
             const days = [];
@@ -5202,7 +5394,7 @@
                 d.logs.forEach(l => acts.set(l.action, (acts.get(l.action) || 0) + quotaMinutesForLog(l)));
                 const segs = [...acts.entries()].filter(([, m]) => m > 0).sort((a, b) => lookup(a[0]).order - lookup(b[0]).order).map(([n, m]) => {
                     const meta = lookup(n);
-                    return `<span class="rd-seg" style="--c:${meta.color};width:${((m / scaleMax) * 100).toFixed(2)}%" data-tip-v="${m} นาที" data-tip-l="${meta.emoji} ${escHtml(n)}"></span>`;
+                    return `<span class="rd-seg" style="--c:${meta.color};width:${((m / scaleMax) * 100).toFixed(2)}%" data-tip-v="${m} นาที" data-tip-l="${escHtml(meta.text)} ${escHtml(n)}"></span>`;
                 }).join('');
                 const longest = Math.max(...d.logs.map(l => l.duration));
                 const items = d.logs.map(l => {
@@ -5634,7 +5826,7 @@
                     const data = JSON.parse(e.target.result);
                     const ok = await showConfirmDialog('นำเข้าข้อมูลนี้จะแทนที่ข้อมูลปัจจุบันทั้งหมด ยืนยันหรือไม่?', 'นำเข้าข้อมูล', '📤');
                     if (!ok) return;
-                    if (data.activities) safeSetItem('activities', JSON.stringify(data.activities));
+                    if (data.activities) { safeSetItem('activities', JSON.stringify(data.activities)); localStorage.removeItem('act_icons_v1'); }
                     if (data.break_logs) safeSetItem('break_logs', JSON.stringify(data.break_logs));
                     if (data.daily_quota) safeSetItem('daily_quota', data.daily_quota);
                     if (typeof data.is_muted !== 'undefined') safeSetItem('is_muted', data.is_muted);
@@ -5751,6 +5943,7 @@
         }
 
         window.onload = () => {
+            migrateActivityIcons();
             const autoOn = localStorage.getItem('auto_theme') === 'true';
             const seasonal = autoOn ? null : getSeasonalThemeOverride();
             const savedTheme = autoOn ? getAutoTheme() : (seasonal || localStorage.getItem('site_theme') || 'day');
