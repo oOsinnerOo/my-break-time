@@ -1273,6 +1273,86 @@
         .muted-note { text-align: center; font-size: 12px; color: var(--ink-3); margin-top: 10px; }
         .text-danger { color: var(--danger); }
 
+        /* 🐾 ขบวนเพื่อนตัวน้อยท้ายหน้า — เดินไปมาตามธีม แตะเพื่อทัก ลากโยนเล่นได้ */
+        .parade { position: relative; z-index: 20; height: 136px; margin: 28px -16px -48px; user-select: none; -webkit-user-select: none; }
+        @media (min-width: 980px) { .parade { height: 150px; margin: 36px -32px -56px; } }
+        .parade-ground {
+            position: absolute; left: 0; right: 0; bottom: 0; height: 32px;
+            background: var(--ground, linear-gradient(180deg, rgba(var(--accent2-rgb), 0.12), rgba(var(--accent2-rgb), 0.22)));
+            border-top: 2px solid var(--ground-line, rgba(var(--accent2-rgb), 0.25));
+            border-radius: 50% 50% 0 0 / 12px 12px 0 0;
+        }
+        body[data-theme="forest"] .parade-ground { --ground: linear-gradient(180deg, #A8D98B, #7CBF6A); --ground-line: #BFE6A6; }
+        body[data-theme="ocean"] .parade-ground { --ground: linear-gradient(180deg, #F6E3B8, #EBCF94); --ground-line: #FFF1CF; }
+        body[data-theme="christmas"] .parade-ground { --ground: linear-gradient(180deg, #FFFFFF, #E4EEF6); --ground-line: #FFFFFF; }
+        body[data-theme="halloween"] .parade-ground { --ground: linear-gradient(180deg, #3B2150, #2A1640); --ground-line: rgba(255, 138, 31, 0.35); }
+        body[data-theme="loykrathong"] .parade-ground, body[data-theme="songkran"] .parade-ground {
+            --ground: linear-gradient(180deg, rgba(80, 170, 220, 0.55), rgba(30, 110, 170, 0.7)); --ground-line: rgba(190, 235, 255, 0.7);
+        }
+        .parade-hint {
+            position: absolute; left: 50%; top: 6px; transform: translateX(-50%); margin: 0; white-space: nowrap;
+            font-size: 12.5px; font-weight: 600; color: var(--ink-3); transition: opacity 0.4s;
+        }
+        .parade.played .parade-hint { opacity: 0; }
+
+        .critter { position: absolute; left: 0; bottom: 18px; cursor: grab; touch-action: none; will-change: transform; outline-offset: 4px; }
+        .critter.gait-drift { bottom: 6px; }
+        .critter.is-held { cursor: grabbing; z-index: 5; }
+        .critter-flip { transform-origin: 50% 100%; transition: transform 0.25s ease; }
+        .critter.face-left .critter-flip { transform: scaleX(-1); }
+        .critter-body { transform-origin: 50% 100%; }
+        .critter svg { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 4px 5px rgba(var(--shadow-rgb), 0.25)); }
+        body.is-dark .critter svg { filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.28)) drop-shadow(0 4px 5px rgba(0, 0, 0, 0.35)); }
+        .critter.is-walking.gait-bob .critter-body { animation: cr-bob 0.32s ease-in-out infinite alternate; }
+        .critter.is-walking.gait-hop .critter-body { animation: cr-hop 0.7s ease-in-out infinite; }
+        .critter.is-walking.gait-waddle .critter-body { animation: cr-waddle 0.5s ease-in-out infinite alternate; }
+        .critter.gait-float .critter-body { animation: cr-float 2.4s ease-in-out infinite alternate; }
+        .critter.gait-drift .critter-body { animation: cr-drift 3s ease-in-out infinite; }
+        .critter.is-idle:not(.gait-float):not(.gait-drift) .critter-body { animation: cr-breathe 2.2s ease-in-out infinite; }
+        .critter.is-walking .cr-foot { animation: cr-step 0.32s ease-in-out infinite alternate; }
+        .critter.is-walking .cr-foot-r { animation-delay: -0.32s; }
+        .critter.is-held .critter-body, .critter.is-air .critter-body { transform-origin: 50% 15%; animation: cr-dangle 0.32s ease-in-out infinite alternate; }
+        .critter.is-held .cr-foot, .critter.is-air .cr-foot { animation: cr-step 0.12s ease-in-out infinite alternate; }
+        .critter.is-jump .critter-body { animation: cr-jump 0.55s cubic-bezier(0.3, 1.5, 0.5, 1); }
+        .critter.is-land .critter-body { animation: cr-land 0.4s ease-out; }
+        .critter.is-boo svg { opacity: 0.3; transition: opacity 0.25s; }
+        @keyframes cr-bob { from { transform: translateY(0) rotate(-3deg); } to { transform: translateY(-4px) rotate(3deg); } }
+        @keyframes cr-hop { 0%, 100% { transform: translateY(0) scale(1.06, 0.94); } 45% { transform: translateY(-16px) scale(0.95, 1.05); } }
+        @keyframes cr-waddle { from { transform: rotate(-7deg); } to { transform: rotate(7deg); } }
+        @keyframes cr-float { from { transform: translateY(-6px) rotate(-4deg); } to { transform: translateY(-16px) rotate(4deg); } }
+        @keyframes cr-drift { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-3px) rotate(4deg); } }
+        @keyframes cr-breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.04, 0.96); } }
+        @keyframes cr-step { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+        @keyframes cr-dangle { from { transform: rotate(-12deg); } to { transform: rotate(12deg); } }
+        @keyframes cr-jump { 0% { transform: translateY(0) scale(1.12, 0.88); } 40% { transform: translateY(-28px) scale(0.92, 1.08); } 75% { transform: translateY(0) scale(1.1, 0.9); } 100% { transform: none; } }
+        @keyframes cr-land { 0% { transform: scale(1.28, 0.72); } 60% { transform: scale(0.94, 1.06); } 100% { transform: none; } }
+
+        .critter-say {
+            position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%) scale(0.6); opacity: 0;
+            white-space: nowrap; pointer-events: none; z-index: 2;
+            font-size: 12.5px; font-weight: 700; padding: 5px 10px; border-radius: 12px;
+            background: var(--surface-solid); color: var(--ink); border: 1px solid var(--line);
+            box-shadow: 0 8px 18px -10px rgba(var(--shadow-rgb), 0.5);
+            transition: opacity 0.2s, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .critter-say::after {
+            content: ''; position: absolute; left: 50%; top: 100%; transform: translateX(-50%);
+            border: 5px solid transparent; border-top-color: var(--surface-solid);
+        }
+        .critter-say.show { opacity: 1; transform: translateX(-50%) scale(1); }
+        /* ตัวที่อยู่ชิดขอบจอ ให้ลูกโป่งคำพูดยื่นเข้าด้านในแทน จะได้ไม่ล้นจอ */
+        .critter-say.edge-left { left: 0; transform: scale(0.6); transform-origin: 20px 100%; }
+        .critter-say.edge-right { left: auto; right: 0; transform: scale(0.6); transform-origin: calc(100% - 20px) 100%; }
+        .critter-say.edge-left.show, .critter-say.edge-right.show { transform: scale(1); }
+        .critter-say.edge-left::after { left: 20px; }
+        .critter-say.edge-right::after { left: auto; right: 20px; transform: translateX(50%); }
+        .critter-pop { position: absolute; left: 50%; bottom: 55%; font-size: 15px; pointer-events: none; animation: cr-pop 0.9s ease-out forwards; }
+        @keyframes cr-pop {
+            0% { transform: translate(-50%, 0) scale(0.4); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translate(calc(-50% + var(--dx, 0px)), -46px) scale(1.1); opacity: 0; }
+        }
+
         /* ♿️⚡ เคารพการตั้งค่า "ลดการเคลื่อนไหว" ของระบบปฏิบัติการ - ทั้งเพื่อการเข้าถึงและลดการใช้ CPU/แบตเตอรี่ */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -1434,6 +1514,11 @@
             </section>
         </div>
     </div>
+
+    <section class="parade" id="parade" aria-label="ขบวนเพื่อนตัวน้อย">
+        <div class="parade-ground"></div>
+        <p class="parade-hint">แตะเพื่อทักทาย หรือลากโยนเล่นได้นะ 👆</p>
+    </section>
 
     <div class="modal-overlay" id="activity-modal">
         <div class="modal-box">
@@ -1977,6 +2062,11 @@
                     osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1); 
                     gain.gain.setValueAtTime(0.2 * soundVolume, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
                     osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+                } else if (type === 'boing') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(420, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(140, audioCtx.currentTime + 0.18);
+                    gain.gain.setValueAtTime(0.14 * soundVolume, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.2);
                 } else if (type === 'welcome') { 
                     osc.type = 'triangle'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); 
                     osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1); osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.2); 
@@ -2276,6 +2366,295 @@
                 };
             }
         };
+        // --- 🐾 ขบวนเพื่อนตัวน้อยท้ายหน้า: เดินไปมาตามธีม แตะเพื่อทัก ลากแล้วปล่อยให้ตกลงมาเด้งได้ ---
+        // ตัวกลมๆ แบบปรับแต่งได้ (หู หมวก จะงอยปาก ฯลฯ) ใช้วาดเพื่อนหลายแบบให้เป็นสไตล์เดียวกัน หันหน้าไปทางขวา
+        function critterSVG(o) {
+            const eye = o.eye || '#2B2140';
+            let back = '', side = '', face = '', hat = '';
+            if (o.tail) back += `<path d="M12 46Q1 42 5 29" stroke="${o.body}" stroke-width="5" stroke-linecap="round" fill="none"/>`;
+            if (o.ears === 'cat') back += `<path d="M15 28L18 10L30 21Z" fill="${o.body}"/><path d="M34 20L46 9L49 27Z" fill="${o.body}"/><path d="M18.5 24L20 15L26 21Z" fill="#FFB3C7" opacity="0.7"/><path d="M38 20L44.5 13.5L46 23Z" fill="#FFB3C7" opacity="0.7"/>`;
+            if (o.ears === 'bunny') back += `<ellipse cx="25" cy="10" rx="5" ry="13" fill="${o.body}" transform="rotate(-12 25 10)"/><ellipse cx="41" cy="9" rx="5" ry="13" fill="${o.body}" transform="rotate(10 41 9)"/><ellipse cx="25" cy="11" rx="2.4" ry="9" fill="#FFC2D6" transform="rotate(-12 25 11)"/><ellipse cx="41" cy="10" rx="2.4" ry="9" fill="#FFC2D6" transform="rotate(10 41 10)"/>`;
+            if (o.antenna) back += `<path d="M24 22Q20 10 15 7M40 21Q45 10 50 7" stroke="${o.body}" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="15" cy="7" r="3.6" fill="${o.accent}"/><circle cx="50" cy="7" r="3.6" fill="${o.accent}"/>`;
+            if (o.antlers) back += `<path d="M22 22L18 8M18 8L12 6M19 13L13 13M40 21L45 7M45 7L51 5M44 12L50 12" stroke="#8A5A3B" stroke-width="2.6" stroke-linecap="round" fill="none"/>`;
+            if (o.spikes) {
+                const pts = [];
+                for (let k = 0; k <= 16; k++) {
+                    const a = (110 + k * 215 / 16) * Math.PI / 180, r = k % 2 ? 21 : 30;
+                    pts.push(`${(32 + r * Math.cos(a)).toFixed(1)},${(38 + r * 0.9 * Math.sin(a)).toFixed(1)}`);
+                }
+                back += `<polygon points="${pts.join(' ')} 32,38" fill="${o.accent}"/>`;
+            }
+            const feet = `<ellipse class="cr-foot cr-foot-l" cx="24" cy="57" rx="6" ry="3.6" fill="${o.feet || o.body}"/><ellipse class="cr-foot cr-foot-r" cx="40" cy="57" rx="6" ry="3.6" fill="${o.feet || o.body}"/>`;
+            const body = `<ellipse cx="32" cy="38" rx="22" ry="19" fill="${o.body}"/>` + (o.belly ? `<ellipse cx="35" cy="44" rx="13" ry="10.5" fill="${o.belly}"/>` : '');
+            if (o.wings) side += `<ellipse cx="22" cy="42" rx="7" ry="9.5" fill="${o.accent}" transform="rotate(25 22 42)"/>`;
+            if (o.bigEar) side += `<ellipse cx="25" cy="34" rx="12" ry="14" fill="${o.accent}"/><ellipse cx="25" cy="34" rx="8" ry="10" fill="#F2C9D6" opacity="0.6"/>`;
+            face += `<ellipse cx="37" cy="33" rx="2.6" ry="3.4" fill="${eye}"/><ellipse cx="47" cy="33" rx="2.6" ry="3.4" fill="${eye}"/><circle cx="38" cy="31.8" r="1" fill="#FFFFFF"/><circle cx="48" cy="31.8" r="1" fill="#FFFFFF"/>`;
+            face += `<ellipse cx="33" cy="39.5" rx="3.2" ry="2" fill="#FF9DB8" opacity="0.75"/><ellipse cx="51.5" cy="39.5" rx="2.6" ry="2" fill="#FF9DB8" opacity="0.75"/>`;
+            if (o.beak) face += `<path d="M52 36L61 39L52 42Z" fill="#FF9F1C"/>`;
+            else if (o.trunk) face += `<path d="M50 40Q61 44 59 55Q58 58 55 56Q56 47 46 44Z" fill="${o.body}"/>`;
+            else face += `<path d="M40 40.5q2.5 2.4 5 0" stroke="${o.mouth || eye}" stroke-width="1.4" fill="none" stroke-linecap="round"/>`;
+            if (o.redNose) face += `<circle cx="54" cy="38.5" r="3.4" fill="#FF3B3B"/><circle cx="53" cy="37.5" r="1" fill="#FFFFFF" opacity="0.8"/>`;
+            if (o.whiskers) face += `<path d="M51 39L59 37M51 41.5L59 42.5" stroke="${o.mouth || eye}" stroke-width="1" opacity="0.5"/>`;
+            if (o.hat === 'party') hat = `<path d="M27 21L37 -6L46 20Z" fill="${o.hatColor}"/><path d="M30.5 13L43 12M33.5 5L41 4.5" stroke="#FFFFFF" stroke-width="2" opacity="0.75"/><circle cx="37" cy="-6" r="3.2" fill="#FFFFFF"/>`;
+            if (o.hat === 'santa') hat = `<path d="M20 23Q30 2 50 8L55 20Z" fill="#E0364C"/><circle cx="51" cy="8" r="4" fill="#FFFFFF"/><rect x="18" y="18" width="38" height="7" rx="3.5" fill="#FFFFFF"/>`;
+            if (o.hat === 'witch') hat = `<path d="M15 22H57Q52 17 46 16L38 -6L30 15Q22 17 15 22Z" fill="#3A2350"/><rect x="29" y="12" width="17" height="3.5" rx="1" fill="#FF8A1F"/>`;
+            return `<svg viewBox="0 -8 64 72">${back}${feet}${body}${side}${face}${hat}</svg>`;
+        }
+        const CR_CRAB = `<svg viewBox="0 -8 64 72">
+            <g class="cr-foot cr-foot-l" stroke="#D9472A" stroke-width="3" stroke-linecap="round" fill="none"><path d="M17 47L8 52M18 51L10 58M21 53L15 60"/></g>
+            <g class="cr-foot cr-foot-r" stroke="#D9472A" stroke-width="3" stroke-linecap="round" fill="none"><path d="M47 47L56 52M46 51L54 58M43 53L49 60"/></g>
+            <path d="M15 36Q5 30 8 19Q11 13 16 16Q12 22 17 24Q20 18 23 22Q22 30 19 36Z" fill="#FF6A4D"/><path d="M49 36Q59 30 56 19Q53 13 48 16Q52 22 47 24Q44 18 41 22Q42 30 45 36Z" fill="#FF6A4D"/>
+            <ellipse cx="32" cy="43" rx="20" ry="13" fill="#FF6A4D"/>
+            <path d="M27 32L26 22M37 32L38 22" stroke="#FF6A4D" stroke-width="2.6" stroke-linecap="round"/>
+            <circle cx="26" cy="21" r="4.2" fill="#FFFFFF"/><circle cx="38" cy="21" r="4.2" fill="#FFFFFF"/><circle cx="26.8" cy="21.6" r="2.1" fill="#2B2140"/><circle cx="38.8" cy="21.6" r="2.1" fill="#2B2140"/>
+            <ellipse cx="22" cy="45" rx="3" ry="1.8" fill="#FFB3C7"/><ellipse cx="42" cy="45" rx="3" ry="1.8" fill="#FFB3C7"/>
+            <path d="M29 46q3 3 6 0" stroke="#7A1E10" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        </svg>`;
+        const CR_MUSHROOM = `<svg viewBox="0 -8 64 72">
+            <ellipse class="cr-foot cr-foot-l" cx="26" cy="58" rx="5.5" ry="3.2" fill="#E9D3B5"/><ellipse class="cr-foot cr-foot-r" cx="38" cy="58" rx="5.5" ry="3.2" fill="#E9D3B5"/>
+            <rect x="19" y="28" width="26" height="30" rx="11" fill="#FFF6E8"/>
+            <path d="M5 31Q6 3 32 1Q58 3 59 31Q32 37 5 31Z" fill="#E5484D"/>
+            <circle cx="20" cy="17" r="4" fill="#FFFFFF"/><circle cx="36" cy="10" r="3.2" fill="#FFFFFF"/><circle cx="47" cy="22" r="3.6" fill="#FFFFFF"/><circle cx="29" cy="25" r="2.4" fill="#FFFFFF"/>
+            <ellipse cx="28" cy="42" rx="2.2" ry="3" fill="#2B2140"/><ellipse cx="37" cy="42" rx="2.2" ry="3" fill="#2B2140"/>
+            <ellipse cx="24" cy="47" rx="2.6" ry="1.6" fill="#FF9DB8"/><ellipse cx="41" cy="47" rx="2.6" ry="1.6" fill="#FF9DB8"/>
+            <path d="M30.5 47q2 2 4 0" stroke="#2B2140" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+        </svg>`;
+
+        // รายชื่อเพื่อนในขบวนของแต่ละธีม (says = คำพูดตอนแตะ, pop = อิโมจิที่เด้งออกมา)
+        const CR = {
+            chick: { name: 'ลูกเจี๊ยบ', svg: critterSVG({ body: '#FFD84D', belly: '#FFF1A8', beak: true, wings: true, accent: '#FFC21A', feet: '#FF9F1C' }), says: ['จิ๊บ จิ๊บ!', 'พักบ้างนะ 💛', 'สู้ๆ!'], pop: ['💛', '✨'] },
+            bunny: { name: 'กระต่าย', svg: critterSVG({ body: '#FFFFFF', belly: '#FFE9F0', ears: 'bunny' }), says: ['ฮ็อป!', 'กินแครอทไหม 🥕', 'พักสายตาหน่อยนะ'], pop: ['🥕', '💗'], gait: 'hop' },
+            orangeCat: { name: 'แมวส้ม', svg: critterSVG({ body: '#FFA65C', belly: '#FFE2C4', ears: 'cat', tail: true, whiskers: true }), says: ['เมี้ยว~', 'ลูบหัวหน่อย', 'ง่วงจัง 😪'], pop: ['🐾', '💗'] },
+            pinkBunny: { name: 'กระต่ายชมพู', svg: critterSVG({ body: '#FFC2D6', belly: '#FFE6EE', ears: 'bunny' }), says: ['ฮ็อป!', 'ฟ้าสวยจัง 🌅'], pop: ['🌸', '💗'], gait: 'hop' },
+            crab: { name: 'ปูน้อย', svg: CR_CRAB, says: ['หนีบ! 🦀', 'เดินข้างๆ นะ', 'ทะเลสวยจัง'], pop: ['🫧', '✨'] },
+            seal: { name: 'แมวน้ำ', svg: critterSVG({ body: '#9FB8CC', belly: '#E3EEF6', whiskers: true }), says: ['อู๊ด อู๊ด!', 'ขอปลาหน่อย 🐟'], pop: ['🐟', '🫧'], gait: 'waddle' },
+            hedgehog: { name: 'เม่นน้อย', svg: critterSVG({ body: '#C8986B', belly: '#F3DDC3', spikes: true, accent: '#8A5A3B' }), says: ['ระวังหนามนะ!', 'ฟุดฟิด~'], pop: ['🍂', '🌿'] },
+            mushroom: { name: 'เห็ดน้อย', svg: CR_MUSHROOM, says: ['ป๊อก!', 'ฝนตกแล้วโตไว 🍄'], pop: ['🍄', '✨'], gait: 'hop' },
+            mochiA: { name: 'โมจิ', svg: critterSVG({ body: '#C5C8EF', belly: '#E4E5F8', eye: '#1B1F2C' }), says: ['หนึบ~', 'พักแป๊บนะ'], pop: ['🤍', '✨'], gait: 'hop' },
+            mochiB: { name: 'โมจิ', svg: critterSVG({ body: '#A9DDD7', belly: '#D9F1EE', eye: '#1B1F2C' }), says: ['หนึบ หนึบ', 'ใจเย็นๆ'], pop: ['🤍', '✨'], gait: 'hop' },
+            blackCat: { name: 'แมวดำ', svg: critterSVG({ body: '#2D2440', belly: '#463A5E', ears: 'cat', tail: true, whiskers: true, eye: '#FFE27A', mouth: '#C9BCE8' }), says: ['เมี้ยว~ 🌙', 'ดึกแล้วนะ', 'ฝันดีนะ'], pop: ['⭐', '🌙'] },
+            greyCat: { name: 'แมวเทา', svg: critterSVG({ body: '#8E8AA8', belly: '#C9C6DE', ears: 'cat', tail: true, whiskers: true }), says: ['เมี้ยว?', 'นอนกันเถอะ 😴'], pop: ['💤', '⭐'] },
+            greenAlien: { name: 'มนุษย์ต่างดาว', svg: critterSVG({ body: '#7FE0A8', belly: '#C6F5DA', antenna: true, accent: '#FFD84D' }), says: ['บี๊บ บู๊บ 👽', 'มาจากดาวไกลเลยนะ', 'พักบ้างนะมนุษย์'], pop: ['🛸', '✨'], gait: 'hop' },
+            purpleAlien: { name: 'มนุษย์ต่างดาว', svg: critterSVG({ body: '#B79BFF', belly: '#E2D7FF', antenna: true, accent: '#3CD3F2' }), says: ['ซิป ซ้าป!', 'โลกน่ารักจัง 🌍'], pop: ['🪐', '⭐'] },
+            ghost: { name: 'ผีน้อย', svg: HW_GHOST, says: ['Boo! 👻', 'แฮ่!', 'ตกใจไหม~'], pop: ['👻', '✨'], gait: 'float', size: 52, boo: true },
+            pumpkin: { name: 'ฟักทอง', svg: HW_PUMPKIN, says: ['Trick or treat! 🍬', 'ขอขนมหน่อย~'], pop: ['🍬', '🍭'], gait: 'hop', size: 50 },
+            witchCat: { name: 'แมวแม่มด', svg: critterSVG({ body: '#2D2440', belly: '#463A5E', ears: 'cat', tail: true, hat: 'witch', eye: '#FFE27A', mouth: '#C9BCE8' }), says: ['เมี้ยว~ 🧙', 'ร่ายมนต์หายเหนื่อย ✨'], pop: ['✨', '🔮'] },
+            krathong: { name: 'กระทง', svg: LK_KRATHONG, says: ['ลอยไปด้วยกันนะ 🪷', 'ขอให้โชคดี ✨'], pop: ['✨', '🪷'], land: ['💦'], gait: 'drift', size: 58, speed: [10, 18] },
+            snowman: { name: 'ตุ๊กตาหิมะ', svg: XM_SNOWMAN, says: ['หนาวจัง ⛄', 'กอดหน่อย~'], pop: ['❄️', '✨'], gait: 'waddle', size: 50, speed: [14, 24] },
+            penguin: { name: 'เพนกวิน', svg: critterSVG({ body: '#2B2B3A', belly: '#FFFFFF', beak: true, hat: 'santa', feet: '#FF9F1C', eye: '#2B2B3A' }), says: ['Merry Christmas! 🎄', 'โฮ่ โฮ่ โฮ่'], pop: ['🎁', '❄️'], gait: 'waddle' },
+            reindeer: { name: 'กวางเรนเดียร์', svg: critterSVG({ body: '#B07A4F', belly: '#E9CDA8', antlers: true, redNose: true }), says: ['จมูกแดงนะ 🔴', 'ลากเลื่อนเหนื่อยจัง'], pop: ['⭐', '🔔'] },
+            partyYellow: { name: 'เพื่อนปาร์ตี้', svg: critterSVG({ body: '#FFC94A', belly: '#FFE9A8', hat: 'party', hatColor: '#FF5DA2' }), says: ['เย้! 🎉', 'Happy New Year!'], pop: ['🎉', '✨'], gait: 'hop' },
+            partyPink: { name: 'เพื่อนปาร์ตี้', svg: critterSVG({ body: '#FF8FC0', belly: '#FFD1E5', hat: 'party', hatColor: '#3CD3F2' }), says: ['ฉลองกัน 🥳', 'ปีนี้ปังแน่!'], pop: ['🎊', '✨'] },
+            partyPurple: { name: 'เพื่อนปาร์ตี้', svg: critterSVG({ body: '#A68BFA', belly: '#DCD0FF', hat: 'party', hatColor: '#FFC94A' }), says: ['นับถอยหลัง! 3 2 1', 'สวัสดีปีใหม่ 🎆'], pop: ['🎆', '⭐'], gait: 'hop' },
+            elephant: { name: 'ช้างน้อย', svg: critterSVG({ body: '#B9C3CE', accent: '#D3DCE4', trunk: true, bigEar: true }), says: ['ฟู่ว! 💦', 'สาดน้ำนะ~'], pop: ['💦', '💧', '💦'], gait: 'waddle' },
+            duck: { name: 'เป็ดน้อย', svg: critterSVG({ body: '#FFE066', belly: '#FFF4B8', beak: true, wings: true, accent: '#FFD23F', feet: '#FF9F1C' }), says: ['ก้าบ ก้าบ!', 'เย็นสบาย 💧'], pop: ['💧', '🫧'], gait: 'waddle' }
+        };
+        const PARADE_ROSTERS = {
+            day: [CR.chick, CR.bunny], sunset: [CR.orangeCat, CR.pinkBunny], ocean: [CR.crab, CR.seal],
+            forest: [CR.hedgehog, CR.mushroom], minimal: [CR.mochiA, CR.mochiB], night: [CR.blackCat, CR.greyCat],
+            galaxy: [CR.greenAlien, CR.purpleAlien], halloween: [CR.ghost, CR.pumpkin, CR.witchCat],
+            loykrathong: [CR.krathong], christmas: [CR.snowman, CR.penguin, CR.reindeer],
+            newyear: [CR.partyYellow, CR.partyPink, CR.partyPurple], songkran: [CR.elephant, CR.duck]
+        };
+        const PARADE_HELD_LINES = ['ว้าย~', 'ปล่อยน้า~', 'ลอยได้แล้ว!', 'ว้าว สูงจัง!', 'เวียนหัว~'];
+        const PARADE_GRAVITY = 2200;
+        const parade = { el: null, critters: [], theme: null, width: 0, visible: false, rafId: 0, last: 0 };
+        const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+        function renderParade(theme) {
+            const el = document.getElementById('parade');
+            if (!el || parade.theme === theme) return;
+            parade.el = el; parade.theme = theme;
+            parade.critters.forEach(c => c.el.remove());
+            parade.width = el.clientWidth;
+            const roster = PARADE_ROSTERS[theme] || PARADE_ROSTERS.day;
+            const count = Math.max(3, Math.min(7, Math.floor(parade.width / 210)));
+            parade.critters = [];
+            for (let i = 0; i < count; i++) parade.critters.push(createCritter(roster[i % roster.length], i, count));
+            startParadeLoop();
+        }
+        function createCritter(spec, i, count) {
+            const el = document.createElement('div');
+            el.className = `critter gait-${spec.gait || 'bob'}`;
+            el.style.width = (spec.size || 56) + 'px';
+            el.tabIndex = 0; el.setAttribute('role', 'button'); el.setAttribute('aria-label', `${spec.name} แตะเพื่อทักทาย`);
+            el.innerHTML = `<div class="critter-flip"><div class="critter-body">${spec.svg}</div></div><div class="critter-say"></div>`;
+            parade.el.appendChild(el);
+            const c = {
+                el, spec, w: spec.size || 56, ground: spec.gait === 'drift' ? 6 : 18,
+                x: 0, y: 0, vx: 0, vy: 0, dir: Math.random() < 0.5 ? -1 : 1,
+                speed: rnd(...(spec.speed || [22, 42])), state: 'walk', timer: rnd(3, 8), grab: null, sayTimer: 0
+            };
+            c.x = Math.max(0, parade.width - c.w) * (i + rnd(0.15, 0.85)) / count;
+            setCritterState(c, 'walk');
+            applyCritter(c);
+
+            el.addEventListener('pointerdown', (e) => {
+                if (e.button !== 0) return;
+                e.preventDefault();
+                try { el.setPointerCapture(e.pointerId); } catch (err) {}
+                const r = el.getBoundingClientRect();
+                c.grab = { ox: e.clientX - r.left, oy: e.clientY - r.top, sx: e.clientX, sy: e.clientY, held: false, hist: [] };
+            });
+            el.addEventListener('pointermove', (e) => {
+                const g = c.grab;
+                if (!g) return;
+                if (!g.held && Math.hypot(e.clientX - g.sx, e.clientY - g.sy) > 6) { g.held = true; pickUpCritter(c); }
+                if (!g.held) return;
+                const pr = parade.el.getBoundingClientRect();
+                c.x = Math.min(Math.max(e.clientX - pr.left - g.ox, 0), Math.max(0, parade.width - c.w));
+                c.y = Math.max(0, pr.bottom - c.ground - el.offsetHeight + g.oy - e.clientY);
+                g.hist.push({ x: e.clientX, y: e.clientY, t: performance.now() });
+                if (g.hist.length > 6) g.hist.shift();
+                applyCritter(c);
+            });
+            const finish = (cancelled) => {
+                const g = c.grab;
+                if (!g) return;
+                c.grab = null;
+                if (g.held) throwCritter(c, g.hist);
+                else if (!cancelled) pokeCritter(c);
+                markParadePlayed();
+            };
+            el.addEventListener('pointerup', () => finish(false));
+            el.addEventListener('pointercancel', () => finish(true));
+            el.addEventListener('keydown', (e) => {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                e.preventDefault(); pokeCritter(c); markParadePlayed();
+            });
+            return c;
+        }
+        function setCritterState(c, state) {
+            c.state = state;
+            c.el.classList.toggle('is-walking', state === 'walk');
+            c.el.classList.toggle('is-idle', state === 'idle');
+            c.el.classList.toggle('is-held', state === 'held');
+            c.el.classList.toggle('is-air', state === 'air');
+        }
+        function applyCritter(c) {
+            c.el.style.transform = `translate3d(${c.x.toFixed(1)}px, ${(-c.y).toFixed(1)}px, 0)`;
+            c.el.classList.toggle('face-left', c.dir < 0);
+        }
+        function flashCritter(c, cls, ms) {
+            c.el.classList.remove(cls);
+            void c.el.offsetWidth; // เริ่มแอนิเมชันใหม่แม้คลาสเดิมยังค้างอยู่
+            c.el.classList.add(cls);
+            setTimeout(() => c.el.classList.remove(cls), ms);
+        }
+        function critterSay(c, text, ms = 1600) {
+            const bubble = c.el.querySelector('.critter-say');
+            bubble.textContent = text;
+            bubble.classList.toggle('edge-left', c.x < 60);
+            bubble.classList.toggle('edge-right', c.x > parade.width - c.w - 60);
+            bubble.classList.add('show');
+            clearTimeout(c.sayTimer);
+            c.sayTimer = setTimeout(() => bubble.classList.remove('show'), ms);
+        }
+        function critterPop(c, emojis) {
+            emojis.forEach((emoji, k) => {
+                const p = document.createElement('span');
+                p.className = 'critter-pop'; p.textContent = emoji;
+                p.style.setProperty('--dx', `${Math.round(rnd(-26, 26))}px`);
+                p.style.animationDelay = `${k * 0.08}s`;
+                c.el.appendChild(p);
+                setTimeout(() => p.remove(), 1100);
+            });
+        }
+        function pokeCritter(c) {
+            if (c.state === 'held' || c.state === 'air') return;
+            playSound('pop');
+            critterSay(c, pick(c.spec.says));
+            critterPop(c, c.spec.pop || ['💖', '✨']);
+            flashCritter(c, 'is-jump', 600);
+            if (c.spec.boo) flashCritter(c, 'is-boo', 900);
+            setCritterState(c, 'idle'); c.timer = 1.4;
+        }
+        function pickUpCritter(c) {
+            setCritterState(c, 'held');
+            critterSay(c, pick(PARADE_HELD_LINES), 1200);
+        }
+        function throwCritter(c, hist) {
+            // ความเร็วตอนปล่อย = ความเร็วเมาส์/นิ้วช่วงท้ายๆ จะได้โยนได้
+            let vx = 0, vy = 0;
+            if (hist.length >= 2) {
+                const a = hist[0], b = hist[hist.length - 1], dt = Math.max(16, b.t - a.t) / 1000;
+                vx = (b.x - a.x) / dt; vy = -(b.y - a.y) / dt;
+            }
+            c.vx = Math.max(-1400, Math.min(1400, vx));
+            c.vy = Math.max(-1400, Math.min(1400, vy));
+            setCritterState(c, 'air');
+            startParadeLoop();
+        }
+        function landCritter(c) {
+            c.vx = 0; c.vy = 0;
+            setCritterState(c, 'idle'); c.timer = 1.6;
+            flashCritter(c, 'is-land', 400);
+            critterPop(c, c.spec.land || ['💫']);
+            playSound('boing');
+        }
+        function stepCritter(c, dt) {
+            if (c.state === 'held') return;
+            const maxX = Math.max(0, parade.width - c.w);
+            if (c.state === 'air') {
+                c.vy -= PARADE_GRAVITY * dt; c.x += c.vx * dt; c.y += c.vy * dt;
+                if (c.x < 0) { c.x = 0; c.vx = Math.abs(c.vx) * 0.5; }
+                else if (c.x > maxX) { c.x = maxX; c.vx = -Math.abs(c.vx) * 0.5; }
+                if (c.y <= 0) {
+                    c.y = 0;
+                    if (c.vy < -280) { c.vy = -c.vy * 0.38; c.vx *= 0.7; flashCritter(c, 'is-land', 400); }
+                    else landCritter(c);
+                }
+            } else if (c.state === 'walk') {
+                if (!PARADE_REDUCED_MOTION) c.x += c.dir * c.speed * dt;
+                if (c.x <= 0) { c.x = 0; c.dir = 1; } else if (c.x >= maxX) { c.x = maxX; c.dir = -1; }
+                c.timer -= dt;
+                if (c.timer <= 0) { setCritterState(c, 'idle'); c.timer = rnd(1.2, 3); }
+            } else if (c.state === 'idle') {
+                c.timer -= dt;
+                if (c.timer <= 0) {
+                    if (Math.random() < 0.4) c.dir = -c.dir;
+                    setCritterState(c, 'walk'); c.timer = rnd(4, 10);
+                }
+            }
+            applyCritter(c);
+        }
+        const PARADE_REDUCED_MOTION = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function paradeFrame(t) {
+            parade.rafId = 0;
+            // แบ่งเวลาเป็นช่วงย่อยๆ เครื่องที่เฟรมเรตต่ำจะได้เดิน/ตกด้วยความเร็วจริง ไม่ช้าลงตามเฟรม
+            let remaining = parade.last ? Math.min(0.25, (t - parade.last) / 1000) : 0;
+            parade.last = t;
+            while (remaining > 0) {
+                const step = Math.min(0.02, remaining);
+                parade.critters.forEach(c => stepCritter(c, step));
+                remaining -= step;
+            }
+            if (parade.visible && !document.hidden) parade.rafId = requestAnimationFrame(paradeFrame);
+            else parade.last = 0;
+        }
+        // เดินเฉพาะตอนขบวนอยู่ในจอ และแท็บเปิดอยู่ ประหยัดแบต
+        function startParadeLoop() {
+            if (parade.rafId || !parade.visible || document.hidden) return;
+            parade.last = 0;
+            parade.rafId = requestAnimationFrame(paradeFrame);
+        }
+        function markParadePlayed() {
+            if (!parade.el || parade.el.classList.contains('played')) return;
+            parade.el.classList.add('played');
+            safeSetItem('parade_played', 'true');
+        }
+        function initParade() {
+            const el = document.getElementById('parade');
+            if (!el) return;
+            parade.el = el;
+            if (localStorage.getItem('parade_played') === 'true') el.classList.add('played');
+            if ('IntersectionObserver' in window) {
+                new IntersectionObserver(([entry]) => { parade.visible = entry.isIntersecting; startParadeLoop(); }, { rootMargin: '120px' }).observe(el);
+            } else { parade.visible = true; startParadeLoop(); }
+            document.addEventListener('visibilitychange', startParadeLoop);
+            window.addEventListener('resize', () => { parade.width = el.clientWidth; });
+        }
+
         function renderSeasonDecor(theme) {
             const back = document.getElementById('bg-season'), front = document.getElementById('fg-season');
             if (!back || !front || back.dataset.theme === theme) return;
@@ -2361,6 +2740,7 @@
             if (titleEmoji) titleEmoji.textContent = meta.emoji;
             renderSparkles(theme);
             renderSeasonDecor(theme);
+            renderParade(theme);
             if (event) playThemeChime(theme);
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (metaTheme) metaTheme.setAttribute('content', meta.meta);
@@ -3731,6 +4111,7 @@
             restoreActiveBreakIfAny();
             setupGardenInteraction();
             applyGardenVisibility(isGardenEnabled());
+            initParade();
         };
 
         // --- 🔄 ซิงก์ข้อมูลข้ามแท็บ กันข้อมูลเก่าจากแท็บที่ค้างอยู่ไปทับข้อมูลใหม่โดยไม่ตั้งใจ ---
