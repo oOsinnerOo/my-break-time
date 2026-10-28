@@ -2090,7 +2090,7 @@
         .veg-book-summary { font-size: 13px; color: var(--ink-2); line-height: 1.6; margin: 0; }
         .veg-book-summary strong { color: var(--accent-ink); }
         /* 🌾 ฟาร์มน้อยพักใจ: เลเวล อากาศ ปุ่มฟาร์ม หน้าต่างฟาร์ม มินิเกม */
-        .farm-status { display: flex; align-items: center; gap: 8px; margin: 2px 0 8px; font-size: 12px; font-weight: 700; color: var(--ink-2); }
+        .farm-status { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 2px 0 8px; font-size: 12px; font-weight: 700; color: var(--ink-2); }
         .farm-level { white-space: nowrap; color: var(--accent-ink); font-family: var(--font-display); font-size: 13px; }
         .farm-xp { flex: 1; min-width: 40px; height: 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden; }
         .farm-xp span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -2279,6 +2279,7 @@
         .stall-slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
         .stall-slot { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 6px; border-radius: 16px; text-align: center; background: linear-gradient(180deg, rgba(255, 196, 120, 0.18), var(--surface-2)); border: 1px solid var(--line); }
         .stall-slot.is-empty { background: var(--surface-2); border-style: dashed; opacity: 0.8; }
+        .stall-slots.has-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .stall-log { display: flex; flex-direction: column; gap: 2px; font-size: 11.5px; color: var(--ink-3); font-weight: 600; padding: 0 4px; }
         .contest-giant { font-size: 40px; animation: veg-bob 1.4s ease-in-out infinite alternate; display: inline-block; }
         .contest-board { display: flex; flex-direction: column; gap: 6px; }
@@ -2316,6 +2317,58 @@
         .checkin-day.is-done { opacity: 0.6; }
         .checkin-day.is-now { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.12); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.18); animation: veg-fert-glow 1s ease-in-out infinite alternate; }
         .checkin-day:last-child { grid-column: span 2; }
+        /* 🎖️ ความสำเร็จ · 🏡 บ้านไร่ · 🖌️ จัดสวน · 📊 สถิติ · 🔮 อีเวนต์ลับ */
+        .farm-actions { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+        @media (max-width: 480px) { .farm-act { font-size: 10px; padding: 7px 1px 6px; } .farm-act-icon { font-size: 18px; } .farm-dot { right: 0; } }
+        .farm-title { white-space: nowrap; padding: 3px 8px; border-radius: 999px; font-size: 11.5px; color: var(--accent-ink); background: rgba(var(--accent-rgb), 0.12); border: 1px solid rgba(var(--accent-rgb), 0.3); }
+        .ach-head { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); }
+        .ach-list { display: flex; flex-direction: column; gap: 8px; }
+        .ach-card.is-ready { border-color: rgba(var(--accent-rgb), 0.6); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.12); }
+        .ach-card.is-claimed .barn-emoji { filter: none; }
+        .ach-card:not(.is-claimed):not(.is-ready) .barn-emoji { filter: grayscale(0.7); opacity: 0.7; }
+        .ach-meter { display: block; flex: none; width: 100%; height: 7px; }
+        .secret-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+        .secret-card { display: flex; flex-direction: column; gap: 3px; padding: 10px; border-radius: 16px; background: var(--surface-2); border: 1px dashed var(--line); text-align: center; }
+        .secret-card span { font-size: 26px; }
+        .secret-card b { font-size: 13px; color: var(--ink); }
+        .secret-card small { font-size: 11px; color: var(--ink-3); line-height: 1.45; }
+        .secret-card.is-found { border-style: solid; border-color: rgba(138, 79, 216, 0.5); background: linear-gradient(180deg, rgba(138, 79, 216, 0.12), var(--surface-2)); }
+        .house-hero { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 0; }
+        .house-big { font-size: 64px; line-height: 1.1; animation: veg-bob 2s ease-in-out infinite alternate; }
+        .house-perks { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--ink-3); font-weight: 600; }
+        .house-perks .is-on { color: var(--accent-ink); }
+        .garden-house { z-index: 1; }
+        .garden-decor-item.has-pos { translate: -50% -50%; }
+        #garden-scene-wrap.is-editing { outline: 2px dashed rgba(var(--accent-rgb), 0.7); outline-offset: -4px; }
+        #garden-scene-wrap.is-editing .garden-decor { pointer-events: auto; }
+        #garden-scene-wrap.is-editing .garden-decor-item { cursor: grab; pointer-events: auto; touch-action: none; animation: none; padding: 4px; border-radius: 10px; background: rgba(255, 255, 255, 0.35); box-shadow: 0 0 0 1.5px rgba(var(--accent-rgb), 0.55); }
+        #garden-scene-wrap.is-editing .garden-decor-item.is-dragging { cursor: grabbing; scale: 1.2; z-index: 5; }
+        #garden-scene-wrap.is-editing .garden-pet, #garden-scene-wrap.is-editing .garden-visitor { pointer-events: none; opacity: 0.4; }
+        .garden-edit-bar { margin-top: 8px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center;
+            padding: 6px 8px; border-radius: 14px; font-size: 12px; font-weight: 700; color: var(--ink-2); background: var(--surface-solid); box-shadow: 0 8px 18px -10px rgba(var(--shadow-rgb), 0.5); }
+        .garden-pet.is-dancing .garden-pet-face { animation: pet-dance 0.35s ease-in-out infinite alternate; }
+        @keyframes pet-dance { from { transform: rotate(-18deg) translateY(0); } to { transform: rotate(18deg) translateY(-8px); } }
+        .st-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+        .st-tile { display: flex; flex-direction: column; gap: 2px; padding: 10px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); }
+        .st-label { font-size: 11.5px; font-weight: 600; color: var(--ink-3); line-height: 1.3; }
+        .st-tile b { font-family: var(--font-display); font-weight: 600; font-size: 20px; color: var(--ink); }
+        .st-chart { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 18px; background: var(--surface-2); border: 1px solid var(--line); }
+        .st-cols { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; height: 120px; border-bottom: 1px solid var(--line); }
+        .st-col { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; outline: none; cursor: default; }
+        .st-bar-wrap { position: relative; flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+        .st-bar { display: block; width: min(24px, 70%); border-radius: 4px 4px 0 0; background: var(--accent); transition: height 0.5s ease, filter 0.2s; }
+        .st-val { font-style: normal; font-size: 11px; font-weight: 700; color: var(--ink-2); margin-bottom: 2px; }
+        .st-col small { position: absolute; bottom: -18px; font-size: 10.5px; font-weight: 600; color: var(--ink-3); }
+        .st-cols { margin-bottom: 18px; }
+        .st-col:hover .st-bar, .st-col:focus-visible .st-bar { filter: brightness(1.12); }
+        .st-col:hover::after, .st-col:focus-visible::after { content: attr(data-tip); position: absolute; bottom: calc(100% - 6px); left: 50%; transform: translateX(-50%); z-index: 2; white-space: nowrap;
+            padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: 700; color: var(--surface-solid); background: var(--ink); pointer-events: none; }
+        .st-rank { display: flex; flex-direction: column; gap: 6px; }
+        .st-rank-row { display: grid; grid-template-columns: 112px minmax(0, 1fr) 34px; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
+        .st-rank-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+        .st-rank-track { height: 12px; }
+        .st-rank-track i { display: block; height: 100%; border-radius: 0 4px 4px 0; background: var(--accent); }
+        .st-rank-row b { text-align: right; font-weight: 700; color: var(--ink); }
         .snack-count {
             position: absolute; right: -6px; top: -8px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px;
             background: var(--accent); color: var(--on-accent); font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;
@@ -2497,14 +2550,16 @@
                     <div class="farm-actions">
                         <button type="button" class="farm-act" onclick="openFarm('orders')"><span class="farm-act-icon">📋</span>ออเดอร์<b class="farm-dot" id="fa-orders" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openFarm('barn')"><span class="farm-act-icon">🏠</span>ยุ้งฉาง<b class="farm-dot" id="fa-barn" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('stall')"><span class="farm-act-icon">🏪</span>แผงขาย<b class="farm-dot" id="fa-stall" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openFarm('kitchen')"><span class="farm-act-icon">🍳</span>ครัว</button>
                         <button type="button" class="farm-act" onclick="openFarm('animals')"><span class="farm-act-icon">🐔</span>สัตว์<b class="farm-dot" id="fa-animals" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('stall')"><span class="farm-act-icon">🏪</span>แผงขาย<b class="farm-dot" id="fa-stall" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openFarm('pond')"><span class="farm-act-icon">🎣</span>บ่อปลา<b class="farm-dot" id="fa-pond" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openFarm('contest')"><span class="farm-act-icon">🏆</span>ประกวด<b class="farm-dot" id="fa-contest" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openFarm('compost')"><span class="farm-act-icon">🪱</span>ปุ๋ยหมัก</button>
+                        <button type="button" class="farm-act" onclick="openFarm('house')"><span class="farm-act-icon">🏡</span>บ้านไร่<b class="farm-dot" id="fa-house" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('ach')"><span class="farm-act-icon">🎖️</span>ภารกิจ<b class="farm-dot" id="fa-ach" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openVegBook()"><span class="farm-act-icon">📖</span>สมุดผัก</button>
-                        <button type="button" class="farm-act" onclick="openCheckin()"><span class="farm-act-icon">🎁</span>รางวัล<b class="farm-dot" id="fa-checkin" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openCheckin()"><span class="farm-act-icon">🎁</span>เช็กอิน<b class="farm-dot" id="fa-checkin" hidden></b></button>
                     </div>
                 </div>
             </section>
@@ -4819,7 +4874,8 @@
         VEGGIES.wheat = { e: '🌾', name: 'ข้าวสาลี' }; // ใช้ทำขนมปังและแป้ง
         const FARM_PRODUCTS = { egg: { e: '🥚', name: 'ไข่ไก่', value: 3 }, milk: { e: '🥛', name: 'นมวัว', value: 4 },
             honey: { e: '🍯', name: 'น้ำผึ้ง', value: 6 }, bouquet: { e: '💐', name: 'ช่อดอกไม้', value: 5 },
-            duckEgg: { e: '🥚', name: 'ไข่เป็ด', value: 4 }, wool: { e: '🧶', name: 'ขนแกะ', value: 7 }, cheese: { e: '🧀', name: 'ชีสนมแพะ', value: 8 } };
+            duckEgg: { e: '🥚', name: 'ไข่เป็ด', value: 4 }, wool: { e: '🧶', name: 'ขนแกะ', value: 7 }, cheese: { e: '🧀', name: 'ชีสนมแพะ', value: 8 },
+            mooncake: { e: '🥮', name: 'ขนมไหว้พระจันทร์', value: 30 } };
         // สูตรอาหาร 26 เมนู (บางเมนูใช้อาหารอีกอย่างเป็นวัตถุดิบ เช่น แซนด์วิชใช้ขนมปัง)
         const RECIPES = {
             salad:      { e: '🥗', name: 'สลัดผัก', need: { cabbage: 1, tomato: 1, carrot: 1 }, value: 9, level: 2 },
@@ -4847,7 +4903,8 @@
             cheesecake: { e: '🎂', name: 'ชีสเค้กสตรอว์เบอร์รี', need: { cheese: 1, milk: 1, egg: 1, strawberry: 1 }, value: 28, level: 7 },
             grilledFish: { e: '🍢', name: 'ปลาเผาพริก', need: { fish: 1, chili: 1 }, value: 12, level: 2 },
             sushi:      { e: '🍣', name: 'ซูชิปลา', need: { fish: 1, cabbage: 1, wheat: 1 }, value: 16, level: 3 },
-            tempura:    { e: '🍤', name: 'กุ้งเทมปุระ', need: { shrimp: 1, wheat: 1, egg: 1 }, value: 20, level: 4 }
+            tempura:    { e: '🍤', name: 'กุ้งเทมปุระ', need: { shrimp: 1, wheat: 1, egg: 1 }, value: 20, level: 4 },
+            farmTea:    { e: '🧋', name: 'ชานมฟาร์ม (เมนูลับ)', need: { milk: 1, honey: 1, wheat: 1 }, value: 25, level: 1, secret: true } // ซ่อนจนกว่าจะมีวัตถุดิบครบหรือเคยทำ
         };
         const ANIMALS = {
             hen: { e: '🐔', name: 'แม่ไก่', product: 'egg', shopId: 'animal-hen', level: 3 },
@@ -4868,7 +4925,8 @@
             fish: { e: '🐟', name: 'ปลานิล', value: 4, w: 40 }, tropical: { e: '🐠', name: 'ปลาการ์ตูน', value: 7, w: 22 },
             shrimp: { e: '🦐', name: 'กุ้งแม่น้ำ', value: 8, w: 13 }, crab: { e: '🦀', name: 'ปูนา', value: 8, w: 10 },
             puffer: { e: '🐡', name: 'ปลาปักเป้า', value: 10, w: 8 }, squid: { e: '🦑', name: 'หมึกกล้วย', value: 13, w: 5 },
-            octopus: { e: '🐙', name: 'หมึกยักษ์', value: 18, w: 2 }
+            octopus: { e: '🐙', name: 'หมึกยักษ์', value: 18, w: 2 },
+            ghostFish: { e: '👻', name: 'ปลาผีเที่ยงคืน', value: 40, w: 0 } // ไม่ติดเบ็ดตามปกติ (อีเวนต์ลับ)
         };
         // 🏆 ผักที่ใช้ประกวดผักยักษ์ (น้ำหนักตั้งต้นเป็นกิโล)
         const CONTEST_CROPS = { pumpkin: 5, watermelon: 4.5, cabbage: 3, corn: 2.5, tomato: 2.2, carrot: 2 };
@@ -4878,7 +4936,9 @@
             butterfly: { e: '🦋', name: 'ผีเสื้อนำโชค', note: 'โปรยละอองให้ดินทุกแปลงอุดมขึ้น', w: 25 },
             fairy: { e: '🧚', name: 'นางฟ้าสวน', note: 'เสกให้ผักทุกแปลงโตขึ้น 1 ระยะ', w: 20 },
             unicorn: { e: '🦄', name: 'ยูนิคอร์น', note: 'เปลี่ยนผักแปลงหนึ่งเป็นผักทอง', w: 10 },
-            meteor: { e: '🌠', name: 'ฝนดาวตก', note: 'ผักที่กำลังโตทุกแปลงกลายเป็นผักทอง', w: 10, night: true }
+            meteor: { e: '🌠', name: 'ฝนดาวตก', note: 'ผักที่กำลังโตทุกแปลงกลายเป็นผักทอง', w: 10, night: true },
+            moonRabbit: { e: '🐇', name: 'กระต่ายดวงจันทร์', note: 'นำขนมไหว้พระจันทร์มาฝาก', w: 0, secret: true },
+            wishStar: { e: '⭐', name: 'ดาวขอพร', note: 'ตกลงมาให้ขอพร', w: 0, secret: true }
         };
         // 🎁 รางวัลเข้าฟาร์มต่อเนื่อง 7 วัน (วนรอบใหม่หลังวันที่ 7 · ขาดหนึ่งวันเริ่มนับใหม่)
         const CHECKIN_REWARDS = [
@@ -4886,6 +4946,26 @@
             { e: '🎣', text: 'ตั๋วตกปลา 2 ใบ' }, { e: '🧬', text: 'เมล็ดลูกผสมลับ' }, { e: '🎁', text: '30 เหรียญ + ปุ๋ย 2 ขวด' }
         ];
         const STALL_SLOTS = 3, STALL_MS = 10 * 60 * 1000, FISH_TICKET_MAX = 5;
+        // 🏡 บ้านไร่ 5 ระดับ: อัปเกรดด้วยเหรียญ + ผลผลิต ได้สิทธิพิเศษติดตัว
+        const HOUSE_LEVELS = [
+            { e: '🛖', name: 'กระท่อมน้อย', perk: 'จุดเริ่มต้นของชาวสวน' },
+            { e: '🏠', name: 'บ้านไม้', perk: 'แผงขายช่องที่ 4', coins: 60, items: { wheat: 5 }, level: 3 },
+            { e: '🏡', name: 'บ้านสวนมีระเบียง', perk: 'ตั๋วตกปลาฟรีวันละ 2 ใบ', coins: 120, items: { egg: 5, bouquet: 2 }, level: 4 },
+            { e: '🏘️', name: 'บ้านไร่สองหลัง', perk: 'โอกาสได้ผักทอง +5%', coins: 200, items: { honey: 4, wool: 2 }, level: 6 },
+            { e: '🏰', name: 'คฤหาสน์ชาวไร่', perk: 'XP จากทุกอย่าง +20%', coins: 350, items: { cheese: 3, carrotCake: 1 }, level: 8 }
+        ];
+        // 🔮 อีเวนต์ลับ: ซ่อนไว้ เจอเองแล้วถึงจะรู้ (มีแค่คำใบ้คลุมเครือ)
+        const SECRETS = [
+            { id: 'fullMoon', e: '🌕', name: 'กระต่ายบนดวงจันทร์', hint: 'แวะมาที่สวนตอนกลางคืน ในคืนที่พระจันทร์กลมโตที่สุด', reward: 'ขนมไหว้พระจันทร์ 🥮' },
+            { id: 'wish', e: '🌠', name: 'ดาวขอพร 11:11', hint: 'นาฬิกาบางเวลามีเลขสวยเรียงกัน ตอนนั้นอาจมีอะไรตกลงมาในสวน', reward: '11 เหรียญ' },
+            { id: 'rainbowGold', e: '🌈', name: 'ผักทองใต้สายรุ้ง', hint: 'วันที่ฟ้ามีรุ้ง ลองเก็บของที่เปล่งประกาย', reward: '20 เหรียญ' },
+            { id: 'wormKing', e: '🐛', name: 'ราชันนักจับหนอน', hint: 'จับหนอนให้ได้เยอะมากๆ ในเกมเดียว', reward: '25 เหรียญ' },
+            { id: 'mono', e: '🎪', name: 'เทศกาลผักเหมือนกันทั้งสวน', hint: 'ถ้าทุกแปลงปลูกผักชนิดเดียวกัน อาจมีงานรื่นเริง', reward: '30 เหรียญ' },
+            { id: 'ghostFish', e: '👻', name: 'ปลาผีเที่ยงคืน', hint: 'บ่อปลาตอนดึกมากๆ อาจมีอะไรแปลกๆ ติดเบ็ด', reward: 'ปลาผี 👻' },
+            { id: 'petDance', e: '💃', name: 'สัตว์เลี้ยงเต้นระบำ', hint: 'สัตว์เลี้ยงชอบให้ลูบหัวรัวๆ', reward: '15 เหรียญ' },
+            { id: 'lucky777', e: '🎰', name: 'เลขมงคล 777', hint: 'คอยดูจำนวนเหรียญของคุณให้ดี', reward: '77 เหรียญ' },
+            { id: 'secretRecipe', e: '🧋', name: 'เมนูลับชานมฟาร์ม', hint: 'นม น้ำผึ้ง ข้าวสาลี… ถ้ามีครบในยุ้งฉาง ลองเข้าครัวดู', reward: 'สูตรลับ + 25 XP' }
+        ];
         // คุณภาพผลผลิต ★1–3: ดินดี + ได้รดน้ำ + เก็บตรงจังหวะ ยิ่งดาวเยอะยิ่งขายแพง (เก็บในยุ้งฉางเป็น "ชื่อ~ดาว")
         const QUALITY_MULT = [1, 1, 1.5, 2];
         const baseOf = k => String(k).split('~')[0];
@@ -5015,7 +5095,18 @@
                 fish: { tickets: int((v.fish || {}).tickets, FISH_TICKET_MAX), freeDay: day((v.fish || {}).freeDay) }, fishCaught: counts(v.fishCaught, Object.keys(FISH)),
                 visitor: v.visitor && VISITORS[v.visitor.kind] && +v.visitor.until > Date.now() ? { kind: v.visitor.kind, until: Math.min(+v.visitor.until, Date.now() + 3 * 60 * 1000) } : null,
                 visitorLog: { day: day((v.visitorLog || {}).day), n: int((v.visitorLog || {}).n, 9) }, visitors: counts(v.visitors, Object.keys(VISITORS)),
-                checkin: { day: day((v.checkin || {}).day), streak: int((v.checkin || {}).streak, 7) }
+                checkin: { day: day((v.checkin || {}).day), streak: int((v.checkin || {}).streak, 7) },
+                stats: (() => {
+                    const x = v.stats && typeof v.stats === 'object' ? v.stats : {}, daily = {};
+                    Object.entries(x.daily && typeof x.daily === 'object' ? x.daily : {}).filter(([k]) => /^\d{4}-\d{2}-\d{2}$/.test(k)).sort().slice(-14)
+                        .forEach(([k, d]) => { daily[k] = { coins: int((d || {}).coins, 99999), crops: int((d || {}).crops, 9999) }; });
+                    return { orders: int(x.orders, 1e6), q3: int(x.q3, 1e6), chef3: int(x.chef3, 1e6), honey: int(x.honey, 1e6), compost: int(x.compost, 1e6), worms: int(x.worms, 1e6),
+                        contestWins: int(x.contestWins, 1e4), stallSold: int(x.stallSold, 1e6), earned: int(x.earned, 1e9), checkin7: !!x.checkin7, daily };
+                })(),
+                ach: Object.fromEntries(Object.keys(v.ach && typeof v.ach === 'object' ? v.ach : {}).filter(k => /^[a-zA-Z0-9]{1,24}$/.test(k)).map(k => [k, true])),
+                title: typeof v.title === 'string' ? v.title.slice(0, 24) : '',
+                house: Math.min(5, Math.max(1, int(v.house, 5) || 1)),
+                secrets: Object.fromEntries(Object.entries(v.secrets && typeof v.secrets === 'object' ? v.secrets : {}).filter(([k]) => SECRETS.some(x => x.id === k)).map(([k, d]) => [k, day(d) || '?']))
             };
         }
         const SHOP_ITEMS_SPECIAL = ['hat-straw', 'pack-farm', 'decor-tractor']; // ของรางวัลจากออเดอร์พิเศษ (ซื้อไม่ได้)
@@ -5049,7 +5140,7 @@
         }
         function addXP(n) {
             const before = farmLevel();
-            veg.xp += n; saveVeg();
+            veg.xp += Math.round(n * (veg.house >= 5 ? 1.2 : 1)); saveVeg();
             const after = farmLevel();
             if (after > before) {
                 ensurePlots(); saveVeg(); renderVeggies();
@@ -5237,6 +5328,7 @@
             const q = Math.min(3, 1 + (p.soil >= 60 ? 1 : 0) + (p.cared || hasTool('sprinkler') || todayWeather() === 'rain' ? 1 : 0));
             const n = 2 + (p.soil >= 60 ? 1 : 0);
             giveItem(qKey(t.fruit, q), n);
+            noteCrops(n);
             veg.fruits[t.fruit] = (veg.fruits[t.fruit] || 0) + n;
             veg.bestQ[t.fruit] = Math.max(veg.bestQ[t.fruit] || 0, q);
             p.fruitDay = dayKeyLocal(); p.cared = false; p.soil = Math.max(0, p.soil - 6);
@@ -5366,10 +5458,11 @@
             }
             // ผักตามฤดูโตไวขึ้น 1 ระยะ · ดินจืด (ต่ำกว่า 30) โตช้าลง 1 ระยะ
             const need = type === 'veg' ? Math.max(2, cropStages(key) - (inSeason(key) ? 1 : 0) + (cur.soil < 30 ? 1 : 0)) : plotNeed(type, key);
-            const goldChance = (todayWeather() === 'rainbow' ? 0.2 : 0.1) * (cur.soil < 30 ? 0.5 : 1);
+            const goldChance = (todayWeather() === 'rainbow' ? 0.2 : 0.1) * (cur.soil < 30 ? 0.5 : 1) + (veg.house >= 4 ? 0.05 : 0);
             veg.plots[i] = { ...emptyPlot(cur.soil), type, seed: key, need, golden: type === 'veg' && Math.random() < goldChance,
                 cared: todayWeather() === 'rain' || hasTool('sprinkler') };
             saveVeg(); closeVegPicker(); renderVeggies(); playSound('pop');
+            if (type === 'veg') checkMonoFestival();
             setVegProgress(type === 'tree' ? `ปลูก${known.name}แล้ว! โต ${need} ระยะแล้วจะออกผลทุกวัน 🌳`
                 : type === 'flower' ? `ปลูก${known.name}แล้ว! บานแล้วช่วยให้ผักข้างๆ โตไวขึ้น 🌸`
                 : `ปลูก${vegName(key)}แล้ว! พักไม่เกินลิมิต ${need} ครั้งก็เก็บได้${inSeason(key) ? ' (ผักตามฤดู 🍃)' : ''}`);
@@ -5387,6 +5480,9 @@
             veg.bestQ[key] = Math.max(veg.bestQ[key] || 0, q);
             if (golden) veg.golden += 1;
             giveItem(qKey(key, q), amount);
+            if (q === 3) veg.stats.q3 += 1;
+            noteCrops(amount);
+            if (golden && todayWeather() === 'rainbow') setTimeout(() => unlockSecret('rainbowGold'), 1200);
             // ผสมสายพันธุ์: ถ้าแปลงติดกันปลูกผักต่างชนิดอยู่ มีลุ้น 15% ได้เมล็ดลูกผสม
             let hybrid = null;
             const mate = plotNeighbors(i).find(j => veg.plots[j].type === 'veg' && veg.plots[j].seed && veg.plots[j].seed !== key
@@ -5538,6 +5634,8 @@
             veg.plots.forEach(p => { if (p.pest) { p.pest = false; p.lastGrowAt = Date.now(); } });
             veg.wormDay = dayKeyLocal();
             saveVeg();
+            veg.stats.worms += worm.caught;
+            if (worm.caught >= 20) setTimeout(() => unlockSecret('wormKing'), 900);
             const coins = Math.ceil(worm.caught / 2), xp = worm.caught * 2;
             if (coins) addCoins(coins);
             if (xp) addXP(xp);
@@ -5581,7 +5679,8 @@
                 + `<span class="farm-xp" role="progressbar" aria-label="XP ชาวสวน" aria-valuemin="0" aria-valuemax="${next - cur}" aria-valuenow="${veg.xp - cur}"><span style="width:${((veg.xp - cur) / (next - cur) * 100).toFixed(0)}%"></span></span>`
                 + `<span class="farm-xp-text">${veg.xp - cur}/${next - cur} XP</span>`
                 + `<span class="farm-weather" title="${w.note}">${w.e} ${w.name}</span>`
-                + `<span class="farm-weather farm-season" title="${s.name}: ผักตามฤดูโตไวขึ้น 1 ระยะ ขายแพงขึ้น ${seasonal}">${s.e} ${s.name}</span>`;
+                + `<span class="farm-weather farm-season" title="${s.name}: ผักตามฤดูโตไวขึ้น 1 ระยะ ขายแพงขึ้น ${seasonal}">${s.e} ${s.name}</span>`
+                + (currentTitle() ? `<span class="farm-title" title="ฉายาชาวสวน">🎖️ ${escHtml(currentTitle())}</span>` : '');
             const ordersReady = todaysOrders().filter(o => !o.done && hasItems(o.items)).length;
             const od = document.getElementById('fa-orders');
             if (od) { od.textContent = ordersReady || ''; od.hidden = !ordersReady; }
@@ -5596,6 +5695,9 @@
             dot('fa-pond', veg.fish.tickets + (veg.fish.freeDay !== dayKeyLocal() ? 1 : 0));
             dot('fa-contest', !c.planted || (c.weight && !c.done) ? '!' : '');
             dot('fa-checkin', checkinNext() ? '!' : '');
+            dot('fa-ach', achClaimable());
+            const nh = HOUSE_LEVELS[veg.house];
+            dot('fa-house', nh && farmLevel() >= nh.level && shop.coins >= nh.coins && hasItems(nh.items) ? '!' : '');
         }
         // อากาศในฉากต้นไม้: ฝนพรำ รุ้ง ใบไม้ปลิว พายุ หรือแดดร้อนจัด
         function renderGardenWeather() {
@@ -5627,7 +5729,7 @@
             if (lvl >= FLOWER_LEVEL) pool.push('bouquet');
             if (hasTool('beehive')) pool.push('honey');
             veg.plots.forEach(p => { if (p.type === 'tree' && isReady(p) && !pool.includes(TREES[p.seed].fruit)) pool.push(TREES[p.seed].fruit); });
-            const dishes = Object.keys(RECIPES).filter(k => RECIPES[k].level <= lvl && Object.keys(RECIPES[k].need).every(n => VEGGIES[n] || pool.includes(n)));
+            const dishes = Object.keys(RECIPES).filter(k => !RECIPES[k].secret && RECIPES[k].level <= lvl && Object.keys(RECIPES[k].need).every(n => VEGGIES[n] || pool.includes(n)));
             // คนสั่งคือเพื่อนในขบวนของธีมตอนนี้ (ธีมที่มีเพื่อนตัวเดียว มีลูกเจี๊ยบกับกระต่ายมาช่วยสั่งด้วย)
             const roster = (PARADE_ROSTERS[currentTheme()] || PARADE_ROSTERS.day).map(sp => Object.keys(CR).find(k => CR[k] === sp)).filter(Boolean);
             const who = roster.length >= 2 ? roster : [...roster, 'chick', 'bunny'];
@@ -5657,7 +5759,7 @@
         function deliverOrder(i) {
             const o = todaysOrders()[i];
             if (!o || o.done || !hasItems(o.items)) return;
-            takeItems(o.items); o.done = true; saveVeg();
+            takeItems(o.items); o.done = true; veg.stats.orders += 1; saveVeg();
             addCoins(o.coins); addXP(o.xp);
             const bonus = o.bonus && !shop.owned.includes(o.bonus) ? o.bonus : null;
             if (bonus) { shop.owned.push(bonus); saveShop(); applyShopItems(); }
@@ -5700,6 +5802,7 @@
             if (host) { host.classList.remove('is-hop'); void host.offsetWidth; host.classList.add('is-hop'); vegFx(host, ['💗', '💗']); }
             playSound('pop');
             let msg = `${pet.name}: ${pick(PETS[pet.kind].says)}`;
+            notePetTap();
             if (pet.petDay !== today) {
                 pet.petDay = today; pet.hearts = Math.min(10, pet.hearts + 1);
                 msg = `${pet.name} ดีใจที่ได้ลูบหัว 💗 ${pet.hearts}/10`;
@@ -5827,6 +5930,8 @@
             takeItems(r.need); giveItem(qKey(key, q));
             veg.cooked[key] = (veg.cooked[key] || 0) + 1;
             veg.bestQ[key] = Math.max(veg.bestQ[key] || 0, q);
+            if (q === 3) veg.stats.chef3 += 1;
+            if (r.secret) setTimeout(() => unlockSecret('secretRecipe'), 600);
             saveVeg(); addXP(8 + (q - 1) * 3); bumpChallenge('cook');
             playSound('welcome');
             if (!quiet) showToast(`🍳 ทำ${r.name}เสร็จแล้ว! ${r.e}${starText(q)} อยู่ในยุ้งฉาง`, 'success');
@@ -5858,6 +5963,7 @@
             if (!honeyReady()) return;
             const n = Math.min(3, bloomCount());
             giveItem('honey', n);
+            veg.stats.honey += n;
             veg.honeyDay = dayKeyLocal();
             saveVeg(); addXP(5); playSound('pop');
             showToast(`🐝 เก็บน้ำผึ้งได้ ${n} ขวด 🍯`, 'success');
@@ -5871,6 +5977,7 @@
             veg.compost += info.value * n;
             let bags = 0;
             while (veg.compost >= COMPOST_PTS && veg.tools.compost < 99) { veg.compost -= COMPOST_PTS; veg.tools.compost += 1; bags++; }
+            veg.stats.compost += bags;
             veg.compost = Math.min(veg.compost, COMPOST_PTS - 1);
             saveVeg(); playSound('pop');
             if (bags) { addXP(2 * bags); showToast(`🪱 ได้ปุ๋ยหมัก ${bags} ถุง! แตะปุ่ม 🪱 ใต้แปลงผักแล้วเลือกแปลงที่จะเติมดิน`, 'success', { duration: 5000 }); }
@@ -5879,7 +5986,7 @@
 
         // 🌾 หน้าต่างฟาร์ม: ออเดอร์ · ยุ้งฉาง · ครัว · สัตว์ · ปุ๋ยหมัก
         const FARM_TABS = [['orders', '📋', 'ออเดอร์'], ['barn', '🏠', 'ยุ้งฉาง'], ['stall', '🏪', 'แผงขาย'], ['kitchen', '🍳', 'ครัว'], ['animals', '🐔', 'สัตว์'],
-            ['pond', '🎣', 'บ่อปลา'], ['contest', '🏆', 'ประกวด'], ['compost', '🪱', 'ปุ๋ยหมัก']];
+            ['pond', '🎣', 'บ่อปลา'], ['contest', '🏆', 'ประกวด'], ['compost', '🪱', 'ปุ๋ยหมัก'], ['house', '🏡', 'บ้านไร่'], ['ach', '🎖️', 'ความสำเร็จ'], ['stats', '📊', 'สถิติ']];
         let farmTab = 'orders', kitchenFilter = 'all';
         function setKitchenFilter(f) { kitchenFilter = f; renderFarmPanel(); }
         function openFarm(tab) {
@@ -5909,7 +6016,7 @@
             const act = tabs.querySelector('.active');
             if (act) tabs.scrollLeft = Math.max(0, act.offsetLeft - (tabs.clientWidth - act.offsetWidth) / 2);
             const body = document.getElementById('farm-body');
-            const custom = { stall: renderStallTab, pond: renderPondTab, contest: renderContestTab }[farmTab];
+            const custom = { stall: renderStallTab, pond: renderPondTab, contest: renderContestTab, house: renderHouseTab, ach: renderAchTab, stats: renderStatsTab }[farmTab];
             if (custom) { body.innerHTML = custom(); updateCoinUI(); return; }
             if (farmTab === 'orders') {
                 body.innerHTML = todaysOrders().map((o, i) => {
@@ -5934,7 +6041,7 @@
                     + `<p class="shop-note">ราคาตลาดเปลี่ยนทุกวัน ▲ แพงกว่าปกติ · ▼ ถูกกว่าปกติ · 🍃 ผักตามฤดูแพงขึ้น · ★ ยิ่งดาวเยอะยิ่งแพง${veg.hybridSeeds.length ? ` · 🧬 เมล็ดลูกผสมรอปลูก ${veg.hybridSeeds.length} เมล็ด` : ''}<br>ตะกร้าขนมท้ายหน้าก็หยิบผักจากยุ้งฉางนี้</p>`;
             } else if (farmTab === 'kitchen') {
                 const rank = ([, r]) => lvl < r.level ? 2 + r.level / 100 : hasItems(r.need) ? 0 : 1;
-                const all = Object.entries(RECIPES).sort((a, b) => rank(a) - rank(b));
+                const all = Object.entries(RECIPES).filter(([k, r]) => !r.secret || veg.cooked[k] || hasItems(r.need)).sort((a, b) => rank(a) - rank(b));
                 const canCook = all.filter(([, r]) => lvl >= r.level && hasItems(r.need));
                 const shown = kitchenFilter === 'ready' ? canCook : all;
                 body.innerHTML = `<div class="kitchen-filter"><button type="button" class="chip-btn${kitchenFilter === 'ready' ? ' is-active' : ''}" onclick="setKitchenFilter('ready')">ทำได้ตอนนี้ (${canCook.length})</button>`
@@ -5942,8 +6049,9 @@
                     + (shown.length ? '' : '<p class="rp-empty">ยังไม่มีเมนูที่วัตถุดิบครบ ลองดูทั้งหมดว่าขาดอะไร</p>')
                     + shown.map(([k, r]) => {
                     const locked = lvl < r.level, ready = !locked && hasItems(r.need);
-                    return `<div class="farm-card${locked ? ' is-locked' : ''}"><span class="barn-emoji">${r.e}</span>
-                        <div class="farm-card-main"><span class="farm-card-title">${r.name}</span>
+                    const hidden = r.secret && !veg.cooked[k];
+                    return `<div class="farm-card${locked ? ' is-locked' : ''}${r.secret ? ' is-secret' : ''}"><span class="barn-emoji">${hidden ? '❔' : r.e}</span>
+                        <div class="farm-card-main"><span class="farm-card-title">${hidden ? '❔ เมนูลับ! วัตถุดิบในยุ้งฉางครบพอดี' : r.name}</span>
                             <div class="farm-chips">${Object.entries(r.need).map(([n, q]) => itemChip(n, q)).join('')}</div>
                             <span class="farm-card-sub">ขายได้ราว 🪙${r.value} (★★★ ×2)${veg.cooked[k] ? ` · ทำไปแล้ว ${veg.cooked[k]} จาน${veg.bestQ[k] > 1 ? ' ' + '★'.repeat(veg.bestQ[k]) : ''}` : ''}</span></div>
                         <button type="button" class="shop-buy farm-action" ${ready ? '' : 'disabled'} onclick="cookDish('${k}')">${locked ? `🔒 เลเวล ${r.level}` : ready ? 'ทำอาหาร 🍳' : 'วัตถุดิบไม่พอ'}</button></div>`;
@@ -6023,7 +6131,7 @@
                 if (!open.length) { st.lastTick = now; break; }
                 const i = open[Math.floor(Math.random() * open.length)], s = st.slots[i];
                 const qty = Math.min(s.qty, 1 + Math.floor(Math.random() * 3));
-                s.qty -= qty; st.cash = Math.min(99999, st.cash + qty * s.price); sold += qty;
+                s.qty -= qty; st.cash = Math.min(99999, st.cash + qty * s.price); sold += qty; veg.stats.stallSold += qty;
                 const c = CR[pick(who)], it = itemInfo(s.key);
                 st.log.push({ t: `${c.name}ซื้อ${it.name}${starText(it.q)} ×${qty} · 🪙${qty * s.price}` });
                 if (!s.qty) st.slots[i] = null;
@@ -6033,7 +6141,7 @@
             return sold;
         }
         function putOnStall(key) {
-            const i = veg.stall.slots.slice(0, STALL_SLOTS).findIndex(s => !s);
+            const i = veg.stall.slots.slice(0, stallSlots()).findIndex(s => !s);
             const have = veg.inv[key] || 0;
             if (i < 0) { showToast('แผงเต็มแล้ว รอขายหมดหรือเก็บของกลับก่อนนะ', 'info'); return; }
             if (!have) return;
@@ -6060,14 +6168,14 @@
         }
         function renderStallTab() {
             stallTick();
-            const st = veg.stall, slots = st.slots.slice(0, STALL_SLOTS);
+            const st = veg.stall, slots = st.slots.slice(0, stallSlots());
             const next = Math.max(1, Math.ceil((STALL_MS - (Date.now() - st.lastTick)) / 60000));
             const keys = barnKeys();
             return `<p class="farm-news">${escHtml(newsLine())}</p>
                 <div class="stall-cash"><span class="barn-emoji">🏪</span><div class="farm-card-main"><span class="farm-card-title">เงินในลิ้นชัก 🪙${st.cash}</span>
                     <span class="farm-card-sub">${slots.some(Boolean) ? `ลูกค้าคนต่อไปมาในอีกราว ${next} นาที` : 'วางของบนแผงแล้วเพื่อนในขบวนจะทยอยมาซื้อ'}</span></div>
                     <button type="button" class="shop-buy farm-action" ${st.cash ? '' : 'disabled'} onclick="collectStallCash()">เก็บเงิน 💰</button></div>
-                <div class="stall-slots">${slots.map((s, i) => s ? `<div class="stall-slot"><span class="barn-emoji">${itemInfo(s.key).e}</span><span class="farm-card-title">${itemInfo(s.key).name}${starText(itemInfo(s.key).q)}</span>
+                <div class="stall-slots${slots.length > 3 ? ' has-4' : ''}">${slots.map((s, i) => s ? `<div class="stall-slot"><span class="barn-emoji">${itemInfo(s.key).e}</span><span class="farm-card-title">${itemInfo(s.key).name}${starText(itemInfo(s.key).q)}</span>
                     <span class="farm-card-sub">เหลือ ${s.qty} ชิ้น · 🪙${s.price}/ชิ้น</span><button type="button" class="chip-btn" onclick="takeFromStall(${i})">เก็บกลับ</button></div>`
                     : '<div class="stall-slot is-empty"><span class="barn-emoji">🧺</span><span class="farm-card-sub">ช่องว่าง เลือกของด้านล่างมาวาง</span></div>').join('')}</div>
                 ${st.log.length ? `<div class="stall-log">${st.log.slice().reverse().map(l => `<span>🛒 ${escHtml(l.t)}</span>`).join('')}</div>` : ''}
@@ -6128,6 +6236,7 @@
             const c = contestState();
             if (!c.weight || c.done) return;
             c.rank = contestBoard().findIndex(r => r.me) + 1;
+            if (c.rank === 1) veg.stats.contestWins += 1;
             c.done = true;
             const prize = CONTEST_PRIZES[c.rank - 1];
             let coins = prize.coins, trophy = '';
@@ -6161,7 +6270,7 @@
         function addFishTicket(n = 1) { veg.fish.tickets = Math.min(FISH_TICKET_MAX, veg.fish.tickets + n); saveVeg(); renderFarmStatus(); }
         function freeFishTicket() {
             if (veg.fish.freeDay === dayKeyLocal()) return;
-            veg.fish.freeDay = dayKeyLocal(); addFishTicket();
+            veg.fish.freeDay = dayKeyLocal(); addFishTicket(veg.house >= 3 ? 2 : 1);
         }
         function rollFish() {
             let r = Math.random() * Object.values(FISH).reduce((s, f) => s + f.w, 0);
@@ -6192,7 +6301,9 @@
             clearTimeout(fishing.timer);
             let caught = null;
             if (how === 'catch') {
-                caught = rollFish();
+                // เที่ยงคืนถึงตีหนึ่ง: ปลาผีมาติดเบ็ด (อีเวนต์ลับ ครั้งแรกครั้งเดียว)
+                caught = new Date().getHours() === 0 && !veg.secrets.ghostFish ? 'ghostFish' : rollFish();
+                if (caught === 'ghostFish') setTimeout(() => unlockSecret('ghostFish'), 700);
                 giveItem(caught); veg.fishCaught[caught] = (veg.fishCaught[caught] || 0) + 1;
                 addXP(4 + Math.round(FISH[caught].value / 3)); playSound('welcome');
                 if (FISH[caught].w <= 5) fireConfetti();
@@ -6221,7 +6332,7 @@
                     ${r && r.how === 'catch' && f.state === 'idle' ? `<span class="pond-catch">${FISH[r.caught].e}</span>` : ''}</div>
                 <p class="pond-msg" aria-live="polite">${msg}</p>
                 <div class="modal-btn-group">${action}</div>
-                <div class="pond-dex">${Object.entries(FISH).map(([k, x]) => `<span class="pond-dex-item${veg.fishCaught[k] ? '' : ' locked'}" title="${x.name}">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></span>`).join('')}</div>
+                <div class="pond-dex">${Object.entries(FISH).filter(([k, x]) => x.w > 0 || veg.fishCaught[k]).map(([k, x]) => `<span class="pond-dex-item${veg.fishCaught[k] ? '' : ' locked'}" title="${x.name}">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></span>`).join('')}</div>
                 <p class="shop-note">สะสมปลาแล้ว ${caught}/${Object.keys(FISH).length} ชนิด · ตั๋วฟรีวันละใบ และได้เพิ่มทุกครั้งที่พักไม่เกินลิมิต (เก็บได้สูงสุด ${FISH_TICKET_MAX}) · ปลาขายหรือทำอาหารได้</p>`;
         }
 
@@ -6230,7 +6341,7 @@
         function spawnVisitor(kind) {
             const h = new Date().getHours(), night = h >= 19 || h < 5;
             if (!kind) {
-                const pool = Object.entries(VISITORS).filter(([, v]) => !v.night || night);
+                const pool = Object.entries(VISITORS).filter(([, v]) => v.w > 0 && (!v.night || night));
                 let r = Math.random() * pool.reduce((s, [, v]) => s + v.w, 0);
                 kind = pool.find(([, v]) => (r -= v.w) <= 0)[0];
             }
@@ -6267,6 +6378,12 @@
             if (!v) { renderVisitor(); return; }
             const kind = veg.visitor.kind;
             veg.visitor = null;
+            if (v.secret) {
+                if (kind === 'moonRabbit') { giveItem('mooncake'); unlockSecret('fullMoon'); }
+                else unlockSecret('wish');
+                saveVeg(); renderVisitor(); fireConfetti();
+                return;
+            }
             veg.visitors[kind] = (veg.visitors[kind] || 0) + 1;
             const growing = veg.plots.filter(p => p.type === 'veg' && p.seed && !isReady(p) && !p.giant);
             let gift = '';
@@ -6302,6 +6419,7 @@
             const day = checkinNext();
             if (!day) return;
             veg.checkin = { day: dayKeyLocal(), streak: day };
+            if (day === 7) veg.stats.checkin7 = true;
             if (day === 1) addCoins(5);
             else if (day === 2) veg.tools.fertilizer = Math.min(99, veg.tools.fertilizer + 1);
             else if (day === 3) addCoins(10);
@@ -6318,8 +6436,283 @@
         function farmTick() {
             if (stallTick() && document.getElementById('farm-modal').style.display === 'flex' && farmTab === 'stall') renderFarmPanel();
             renderVisitor();
+            secretTick();
             maybeSpawnVisitor();
             renderFarmStatus();
+        }
+
+        // 📊 สถิติประจำวัน (เก็บ 14 วันล่าสุด)
+        function statDay() {
+            const d = dayKeyLocal(), daily = veg.stats.daily;
+            if (!daily[d]) {
+                daily[d] = { coins: 0, crops: 0 };
+                Object.keys(daily).sort().slice(0, -14).forEach(k => delete daily[k]);
+            }
+            return daily[d];
+        }
+        function noteCoins(n) {
+            if (!(n > 0) || !veg || !veg.stats) return;
+            veg.stats.earned = Math.min(1e9, veg.stats.earned + n);
+            statDay().coins += n;
+            saveVeg();
+        }
+        function noteCrops(n) { statDay().crops += n; }
+
+        // 🔮 เจออีเวนต์ลับ
+        function unlockSecret(id) {
+            const s = SECRETS.find(x => x.id === id);
+            if (!s || veg.secrets[id]) return false;
+            veg.secrets[id] = dayKeyLocal();
+            const coins = { wish: new Date().getHours() >= 12 ? 22 : 11, rainbowGold: 20, wormKing: 25, mono: 30, petDance: 15, lucky777: 77 }[id];
+            saveVeg();
+            if (coins) addCoins(coins);
+            if (id === 'secretRecipe') addXP(25);
+            setTimeout(() => {
+                showBadgeCelebration({ icon: s.e, desc: `🔮 อีเวนต์ลับ: ${s.name}! ได้ ${s.reward}` });
+                playSound('welcome');
+            }, 400);
+            renderFarmStatus();
+            return true;
+        }
+        // พระจันทร์เต็มดวง (คำนวณจากรอบเดือนจันทรคติ 29.53 วัน นับจากเดือนดับ 6 ม.ค. 2000)
+        function isFullMoonNight(d = new Date()) {
+            const synodic = 29.530588853, age = (((d.getTime() - Date.UTC(2000, 0, 6, 18, 14)) / 864e5) % synodic + synodic) % synodic;
+            const h = d.getHours();
+            return Math.abs(age - synodic / 2) < 1 && (h >= 18 || h < 5);
+        }
+        // เช็กอีเวนต์ลับตามเวลา (ทุกนาที): ดาวขอพร 11:11/22:22 และกระต่ายดวงจันทร์
+        function secretTick() {
+            if (!isGardenEnabled() || visitorActive()) return;
+            const d = new Date(), hm = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+            if ((hm === '11:11' || hm === '22:22') && !veg.secrets.wish) {
+                veg.visitor = { kind: 'wishStar', until: Date.now() + (60 - d.getSeconds()) * 1000 };
+                saveVeg(); renderVisitor();
+            } else if (isFullMoonNight(d) && !veg.secrets.fullMoon) {
+                veg.visitor = { kind: 'moonRabbit', until: Date.now() + 5 * 60 * 1000 };
+                saveVeg(); renderVisitor();
+            }
+        }
+        // ลูบหัวรัวๆ 8 ครั้งใน 4 วินาที = สัตว์เลี้ยงเต้นระบำ
+        const petTaps = [];
+        function notePetTap() {
+            const now = Date.now();
+            petTaps.push(now);
+            while (petTaps.length && now - petTaps[0] > 4000) petTaps.shift();
+            if (petTaps.length >= 8) {
+                petTaps.length = 0;
+                const el = document.getElementById('garden-pet');
+                if (el) { el.classList.add('is-dancing'); setTimeout(() => el.classList.remove('is-dancing'), 3000); }
+                unlockSecret('petDance');
+            }
+        }
+        // ทุกแปลง (6 แปลงขึ้นไป) ปลูกผักชนิดเดียวกัน = เทศกาล
+        function checkMonoFestival() {
+            const ps = veg.plots;
+            if (ps.length >= 6 && ps.every(p => p.type === 'veg' && p.seed && !p.giant && p.seed === ps[0].seed)) unlockSecret('mono');
+        }
+
+        // 🎖️ ความสำเร็จ 35 อย่าง + ฉายา
+        const sum = o => Object.values(o || {}).reduce((a, b) => a + b, 0);
+        const ACHIEVEMENTS = [
+            { id: 'firstHarvest', e: '🌱', name: 'ก้าวแรกชาวสวน', desc: 'เก็บผักครั้งแรก', goal: 1, v: () => sum(veg.harvest), coins: 5, title: 'มือใหม่หัดปลูก' },
+            { id: 'harvest50', e: '🧺', name: 'ขยันเก็บเกี่ยว', desc: 'เก็บผักรวม 50 ชิ้น', goal: 50, v: () => sum(veg.harvest), coins: 15, title: 'ชาวสวนขยัน' },
+            { id: 'harvest200', e: '🚜', name: 'ไร่ใหญ่ไฟกะพริบ', desc: 'เก็บผักรวม 200 ชิ้น', goal: 200, v: () => sum(veg.harvest), coins: 40, title: 'เจ้าของไร่ใหญ่' },
+            { id: 'carrot30', e: '🥕', name: 'แครอทเต็มยุ้ง', desc: 'เก็บแครอท 30 หัว', goal: 30, v: () => veg.harvest.carrot || 0, coins: 15, title: 'ราชาแครอท' },
+            { id: 'tomato30', e: '🍅', name: 'มะเขือเทศแดงทั้งไร่', desc: 'เก็บมะเขือเทศ 30 ลูก', goal: 30, v: () => veg.harvest.tomato || 0, coins: 15, title: 'เจ้าแม่มะเขือเทศ' },
+            { id: 'golden5', e: '✨', name: 'มือทองคำ', desc: 'เก็บผักทอง 5 ชิ้น', goal: 5, v: () => veg.golden, coins: 20, title: 'มือทอง' },
+            { id: 'q3x10', e: '⭐', name: 'ผักเกรดพรีเมียม', desc: 'เก็บผัก ★★★ 10 ครั้ง', goal: 10, v: () => veg.stats.q3, coins: 20, title: 'ปรมาจารย์คุณภาพ' },
+            { id: 'hybrid4', e: '🧬', name: 'นักผสมพันธุ์', desc: 'ค้นพบผักลูกผสม 4 ชนิด', goal: 4, v: () => HYBRID_VEGGIES.filter(k => veg.harvest[k]).length, coins: 20, title: 'นักวิทย์พืช' },
+            { id: 'hybridAll', e: '🧪', name: 'ห้องแล็บกลางสวน', desc: 'ค้นพบผักลูกผสมครบ 8 ชนิด', goal: 8, v: () => HYBRID_VEGGIES.filter(k => veg.harvest[k]).length, coins: 50, title: 'อัจฉริยะผสมพันธุ์' },
+            { id: 'orders10', e: '📦', name: 'ขวัญใจเพื่อนบ้าน', desc: 'ส่งออเดอร์ 10 ใบ', goal: 10, v: () => veg.stats.orders, coins: 15, title: 'ขวัญใจเพื่อนบ้าน' },
+            { id: 'orders50', e: '🚚', name: 'ส่งไวทันใจ', desc: 'ส่งออเดอร์ 50 ใบ', goal: 50, v: () => veg.stats.orders, coins: 40, title: 'พ่อค้าแม่ค้าตัวยง' },
+            { id: 'cook10', e: '🍳', name: 'เข้าครัวบ่อยๆ', desc: 'ทำอาหาร 10 จาน', goal: 10, v: () => sum(veg.cooked), coins: 15, title: 'แม่ครัวหัวป่า' },
+            { id: 'recipes15', e: '📗', name: 'ตำราครบเล่ม', desc: 'ทำอาหารต่างกัน 15 เมนู', goal: 15, v: () => Object.keys(veg.cooked).length, coins: 40, title: 'เชฟประจำฟาร์ม' },
+            { id: 'chef5', e: '👨‍🍳', name: 'รสมือระดับดาว', desc: 'ทำอาหาร ★★★ 5 จาน', goal: 5, v: () => veg.stats.chef3, coins: 25, title: 'เชฟมิชลิน' },
+            { id: 'fish10', e: '🎣', name: 'นั่งตกปลาเพลินๆ', desc: 'ตกปลา 10 ตัว', goal: 10, v: () => sum(veg.fishCaught), coins: 15, title: 'นักตกปลา' },
+            { id: 'fishAll', e: '🐙', name: 'สมุดปลาครบเล่ม', desc: 'ตกปลาครบ 7 ชนิด', goal: 7, v: () => Object.keys(FISH).filter(k => FISH[k].w > 0 && veg.fishCaught[k]).length, coins: 40, title: 'เจ้าแห่งบ่อปลา' },
+            { id: 'animals3', e: '🐄', name: 'ฟาร์มคึกคัก', desc: 'เลี้ยงสัตว์ 3 ชนิด', goal: 3, v: () => Object.values(ANIMALS).filter(a => shop.owned.includes(a.shopId)).length, coins: 20, title: 'เจ้าของฟาร์มสัตว์' },
+            { id: 'hearts10', e: '💗', name: 'รักกันที่สุด', desc: 'สัตว์ในฟาร์มตัวไหนก็ได้ หัวใจเต็ม 10', goal: 10, v: () => Math.max(0, ...Object.values(veg.animals).map(a => a.hearts)), coins: 25, title: 'คนรักสัตว์' },
+            { id: 'pet10', e: '🐾', name: 'เพื่อนซี้สี่ขา', desc: 'สัตว์เลี้ยงหัวใจเต็ม 10', goal: 10, v: () => veg.pet ? veg.pet.hearts : 0, coins: 25, title: 'เพื่อนซี้สัตว์เลี้ยง' },
+            { id: 'fruit30', e: '🥭', name: 'สวนผลไม้ดก', desc: 'เก็บผลไม้จากต้น 30 ลูก', goal: 30, v: () => sum(veg.fruits), coins: 20, title: 'ชาวสวนผลไม้' },
+            { id: 'flower10', e: '💐', name: 'ร้านดอกไม้ในสวน', desc: 'เด็ดช่อดอกไม้ 10 ช่อ', goal: 10, v: () => sum(veg.flowers), coins: 15, title: 'นักจัดดอกไม้' },
+            { id: 'honey10', e: '🍯', name: 'หวานฉ่ำ', desc: 'เก็บน้ำผึ้ง 10 ขวด', goal: 10, v: () => veg.stats.honey, coins: 15, title: 'คนเลี้ยงผึ้ง' },
+            { id: 'compost10', e: '🪱', name: 'รักษ์ดิน', desc: 'ทำปุ๋ยหมัก 10 ถุง', goal: 10, v: () => veg.stats.compost, coins: 15, title: 'นักรักษ์ดิน' },
+            { id: 'worms50', e: '🐛', name: 'หนอนหนีหมด', desc: 'จับหนอนรวม 50 ตัว', goal: 50, v: () => veg.stats.worms, coins: 20, title: 'นักล่าหนอน' },
+            { id: 'contestWin', e: '🏆', name: 'แชมป์ผักยักษ์', desc: 'ชนะประกวดผักยักษ์ 1 ครั้ง', goal: 1, v: () => veg.stats.contestWins, coins: 30, title: 'แชมป์ผักยักษ์' },
+            { id: 'visitors5', e: '🦋', name: 'แขกมาเยือน', desc: 'พบแขกพิเศษ 5 ครั้ง', goal: 5, v: () => sum(veg.visitors), coins: 15, title: 'คนดวงดี' },
+            { id: 'visitorsAll', e: '🦄', name: 'ครบทุกแขก', desc: 'พบแขกพิเศษครบ 5 แบบ', goal: 5, v: () => ['luckyBird', 'butterfly', 'fairy', 'unicorn', 'meteor'].filter(k => veg.visitors[k]).length, coins: 40, title: 'ผู้ถูกเลือก' },
+            { id: 'level10', e: '🎖️', name: 'ชาวสวนระดับตำนาน', desc: 'ถึงเลเวล 10', goal: 10, v: () => farmLevel(), coins: 50, title: 'ตำนานชาวสวน' },
+            { id: 'land6', e: '🗺️', name: 'ที่ดินเต็มผืน', desc: 'ขยายสวนครบ 12 แปลง', goal: 12, v: () => veg.plots.length, coins: 40, title: 'เจ้าที่ดิน' },
+            { id: 'coins500', e: '💰', name: 'เศรษฐีฟาร์ม', desc: 'หาเหรียญรวม 500 เหรียญ', goal: 500, v: () => veg.stats.earned, coins: 30, title: 'เศรษฐีฟาร์ม' },
+            { id: 'stall50', e: '🏪', name: 'แผงขายขายดี', desc: 'ขายของบนแผง 50 ชิ้น', goal: 50, v: () => veg.stats.stallSold, coins: 25, title: 'เจ้าของแผงดัง' },
+            { id: 'checkin7', e: '🎁', name: 'ขาประจำ', desc: 'เข้าฟาร์มครบ 7 วันติด', goal: 1, v: () => veg.stats.checkin7 ? 1 : 0, coins: 20, title: 'ขาประจำ' },
+            { id: 'house5', e: '🏰', name: 'คฤหาสน์ในฝัน', desc: 'อัปเกรดบ้านไร่ถึงระดับ 5', goal: 5, v: () => veg.house, coins: 50, title: 'คฤหาสน์ชาวไร่' },
+            { id: 'secret3', e: '🔮', name: 'นักล่าความลับ', desc: 'พบอีเวนต์ลับ 3 อย่าง', goal: 3, v: () => Object.keys(veg.secrets).length, coins: 30, title: 'นักล่าความลับ' },
+            { id: 'secretAll', e: '🌌', name: 'ผู้รู้ทุกความลับ', desc: `พบอีเวนต์ลับครบ ${SECRETS.length} อย่าง`, goal: SECRETS.length, v: () => Object.keys(veg.secrets).length, coins: 100, title: 'ผู้รู้ทุกความลับ' }
+        ];
+        const achDone = a => a.v() >= a.goal;
+        const achClaimable = () => ACHIEVEMENTS.filter(a => achDone(a) && !veg.ach[a.id]).length;
+        function claimAchievement(id) {
+            const a = ACHIEVEMENTS.find(x => x.id === id);
+            if (!a || veg.ach[id] || !achDone(a)) return;
+            veg.ach[id] = true;
+            if (!veg.title) veg.title = id;
+            saveVeg(); addCoins(a.coins); playSound('welcome');
+            showToast(`${a.e} ปลดล็อก "${a.name}" ได้ 🪙${a.coins} และฉายา "${a.title}"`, 'success', { duration: 5000 });
+            renderFarmPanel(); renderFarmStatus();
+        }
+        function setTitle(id) {
+            if (id && !veg.ach[id]) return;
+            veg.title = id; saveVeg(); renderFarmPanel(); renderFarmStatus();
+        }
+        const currentTitle = () => { const a = veg.title && veg.ach[veg.title] && ACHIEVEMENTS.find(x => x.id === veg.title); return a ? a.title : ''; };
+        function renderAchTab() {
+            const done = Object.keys(veg.ach).length, found = SECRETS.filter(s => veg.secrets[s.id]).length;
+            const rank = a => veg.ach[a.id] ? 2 : achDone(a) ? 0 : 1 - Math.min(1, a.v() / a.goal) / 2;
+            const list = [...ACHIEVEMENTS].sort((a, b) => rank(a) - rank(b));
+            return `<div class="ach-head"><span class="farm-card-title">🎖️ ความสำเร็จ ${done}/${ACHIEVEMENTS.length} · 🔮 อีเวนต์ลับ ${found}/${SECRETS.length}</span>
+                    <span class="farm-card-sub">ฉายาตอนนี้: <b>${escHtml(currentTitle() || 'ยังไม่มี')}</b> (เลือกจากความสำเร็จที่ปลดล็อกแล้ว)</span></div>
+                <div class="ach-list">${list.map(a => {
+                    const val = Math.min(a.v(), a.goal), claimed = !!veg.ach[a.id], ready = !claimed && achDone(a);
+                    const action = ready ? `<button type="button" class="shop-buy farm-action" onclick="claimAchievement('${a.id}')">รับ 🪙${a.coins}</button>`
+                        : claimed ? (veg.title === a.id ? '<span class="farm-done">ใช้ฉายาอยู่ ✓</span>' : `<button type="button" class="shop-buy farm-action is-owned" onclick="setTitle('${a.id}')">ใช้ฉายา</button>`)
+                        : `<span class="farm-card-sub">🪙${a.coins}</span>`;
+                    return `<div class="farm-card ach-card${claimed ? ' is-claimed' : ready ? ' is-ready' : ''}"><span class="barn-emoji">${a.e}</span>
+                        <div class="farm-card-main"><span class="farm-card-title">${a.name}</span><span class="farm-card-sub">${a.desc} · ฉายา "${a.title}"</span>
+                        <span class="farm-xp ach-meter" role="progressbar" aria-valuemin="0" aria-valuemax="${a.goal}" aria-valuenow="${val}" aria-label="${a.name}"><span style="width:${(val / a.goal * 100).toFixed(0)}%"></span></span>
+                        <span class="farm-card-sub">${val}/${a.goal}</span></div>${action}</div>`;
+                }).join('')}</div>
+                <p class="veg-book-head">🔮 อีเวนต์ลับ (ไม่บอกวิธีตรงๆ ลองหาดูนะ)</p>
+                <div class="secret-grid">${SECRETS.map(s => veg.secrets[s.id]
+                    ? `<div class="secret-card is-found"><span>${s.e}</span><b>${s.name}</b><small>พบเมื่อ ${escHtml(veg.secrets[s.id])}</small></div>`
+                    : `<div class="secret-card"><span>❔</span><b>???</b><small>${s.hint}</small></div>`).join('')}</div>`;
+        }
+
+        // 🏡 บ้านไร่ + จัดสวน
+        const stallSlots = () => STALL_SLOTS + (veg.house >= 2 ? 1 : 0);
+        function upgradeHouse() {
+            const next = HOUSE_LEVELS[veg.house];
+            if (!next || farmLevel() < next.level || shop.coins < next.coins || !hasItems(next.items)) return;
+            shop.coins -= next.coins; saveShop(); updateCoinUI();
+            takeItems(next.items);
+            veg.house += 1; saveVeg(); addXP(20);
+            fireConfetti(); playSound('welcome');
+            showToast(`${next.e} อัปเกรดเป็น${next.name}แล้ว! ได้: ${next.perk}`, 'success', { duration: 5500 });
+            renderGardenHouse(); renderFarmPanel(); renderFarmStatus();
+        }
+        function renderHouseTab() {
+            const cur = HOUSE_LEVELS[veg.house - 1], next = HOUSE_LEVELS[veg.house], lvl = farmLevel();
+            const ok = next && lvl >= next.level && shop.coins >= next.coins && hasItems(next.items);
+            return `<div class="house-hero"><span class="house-big" aria-hidden="true">${cur.e}</span><span class="farm-card-title">${cur.name} (ระดับ ${veg.house}/5)</span></div>
+                ${next ? `<div class="farm-card"><span class="barn-emoji">${next.e}</span><div class="farm-card-main"><span class="farm-card-title">อัปเกรดเป็น${next.name}</span>
+                    <div class="farm-chips"><span class="farm-chip${shop.coins < next.coins ? ' is-short' : ''}">🪙 <b>${Math.min(shop.coins, next.coins)}/${next.coins}</b></span>${Object.entries(next.items).map(([k, n]) => itemChip(k, n)).join('')}</div>
+                    <span class="farm-card-sub">ได้: ${next.perk} · ต้องเลเวล ${next.level}</span></div>
+                    <button type="button" class="shop-buy farm-action" ${ok ? '' : 'disabled'} onclick="upgradeHouse()">${lvl < next.level ? `🔒 เลเวล ${next.level}` : ok ? 'อัปเกรด 🔨' : 'ของยังไม่ครบ'}</button></div>`
+                    : '<p class="rp-empty">บ้านไร่ระดับสูงสุดแล้ว สวยที่สุดในย่าน 🏰</p>'}
+                <div class="house-perks">${HOUSE_LEVELS.map((h, i) => `<span class="${i < veg.house ? 'is-on' : ''}">${h.e} ระดับ ${i + 1}: ${h.perk}${i < veg.house ? ' ✓' : ''}</span>`).join('')}</div>
+                <div class="modal-btn-group"><button type="button" class="modal-btn btn-secondary" onclick="closeFarm(); startGardenEdit()">🖌️ จัดสวน: ลากบ้านและของแต่งไปวาง</button></div>
+                <div class="modal-btn-group"><button type="button" class="modal-btn btn-secondary" onclick="setFarmTab('stats')">📊 ดูสถิติฟาร์ม</button></div>`;
+        }
+        const HOUSE_POS = 'right:3%; top:3%; font-size:30px;';
+        const fontOf = pos => (/font-size:\s*(\d+)px/.exec(pos) || [0, 22])[1];
+        function placedStyle(id, pos) {
+            const p = shop.decorPos[id];
+            return p ? `left:${p.x}%; top:${p.y}%; font-size:${fontOf(pos)}px;` : pos;
+        }
+        function renderGardenHouse() {
+            const wrap = document.getElementById('garden-scene-wrap');
+            if (!wrap) return;
+            let el = document.getElementById('garden-house');
+            if (!el) { el = document.createElement('span'); el.id = 'garden-house'; el.className = 'garden-decor-item garden-house'; el.dataset.id = 'house'; el.setAttribute('aria-hidden', 'true'); wrap.appendChild(el); }
+            el.textContent = HOUSE_LEVELS[veg.house - 1].e;
+            el.style.cssText = placedStyle('house', HOUSE_POS);
+            el.classList.toggle('has-pos', !!shop.decorPos.house);
+        }
+        // 🖌️ โหมดจัดสวน: ลากของแต่ง ถ้วยรางวัล และบ้านไปวางตรงไหนก็ได้ในฉากสวน
+        let gardenEditing = false;
+        function startGardenEdit() {
+            const wrap = document.getElementById('garden-scene-wrap');
+            if (!wrap || gardenEditing) return;
+            gardenEditing = true;
+            wrap.classList.add('is-editing');
+            let bar = document.getElementById('garden-edit-bar');
+            if (!bar) {
+                bar = document.createElement('div'); bar.id = 'garden-edit-bar'; bar.className = 'garden-edit-bar';
+                bar.innerHTML = '<span>🖌️ ลากของในสวนไปวางได้เลย</span><button type="button" class="chip-btn" onclick="resetGardenLayout()">↺ ตำแหน่งเดิม</button><button type="button" class="chip-btn is-active" onclick="stopGardenEdit()">✓ เสร็จแล้ว</button>';
+                wrap.after(bar); // วางไว้ใต้ฉาก จะได้ไม่บังของที่อยู่ขอบล่าง
+            }
+            wrap.scrollIntoView({ block: 'center', behavior: motionReduced() ? 'auto' : 'smooth' });
+            showToast('🖌️ โหมดจัดสวน: ลากบ้าน ของแต่ง และถ้วยรางวัลไปวางตรงไหนก็ได้', 'info', { duration: 4500 });
+        }
+        function stopGardenEdit() {
+            const wrap = document.getElementById('garden-scene-wrap');
+            gardenEditing = false;
+            if (wrap) wrap.classList.remove('is-editing');
+            const bar = document.getElementById('garden-edit-bar');
+            if (bar) bar.remove();
+            saveShop();
+        }
+        function resetGardenLayout() { shop.decorPos = {}; saveShop(); renderGardenDecor(); renderGardenHouse(); }
+        (function setupGardenDrag() {
+            let drag = null;
+            document.addEventListener('pointerdown', (e) => {
+                if (!gardenEditing) return;
+                const item = e.target.closest('#garden-scene-wrap .garden-decor-item');
+                if (!item || !item.dataset.id) return;
+                e.preventDefault();
+                drag = { item, id: item.dataset.id, pid: e.pointerId };
+                try { item.setPointerCapture(e.pointerId); } catch (err) {}
+                item.classList.add('is-dragging');
+            });
+            document.addEventListener('pointermove', (e) => {
+                if (!drag || e.pointerId !== drag.pid) return;
+                const r = document.getElementById('garden-scene-wrap').getBoundingClientRect();
+                const x = Math.min(96, Math.max(4, (e.clientX - r.left) / r.width * 100)), y = Math.min(94, Math.max(6, (e.clientY - r.top) / r.height * 100));
+                shop.decorPos[drag.id] = { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 };
+                drag.item.style.left = x + '%'; drag.item.style.top = y + '%'; drag.item.style.right = 'auto'; drag.item.style.bottom = 'auto';
+                drag.item.classList.add('has-pos');
+            });
+            const end = (e) => {
+                if (!drag || e.pointerId !== drag.pid) return;
+                drag.item.classList.remove('is-dragging');
+                drag = null; saveShop();
+            };
+            document.addEventListener('pointerup', end);
+            document.addEventListener('pointercancel', end);
+        })();
+
+        // 📊 หน้าสถิติฟาร์ม: ตัวเลขรวม + กราฟ 7 วันล่าสุด (คอลัมน์สีเดียว แตะ/ชี้ดูค่า) + ผักที่ปลูกบ่อยที่สุด
+        function last7Days() {
+            return Array.from({ length: 7 }, (_, k) => {
+                const d = new Date(); d.setDate(d.getDate() - (6 - k));
+                const key = dayKeyLocal(d), rec = veg.stats.daily[key] || { coins: 0, crops: 0 };
+                return { key, label: ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'][d.getDay()], date: `${d.getDate()} ${THAI_MONTHS[d.getMonth()]}`, ...rec };
+            });
+        }
+        function columnChart(title, unit, days, field) {
+            const max = Math.max(1, ...days.map(d => d[field])), top = days.reduce((b, d) => d[field] > b[field] ? d : b, days[0]);
+            return `<div class="st-chart"><span class="farm-card-title">${title}</span>
+                <div class="st-cols" role="list">${days.map(d => {
+                    const v = d[field], h = v ? Math.max(4, v / max * 100) : 0;
+                    return `<div class="st-col" role="listitem" tabindex="0" aria-label="${d.label} ${d.date}: ${v} ${unit}" data-tip="${d.date}: ${v} ${unit}">
+                        <span class="st-bar-wrap">${v && d === top ? `<em class="st-val">${v}</em>` : ''}<i class="st-bar" style="height:${h.toFixed(1)}%"></i></span><small>${d.label}</small></div>`;
+                }).join('')}</div></div>`;
+        }
+        function renderStatsTab() {
+            const days = last7Days();
+            const crops = Object.entries(veg.harvest).sort((a, b) => b[1] - a[1]).slice(0, 5), cmax = crops.length ? crops[0][1] : 1;
+            const tiles = [
+                ['🧺', 'เก็บเกี่ยวทั้งหมด', sum(veg.harvest) + sum(veg.fruits)], ['✨', 'ผักทอง', veg.golden], ['💰', 'เหรียญที่หาได้', veg.stats.earned],
+                ['📦', 'ส่งออเดอร์', veg.stats.orders], ['🍳', 'ทำอาหาร', sum(veg.cooked)], ['🎣', 'ตกปลา', sum(veg.fishCaught)],
+                ['🐛', 'จับหนอน', veg.stats.worms], ['🦋', 'พบแขกพิเศษ', sum(veg.visitors)], ['🧑‍🌾', 'XP สะสม', veg.xp]
+            ];
+            return `<div class="st-tiles">${tiles.map(([e, l, v]) => `<div class="st-tile"><span class="st-label">${e} ${l}</span><b>${Number(v).toLocaleString('th-TH')}</b></div>`).join('')}</div>
+                ${columnChart('💰 เหรียญที่ได้ 7 วันล่าสุด', 'เหรียญ', days, 'coins')}
+                ${columnChart('🧺 ผลผลิต 7 วันล่าสุด', 'ชิ้น', days, 'crops')}
+                <div class="st-chart"><span class="farm-card-title">🏅 ผักที่เก็บบ่อยที่สุด</span>
+                ${crops.length ? `<div class="st-rank">${crops.map(([k, n]) => `<div class="st-rank-row"><span class="st-rank-name">${VEGGIES[k].e} ${VEGGIES[k].name}</span><span class="st-rank-track"><i style="width:${(n / cmax * 100).toFixed(1)}%"></i></span><b>${n}</b></div>`).join('')}</div>`
+                    : '<p class="rp-empty">ยังไม่มีผลผลิต ปลูกผักก่อนนะ 🌱</p>'}</div>
+                <p class="shop-note">สถิติรายวันเริ่มเก็บตั้งแต่เวอร์ชันนี้ (เก็บย้อนหลัง 14 วัน) · ตัวเลขรวมนับตั้งแต่เริ่มเล่น</p>`;
         }
 
         function openVegBook() {
@@ -6330,8 +6723,8 @@
                 + head('🧬 ผักลูกผสม (ปลูกผักต่างชนิดติดกันแล้วลุ้น)') + HYBRID_VEGGIES.map(k => veg.harvest[k] ? cell(VEGGIES[k].e, VEGGIES[k].name, veg.harvest[k], false, veg.bestQ[k]) : cell('❔', '???', 0, true)).join('')
                 + head('🌳 ผลไม้จากต้น') + Object.values(TREES).map(t => cell(VEGGIES[t.fruit].e, VEGGIES[t.fruit].name, veg.fruits[t.fruit] || 0, !veg.fruits[t.fruit], 0)).join('')
                 + head('🌸 ช่อดอกไม้ที่เด็ด') + Object.entries(FLOWERS).map(([k, f]) => cell(f.e, f.name, veg.flowers[k] || 0, !veg.flowers[k], 0)).join('')
-                + head('🎣 ปลาที่ตกได้') + Object.entries(FISH).map(([k, f]) => veg.fishCaught[k] ? cell(f.e, f.name, veg.fishCaught[k], false, 0) : cell('❔', '???', 0, true)).join('')
-                + head('🍳 อาหาร') + Object.entries(RECIPES).map(([k, r]) => cell(r.e, r.name, veg.cooked[k] || 0, !veg.cooked[k], veg.bestQ[k])).join('');
+                + head('🎣 ปลาที่ตกได้') + Object.entries(FISH).filter(([k, f]) => f.w > 0 || veg.fishCaught[k]).map(([k, f]) => veg.fishCaught[k] ? cell(f.e, f.name, veg.fishCaught[k], false, 0) : cell('❔', '???', 0, true)).join('')
+                + head('🍳 อาหาร') + Object.entries(RECIPES).map(([k, r]) => r.secret && !veg.cooked[k] ? cell('❔', 'เมนูลับ', 0, true) : cell(r.e, r.name, veg.cooked[k] || 0, !veg.cooked[k], veg.bestQ[k])).join('');
             const got = BASE_VEGGIES.filter(k => veg.harvest[k]).length;
             const total = Object.values(veg.harvest).reduce((a, b) => a + b, 0);
             document.getElementById('veg-book-summary').innerHTML =
@@ -6345,6 +6738,7 @@
             ensurePlots();
             renderVeggies();
             renderGardenPet();
+            renderGardenHouse();
             growVeggies('time');
             farmTick();
             setInterval(() => { growVeggies('time'); farmTick(); }, 60 * 1000);
@@ -6384,6 +6778,11 @@
             'decor-ladybug':   { cat: 'decor', name: 'เต่าทอง', price: 8, emoji: '🐞', pos: 'left:57%; top:38%; font-size:15px;' },
             'decor-lantern':   { cat: 'decor', name: 'โคมไฟ', price: 12, emoji: '🏮', pos: 'right:9%; top:4%; font-size:24px;' },
             'decor-fountain':  { cat: 'decor', name: 'น้ำพุ', price: 20, emoji: '⛲', pos: 'right:22%; bottom:4%; font-size:27px;' },
+            'decor-rock':      { cat: 'decor', name: 'ก้อนหินมุมสวน', price: 6, emoji: '🪨', pos: 'left:14%; bottom:3%; font-size:18px;' },
+            'decor-tree':      { cat: 'decor', name: 'ต้นไม้ใหญ่', price: 10, emoji: '🌳', pos: 'left:2%; top:30%; font-size:30px;' },
+            'decor-mailbox':   { cat: 'decor', name: 'ตู้จดหมาย', price: 8, emoji: '📮', pos: 'right:14%; bottom:6%; font-size:19px;' },
+            'decor-bench':     { cat: 'decor', name: 'ม้านั่งพักใจ', price: 9, emoji: '🪑', pos: 'left:72%; bottom:3%; font-size:19px;' },
+            'decor-carp':      { cat: 'decor', name: 'ธงปลาคาร์ป', price: 12, emoji: '🎏', pos: 'left:24%; top:6%; font-size:22px;' },
             'decor-tractor':   { cat: 'decor', name: 'รถไถคันจิ๋ว', price: 0, emoji: '🚜', pos: 'left:34%; bottom:2%; font-size:22px;', special: true },
             'trophy-gold':     { cat: 'decor', name: 'ถ้วยทองผักยักษ์', price: 0, emoji: '🏆', pos: 'left:46%; bottom:4%; font-size:21px;', special: 'contest' },
             'trophy-silver':   { cat: 'decor', name: 'เหรียญเงินผักยักษ์', price: 0, emoji: '🥈', pos: 'left:58%; bottom:3%; font-size:18px;', special: 'contest' },
@@ -6420,7 +6819,11 @@
             const st = {
                 coins: Math.max(0, Math.floor(+v.coins || 0)), owned,
                 hat: owned.includes(v.hat) && SHOP_ITEMS[v.hat].cat === 'hat' ? v.hat : null,
-                decor: (Array.isArray(v.decor) ? v.decor : []).filter(id => owned.includes(id) && SHOP_ITEMS[id].cat === 'decor')
+                decor: (Array.isArray(v.decor) ? v.decor : []).filter(id => owned.includes(id) && SHOP_ITEMS[id].cat === 'decor'),
+                // ตำแหน่งที่ลากวางเองในโหมดจัดสวน (เปอร์เซ็นต์ของฉาก)
+                decorPos: Object.fromEntries(Object.entries(v.decorPos && typeof v.decorPos === 'object' ? v.decorPos : {})
+                    .filter(([id, q]) => (id === 'house' || owned.includes(id)) && q && Number.isFinite(+q.x) && Number.isFinite(+q.y))
+                    .map(([id, q]) => [id, { x: Math.min(96, Math.max(4, +q.x)), y: Math.min(94, Math.max(6, +q.y)) }]))
             };
             // เปิดร้านครั้งแรก: ให้เหรียญย้อนหลังจากผักที่เคยเก็บไว้ก่อนมีร้าน (ผักทองได้เพิ่มอีก 4)
             if (fresh) st.coins = Object.values(veg.harvest).reduce((a, b) => a + b, 0) + 4 * veg.golden;
@@ -6429,7 +6832,11 @@
         let shop;
         { const loaded = loadShop(); shop = loaded.st; if (loaded.fresh) safeSetItem('shop_state', JSON.stringify(shop)); }
         function saveShop() { safeSetItem('shop_state', JSON.stringify(shop)); }
-        function addCoins(n) { shop.coins += n; saveShop(); updateCoinUI(); }
+        function addCoins(n) {
+            shop.coins += n; saveShop(); updateCoinUI();
+            noteCoins(n);
+            if (shop.coins === 777) setTimeout(() => unlockSecret('lucky777'), 500);
+        }
         function updateCoinUI() { document.querySelectorAll('[data-coins]').forEach(el => { el.textContent = shop.coins; }); }
         function ownedStickerEmojis() { return shop.owned.filter(id => SHOP_ITEMS[id].cat === 'sticker').flatMap(id => SHOP_ITEMS[id].emojis); }
         function ownedRareSeeds() { return shop.owned.filter(id => SHOP_ITEMS[id].cat === 'seed' && SHOP_ITEMS[id].veg).map(id => SHOP_ITEMS[id].veg); }
@@ -6532,7 +6939,7 @@
             if (!wrap) return;
             let box = document.getElementById('garden-decor');
             if (!box) { box = document.createElement('div'); box.id = 'garden-decor'; box.className = 'garden-decor'; box.setAttribute('aria-hidden', 'true'); wrap.appendChild(box); }
-            box.innerHTML = shop.decor.map(id => `<span class="garden-decor-item" style="${SHOP_ITEMS[id].pos}">${SHOP_ITEMS[id].emoji}</span>`).join('');
+            box.innerHTML = shop.decor.map(id => `<span class="garden-decor-item${shop.decorPos[id] ? ' has-pos' : ''}" data-id="${id}" style="${placedStyle(id, SHOP_ITEMS[id].pos)}">${SHOP_ITEMS[id].emoji}</span>`).join('');
         }
         function applyShopItems() {
             renderMascotHat(); renderGardenDecor(); updateCoinUI();
