@@ -1089,6 +1089,67 @@
             transform: translateY(7px); transition-duration: 0.06s;
             box-shadow: inset 0 2px 0 rgba(255,255,255,0.5), 0 1px 0 rgba(var(--accent-rgb), 0.45), 0 8px 14px -10px rgba(var(--accent-rgb), 0.6);
         }
+        /* 📱 นับเวลาต่อบนมือถือ: ปุ่มและ QR บนหน้าจอพัก */
+        .break-phone { display: none; }
+        .action-card.expanded .break-phone { display: flex; z-index: 2; }
+        .break-phone-btn {
+            border: none; cursor: pointer; padding: 9px 16px; border-radius: 999px; font: inherit; font-size: 14px; font-weight: 700;
+            background: rgba(255, 255, 255, 0.65); color: var(--key-ink); box-shadow: 0 6px 14px -10px rgba(0, 0, 0, 0.4); transition: transform 0.15s, background-color 0.2s;
+        }
+        body.is-dark .break-phone-btn { background: rgba(255, 255, 255, 0.12); color: #FFFFFF; }
+        .break-phone-btn:hover { transform: translateY(-2px); }
+        .break-phone-btn.is-on { background: var(--key-edge); color: #FFFFFF; }
+        .break-phone-card {
+            position: fixed; right: 24px; bottom: 24px; z-index: 5; width: 236px; padding: 14px 14px 12px; border-radius: 24px; text-align: center; cursor: default;
+            background: var(--surface-solid); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .break-phone-card[hidden] { display: none; }
+        .break-phone-qr { width: 100%; aspect-ratio: 1; border-radius: 14px; overflow: hidden; background: #FFFFFF; }
+        .qr-svg { display: block; width: 100%; height: 100%; }
+        .bp-text { margin: 8px 0; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); font-weight: 600; }
+        .bp-warn { color: var(--danger); }
+        .break-phone-close {
+            position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font: inherit; font-size: 13px;
+            background: var(--surface-solid); color: var(--ink-2); border: 1px solid var(--line); box-shadow: 0 6px 12px -6px rgba(0, 0, 0, 0.35);
+        }
+        @media (max-width: 640px) {
+            .break-phone-card { inset: 0; margin: auto; width: min(78vw, 280px); height: fit-content; }
+        }
+        /* 📱 หน้านับเวลาบนมือถือ (เปิดจากการสแกน QR) */
+        body.phone-timer-mode { overflow: hidden; }
+        .phone-timer {
+            position: fixed; inset: 0; z-index: 120000; display: flex; align-items: center; justify-content: center; overflow-y: auto;
+            padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom)); background: var(--bg-gradient);
+        }
+        .phone-timer[hidden] { display: none; }
+        .pt-box { width: 100%; max-width: 420px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+        .pt-ring-wrap { position: relative; width: min(46vw, 180px); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+        .pt-ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; display: none; }
+        .phone-timer.has-target .pt-ring { display: block; }
+        .pt-track { fill: none; stroke: rgba(var(--accent-rgb), 0.16); stroke-width: 8; }
+        .pt-fill { fill: none; stroke: var(--pt-meter, var(--accent)); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 339.3; stroke-dashoffset: 339.3; transition: stroke-dashoffset 1s linear, stroke 0.8s ease; }
+        .pt-icon { font-size: min(18vw, 72px); line-height: 1; animation: emoji-float 3.2s ease-in-out infinite; }
+        .pt-icon .act-ic { width: 1.3em; height: 1.3em; vertical-align: middle; }
+        .pt-name { margin: 4px 0 0; font-family: var(--font-display); font-weight: 600; font-size: min(8vw, 32px); color: var(--ink); }
+        .pt-status {
+            padding: 5px 14px; border-radius: 999px; font-size: 15px; font-weight: 700; color: var(--accent-ink);
+            background: rgba(var(--accent-rgb), 0.12); transition: background-color 0.6s, color 0.6s;
+        }
+        .pt-time { font-family: var(--font-display); font-weight: 600; font-size: min(24vw, 112px); line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+        .pt-meta { margin: 0; font-size: 14px; color: var(--ink-2); font-weight: 600; }
+        .pt-note { margin: 0; font-size: 13px; color: var(--ink-3); line-height: 1.6; max-width: 340px; }
+        .pt-arm { flex: none; width: min(100%, 340px); margin-top: 6px; }
+        .pt-arm[hidden] { display: none; }
+        .pt-close { flex: none; width: min(100%, 340px); }
+        .phone-timer.is-warn { --pt-meter: #F59E0B; }
+        .phone-timer.is-warn .pt-status { background: #FEF3C7; color: #92400E; }
+        .phone-timer.is-over { --pt-meter: #EF4444; }
+        .phone-timer.is-over .pt-status { background: #FEE2E2; color: #B91C1C; animation: over-blink 1.4s ease-in-out infinite; }
+        .phone-timer.is-over .pt-time { color: #EF4444; }
+        .phone-timer.ring .pt-box { animation: pt-shake 0.7s ease-in-out 3; }
+        @keyframes pt-shake { 0%, 100% { transform: none; } 20% { transform: rotate(-3deg) scale(1.03); } 40% { transform: rotate(3deg) scale(1.03); } 60% { transform: rotate(-2deg); } 80% { transform: rotate(2deg); } }
+        .phone-timer.is-stale .pt-ring-wrap { opacity: 0.4; }
         .back-title { font-family: var(--font-display); font-size: min(5.5vh, 9vw, 44px); font-weight: 500; color: var(--accent-ink); }
 
         /* ✅ แผ่นยืนยันหลังกด (คัดลอกข้อความแล้ว) */
@@ -2662,6 +2723,22 @@
                 <button type="button" class="settings-close-btn" onclick="closeWormGame()" aria-label="ปิด">✕</button>
             </div>
             <div id="worm-body"></div>
+        </div>
+    </div>
+
+    <div class="phone-timer" id="phone-timer" hidden role="dialog" aria-modal="true" aria-labelledby="pt-name">
+        <div class="pt-box">
+            <div class="pt-ring-wrap">
+                <svg class="pt-ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="pt-track" cx="60" cy="60" r="54"></circle><circle class="pt-fill" id="pt-fill" cx="60" cy="60" r="54"></circle></svg>
+                <span class="pt-icon" id="pt-icon"></span>
+            </div>
+            <h2 class="pt-name" id="pt-name"></h2>
+            <div class="pt-status" id="pt-status"></div>
+            <div class="pt-time" id="pt-time">00:00</div>
+            <p class="pt-meta" id="pt-meta"></p>
+            <button type="button" class="modal-btn btn-primary pt-arm" id="pt-arm" onclick="armPhoneTimer()">🔔 เปิดเสียงและการแจ้งเตือน</button>
+            <p class="pt-note" id="pt-note"></p>
+            <button type="button" class="modal-btn btn-secondary pt-close" onclick="closePhoneTimer()">เปิดหน้าเว็บปกติ</button>
         </div>
     </div>
 
@@ -5951,6 +6028,15 @@
                     <div class="back-box" role="button" tabindex="0" onclick="endBreak(${index}, this.parentElement, event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();endBreak(${index}, this.parentElement, event);}">
                         <div class="back-title">🏠 กลับมาแล้ว</div>
                     </div>
+                    <div class="break-phone">
+                        <button type="button" class="break-phone-btn" aria-expanded="false" onclick="togglePhoneQR(this.closest('.action-card'), event)">📱 นับเวลาบนมือถือ</button>
+                        <div class="break-phone-card" hidden>
+                            <button type="button" class="break-phone-close" aria-label="ซ่อน QR" onclick="togglePhoneQR(this.closest('.action-card'), event)">✕</button>
+                            <div class="break-phone-qr"></div>
+                            <p class="bp-text"></p>
+                            <button type="button" class="chip-btn" onclick="copyPhoneLink(event)">🔗 คัดลอกลิงก์</button>
+                        </div>
+                    </div>
                     <div class="success-overlay">
                         <div class="success-title result-title">คัดลอกสำเร็จ! ✨</div>
                         <div class="success-text result-text"></div>
@@ -6112,6 +6198,8 @@
             if (timerInterval) clearInterval(timerInterval);
             updateBreakDisplay(cardElement);
             timerInterval = setInterval(() => updateBreakDisplay(cardElement), 1000);
+            // เปิด QR ให้เองถ้าเคยเปิดไว้ (เฉพาะจอกว้าง บนจอมือถือ QR จะบังตัวนับเวลา)
+            togglePhoneQR(cardElement, null, localStorage.getItem('phone_qr_open') === 'true' && window.matchMedia('(min-width: 641px)').matches);
         }
 
         function startBreak(index, cardElement) {
@@ -6171,6 +6259,301 @@
             logs.push({ date: new Date().toDateString(), shiftKey: getWorkDayKey(), action, start, end, duration, isToilet: !!isToilet });
             safeSetItem('break_logs', JSON.stringify(logs)); renderDashboardAndLogs();
         }
+
+        // --- 🔳 สร้าง QR code เอง (ไม่ต้องโหลดไลบรารี ใช้ได้แม้ออฟไลน์): โหมดไบต์ แก้ไขข้อผิดพลาดระดับ M เวอร์ชัน 1–20 ---
+        const QR_ECC_M = [0, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24, 28, 28, 26, 26, 26];
+        const QR_BLOCKS_M = [0, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10, 10, 11, 13, 14, 16];
+        function qrRawModules(v) {
+            let r = (16 * v + 128) * v + 64;
+            if (v >= 2) { const n = Math.floor(v / 7) + 2; r -= (25 * n - 10) * n - 55; if (v >= 7) r -= 36; }
+            return r;
+        }
+        const qrDataCodewords = v => Math.floor(qrRawModules(v) / 8) - QR_ECC_M[v] * QR_BLOCKS_M[v];
+        function qrMul(x, y) { let z = 0; for (let i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((y >>> i) & 1) * x; } return z; }
+        function qrDivisor(deg) {
+            const r = new Array(deg).fill(0); r[deg - 1] = 1;
+            let root = 1;
+            for (let i = 0; i < deg; i++) {
+                for (let j = 0; j < deg; j++) { r[j] = qrMul(r[j], root); if (j + 1 < deg) r[j] ^= r[j + 1]; }
+                root = qrMul(root, 2);
+            }
+            return r;
+        }
+        function qrRemainder(data, div) {
+            const r = div.map(() => 0);
+            for (const b of data) { const f = b ^ r.shift(); r.push(0); div.forEach((c, i) => { r[i] ^= qrMul(c, f); }); }
+            return r;
+        }
+        // คืนค่าเป็นตาราง true/false (true = จุดดำ) หรือ null ถ้าข้อความยาวเกิน
+        function qrMatrix(text) {
+            const bytes = [...new TextEncoder().encode(text)];
+            let v = 1;
+            while (v <= 20 && 4 + (v < 10 ? 8 : 16) + bytes.length * 8 > qrDataCodewords(v) * 8) v++;
+            if (v > 20) return null;
+            // บิตข้อมูล: โหมดไบต์ + ความยาว + ข้อมูล + ตัวจบ + เติมให้เต็ม
+            const bits = [];
+            const put = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); };
+            put(4, 4); put(bytes.length, v < 10 ? 8 : 16); bytes.forEach(b => put(b, 8));
+            const cap = qrDataCodewords(v) * 8;
+            put(0, Math.min(4, cap - bits.length)); put(0, (8 - bits.length % 8) % 8);
+            for (let pad = 0xEC; bits.length < cap; pad ^= 0xEC ^ 0x11) put(pad, 8);
+            const data = [];
+            for (let i = 0; i < bits.length; i += 8) data.push(bits.slice(i, i + 8).reduce((a, b) => a << 1 | b, 0));
+            // แบ่งบล็อก เติมรหัสแก้ผิด แล้วสลับลำดับไบต์
+            const nBlocks = QR_BLOCKS_M[v], eccLen = QR_ECC_M[v], raw = Math.floor(qrRawModules(v) / 8);
+            const nShort = nBlocks - raw % nBlocks, shortLen = Math.floor(raw / nBlocks), div = qrDivisor(eccLen);
+            const blocks = [];
+            for (let i = 0, k = 0; i < nBlocks; i++) {
+                const dat = data.slice(k, k + shortLen - eccLen + (i < nShort ? 0 : 1));
+                k += dat.length;
+                const ecc = qrRemainder(dat, div);
+                if (i < nShort) dat.push(0);
+                blocks.push(dat.concat(ecc));
+            }
+            const words = [];
+            for (let i = 0; i < blocks[0].length; i++) blocks.forEach((b, j) => { if (i !== shortLen - eccLen || j >= nShort) words.push(b[i]); });
+            // วาดลวดลายตายตัว
+            const size = v * 4 + 17;
+            const mod = Array.from({ length: size }, () => new Array(size).fill(false));
+            const fn = Array.from({ length: size }, () => new Array(size).fill(false));
+            const set = (x, y, dark) => { mod[y][x] = dark; fn[y][x] = true; };
+            for (let i = 0; i < size; i++) { set(6, i, i % 2 === 0); set(i, 6, i % 2 === 0); }
+            [[3, 3], [size - 4, 3], [3, size - 4]].forEach(([x, y]) => {
+                for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) {
+                    const d = Math.max(Math.abs(dx), Math.abs(dy)), xx = x + dx, yy = y + dy;
+                    if (xx >= 0 && xx < size && yy >= 0 && yy < size) set(xx, yy, d !== 2 && d !== 4);
+                }
+            });
+            if (v > 1) {
+                const n = Math.floor(v / 7) + 2, step = Math.ceil((size - 13) / (n * 2 - 2)) * 2, pos = [6];
+                for (let p = size - 7; pos.length < n; p -= step) pos.splice(1, 0, p);
+                pos.forEach((x, i) => pos.forEach((y, j) => {
+                    if ((i === 0 && j === 0) || (i === 0 && j === n - 1) || (i === n - 1 && j === 0)) return;
+                    for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) set(x + dx, y + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+                }));
+            }
+            const drawFormat = (mask) => {
+                const d = mask; // ระดับ M = 00
+                let rem = d;
+                for (let i = 0; i < 10; i++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
+                const b = ((d << 10) | rem) ^ 0x5412, bit = i => ((b >>> i) & 1) === 1;
+                for (let i = 0; i <= 5; i++) set(8, i, bit(i));
+                set(8, 7, bit(6)); set(8, 8, bit(7)); set(7, 8, bit(8));
+                for (let i = 9; i < 15; i++) set(14 - i, 8, bit(i));
+                for (let i = 0; i < 8; i++) set(size - 1 - i, 8, bit(i));
+                for (let i = 8; i < 15; i++) set(8, size - 15 + i, bit(i));
+                set(8, size - 8, true);
+            };
+            drawFormat(0);
+            if (v >= 7) {
+                let rem = v;
+                for (let i = 0; i < 12; i++) rem = (rem << 1) ^ ((rem >>> 11) * 0x1F25);
+                const b = (v << 12) | rem;
+                for (let i = 0; i < 18; i++) { const dark = ((b >>> i) & 1) === 1, a = size - 11 + i % 3, c = Math.floor(i / 3); set(a, c, dark); set(c, a, dark); }
+            }
+            // วางข้อมูลแบบซิกแซกจากมุมขวาล่าง
+            let k = 0;
+            for (let right = size - 1; right >= 1; right -= 2) {
+                if (right === 6) right = 5;
+                for (let vert = 0; vert < size; vert++) for (let j = 0; j < 2; j++) {
+                    const x = right - j, y = ((right + 1) & 2) === 0 ? size - 1 - vert : vert;
+                    if (!fn[y][x] && k < words.length * 8) { mod[y][x] = ((words[k >>> 3] >>> (7 - (k & 7))) & 1) === 1; k++; }
+                }
+            }
+            // ลองมาสก์ทั้ง 8 แบบ เลือกแบบที่อ่านง่ายที่สุด (คะแนนโทษต่ำสุด)
+            const MASKS = [(x, y) => (x + y) % 2 === 0, (x, y) => y % 2 === 0, (x) => x % 3 === 0, (x, y) => (x + y) % 3 === 0,
+                (x, y) => (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0, (x, y) => x * y % 2 + x * y % 3 === 0,
+                (x, y) => (x * y % 2 + x * y % 3) % 2 === 0, (x, y) => ((x + y) % 2 + x * y % 3) % 2 === 0];
+            const applyMask = m => { for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (!fn[y][x] && MASKS[m](x, y)) mod[y][x] = !mod[y][x]; };
+            const penalty = () => {
+                let p = 0, dark = 0;
+                const lines = [];
+                for (let i = 0; i < size; i++) {
+                    lines.push(mod[i].map(d => d ? 1 : 0).join(''));
+                    lines.push(mod.map(r => r[i] ? 1 : 0).join(''));
+                }
+                lines.forEach(s => {
+                    (s.match(/0{5,}|1{5,}/g) || []).forEach(run => { p += run.length - 2; });
+                    const padded = '0000' + s + '0000';
+                    p += 40 * ((padded.match(/(?=10111010000|00001011101)/g) || []).length);
+                });
+                for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+                    if (mod[y][x]) dark++;
+                    if (x < size - 1 && y < size - 1 && mod[y][x] === mod[y][x + 1] && mod[y][x] === mod[y + 1][x] && mod[y][x] === mod[y + 1][x + 1]) p += 3;
+                }
+                const total = size * size;
+                return p + 10 * Math.max(0, Math.ceil(Math.abs(dark * 20 - total * 10) / total) - 1);
+            };
+            let best = 0, bestScore = Infinity;
+            for (let m = 0; m < 8; m++) {
+                applyMask(m); drawFormat(m);
+                const s = penalty();
+                if (s < bestScore) { bestScore = s; best = m; }
+                applyMask(m); // กลับคืน (XOR ซ้ำ)
+            }
+            applyMask(best); drawFormat(best);
+            return mod;
+        }
+        // วาดเป็น SVG (มีขอบขาว 4 ช่องตามมาตรฐาน กล้องมือถืออ่านง่าย)
+        function qrSVG(text) {
+            const m = qrMatrix(text);
+            if (!m) return '';
+            const n = m.length, q = 4;
+            let d = '';
+            m.forEach((row, y) => row.forEach((dark, x) => { if (dark) d += `M${x + q} ${y + q}h1v1h-1z`; }));
+            return `<svg class="qr-svg" viewBox="0 0 ${n + q * 2} ${n + q * 2}" shape-rendering="crispEdges" role="img" aria-label="QR code"><rect width="100%" height="100%" fill="#FFFFFF"/><path d="${d}" fill="#111111"/></svg>`;
+        }
+
+        // --- 📱 นับเวลาต่อบนมือถือ: สแกน QR บนหน้าจอพัก มือถือจะนับถอยหลังและเตือนเมื่อครบเวลา ---
+        // ข้อมูลทั้งหมดอยู่ในลิงก์ (เวลาเริ่ม ลิมิต ชื่อกิจกรรม) ไม่ต้องล็อกอิน และไม่ส่งข้อมูลไปเก็บที่ไหน
+        const b64urlEncode = s => btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        const b64urlDecode = s => new TextDecoder('utf-8', { fatal: true }).decode(Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0)));
+        function phoneTimerLink(state) {
+            let icon = '';
+            try { icon = ((JSON.parse(localStorage.getItem('activities')) || defaultActivities)[state.index] || {}).emoji || ''; } catch (e) {}
+            const free = state.isToilet ? getToiletFreeMinutes() : 0;
+            return `${location.origin}${location.pathname}#t=${state.startTime.toString(36)}.${Math.max(0, state.limit | 0)}.${free}.${b64urlEncode(String(state.action).slice(0, 40))}.${b64urlEncode(String(icon).slice(0, 20))}`;
+        }
+        function renderPhoneQR(card) {
+            const box = card.querySelector('.break-phone-card');
+            if (!box || !activeBreak) return;
+            const link = phoneTimerLink(activeBreak);
+            if (box.dataset.link === link) return;
+            box.dataset.link = link;
+            const local = location.protocol === 'file:' || /^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(location.hostname);
+            box.querySelector('.break-phone-qr').innerHTML = qrSVG(link);
+            box.querySelector('.bp-text').innerHTML = local
+                ? '<span class="bp-warn">⚠️ ตอนนี้เปิดเว็บจากในเครื่อง มือถือจะเปิดลิงก์นี้ไม่ได้ ให้เปิดเว็บจากลิงก์ออนไลน์ (github.io) ก่อนนะ</span>'
+                : 'สแกนด้วยกล้องมือถือ<br>มือถือจะนับถอยหลังและเตือนเมื่อครบเวลา';
+        }
+        // force = true/false ใช้ตอนเริ่มพัก (เปิดตามที่เคยเลือกไว้ครั้งก่อน) ไม่จำค่าใหม่
+        function togglePhoneQR(card, event, force) {
+            if (event) event.stopPropagation();
+            const box = card && card.querySelector('.break-phone-card');
+            if (!box) return;
+            const open = force !== undefined ? force : box.hidden;
+            if (open) renderPhoneQR(card);
+            box.hidden = !open;
+            const btn = card.querySelector('.break-phone-btn');
+            btn.classList.toggle('is-on', open);
+            btn.setAttribute('aria-expanded', open);
+            if (force === undefined) safeSetItem('phone_qr_open', open ? 'true' : 'false');
+        }
+        function copyPhoneLink(event) {
+            event.stopPropagation();
+            if (!activeBreak) return;
+            performCopy(phoneTimerLink(activeBreak));
+            showToast('🔗 คัดลอกลิงก์แล้ว ส่งเข้ามือถือ (เช่นทาง LINE) แล้วเปิดได้เลย', 'success');
+        }
+
+        // หน้านับเวลาบนมือถือ (เปิดจากลิงก์ #t=...)
+        const pt = { data: null, tick: 0, warned: false, done: false, armed: false, wake: null };
+        function parsePhoneTimerHash(hash = location.hash) {
+            const m = /^#t=([0-9a-z]{1,11})\.(\d{1,4})\.(\d{1,3})\.([\w-]{0,160})\.([\w-]{0,60})$/.exec(hash);
+            if (!m) return null;
+            try {
+                const start = parseInt(m[1], 36);
+                if (!(start > 0)) return null;
+                return { start, limit: Math.min(1440, +m[2]), free: Math.min(600, +m[3]),
+                    name: b64urlDecode(m[4]).slice(0, 40) || 'พักเบรก', icon: b64urlDecode(m[5]).slice(0, 20) || '⏱️' };
+            } catch (e) { return null; }
+        }
+        const phoneTargetSecs = () => (pt.data.limit > 0 ? pt.data.limit : pt.data.free) * 60;
+        function openPhoneTimer(data) {
+            pt.data = data;
+            const target = phoneTargetSecs(), elapsed = (Date.now() - data.start) / 1000;
+            // เปิดลิงก์ตอนใกล้/เกินเวลาแล้ว ไม่ต้องเตือนย้อนหลัง
+            pt.warned = target > 0 && target - elapsed <= 60;
+            pt.done = target > 0 && elapsed >= target;
+            document.body.classList.add('phone-timer-mode');
+            const el = document.getElementById('phone-timer');
+            el.hidden = false;
+            document.getElementById('pt-icon').innerHTML = actIconHTML(data.icon);
+            document.getElementById('pt-name').textContent = data.name;
+            document.getElementById('pt-meta').textContent = `เริ่มพัก ${getThaiTimeString(new Date(data.start))}`
+                + (data.limit > 0 ? ` · ลิมิต ${data.limit} นาที` : data.free > 0 ? ` · ห้องน้ำฟรี ${data.free} นาที` : '');
+            clearInterval(pt.tick);
+            const stale = elapsed > 12 * 3600 || elapsed < -300;
+            el.classList.toggle('is-stale', stale);
+            const arm = document.getElementById('pt-arm'), note = document.getElementById('pt-note');
+            if (stale) {
+                arm.hidden = true;
+                document.getElementById('pt-status').textContent = 'ลิงก์นี้หมดอายุแล้ว';
+                document.getElementById('pt-time').textContent = '--:--';
+                note.textContent = 'สแกน QR ใหม่จากหน้าจอพักบนคอมได้เลย';
+                return;
+            }
+            arm.hidden = pt.armed || target === 0;
+            if (!pt.armed) note.textContent = target ? 'แตะปุ่มด้านบน มือถือจะส่งเสียง สั่น และแจ้งเตือนตอนเหลือ 1 นาทีและตอนครบเวลา' : 'กิจกรรมนี้ไม่ได้ตั้งลิมิตไว้ จึงนับเวลาที่พักไปเรื่อยๆ';
+            updatePhoneTimer();
+            pt.tick = setInterval(updatePhoneTimer, 1000);
+        }
+        function updatePhoneTimer() {
+            const d = pt.data;
+            if (!d) return;
+            const el = document.getElementById('phone-timer');
+            const elapsed = Math.max(0, Math.floor((Date.now() - d.start) / 1000)), target = phoneTargetSecs();
+            let big, status;
+            if (target > 0) {
+                const remain = target - elapsed, ratio = elapsed / target;
+                big = remain >= 0 ? formatMMSS(remain) : '+' + formatMMSS(-remain);
+                status = d.limit > 0 ? (remain >= 0 ? 'เหลือเวลาอีก' : 'เกินลิมิตมาแล้ว') : (remain >= 0 ? 'เวลาฟรีเหลือ' : 'เกินเวลาฟรีมาแล้ว');
+                document.getElementById('pt-fill').style.strokeDashoffset = BREAK_RING_CIRC * (1 - Math.min(ratio, 1));
+                el.classList.toggle('is-warn', ratio >= 0.75 && ratio < 1);
+                el.classList.toggle('is-over', ratio >= 1);
+                if (!pt.warned && remain <= 60 && remain > 0) { pt.warned = true; phoneAlert(false); }
+                if (!pt.done && remain <= 0) { pt.done = true; phoneAlert(true); }
+            } else {
+                big = formatMMSS(elapsed); status = 'พักมาแล้ว';
+            }
+            el.classList.toggle('has-target', target > 0);
+            document.getElementById('pt-time').textContent = big;
+            document.getElementById('pt-status').textContent = status;
+            document.title = `${big} · ${d.name}`;
+        }
+        function phoneAlert(final) {
+            const d = pt.data;
+            try { if (navigator.vibrate) navigator.vibrate(final ? [300, 120, 300, 120, 500] : [150, 80, 150]); } catch (e) {}
+            // ผู้ใช้กดเปิดเสียงไว้เองแล้ว ให้ดังแม้ในเครื่องนี้จะเคยปิดเสียงเว็บไว้
+            const wasMuted = isMuted; isMuted = false; playSound(final ? 'alarm' : 'pop'); isMuted = wasMuted;
+            sendNotification(final ? '⏰ ครบเวลาแล้ว กลับได้เลย!' : '⏳ อีก 1 นาทีครบเวลา',
+                final ? `${d.name} ${d.limit > 0 ? `ครบ ${d.limit} นาทีแล้ว` : 'หมดเวลาฟรีแล้ว'}` : `${d.name} เหลืออีก 1 นาที เตรียมตัวกลับนะ`);
+            if (final) { const el = document.getElementById('phone-timer'); el.classList.remove('ring'); void el.offsetWidth; el.classList.add('ring'); }
+        }
+        async function requestPhoneWakeLock() {
+            if (!('wakeLock' in navigator)) return;
+            try {
+                pt.wake = await navigator.wakeLock.request('screen');
+                pt.wake.addEventListener('release', () => { pt.wake = null; });
+            } catch (e) { pt.wake = null; }
+        }
+        async function armPhoneTimer() {
+            try { if (audioCtx.state === 'suspended') await audioCtx.resume(); } catch (e) {}
+            const wasMuted = isMuted; isMuted = false; playSound('pop'); isMuted = wasMuted;
+            const notes = [];
+            const ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+            if ('Notification' in window) {
+                let perm = Notification.permission;
+                if (perm === 'default') { try { perm = await Notification.requestPermission(); } catch (e) {} }
+                notes.push(perm === 'granted' ? '✅ เปิดการแจ้งเตือนแล้ว' : '⚠️ ไม่ได้อนุญาตการแจ้งเตือน แต่ยังมีเสียงเตือนอยู่');
+            } else notes.push(ios ? '⚠️ iPhone: กดแชร์ → "เพิ่มไปยังหน้าจอโฮม" แล้วเปิดจากไอคอน จึงจะแจ้งเตือนได้ (ตอนนี้มีเสียงเตือนอยู่แล้ว)' : '⚠️ เบราว์เซอร์นี้ไม่มีการแจ้งเตือน แต่ยังมีเสียงเตือนอยู่');
+            await requestPhoneWakeLock();
+            notes.push(pt.wake ? '✅ หน้าจอจะไม่ดับระหว่างนับเวลา' : '💡 เปิดหน้านี้ค้างไว้และอย่าล็อกจอ จะได้เตือนตรงเวลา');
+            pt.armed = true;
+            document.getElementById('pt-arm').hidden = true;
+            document.getElementById('pt-note').innerHTML = notes.map(escHtml).join('<br>');
+        }
+        function closePhoneTimer() {
+            clearInterval(pt.tick);
+            if (pt.wake) pt.wake.release().catch(() => {});
+            location.replace(location.pathname + location.search); // ตัดลิงก์นับเวลาออก แล้วเปิดหน้าเว็บปกติ
+        }
+        document.addEventListener('visibilitychange', () => {
+            if (!pt.data || document.visibilityState !== 'visible') return;
+            if (pt.armed && !pt.wake) requestPhoneWakeLock(); // ระบบปล่อย wake lock เองตอนสลับแอป ขอใหม่เมื่อกลับมา
+            updatePhoneTimer();
+        });
+        window.addEventListener('hashchange', () => { const d = parsePhoneTimerHash(); if (d) openPhoneTimer(d); });
 
         function drawRoundedRect(ctx, x, y, w, h, r) {
             ctx.beginPath();
@@ -7472,6 +7855,9 @@
             const seasonal = autoOn ? null : getSeasonalThemeOverride();
             const savedTheme = autoOn ? getAutoTheme() : (seasonal || localStorage.getItem('site_theme') || 'day');
             setSiteTheme(savedTheme);
+            // เปิดจากการสแกน QR บนหน้าจอพัก: แสดงเฉพาะหน้านับเวลา ไม่ต้องโหลดส่วนอื่น
+            const phoneData = parsePhoneTimerHash();
+            if (phoneData) { openPhoneTimer(phoneData); return; }
             const season = SEASONS.find(x => x.theme === seasonal);
             if (season) {
                 showToast(`${THEME_META[season.theme].emoji} ${season.label}มาแล้ว! เปลี่ยนเป็นธีม${season.label}ให้ชั่วคราว`, 'info', {
