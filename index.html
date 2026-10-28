@@ -2270,6 +2270,52 @@
         .cook-mark { position: absolute; top: -2px; bottom: -2px; width: 5px; margin-left: -2.5px; border-radius: 3px; background: var(--ink); }
         .cook-bar.is-hit { box-shadow: 0 0 0 4px rgba(63, 191, 106, 0.4); }
         .cook-bar.is-miss { box-shadow: 0 0 0 4px rgba(var(--danger-rgb), 0.35); }
+        /* 🏪 แผงขาย · 🏆 ประกวด · 🎣 บ่อปลา · ✨ แขกพิเศษ · 🎁 เช็กอิน */
+        .farm-tabs.is-scroll { display: flex; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+        .farm-tabs.is-scroll::-webkit-scrollbar { display: none; }
+        .farm-tabs.is-scroll .report-tab { flex: 0 0 auto; min-width: 68px; padding: 8px 6px; scroll-snap-align: start; }
+        .farm-news { margin: 0; padding: 8px 12px; border-radius: 14px; font-size: 12.5px; font-weight: 600; line-height: 1.5; color: var(--ink-2); background: rgba(var(--accent-rgb), 0.08); border: 1px dashed rgba(var(--accent-rgb), 0.35); }
+        .stall-cash, .contest-head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 18px; background: var(--surface-2); border: 1px solid var(--line); }
+        .stall-slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+        .stall-slot { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 6px; border-radius: 16px; text-align: center; background: linear-gradient(180deg, rgba(255, 196, 120, 0.18), var(--surface-2)); border: 1px solid var(--line); }
+        .stall-slot.is-empty { background: var(--surface-2); border-style: dashed; opacity: 0.8; }
+        .stall-log { display: flex; flex-direction: column; gap: 2px; font-size: 11.5px; color: var(--ink-3); font-weight: 600; padding: 0 4px; }
+        .contest-giant { font-size: 40px; animation: veg-bob 1.4s ease-in-out infinite alternate; display: inline-block; }
+        .contest-board { display: flex; flex-direction: column; gap: 6px; }
+        .contest-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); font-size: 13.5px; }
+        .contest-row.is-me { border-color: rgba(var(--accent-rgb), 0.6); background: rgba(var(--accent-rgb), 0.1); font-weight: 700; }
+        .contest-row b { font-family: var(--font-display); color: var(--accent-ink); }
+        .veg-plot.is-giant .veg-crop { font-size: 44px; top: -6%; }
+        .veg-plot.is-giant::before { content: '🏆'; position: absolute; left: 6%; top: 4%; font-size: 13px; z-index: 2; }
+        .pond { position: relative; height: 130px; border-radius: 50%; overflow: hidden; background: radial-gradient(ellipse at 50% 40%, #8FD3F4, #4BA3D9 70%, #3A86C2); box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.08), 0 0 0 8px #9BD38A; margin: 6px 10px 2px; }
+        .pond-ripple { position: absolute; left: 50%; top: 52%; width: 40px; height: 14px; margin: -7px 0 0 -20px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.6); opacity: 0; }
+        .pond.is-waiting .pond-ripple, .pond.is-bite .pond-ripple { animation: pond-ripple 1.6s ease-out infinite; }
+        @keyframes pond-ripple { from { transform: scale(0.4); opacity: 0.9; } to { transform: scale(2.4); opacity: 0; } }
+        .pond-float { position: absolute; left: 50%; top: 42%; width: 16px; height: 22px; margin-left: -8px; border-radius: 8px 8px 6px 6px; background: linear-gradient(#FF5A5F 50%, #FFFFFF 50%); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15); display: none; font-size: 18px; line-height: 0; }
+        .pond.is-waiting .pond-float { display: block; animation: pond-bob 1.2s ease-in-out infinite alternate; }
+        .pond.is-bite .pond-float { display: block; animation: pond-dip 0.25s ease-in-out infinite alternate; }
+        @keyframes pond-bob { from { transform: translateY(0); } to { transform: translateY(3px); } }
+        @keyframes pond-dip { from { transform: translateY(4px); } to { transform: translateY(12px); } }
+        .pond-catch { position: absolute; left: 50%; top: 30%; transform: translateX(-50%); font-size: 46px; animation: pond-jump 0.7s cubic-bezier(0.3, 1.4, 0.5, 1); }
+        @keyframes pond-jump { from { transform: translate(-50%, 40px) scale(0.5); opacity: 0; } to { transform: translate(-50%, 0) scale(1); opacity: 1; } }
+        .pond-msg { margin: 0; text-align: center; font-size: 14px; font-weight: 700; color: var(--ink-2); }
+        .pond-reel.is-bite { animation: over-blink 0.4s ease-in-out infinite; }
+        .pond-dex { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+        .pond-dex-item { display: flex; flex-direction: column; align-items: center; font-size: 22px; padding: 6px 2px; border-radius: 12px; background: var(--surface-2); }
+        .pond-dex-item small { font-size: 10.5px; font-weight: 700; color: var(--ink-3); }
+        .pond-dex-item.locked { opacity: 0.55; }
+        .garden-visitor { position: absolute; top: 18%; left: 16%; z-index: 4; border: none; background: none; cursor: pointer; font-size: 30px; line-height: 1; padding: 4px; animation: visitor-fly 7s ease-in-out infinite; filter: drop-shadow(0 0 8px rgba(255, 220, 120, 0.9)); }
+        .garden-visitor::after { content: '✨'; position: absolute; right: -6px; top: -6px; font-size: 13px; animation: veg-bob 0.8s ease-in-out infinite alternate; }
+        @keyframes visitor-fly { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(120px, -14px); } 50% { transform: translate(220px, 6px); } 75% { transform: translate(90px, 16px); } }
+        body.reduce-motion .garden-visitor { animation: none; }
+        .checkin-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+        .checkin-day { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; border-radius: 14px; text-align: center; background: var(--surface-2); border: 1px solid var(--line); }
+        .checkin-day span { font-size: 24px; line-height: 1.2; }
+        .checkin-day small { font-size: 10.5px; font-weight: 700; color: var(--ink-3); }
+        .checkin-day b { font-size: 10.5px; color: var(--ink-2); line-height: 1.3; }
+        .checkin-day.is-done { opacity: 0.6; }
+        .checkin-day.is-now { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.12); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.18); animation: veg-fert-glow 1s ease-in-out infinite alternate; }
+        .checkin-day:last-child { grid-column: span 2; }
         .snack-count {
             position: absolute; right: -6px; top: -8px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px;
             background: var(--accent); color: var(--on-accent); font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;
@@ -2453,7 +2499,12 @@
                         <button type="button" class="farm-act" onclick="openFarm('barn')"><span class="farm-act-icon">🏠</span>ยุ้งฉาง<b class="farm-dot" id="fa-barn" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openFarm('kitchen')"><span class="farm-act-icon">🍳</span>ครัว</button>
                         <button type="button" class="farm-act" onclick="openFarm('animals')"><span class="farm-act-icon">🐔</span>สัตว์<b class="farm-dot" id="fa-animals" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('stall')"><span class="farm-act-icon">🏪</span>แผงขาย<b class="farm-dot" id="fa-stall" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('pond')"><span class="farm-act-icon">🎣</span>บ่อปลา<b class="farm-dot" id="fa-pond" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('contest')"><span class="farm-act-icon">🏆</span>ประกวด<b class="farm-dot" id="fa-contest" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('compost')"><span class="farm-act-icon">🪱</span>ปุ๋ยหมัก</button>
                         <button type="button" class="farm-act" onclick="openVegBook()"><span class="farm-act-icon">📖</span>สมุดผัก</button>
+                        <button type="button" class="farm-act" onclick="openCheckin()"><span class="farm-act-icon">🎁</span>รางวัล<b class="farm-dot" id="fa-checkin" hidden></b></button>
                     </div>
                 </div>
             </section>
@@ -2842,6 +2893,16 @@
             <p class="farm-meta" id="farm-meta"></p>
             <div class="shop-tabs farm-tabs" id="farm-tabs" role="tablist" aria-label="ส่วนของฟาร์ม"></div>
             <div class="farm-body" id="farm-body"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="checkin-modal" onclick="if(event.target===this) closeCheckin()">
+        <div class="modal-box cook-box" role="dialog" aria-modal="true" aria-labelledby="checkin-title">
+            <div class="settings-modal-header">
+                <h3 id="checkin-title">🎁 รางวัลเข้าฟาร์มทุกวัน</h3>
+                <button type="button" class="settings-close-btn" onclick="closeCheckin()" aria-label="ปิด">✕</button>
+            </div>
+            <div id="checkin-body"></div>
         </div>
     </div>
 
@@ -4759,7 +4820,7 @@
         const FARM_PRODUCTS = { egg: { e: '🥚', name: 'ไข่ไก่', value: 3 }, milk: { e: '🥛', name: 'นมวัว', value: 4 },
             honey: { e: '🍯', name: 'น้ำผึ้ง', value: 6 }, bouquet: { e: '💐', name: 'ช่อดอกไม้', value: 5 },
             duckEgg: { e: '🥚', name: 'ไข่เป็ด', value: 4 }, wool: { e: '🧶', name: 'ขนแกะ', value: 7 }, cheese: { e: '🧀', name: 'ชีสนมแพะ', value: 8 } };
-        // สูตรอาหาร 23 เมนู (บางเมนูใช้อาหารอีกอย่างเป็นวัตถุดิบ เช่น แซนด์วิชใช้ขนมปัง)
+        // สูตรอาหาร 26 เมนู (บางเมนูใช้อาหารอีกอย่างเป็นวัตถุดิบ เช่น แซนด์วิชใช้ขนมปัง)
         const RECIPES = {
             salad:      { e: '🥗', name: 'สลัดผัก', need: { cabbage: 1, tomato: 1, carrot: 1 }, value: 9, level: 2 },
             soup:       { e: '🍲', name: 'ซุปมะเขือเทศ', need: { tomato: 2, cabbage: 1 }, value: 8, level: 2 },
@@ -4783,7 +4844,10 @@
             woolDoll:   { e: '🧸', name: 'ตุ๊กตาขนแกะ', need: { wool: 3, bouquet: 1 }, value: 32, level: 6 },
             pizza:      { e: '🍕', name: 'พิซซ่าชีส', need: { wheat: 1, tomato: 2, cheese: 1 }, value: 24, level: 7 },
             cheeseEgg:  { e: '🧀', name: 'ไข่เจียวชีส', need: { egg: 1, cheese: 1 }, value: 16, level: 7 },
-            cheesecake: { e: '🎂', name: 'ชีสเค้กสตรอว์เบอร์รี', need: { cheese: 1, milk: 1, egg: 1, strawberry: 1 }, value: 28, level: 7 }
+            cheesecake: { e: '🎂', name: 'ชีสเค้กสตรอว์เบอร์รี', need: { cheese: 1, milk: 1, egg: 1, strawberry: 1 }, value: 28, level: 7 },
+            grilledFish: { e: '🍢', name: 'ปลาเผาพริก', need: { fish: 1, chili: 1 }, value: 12, level: 2 },
+            sushi:      { e: '🍣', name: 'ซูชิปลา', need: { fish: 1, cabbage: 1, wheat: 1 }, value: 16, level: 3 },
+            tempura:    { e: '🍤', name: 'กุ้งเทมปุระ', need: { shrimp: 1, wheat: 1, egg: 1 }, value: 20, level: 4 }
         };
         const ANIMALS = {
             hen: { e: '🐔', name: 'แม่ไก่', product: 'egg', shopId: 'animal-hen', level: 3 },
@@ -4799,6 +4863,29 @@
             hamster: { e: '🐹', name: 'แฮมสเตอร์', says: ['จี๊ดๆ', 'แก้มป่องเลย', 'ขอเมล็ดหน่อย~'] }
         };
         const PET_LEVEL = 2;
+        // 🎣 ปลาในบ่อ (ยิ่งหายากยิ่งแพง) · w = โอกาสติดเบ็ด
+        const FISH = {
+            fish: { e: '🐟', name: 'ปลานิล', value: 4, w: 40 }, tropical: { e: '🐠', name: 'ปลาการ์ตูน', value: 7, w: 22 },
+            shrimp: { e: '🦐', name: 'กุ้งแม่น้ำ', value: 8, w: 13 }, crab: { e: '🦀', name: 'ปูนา', value: 8, w: 10 },
+            puffer: { e: '🐡', name: 'ปลาปักเป้า', value: 10, w: 8 }, squid: { e: '🦑', name: 'หมึกกล้วย', value: 13, w: 5 },
+            octopus: { e: '🐙', name: 'หมึกยักษ์', value: 18, w: 2 }
+        };
+        // 🏆 ผักที่ใช้ประกวดผักยักษ์ (น้ำหนักตั้งต้นเป็นกิโล)
+        const CONTEST_CROPS = { pumpkin: 5, watermelon: 4.5, cabbage: 3, corn: 2.5, tomato: 2.2, carrot: 2 };
+        // ✨ แขกพิเศษที่แวะมาในสวนแบบสุ่ม (แตะเพื่อรับของขวัญ)
+        const VISITORS = {
+            luckyBird: { e: '🐦', name: 'นกนำโชค', note: 'คาบเหรียญมาฝาก', w: 35 },
+            butterfly: { e: '🦋', name: 'ผีเสื้อนำโชค', note: 'โปรยละอองให้ดินทุกแปลงอุดมขึ้น', w: 25 },
+            fairy: { e: '🧚', name: 'นางฟ้าสวน', note: 'เสกให้ผักทุกแปลงโตขึ้น 1 ระยะ', w: 20 },
+            unicorn: { e: '🦄', name: 'ยูนิคอร์น', note: 'เปลี่ยนผักแปลงหนึ่งเป็นผักทอง', w: 10 },
+            meteor: { e: '🌠', name: 'ฝนดาวตก', note: 'ผักที่กำลังโตทุกแปลงกลายเป็นผักทอง', w: 10, night: true }
+        };
+        // 🎁 รางวัลเข้าฟาร์มต่อเนื่อง 7 วัน (วนรอบใหม่หลังวันที่ 7 · ขาดหนึ่งวันเริ่มนับใหม่)
+        const CHECKIN_REWARDS = [
+            { e: '🪙', text: '5 เหรียญ' }, { e: '🧪', text: 'ปุ๋ยเร่งโต 1 ขวด' }, { e: '🪙', text: '10 เหรียญ' }, { e: '🪱', text: 'ปุ๋ยหมัก 1 ถุง' },
+            { e: '🎣', text: 'ตั๋วตกปลา 2 ใบ' }, { e: '🧬', text: 'เมล็ดลูกผสมลับ' }, { e: '🎁', text: '30 เหรียญ + ปุ๋ย 2 ขวด' }
+        ];
+        const STALL_SLOTS = 3, STALL_MS = 10 * 60 * 1000, FISH_TICKET_MAX = 5;
         // คุณภาพผลผลิต ★1–3: ดินดี + ได้รดน้ำ + เก็บตรงจังหวะ ยิ่งดาวเยอะยิ่งขายแพง (เก็บในยุ้งฉางเป็น "ชื่อ~ดาว")
         const QUALITY_MULT = [1, 1, 1.5, 2];
         const baseOf = k => String(k).split('~')[0];
@@ -4815,7 +4902,8 @@
                 info = { e: VEGGIES[k].e, name: VEGGIES[k].name, kind: 'crop', value: Math.max(1, tier + cropStages(k) - 3) };
             } else if (FARM_PRODUCTS[k]) info = { ...FARM_PRODUCTS[k], kind: 'product' };
             else if (RECIPES[k]) info = { e: RECIPES[k].e, name: RECIPES[k].name, value: RECIPES[k].value, kind: 'dish' };
-            if (!info || (q > 1 && info.kind === 'product')) return null; // ดาวมีเฉพาะผักผลไม้ที่ปลูกเองและอาหารที่ทำเอง
+            else if (FISH[k]) info = { e: FISH[k].e, name: FISH[k].name, value: FISH[k].value, kind: 'fish' };
+            if (!info || (q > 1 && (info.kind === 'product' || info.kind === 'fish'))) return null; // ดาวมีเฉพาะผักผลไม้ที่ปลูกเองและอาหารที่ทำเอง
             return { ...info, base: k, q, value: Math.round(info.value * QUALITY_MULT[q]) };
         }
         const VEG_GROW_MS = 60 * 60 * 1000, FARM_MAX_PLOTS = 12, HYBRID_SEED_MAX = 6, SOIL_START = 80, COMPOST_SOIL = 35, COMPOST_PTS = 10;
@@ -4877,7 +4965,8 @@
                 // แปลงจากเวอร์ชันก่อน (ยังไม่มี need) ใช้กติกาเดิม 3 ระยะ จะได้ไม่เสียของที่ปลูกค้างไว้
                 const need = p.need !== undefined ? Math.min(9, Math.max(2, int(p.need, 9))) : type === 'veg' ? 3 : plotNeed(type, p.seed);
                 return { type, seed: p.seed, stage: Math.min(need, int(p.stage, need)), need, golden: type === 'veg' && !!p.golden, pest: type === 'veg' && !!p.pest,
-                    lastGrowAt: +p.lastGrowAt || Date.now(), soil, cared: !!p.cared, fruitDay: typeof p.fruitDay === 'string' ? p.fruitDay.slice(0, 10) : '' };
+                    lastGrowAt: +p.lastGrowAt || Date.now(), soil, cared: !!p.cared, fruitDay: typeof p.fruitDay === 'string' ? p.fruitDay.slice(0, 10) : '',
+                    giant: type === 'veg' && !!p.giant && !!CONTEST_CROPS[p.seed] };
             });
             const harvest = {};
             Object.keys(VEGGIES).forEach(k => { const n = v.harvest && +v.harvest[k]; if (n > 0) harvest[k] = Math.floor(n); });
@@ -4914,7 +5003,19 @@
                 compost: int(v.compost, COMPOST_PTS - 1), land: int(v.land, 6),
                 saplings: counts(v.saplings, Object.keys(TREES)), fruits: counts(v.fruits, Object.keys(VEGGIES)),
                 flowers: counts(v.flowers, Object.keys(FLOWERS)), bestQ,
-                honeyDay: typeof v.honeyDay === 'string' ? v.honeyDay.slice(0, 10) : '', pet
+                honeyDay: typeof v.honeyDay === 'string' ? v.honeyDay.slice(0, 10) : '', pet,
+                stall: (() => {
+                    const st = v.stall && typeof v.stall === 'object' ? v.stall : {}, sl = Array.isArray(st.slots) ? st.slots : [];
+                    return { slots: [0, 1, 2, 3].map(i => { const x = sl[i]; return x && itemInfo(x.key) && int(x.qty, 99) > 0 ? { key: x.key, qty: int(x.qty, 99), price: Math.max(1, int(x.price, 9999)) } : null; }),
+                        cash: int(st.cash, 99999), lastTick: Math.min(Date.now(), +st.lastTick || Date.now()),
+                        log: (Array.isArray(st.log) ? st.log : []).filter(l => l && typeof l.t === 'string').slice(-6).map(l => ({ t: l.t.slice(0, 80) })) };
+                })(),
+                contest: v.contest && typeof v.contest === 'object' && typeof v.contest.week === 'string'
+                    ? { week: v.contest.week.slice(0, 10), planted: !!v.contest.planted, weight: Math.min(99, Math.max(0, +v.contest.weight || 0)), done: !!v.contest.done, rank: int(v.contest.rank, 4) } : null,
+                fish: { tickets: int((v.fish || {}).tickets, FISH_TICKET_MAX), freeDay: day((v.fish || {}).freeDay) }, fishCaught: counts(v.fishCaught, Object.keys(FISH)),
+                visitor: v.visitor && VISITORS[v.visitor.kind] && +v.visitor.until > Date.now() ? { kind: v.visitor.kind, until: Math.min(+v.visitor.until, Date.now() + 3 * 60 * 1000) } : null,
+                visitorLog: { day: day((v.visitorLog || {}).day), n: int((v.visitorLog || {}).n, 9) }, visitors: counts(v.visitors, Object.keys(VISITORS)),
+                checkin: { day: day((v.checkin || {}).day), streak: int((v.checkin || {}).streak, 7) }
             };
         }
         const SHOP_ITEMS_SPECIAL = ['hat-straw', 'pack-farm', 'decor-tractor']; // ของรางวัลจากออเดอร์พิเศษ (ซื้อไม่ได้)
@@ -5055,7 +5156,7 @@
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'veg-plot' + (p.seed ? ` stage-${Math.min(p.stage, 3)} is-${p.type}` : ' is-empty') + (vegReady || fruitReady(p) ? ' is-ready' : '')
-                    + (vegReady && p.golden ? ' is-golden' : '') + (p.pest ? ' has-pest' : '') + (p.type === 'veg' && p.seed && !ready && nearBloom(i) ? ' is-bloomed-near' : '');
+                    + (vegReady && p.golden ? ' is-golden' : '') + (p.pest ? ' has-pest' : '') + (p.type === 'veg' && p.seed && !ready && nearBloom(i) ? ' is-bloomed-near' : '') + (p.giant ? ' is-giant' : '');
                 btn.setAttribute('aria-label', p.seed ? `แปลงที่ ${i + 1}: ${plotName(p)} ${vegPlotLabel(p)} · ดิน ${p.soil}%` : `แปลงที่ ${i + 1}: ว่าง แตะเพื่อปลูก · ดิน ${p.soil}%`);
                 const fruitE = p.type === 'tree' ? VEGGIES[TREES[p.seed].fruit].e : '';
                 btn.innerHTML = vegPlotSVG(p)
@@ -5276,6 +5377,7 @@
         function harvestVeg(i, el, grade = 'ok') {
             const p = veg.plots[i];
             if (!p || !p.seed || p.type !== 'veg' || !isReady(p)) return;
+            if (p.giant) { weighGiant(i, el, grade); return; }
             const key = p.seed, golden = p.golden, amount = grade === 'perfect' ? 2 : 1;
             // ดาว: ดินอุดม (60+) · ได้รดน้ำ/ใส่ปุ๋ย/ฝนตก/สปริงเกอร์ · เก็บตรงจังหวะ
             const cared = p.cared || hasTool('sprinkler') || todayWeather() === 'rain';
@@ -5488,6 +5590,12 @@
             if (ad) { ad.textContent = animalsReady || ''; ad.hidden = !animalsReady; }
             const bd = document.getElementById('fa-barn');
             if (bd) { const n = Object.values(veg.inv).reduce((a, b) => a + b, 0); bd.textContent = n || ''; bd.hidden = !n; }
+            const dot = (id, v) => { const el = document.getElementById(id); if (el) { el.textContent = v || ''; el.hidden = !v; } };
+            const c = contestState();
+            dot('fa-stall', veg.stall.cash ? '🪙' : '');
+            dot('fa-pond', veg.fish.tickets + (veg.fish.freeDay !== dayKeyLocal() ? 1 : 0));
+            dot('fa-contest', !c.planted || (c.weight && !c.done) ? '!' : '');
+            dot('fa-checkin', checkinNext() ? '!' : '');
         }
         // อากาศในฉากต้นไม้: ฝนพรำ รุ้ง ใบไม้ปลิว พายุ หรือแดดร้อนจัด
         function renderGardenWeather() {
@@ -5563,7 +5671,7 @@
         }
         // ราคาตลาดวันนี้: แต่ละอย่างขึ้นลงต่างกันทุกวัน · ผักตามฤดูแพงขึ้น 25% · ดาวเยอะแพงขึ้น
         const PRICE_STEPS = [0.5, 0.75, 1, 1, 1, 1.25, 1.5, 2];
-        const priceMult = (key, day = dayKeyLocal()) => PRICE_STEPS[hashStr('price:' + day + baseOf(key)) % PRICE_STEPS.length] * (inSeason(baseOf(key)) ? 1.25 : 1);
+        const priceMult = (key, day = dayKeyLocal()) => PRICE_STEPS[hashStr('price:' + day + baseOf(key)) % PRICE_STEPS.length] * (inSeason(baseOf(key)) ? 1.25 : 1) * newsMult(baseOf(key));
         const sellPrice = key => Math.max(1, Math.round(itemInfo(key).value * priceMult(key)));
         function sellItem(key, all) {
             const n = all ? (veg.inv[key] || 0) : Math.min(1, veg.inv[key] || 0);
@@ -5770,7 +5878,8 @@
         }
 
         // 🌾 หน้าต่างฟาร์ม: ออเดอร์ · ยุ้งฉาง · ครัว · สัตว์ · ปุ๋ยหมัก
-        const FARM_TABS = [['orders', '📋', 'ออเดอร์'], ['barn', '🏠', 'ยุ้งฉาง'], ['kitchen', '🍳', 'ครัว'], ['animals', '🐔', 'สัตว์'], ['compost', '🪱', 'ปุ๋ยหมัก']];
+        const FARM_TABS = [['orders', '📋', 'ออเดอร์'], ['barn', '🏠', 'ยุ้งฉาง'], ['stall', '🏪', 'แผงขาย'], ['kitchen', '🍳', 'ครัว'], ['animals', '🐔', 'สัตว์'],
+            ['pond', '🎣', 'บ่อปลา'], ['contest', '🏆', 'ประกวด'], ['compost', '🪱', 'ปุ๋ยหมัก']];
         let farmTab = 'orders', kitchenFilter = 'all';
         function setKitchenFilter(f) { kitchenFilter = f; renderFarmPanel(); }
         function openFarm(tab) {
@@ -5778,14 +5887,14 @@
             renderFarmPanel();
             document.getElementById('farm-modal').style.display = 'flex';
         }
-        function closeFarm() { document.getElementById('farm-modal').style.display = 'none'; }
-        function setFarmTab(tab) { farmTab = tab; renderFarmPanel(); }
+        function closeFarm() { cancelFishing(); document.getElementById('farm-modal').style.display = 'none'; }
+        function setFarmTab(tab) { if (tab !== 'pond') cancelFishing(); farmTab = tab; renderFarmPanel(); }
         const itemChip = (k, need) => {
             const it = itemInfo(k), have = countBase(k);
             return `<span class="farm-chip${need !== undefined && have < need ? ' is-short' : ''}">${it.e} ${it.name}${need !== undefined ? ` <b>${Math.min(have, need)}/${need}</b>` : ''}</span>`;
         };
         // เรียงของในยุ้งฉาง: ผักผลไม้ → ผลผลิต → อาหาร แล้วตามชื่อและดาว
-        const KIND_ORDER = { crop: 0, product: 1, dish: 2 };
+        const KIND_ORDER = { crop: 0, product: 1, fish: 2, dish: 3 };
         const barnKeys = () => Object.keys(veg.inv).sort((a, b) => {
             const A = itemInfo(a), B = itemInfo(b);
             return KIND_ORDER[A.kind] - KIND_ORDER[B.kind] || A.base.localeCompare(B.base) || A.q - B.q;
@@ -5794,10 +5903,14 @@
             const lvl = farmLevel(), w = WEATHERS[todayWeather()], s = FARM_SEASONS[farmSeason()];
             document.getElementById('farm-meta').innerHTML = `🧑‍🌾 เลเวล ${lvl} · ${w.e} ${w.name}: ${w.note} · ${s.e} ${s.name}`;
             const tabs = document.getElementById('farm-tabs');
-            tabs.classList.add('has-5');
+            tabs.classList.add('is-scroll');
             tabs.innerHTML = FARM_TABS.map(([k, icon, label]) =>
                 `<button type="button" class="report-tab${k === farmTab ? ' active' : ''}" role="tab" aria-selected="${k === farmTab}" onclick="setFarmTab('${k}')"><span>${icon}</span>${label}</button>`).join('');
+            const act = tabs.querySelector('.active');
+            if (act) tabs.scrollLeft = Math.max(0, act.offsetLeft - (tabs.clientWidth - act.offsetWidth) / 2);
             const body = document.getElementById('farm-body');
+            const custom = { stall: renderStallTab, pond: renderPondTab, contest: renderContestTab }[farmTab];
+            if (custom) { body.innerHTML = custom(); updateCoinUI(); return; }
             if (farmTab === 'orders') {
                 body.innerHTML = todaysOrders().map((o, i) => {
                     const who = CR[o.who], ready = hasItems(o.items);
@@ -5811,7 +5924,7 @@
                 }).join('') + '<p class="shop-note">ออเดอร์ใหม่มาทุกวัน 🎁 บางใบมีของรางวัลพิเศษที่ซื้อในร้านไม่ได้ · ส่งของจะใช้ของดาวน้อยก่อน</p>';
             } else if (farmTab === 'barn') {
                 const keys = barnKeys();
-                body.innerHTML = (keys.length ? `<div class="barn-grid">${keys.map(k => {
+                body.innerHTML = `<p class="farm-news">${escHtml(newsLine())}</p>` + (keys.length ? `<div class="barn-grid">${keys.map(k => {
                     const it = itemInfo(k), m = priceMult(k), price = sellPrice(k);
                     return `<div class="barn-item${it.q > 1 ? ' q' + it.q : ''}"><span class="barn-emoji">${it.e}</span><span class="farm-card-title">${it.name} ×${veg.inv[k]}</span>
                         ${it.q > 1 ? `<span class="barn-stars" aria-label="คุณภาพ ${it.q} ดาว">${'★'.repeat(it.q)}</span>` : ''}
@@ -5882,6 +5995,333 @@
             updateCoinUI();
         }
 
+        // 📰 ข่าวตลาดประจำสัปดาห์: มีของขาดตลาด (ราคา ×2) และล้นตลาด (ราคาครึ่งเดียว) อย่างละ 1
+        const NEWS_POOL = ['carrot', 'tomato', 'corn', 'cabbage', 'chili', 'strawberry', 'wheat', 'egg', 'milk', 'honey', 'bouquet', 'fish'];
+        function marketNews(week = weekStartKey()) {
+            const h = hashStr('news:' + week), hot = NEWS_POOL[h % NEWS_POOL.length];
+            let glut = NEWS_POOL[(h >>> 8) % NEWS_POOL.length];
+            if (glut === hot) glut = NEWS_POOL[(NEWS_POOL.indexOf(hot) + 5) % NEWS_POOL.length];
+            return { hot, glut };
+        }
+        const newsMult = base => { const n = marketNews(); return base === n.hot ? 2 : base === n.glut ? 0.5 : 1; };
+        function newsLine() {
+            const n = marketNews(), h = itemInfo(n.hot), g = itemInfo(n.glut);
+            return `📰 ข่าวตลาดสัปดาห์นี้: ${h.e} ${h.name}ขาดตลาด ราคา ×2! · ${g.e} ${g.name}ล้นตลาด ราคาครึ่งเดียว`;
+        }
+
+        // 🏪 แผงขายหน้าฟาร์ม: วางของขายแพงกว่ายุ้งฉาง 40% เพื่อนในขบวนทยอยมาซื้อทุก 10 นาที (ปิดเว็บไว้ก็ขายได้)
+        const stallPrice = key => Math.max(1, Math.round(sellPrice(key) * 1.4));
+        function stallTick() {
+            const st = veg.stall, now = Date.now();
+            const n = Math.min(30, Math.floor((now - st.lastTick) / STALL_MS));
+            if (n < 1) return 0;
+            st.lastTick += n * STALL_MS;
+            let sold = 0;
+            const who = Object.keys(CR);
+            for (let k = 0; k < n; k++) {
+                const open = st.slots.map((s, i) => s ? i : -1).filter(i => i >= 0);
+                if (!open.length) { st.lastTick = now; break; }
+                const i = open[Math.floor(Math.random() * open.length)], s = st.slots[i];
+                const qty = Math.min(s.qty, 1 + Math.floor(Math.random() * 3));
+                s.qty -= qty; st.cash = Math.min(99999, st.cash + qty * s.price); sold += qty;
+                const c = CR[pick(who)], it = itemInfo(s.key);
+                st.log.push({ t: `${c.name}ซื้อ${it.name}${starText(it.q)} ×${qty} · 🪙${qty * s.price}` });
+                if (!s.qty) st.slots[i] = null;
+            }
+            st.log = st.log.slice(-6);
+            saveVeg();
+            return sold;
+        }
+        function putOnStall(key) {
+            const i = veg.stall.slots.slice(0, STALL_SLOTS).findIndex(s => !s);
+            const have = veg.inv[key] || 0;
+            if (i < 0) { showToast('แผงเต็มแล้ว รอขายหมดหรือเก็บของกลับก่อนนะ', 'info'); return; }
+            if (!have) return;
+            const qty = Math.min(10, have);
+            takeExact(key, qty);
+            veg.stall.slots[i] = { key, qty, price: stallPrice(key) };
+            if (veg.stall.slots.every(s => !s || s === veg.stall.slots[i])) veg.stall.lastTick = Date.now();
+            saveVeg(); playSound('pop');
+            renderFarmPanel(); renderFarmStatus(); updateBasketFood();
+        }
+        function takeFromStall(i) {
+            const s = veg.stall.slots[i];
+            if (!s) return;
+            giveItem(s.key, s.qty); veg.stall.slots[i] = null;
+            saveVeg(); renderFarmPanel(); renderFarmStatus(); updateBasketFood();
+        }
+        function collectStallCash() {
+            const c = veg.stall.cash;
+            if (!c) return;
+            veg.stall.cash = 0; saveVeg(); addCoins(c); addXP(Math.min(20, Math.ceil(c / 5)));
+            playSound('welcome');
+            showToast(`💰 เก็บเงินจากแผงขาย 🪙${c}`, 'success');
+            renderFarmPanel(); renderFarmStatus();
+        }
+        function renderStallTab() {
+            stallTick();
+            const st = veg.stall, slots = st.slots.slice(0, STALL_SLOTS);
+            const next = Math.max(1, Math.ceil((STALL_MS - (Date.now() - st.lastTick)) / 60000));
+            const keys = barnKeys();
+            return `<p class="farm-news">${escHtml(newsLine())}</p>
+                <div class="stall-cash"><span class="barn-emoji">🏪</span><div class="farm-card-main"><span class="farm-card-title">เงินในลิ้นชัก 🪙${st.cash}</span>
+                    <span class="farm-card-sub">${slots.some(Boolean) ? `ลูกค้าคนต่อไปมาในอีกราว ${next} นาที` : 'วางของบนแผงแล้วเพื่อนในขบวนจะทยอยมาซื้อ'}</span></div>
+                    <button type="button" class="shop-buy farm-action" ${st.cash ? '' : 'disabled'} onclick="collectStallCash()">เก็บเงิน 💰</button></div>
+                <div class="stall-slots">${slots.map((s, i) => s ? `<div class="stall-slot"><span class="barn-emoji">${itemInfo(s.key).e}</span><span class="farm-card-title">${itemInfo(s.key).name}${starText(itemInfo(s.key).q)}</span>
+                    <span class="farm-card-sub">เหลือ ${s.qty} ชิ้น · 🪙${s.price}/ชิ้น</span><button type="button" class="chip-btn" onclick="takeFromStall(${i})">เก็บกลับ</button></div>`
+                    : '<div class="stall-slot is-empty"><span class="barn-emoji">🧺</span><span class="farm-card-sub">ช่องว่าง เลือกของด้านล่างมาวาง</span></div>').join('')}</div>
+                ${st.log.length ? `<div class="stall-log">${st.log.slice().reverse().map(l => `<span>🛒 ${escHtml(l.t)}</span>`).join('')}</div>` : ''}
+                ${keys.length ? `<div class="barn-grid">${keys.map(k => `<div class="barn-item"><span class="barn-emoji">${itemInfo(k).e}</span><span class="farm-card-title">${itemInfo(k).name}${starText(itemInfo(k).q)} ×${veg.inv[k]}</span>
+                    <span class="barn-price is-up">แผง 🪙${stallPrice(k)} · ยุ้งฉาง 🪙${sellPrice(k)}</span><button type="button" class="chip-btn" onclick="putOnStall('${k}')">วางขาย (สูงสุด 10)</button></div>`).join('')}</div>` : '<p class="rp-empty">ยุ้งฉางว่าง ยังไม่มีของมาวางขาย</p>'}
+                <p class="shop-note">ขายบนแผงได้แพงกว่าขายส่งที่ยุ้งฉาง 40% แต่ต้องรอลูกค้า · ปิดเว็บไว้ก็ยังขายได้ (นับย้อนหลังสูงสุด 5 ชั่วโมง)</p>`;
+        }
+
+        // 🏆 ประกวดผักยักษ์ประจำสัปดาห์: ปลูกเมล็ดยักษ์สัปดาห์ละ 1 เมล็ด ดูแลดีผักยิ่งหนัก แข่งกับเพื่อนในขบวน
+        const contestCrop = (week = weekStartKey()) => Object.keys(CONTEST_CROPS)[hashStr('contest:' + week) % Object.keys(CONTEST_CROPS).length];
+        function contestState() {
+            const week = weekStartKey();
+            if (!veg.contest || veg.contest.week !== week) veg.contest = { week, planted: false, weight: 0, done: false, rank: 0 };
+            return veg.contest;
+        }
+        function contestRivals(week = weekStartKey()) {
+            let seed = hashStr('rivals:' + week);
+            const rand = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+            const base = CONTEST_CROPS[contestCrop(week)], names = Object.keys(CR);
+            return [1.6, 2.1, 2.6].map(m => ({ who: CR[names[Math.floor(rand() * names.length)]].name, weight: Math.round(base * m * (0.9 + rand() * 0.2) * 10) / 10 }));
+        }
+        function contestBoard() {
+            const c = contestState();
+            const rows = contestRivals().map(r => ({ ...r, me: false }));
+            if (c.weight) rows.push({ who: 'คุณ', weight: c.weight, me: true });
+            return rows.sort((a, b) => b.weight - a.weight);
+        }
+        function plantGiant() {
+            const c = contestState();
+            if (c.planted) return;
+            const i = veg.plots.findIndex(p => !p.seed);
+            if (i < 0) { showToast('ไม่มีแปลงว่างเลย เก็บผักหรือขยายที่ดินก่อนนะ', 'info'); return; }
+            const crop = contestCrop(), cur = veg.plots[i];
+            veg.plots[i] = { ...emptyPlot(cur.soil), seed: crop, need: 5, giant: true, cared: todayWeather() === 'rain' || hasTool('sprinkler') };
+            c.planted = true;
+            saveVeg(); renderVeggies(); playSound('pop');
+            showToast(`🏆 ปลูก${VEGGIES[crop].name}ยักษ์ที่แปลงที่ ${i + 1} แล้ว! ดินอุดม รดน้ำ และเก็บให้ตรงจังหวะ จะได้ลูกใหญ่`, 'success', { duration: 5500 });
+            renderFarmPanel(); renderFarmStatus();
+        }
+        // เก็บผักยักษ์ = ชั่งน้ำหนักส่งประกวด (ไม่เข้ายุ้งฉาง)
+        function weighGiant(i, el, grade) {
+            const p = veg.plots[i], c = contestState(), base = CONTEST_CROPS[p.seed] || 2;
+            const cared = p.cared || hasTool('sprinkler') || todayWeather() === 'rain';
+            const f = 1 + (p.soil >= 60 ? 0.5 : 0) + (p.soil >= 90 ? 0.3 : 0) + (cared ? 0.6 : 0) + (grade === 'perfect' ? 0.5 : grade === 'good' ? 0.25 : 0) + Math.random() * 0.6;
+            const w = Math.round(base * f * 10) / 10;
+            c.weight = Math.max(c.weight, w);
+            veg.plots[i] = emptyPlot(Math.max(0, p.soil - 30));
+            saveVeg(); addXP(15);
+            if (el) { el.classList.remove('is-timing'); vegFx(el, ['⚖️', VEGGIES[p.seed].e, '🏆']); }
+            playSound('welcome'); fireConfetti();
+            const rank = contestBoard().findIndex(r => r.me) + 1;
+            showToast(`⚖️ ${VEGGIES[p.seed].name}ยักษ์หนัก ${w} กก.! ตอนนี้อยู่อันดับ ${rank} ไปรับรางวัลที่แท็บ 🏆 ประกวด`, 'success', { duration: 6000 });
+            setTimeout(renderVeggies, 650);
+            renderFarmStatus();
+        }
+        const CONTEST_PRIZES = [{ coins: 40, trophy: 'trophy-gold' }, { coins: 25, trophy: 'trophy-silver' }, { coins: 15, trophy: 'trophy-bronze' }, { coins: 5 }];
+        function claimContest() {
+            const c = contestState();
+            if (!c.weight || c.done) return;
+            c.rank = contestBoard().findIndex(r => r.me) + 1;
+            c.done = true;
+            const prize = CONTEST_PRIZES[c.rank - 1];
+            let coins = prize.coins, trophy = '';
+            if (prize.trophy && !shop.owned.includes(prize.trophy)) {
+                shop.owned.push(prize.trophy); shop.decor.push(prize.trophy); saveShop(); applyShopItems();
+                trophy = ` + ${SHOP_ITEMS[prize.trophy].emoji} ${SHOP_ITEMS[prize.trophy].name} ตั้งในสวนแล้ว`;
+            } else if (prize.trophy) coins += 10;
+            saveVeg(); addCoins(coins); addXP(10);
+            if (c.rank === 1) fireConfetti();
+            playSound('welcome');
+            showToast(`🏆 ได้อันดับ ${c.rank}! รับ 🪙${coins}${trophy}`, 'success', { duration: 6000 });
+            renderFarmPanel(); renderFarmStatus();
+        }
+        function renderContestTab() {
+            const c = contestState(), crop = contestCrop(), v = VEGGIES[crop];
+            const plot = veg.plots.findIndex(p => p.giant);
+            const medals = ['🥇', '🥈', '🥉', '🎖️'];
+            const status = c.done ? `<span class="farm-done">ได้อันดับ ${c.rank} แล้ว · สัปดาห์หน้ามาประกวดใหม่</span>`
+                : c.weight ? `<button type="button" class="shop-buy farm-action" onclick="claimContest()">รับรางวัล 🏆</button>`
+                : c.planted ? `<span class="farm-done">${plot >= 0 ? `กำลังปลูกที่แปลงที่ ${plot + 1} (โต ${veg.plots[plot].stage}/5)` : 'ปลูกแล้ว'}</span>`
+                : `<button type="button" class="shop-buy farm-action" onclick="plantGiant()">ปลูกเมล็ดยักษ์ 🌱</button>`;
+            return `<div class="farm-card contest-head"><span class="barn-emoji contest-giant">${v.e}</span>
+                    <div class="farm-card-main"><span class="farm-card-title">ประกวด${v.name}ยักษ์ สัปดาห์นี้</span>
+                    <span class="farm-card-sub">ได้เมล็ดยักษ์ฟรีสัปดาห์ละ 1 เมล็ด (โต 5 ระยะ) · ดินอุดม 60+/90+ · รดน้ำ · เก็บตรงจังหวะ ยิ่งหนัก</span></div>${status}</div>
+                <div class="contest-board">${contestBoard().map((r, i) => `<div class="contest-row${r.me ? ' is-me' : ''}"><span>${medals[i]}</span><span class="contest-who">${escHtml(r.who)}</span><b>${r.weight} กก.</b></div>`).join('')}</div>
+                <p class="shop-note">รางวัล: อันดับ 1 🪙40 + 🏆 ถ้วยทอง · อันดับ 2 🪙25 + 🥈 · อันดับ 3 🪙15 + 🥉 · อันดับ 4 🪙5 (ถ้วยตั้งในสวนได้)</p>`;
+        }
+
+        // 🎣 บ่อตกปลา: ได้ตั๋วฟรีวันละใบ + พักดี 1 ครั้ง = 1 ใบ (เก็บได้สูงสุด 5) · เหวี่ยงเบ็ด รอปลากิน แล้วกด "ดึง!" ให้ทัน
+        const fishing = { state: 'idle', timer: 0, result: null };
+        function addFishTicket(n = 1) { veg.fish.tickets = Math.min(FISH_TICKET_MAX, veg.fish.tickets + n); saveVeg(); renderFarmStatus(); }
+        function freeFishTicket() {
+            if (veg.fish.freeDay === dayKeyLocal()) return;
+            veg.fish.freeDay = dayKeyLocal(); addFishTicket();
+        }
+        function rollFish() {
+            let r = Math.random() * Object.values(FISH).reduce((s, f) => s + f.w, 0);
+            for (const [k, f] of Object.entries(FISH)) { r -= f.w; if (r <= 0) return k; }
+            return 'fish';
+        }
+        function castLine() {
+            if (fishing.state !== 'idle' || veg.fish.tickets < 1) return;
+            veg.fish.tickets -= 1; saveVeg();
+            fishing.state = 'waiting'; fishing.result = null;
+            playSound('pop');
+            fishing.timer = setTimeout(fishBite, rnd(1200, 4000));
+            renderFarmPanel(); renderFarmStatus();
+        }
+        function fishBite() {
+            if (fishing.state !== 'waiting') return;
+            fishing.state = 'bite';
+            try { if (navigator.vibrate) navigator.vibrate(120); } catch (e) {}
+            playSound('pop');
+            fishing.timer = setTimeout(() => endFishing('late'), 900);
+            renderFarmPanel();
+        }
+        function reelIn() {
+            if (fishing.state === 'waiting') endFishing('early');
+            else if (fishing.state === 'bite') endFishing('catch');
+        }
+        function endFishing(how) {
+            clearTimeout(fishing.timer);
+            let caught = null;
+            if (how === 'catch') {
+                caught = rollFish();
+                giveItem(caught); veg.fishCaught[caught] = (veg.fishCaught[caught] || 0) + 1;
+                addXP(4 + Math.round(FISH[caught].value / 3)); playSound('welcome');
+                if (FISH[caught].w <= 5) fireConfetti();
+            }
+            fishing.state = 'idle'; fishing.result = { how, caught };
+            saveVeg(); renderFarmPanel(); renderFarmStatus();
+        }
+        // ปิดหน้าต่างระหว่างรอปลา ไม่เสียตั๋ว
+        function cancelFishing() {
+            if (fishing.state === 'idle') return;
+            clearTimeout(fishing.timer); fishing.state = 'idle'; fishing.result = null;
+            veg.fish.tickets = Math.min(FISH_TICKET_MAX, veg.fish.tickets + 1); saveVeg();
+        }
+        function renderPondTab() {
+            freeFishTicket();
+            const f = fishing, r = f.result;
+            const msg = f.state === 'waiting' ? 'รอปลากินเหยื่อ… อย่าเพิ่งดึงนะ 🤫'
+                : f.state === 'bite' ? '❗ ปลากินเบ็ดแล้ว! ดึงเร็ว!'
+                : r ? (r.how === 'catch' ? `ได้${FISH[r.caught].name} ${FISH[r.caught].e} เข้ายุ้งฉางแล้ว!` : r.how === 'early' ? 'ดึงเร็วไป ปลาตกใจหนีไปแล้ว 💦' : 'ช้าไปนิด ปลาแย่งเหยื่อแล้วหนีไป 🐟💨')
+                : 'เหวี่ยงเบ็ดแล้วรอจนปลากิน แล้วกด "ดึง!" ให้ทัน';
+            const action = f.state === 'idle'
+                ? `<button type="button" class="modal-btn btn-primary" ${veg.fish.tickets ? '' : 'disabled'} onclick="castLine()">เหวี่ยงเบ็ด 🎣 (ตั๋ว ${veg.fish.tickets})</button>`
+                : `<button type="button" class="modal-btn btn-primary pond-reel${f.state === 'bite' ? ' is-bite' : ''}" onclick="reelIn()">ดึง! 💪</button>`;
+            const caught = Object.keys(FISH).filter(k => veg.fishCaught[k]).length;
+            return `<div class="pond is-${f.state}" aria-hidden="true"><span class="pond-ripple"></span><span class="pond-float">${f.state === 'bite' ? '❗' : ''}</span>
+                    ${r && r.how === 'catch' && f.state === 'idle' ? `<span class="pond-catch">${FISH[r.caught].e}</span>` : ''}</div>
+                <p class="pond-msg" aria-live="polite">${msg}</p>
+                <div class="modal-btn-group">${action}</div>
+                <div class="pond-dex">${Object.entries(FISH).map(([k, x]) => `<span class="pond-dex-item${veg.fishCaught[k] ? '' : ' locked'}" title="${x.name}">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></span>`).join('')}</div>
+                <p class="shop-note">สะสมปลาแล้ว ${caught}/${Object.keys(FISH).length} ชนิด · ตั๋วฟรีวันละใบ และได้เพิ่มทุกครั้งที่พักไม่เกินลิมิต (เก็บได้สูงสุด ${FISH_TICKET_MAX}) · ปลาขายหรือทำอาหารได้</p>`;
+        }
+
+        // ✨ แขกพิเศษ: สุ่มแวะมาในสวน (วันละไม่เกิน 2 ตัว อยู่ 3 นาที) แตะเพื่อรับของขวัญ
+        function visitorActive() { return veg.visitor && veg.visitor.until > Date.now() && VISITORS[veg.visitor.kind]; }
+        function spawnVisitor(kind) {
+            const h = new Date().getHours(), night = h >= 19 || h < 5;
+            if (!kind) {
+                const pool = Object.entries(VISITORS).filter(([, v]) => !v.night || night);
+                let r = Math.random() * pool.reduce((s, [, v]) => s + v.w, 0);
+                kind = pool.find(([, v]) => (r -= v.w) <= 0)[0];
+            }
+            veg.visitor = { kind, until: Date.now() + 3 * 60 * 1000 };
+            const today = dayKeyLocal();
+            if (veg.visitorLog.day !== today) veg.visitorLog = { day: today, n: 0 };
+            veg.visitorLog.n += 1;
+            saveVeg(); renderVisitor();
+            if (isGardenEnabled()) showToast(`${VISITORS[kind].e} ${VISITORS[kind].name}แวะมาที่สวน! แตะเพื่อรับของขวัญ (อยู่แค่ 3 นาที)`, 'info', { duration: 6000 });
+        }
+        function maybeSpawnVisitor() {
+            if (!isGardenEnabled() || visitorActive()) return;
+            const n = veg.visitorLog.day === dayKeyLocal() ? veg.visitorLog.n : 0;
+            if (n < 2 && Math.random() < 0.012) spawnVisitor();
+        }
+        function renderVisitor() {
+            const wrap = document.getElementById('garden-scene-wrap');
+            if (!wrap) return;
+            let el = document.getElementById('garden-visitor');
+            const v = visitorActive();
+            if (!v) { if (el) el.remove(); if (veg.visitor) { veg.visitor = null; saveVeg(); } return; }
+            if (!el) {
+                el = document.createElement('button');
+                el.type = 'button'; el.id = 'garden-visitor'; el.className = 'garden-visitor';
+                el.addEventListener('click', (e) => { e.stopPropagation(); tapVisitor(); });
+                wrap.appendChild(el);
+            }
+            el.textContent = v.e;
+            el.dataset.kind = veg.visitor.kind;
+            el.setAttribute('aria-label', `แตะรับของขวัญจาก${v.name}`);
+        }
+        function tapVisitor() {
+            const v = visitorActive();
+            if (!v) { renderVisitor(); return; }
+            const kind = veg.visitor.kind;
+            veg.visitor = null;
+            veg.visitors[kind] = (veg.visitors[kind] || 0) + 1;
+            const growing = veg.plots.filter(p => p.type === 'veg' && p.seed && !isReady(p) && !p.giant);
+            let gift = '';
+            if (kind === 'luckyBird') { const c = Math.round(rnd(5, 12)); addCoins(c); gift = `${c} เหรียญ 🪙`; }
+            else if (kind === 'butterfly') { veg.plots.forEach(p => { p.soil = Math.min(100, p.soil + 20); }); gift = 'ดินทุกแปลง +20 🌱'; }
+            else if (kind === 'fairy') { let n = 0; veg.plots.forEach(p => { if (p.seed && !p.pest && p.stage < p.need) { p.stage += 1; n++; } }); gift = n ? `ผักโตขึ้น ${n} แปลง ✨` : '15 เหรียญ 🪙'; if (!n) addCoins(15); }
+            else if (kind === 'unicorn') { const p = growing.find(x => !x.golden); if (p) { p.golden = true; gift = `${VEGGIES[p.seed].name}กลายเป็นผักทอง ✨`; } else { addCoins(15); gift = '15 เหรียญ 🪙'; } }
+            else { growing.forEach(p => { p.golden = true; }); gift = growing.length ? `ผัก ${growing.length} แปลงกลายเป็นผักทอง 🌠` : '20 เหรียญ 🪙'; if (!growing.length) addCoins(20); }
+            saveVeg(); addXP(5); playSound('welcome'); fireConfetti();
+            showToast(`${v.e} ${v.name}ให้ของขวัญ: ${gift}`, 'success', { duration: 5500 });
+            renderVisitor(); renderVeggies();
+        }
+
+        // 🎁 รางวัลเข้าฟาร์มรายวัน
+        function checkinNext() {
+            const today = dayKeyLocal(), c = veg.checkin;
+            if (c.day === today) return 0;
+            const y = new Date(); y.setDate(y.getDate() - 1);
+            return c.day === dayKeyLocal(y) ? (c.streak % 7) + 1 : 1;
+        }
+        function openCheckin() {
+            const next = checkinNext(), streak = next ? next - 1 : veg.checkin.streak;
+            document.getElementById('checkin-body').innerHTML = `<div class="checkin-grid">${CHECKIN_REWARDS.map((r, i) => {
+                const day = i + 1, done = next ? day < next && day <= streak : day <= streak, now = day === next;
+                return `<div class="checkin-day${done ? ' is-done' : ''}${now ? ' is-now' : ''}"><small>วันที่ ${day}</small><span>${done ? '✅' : r.e}</span><b>${r.text}</b></div>`;
+            }).join('')}</div>
+                <p class="cook-hint">${next ? `เข้าฟาร์มต่อเนื่องวันที่ ${next} รับ ${CHECKIN_REWARDS[next - 1].e} ${CHECKIN_REWARDS[next - 1].text}` : 'วันนี้รับรางวัลแล้ว พรุ่งนี้มาใหม่นะ 💖'}</p>
+                <div class="modal-btn-group"><button type="button" class="modal-btn btn-primary" ${next ? '' : 'disabled'} onclick="claimCheckin()">${next ? 'รับรางวัล 🎁' : 'รับแล้ว ✓'}</button></div>`;
+            document.getElementById('checkin-modal').style.display = 'flex';
+        }
+        function closeCheckin() { document.getElementById('checkin-modal').style.display = 'none'; }
+        function claimCheckin() {
+            const day = checkinNext();
+            if (!day) return;
+            veg.checkin = { day: dayKeyLocal(), streak: day };
+            if (day === 1) addCoins(5);
+            else if (day === 2) veg.tools.fertilizer = Math.min(99, veg.tools.fertilizer + 1);
+            else if (day === 3) addCoins(10);
+            else if (day === 4) veg.tools.compost = Math.min(99, veg.tools.compost + 1);
+            else if (day === 5) veg.fish.tickets = Math.min(FISH_TICKET_MAX, veg.fish.tickets + 2);
+            else if (day === 6) { if (veg.hybridSeeds.length < HYBRID_SEED_MAX) veg.hybridSeeds.push(pick(HYBRID_VEGGIES)); else addCoins(10); }
+            else { addCoins(30); veg.tools.fertilizer = Math.min(99, veg.tools.fertilizer + 2); }
+            saveVeg(); addXP(3); playSound('welcome'); if (day === 7) fireConfetti();
+            showToast(`🎁 รับรางวัลวันที่ ${day}: ${CHECKIN_REWARDS[day - 1].text}`, 'success');
+            openCheckin(); updateVegTools(); renderFarmStatus();
+        }
+
+        // ทำงานทุกนาที: แผงขาย + แขกพิเศษ
+        function farmTick() {
+            if (stallTick() && document.getElementById('farm-modal').style.display === 'flex' && farmTab === 'stall') renderFarmPanel();
+            renderVisitor();
+            maybeSpawnVisitor();
+            renderFarmStatus();
+        }
+
         function openVegBook() {
             const grid = document.getElementById('veg-book-grid');
             const cell = (e, name, n, locked, q) => `<div class="veg-book-item${locked ? ' locked' : ''}"><span>${e}</span><small>${name}</small><b>${n}</b>${q > 1 ? `<i class="book-stars">${'★'.repeat(q)}</i>` : ''}</div>`;
@@ -5890,7 +6330,8 @@
                 + head('🧬 ผักลูกผสม (ปลูกผักต่างชนิดติดกันแล้วลุ้น)') + HYBRID_VEGGIES.map(k => veg.harvest[k] ? cell(VEGGIES[k].e, VEGGIES[k].name, veg.harvest[k], false, veg.bestQ[k]) : cell('❔', '???', 0, true)).join('')
                 + head('🌳 ผลไม้จากต้น') + Object.values(TREES).map(t => cell(VEGGIES[t.fruit].e, VEGGIES[t.fruit].name, veg.fruits[t.fruit] || 0, !veg.fruits[t.fruit], 0)).join('')
                 + head('🌸 ช่อดอกไม้ที่เด็ด') + Object.entries(FLOWERS).map(([k, f]) => cell(f.e, f.name, veg.flowers[k] || 0, !veg.flowers[k], 0)).join('')
-                + head('🍳 อาหาร') + Object.entries(RECIPES).map(([k, r]) => cell(r.e, r.name, veg.cooked[k] || 0, !veg.cooked[k], 0)).join('');
+                + head('🎣 ปลาที่ตกได้') + Object.entries(FISH).map(([k, f]) => veg.fishCaught[k] ? cell(f.e, f.name, veg.fishCaught[k], false, 0) : cell('❔', '???', 0, true)).join('')
+                + head('🍳 อาหาร') + Object.entries(RECIPES).map(([k, r]) => cell(r.e, r.name, veg.cooked[k] || 0, !veg.cooked[k], veg.bestQ[k])).join('');
             const got = BASE_VEGGIES.filter(k => veg.harvest[k]).length;
             const total = Object.values(veg.harvest).reduce((a, b) => a + b, 0);
             document.getElementById('veg-book-summary').innerHTML =
@@ -5905,7 +6346,12 @@
             renderVeggies();
             renderGardenPet();
             growVeggies('time');
-            setInterval(() => growVeggies('time'), 60 * 1000);
+            farmTick();
+            setInterval(() => { growVeggies('time'); farmTick(); }, 60 * 1000);
+            // ชวนรับรางวัลเข้าฟาร์มวันละครั้ง
+            setTimeout(() => {
+                if (isGardenEnabled() && checkinNext()) showToast(`🎁 รางวัลเข้าฟาร์มวันที่ ${checkinNext()} รออยู่!`, 'info', { duration: 8000, actionLabel: 'รับเลย', onAction: openCheckin });
+            }, 4500);
             document.addEventListener('pointerdown', (e) => {
                 const pk = document.getElementById('veg-picker');
                 if (pk && pk.classList.contains('open') && !pk.contains(e.target) && !e.target.closest('.veg-plot')) closeVegPicker();
@@ -5939,6 +6385,9 @@
             'decor-lantern':   { cat: 'decor', name: 'โคมไฟ', price: 12, emoji: '🏮', pos: 'right:9%; top:4%; font-size:24px;' },
             'decor-fountain':  { cat: 'decor', name: 'น้ำพุ', price: 20, emoji: '⛲', pos: 'right:22%; bottom:4%; font-size:27px;' },
             'decor-tractor':   { cat: 'decor', name: 'รถไถคันจิ๋ว', price: 0, emoji: '🚜', pos: 'left:34%; bottom:2%; font-size:22px;', special: true },
+            'trophy-gold':     { cat: 'decor', name: 'ถ้วยทองผักยักษ์', price: 0, emoji: '🏆', pos: 'left:46%; bottom:4%; font-size:21px;', special: 'contest' },
+            'trophy-silver':   { cat: 'decor', name: 'เหรียญเงินผักยักษ์', price: 0, emoji: '🥈', pos: 'left:58%; bottom:3%; font-size:18px;', special: 'contest' },
+            'trophy-bronze':   { cat: 'decor', name: 'เหรียญทองแดงผักยักษ์', price: 0, emoji: '🥉', pos: 'left:66%; bottom:3%; font-size:18px;', special: 'contest' },
             'seed-pineapple':  { cat: 'seed', name: 'สับปะรด', price: 15, veg: 'pineapple' },
             'seed-peach':      { cat: 'seed', name: 'พีช', price: 15, veg: 'peach' },
             'seed-avocado':    { cat: 'seed', name: 'อะโวคาโด', price: 15, veg: 'avocado' },
@@ -6010,7 +6459,7 @@
                 if (it.consumable) desc += ` · มีอยู่ ${consumableCount(it)}`;
                 if (id === 'land') desc += ` · ซื้อแล้ว ${veg.land}/6`;
                 if (id === 'land' && veg.land >= 6) action = '<span class="shop-owned">ครบแล้ว ✓</span>';
-                else if (it.special && !owned) action = '<span class="shop-owned is-special">🎁 ได้จากออเดอร์พิเศษ</span>';
+                else if (it.special && !owned) action = `<span class="shop-owned is-special">${it.special === 'contest' ? '🏆 ได้จากงานประกวดผักยักษ์' : '🎁 ได้จากออเดอร์พิเศษ'}</span>`;
                 else if (!owned && needLvl && lvl < needLvl) action = `<button type="button" class="shop-buy" disabled>🔒 เลเวล ${needLvl}</button>`;
                 else if (!owned && it.needs && !shop.owned.includes(it.needs)) action = `<button type="button" class="shop-buy" disabled>🪙 ${price}<small>ต้องมี${SHOP_ITEMS[it.needs].name}ก่อน</small></button>`;
                 else if (!owned || it.consumable) {
@@ -6382,7 +6831,7 @@
         }
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && document.getElementById('settings-modal').style.display === 'flex') closeSettingsModal();
-            if (e.key === 'Escape') { closeBadgeCelebration(); toggleStickerTray(false); if (document.getElementById('farm-modal').style.display === 'flex') closeFarm(); }
+            if (e.key === 'Escape') { closeBadgeCelebration(); toggleStickerTray(false); if (document.getElementById('farm-modal').style.display === 'flex') closeFarm(); if (document.getElementById('checkin-modal').style.display === 'flex') closeCheckin(); }
         });
 
         function getAutoTheme() {
@@ -6980,7 +7429,7 @@
             cardElement.classList.remove('expanded', 'has-target', 'is-warn', 'is-over');
             setTimeout(() => { showSuccessOverlay(cardElement, 'ยินดีต้อนรับกลับมา! 🏠', textToCopy, 1500); }, 100);
             cheerMascot();
-            if (goodBreak) { growVeggies('break'); setTimeout(waterGarden, 400); bumpChallenge('onTime'); }
+            if (goodBreak) { growVeggies('break'); setTimeout(waterGarden, 400); bumpChallenge('onTime'); addFishTicket(); }
         }
 
         function saveLog(action, start, end, duration, isToilet) {
