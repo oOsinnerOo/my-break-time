@@ -1616,6 +1616,79 @@
         .sticker-opt:hover { background: rgba(var(--accent-rgb), 0.12); transform: scale(1.15); }
         .sticker-tray-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .sticker-tray-foot .modal-btn { flex: 0 0 auto; padding: 10px 20px; font-size: 14px; }
+
+        /* 🥕 แปลงผักพักใจ */
+        .veg-section { position: relative; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); }
+        .veg-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .veg-title { font-size: 13.5px; font-weight: 700; color: var(--ink-2); }
+        .veg-plots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+        .veg-plot {
+            position: relative; padding: 0 0 18px; border: none; background: none; cursor: pointer; border-radius: 16px;
+            -webkit-tap-highlight-color: transparent; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .veg-plot:hover { transform: translateY(-2px); }
+        .veg-plot svg { display: block; width: 100%; height: auto; overflow: visible; }
+        .veg-sway { transform-box: fill-box; transform-origin: 50% 100%; animation: garden-sway 3.6s ease-in-out infinite; }
+        .veg-sign {
+            position: absolute; right: 10%; top: 30%; font-size: 13px; line-height: 1; padding: 2px 3px;
+            background: #FFF6E0; border: 1.5px solid #C89B6D; border-radius: 5px; box-shadow: 0 2px 0 #C89B6D;
+        }
+        .veg-crop {
+            position: absolute; left: 50%; top: 8%; font-size: 30px; line-height: 1; pointer-events: none;
+            transform: translateX(-50%); animation: veg-bob 1.2s ease-in-out infinite alternate;
+            filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.2));
+        }
+        .veg-plot.is-golden .veg-crop { filter: sepia(1) saturate(5) hue-rotate(-12deg) brightness(1.15) drop-shadow(0 0 8px rgba(255, 200, 40, 0.95)); }
+        @keyframes veg-bob { from { transform: translateX(-50%) translateY(0) rotate(-6deg); } to { transform: translateX(-50%) translateY(-4px) rotate(6deg); } }
+        .veg-crop.harvested { animation: veg-pick 0.6s cubic-bezier(0.3, 1.4, 0.5, 1) forwards; }
+        @keyframes veg-pick {
+            0% { transform: translateX(-50%); }
+            40% { transform: translateX(-50%) translateY(-34px) scale(1.4) rotate(-10deg); }
+            100% { transform: translateX(-50%) translateY(-64px) scale(0.6); opacity: 0; }
+        }
+        .veg-empty {
+            position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); white-space: nowrap;
+            font-size: 12px; font-weight: 700; color: var(--ink-3); padding: 3px 9px; border-radius: 999px;
+            background: var(--surface-2); border: 1.5px dashed var(--line);
+        }
+        .veg-plot.is-empty:hover .veg-empty { color: var(--accent-ink); border-color: rgba(var(--accent-rgb), 0.5); }
+        .veg-stage { position: absolute; left: 0; right: 0; bottom: 0; font-size: 11.5px; font-weight: 600; color: var(--ink-3); text-align: center; white-space: nowrap; }
+        .veg-plot.is-ready .veg-stage { color: var(--accent-ink); font-weight: 800; }
+        .veg-pest { position: absolute; left: 20%; top: 46%; width: 44%; pointer-events: none; animation: veg-wiggle 0.5s ease-in-out infinite alternate; }
+        .veg-pest svg { width: 100%; }
+        @keyframes veg-wiggle { from { transform: scaleX(1) translateX(0); } to { transform: scaleX(0.86) translateX(3px); } }
+        .veg-plot.has-pest .veg-stage { color: var(--danger); font-weight: 800; }
+        .veg-plot.nudge { animation: veg-nudge 0.4s; }
+        @keyframes veg-nudge { 0%, 100% { transform: none; } 25% { transform: rotate(-4deg); } 75% { transform: rotate(4deg); } }
+        .veg-tools { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+        .veg-progress { flex: 1; font-size: 12px; color: var(--ink-3); text-align: center; line-height: 1.4; }
+        .chip-btn.is-cooling { opacity: 0.6; }
+        .veg-picker {
+            display: none; position: absolute; left: 0; right: 0; bottom: calc(100% - 4px); z-index: 6; padding: 10px;
+            border-radius: 18px; background: var(--surface-solid); border: 1px solid var(--line);
+            box-shadow: 0 18px 34px -14px rgba(var(--shadow-rgb), 0.5);
+        }
+        .veg-picker.open { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .veg-picker-title { grid-column: 1 / -1; font-size: 12.5px; font-weight: 700; color: var(--ink-2); margin-bottom: 2px; }
+        .veg-seed {
+            display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; border: none; border-radius: 12px;
+            background: none; cursor: pointer; font-size: 11px; font-weight: 600; color: var(--ink-2); transition: background-color 0.15s, transform 0.15s;
+        }
+        .veg-seed span { font-size: 24px; line-height: 1; }
+        .veg-seed:hover { background: rgba(var(--accent-rgb), 0.12); transform: translateY(-2px); }
+        .veg-seed.is-season { color: var(--accent-ink); }
+        .veg-book-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+        .veg-book-item { text-align: center; padding: 10px 4px 8px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); }
+        .veg-book-item span { display: block; font-size: 28px; line-height: 1.1; }
+        .veg-book-item small { display: block; font-size: 11px; color: var(--ink-3); font-weight: 600; margin-top: 2px; }
+        .veg-book-item b { font-family: var(--font-display); font-weight: 600; color: var(--ink); }
+        .veg-book-item.locked span { filter: grayscale(1); opacity: 0.35; }
+        .veg-book-summary { font-size: 13px; color: var(--ink-2); line-height: 1.6; margin: 0; }
+        .veg-book-summary strong { color: var(--accent-ink); }
+        .snack-count {
+            position: absolute; right: -6px; top: -8px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px;
+            background: var(--accent); color: var(--on-accent); font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;
+        }
         /* ♿️⚡ เคารพการตั้งค่า "ลดการเคลื่อนไหว" ของระบบปฏิบัติการ - ทั้งเพื่อการเข้าถึงและลดการใช้ CPU/แบตเตอรี่ */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -1750,6 +1823,18 @@
                     <svg viewBox="0 0 220 170" class="garden-svg" id="garden-svg" aria-hidden="true"></svg>
                 </div>
                 <p class="garden-caption" id="garden-caption">พักให้พอดี ต้นไม้จะเติบโตไปกับคุณ 🌱</p>
+                <div class="veg-section">
+                    <div class="veg-head">
+                        <span class="veg-title">🥕 แปลงผักพักใจ</span>
+                        <button type="button" class="chip-btn" onclick="openVegBook()">🧺 ผลผลิต <b id="veg-total">0</b></button>
+                    </div>
+                    <div class="veg-picker" id="veg-picker"></div>
+                    <div class="veg-plots" id="veg-plots"></div>
+                    <div class="veg-tools">
+                        <button type="button" class="chip-btn" id="veg-water-btn" onclick="waterVeggies()">💧 รดน้ำ</button>
+                        <span class="veg-progress" id="veg-progress"></span>
+                    </div>
+                </div>
             </section>
 
             <section class="history-box glass-panel heatmap-section">
@@ -1934,10 +2019,10 @@
                 <div class="settings-section">
                     <div class="settings-section-title">🌱 สวนพักผ่อน</div>
                     <label class="settings-row" for="garden-enable-check" style="cursor:pointer;">
-                        <span class="settings-row-label">แสดงต้นไม้ในหน้าหลัก</span>
+                        <span class="settings-row-label">แสดงสวนผักและต้นไม้ในหน้าหลัก</span>
                         <span class="toggle-switch"><input type="checkbox" id="garden-enable-check" onchange="toggleGardenEnabled(this.checked)"><span class="toggle-slider"></span></span>
                     </label>
-                    <p class="settings-hint">ต้นไม้จะโตขึ้นตามสตรีคที่ทำได้ และเหี่ยวถ้าพักเกินโควตา ปิดไว้ได้ถ้าไม่อยากให้กินพื้นที่หน้าจอ</p>
+                    <p class="settings-hint">ต้นไม้โตตามสตรีค (ออกดอกวันที่ 3 บานเต็มที่วันที่ 10) ผักในแปลงโตทุกครั้งที่พักไม่เกินลิมิต วันที่พักเกินโควตาจะมีหนอนโผล่มา ปิดไว้ได้ถ้าไม่อยากให้กินพื้นที่หน้าจอ</p>
                 </div>
 
                 <div class="settings-section">
@@ -1997,6 +2082,17 @@
             <input type="text" id="search-input" class="field" style="font-size:14px; flex-shrink:0;" placeholder="พิมพ์ชื่อกิจกรรม เช่น กาแฟ, ห้องน้ำ..." oninput="renderSearchResults()">
             <div class="day-detail-summary" id="search-summary"></div>
             <div class="settings-scroll" id="search-results"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="veg-book" onclick="if(event.target===this) closeVegBook()">
+        <div class="modal-box">
+            <div class="settings-modal-header">
+                <h3>🧺 ผลผลิตของฉัน</h3>
+                <span class="settings-close-btn" onclick="closeVegBook()">✕</span>
+            </div>
+            <div class="veg-book-grid" id="veg-book-grid"></div>
+            <p class="veg-book-summary" id="veg-book-summary"></p>
         </div>
     </div>
 
@@ -2859,10 +2955,11 @@
             if (!el || parade.theme === theme) return;
             parade.el = el; parade.theme = theme;
             parade.critters.forEach(c => c.el.remove());
+            const vegBack = parade.snacks.filter(sn => sn.vegKey && !sn.eaten).map(sn => sn.vegKey); // ผักที่ยังไม่ถูกกินกลับเข้าตะกร้า
+            if (vegBack.length) { veg.pantry.push(...vegBack); saveVeg(); }
             parade.snacks.forEach(sn => sn.el.remove());
             parade.snacks = [];
-            const food = document.getElementById('snack-basket-food');
-            if (food) food.textContent = SNACKS[theme] || '🍪';
+            updateBasketFood();
             parade.width = el.clientWidth;
             const roster = PARADE_ROSTERS[theme] || PARADE_ROSTERS.day;
             const count = Math.max(3, Math.min(7, Math.floor(parade.width / 210)));
@@ -3158,7 +3255,7 @@
             const el = document.getElementById('badge-celebrate');
             if (!el) return;
             document.getElementById('bc-badge').textContent = badge.icon;
-            document.getElementById('bc-label').textContent = `${badge.label} (พักไม่เกินโควตา ${badge.days} วันติด)`;
+            document.getElementById('bc-label').textContent = badge.desc || `${badge.label} (พักไม่เกินโควตา ${badge.days} วันติด)`;
             const roster = PARADE_ROSTERS[currentTheme()] || PARADE_ROSTERS.day;
             document.getElementById('bc-crew').innerHTML = [0, 1, 2].map(i => `<div>${roster[i % roster.length].svg}</div>`).join('');
             el.classList.add('show');
@@ -3214,9 +3311,11 @@
         function createSnack(state) {
             const el = document.createElement('div');
             el.className = 'snack';
-            el.textContent = SNACKS[currentTheme()] || '🍪';
+            const vegKey = veg.pantry.length ? veg.pantry.pop() : null; // ใช้ผักที่ปลูกเองก่อน หมดแล้วค่อยใช้ขนมประจำธีม
+            if (vegKey) { saveVeg(); updateVegTools(); }
+            el.textContent = vegKey ? VEGGIES[vegKey].e : (SNACKS[currentTheme()] || '🍪');
             parade.el.appendChild(el);
-            const sn = { el, x: 18, y: 26, vx: 0, vy: 0, state, w: 28, groundAt: 0, eaten: false, claimedBy: null };
+            const sn = { el, x: 18, y: 26, vx: 0, vy: 0, state, w: 28, groundAt: 0, eaten: false, claimedBy: null, isVeg: !!vegKey, vegKey };
             parade.snacks.push(sn);
             applySnack(sn);
             startParadeLoop();
@@ -3232,7 +3331,7 @@
             removeSnack(sn);
             if (c.target === sn) c.target = null;
             setCritterState(c, 'idle'); c.timer = 1.8;
-            critterSay(c, pick(SNACK_LINES), 1600);
+            critterSay(c, pick(sn.isVeg ? ['ผักสดๆ อร่อย! 😋', 'กรอบอร่อย~', 'ปลูกเองเหรอ เก่งจัง!'] : SNACK_LINES), 1600);
             critterPop(c, ['💖', '😋']);
             flashCritter(c, 'is-jump', 600);
             playSound('pop');
@@ -3540,6 +3639,254 @@
             if (!stickers.length) return;
             const ok = await showConfirmDialog('ต้องการเอาสติกเกอร์ออกทั้งหมดใช่ไหม?', 'เอาสติกเกอร์ออก', '🎀');
             if (ok) { stickers = []; saveStickers(); renderStickers(); }
+        }
+
+        // --- 🥕 แปลงผักพักใจ: พักไม่เกินลิมิต 1 ครั้ง = รดน้ำ 1 ครั้ง = ผักโต 1 ระยะ (3 ครั้งก็เก็บได้) ---
+        const VEGGIES = {
+            carrot: { e: '🥕', name: 'แครอท' }, tomato: { e: '🍅', name: 'มะเขือเทศ' }, corn: { e: '🌽', name: 'ข้าวโพด' },
+            cabbage: { e: '🥬', name: 'ผักกาด' }, chili: { e: '🌶️', name: 'พริก' }, strawberry: { e: '🍓', name: 'สตรอว์เบอร์รี' },
+            pumpkin: { e: '🎃', name: 'ฟักทอง' }, watermelon: { e: '🍉', name: 'แตงโม' }, tangerine: { e: '🍊', name: 'ส้ม' },
+            broccoli: { e: '🥦', name: 'บรอกโคลี' }, grape: { e: '🍇', name: 'องุ่น' }, cherry: { e: '🍒', name: 'เชอร์รี' }, banana: { e: '🍌', name: 'กล้วย' }
+        };
+        const BASE_VEGGIES = ['carrot', 'tomato', 'corn', 'cabbage', 'chili', 'strawberry'];
+        // เมล็ดพิเศษที่ปลูกได้เฉพาะตอนใช้ธีมเทศกาลนั้น
+        const SEASON_VEGGIE = { halloween: 'pumpkin', songkran: 'watermelon', cny: 'tangerine', christmas: 'broccoli', newyear: 'grape', valentine: 'cherry', loykrathong: 'banana' };
+        const VEG_READY = 3, VEG_GROW_MS = 60 * 60 * 1000, VEG_WATER_COOLDOWN = 30 * 60 * 1000, VEG_PANTRY_MAX = 30;
+        const VEG_STAGE_NAMES = ['เมล็ด', 'ต้นอ่อน', 'กำลังโต'];
+        const VEG_PEST = `<svg viewBox="0 0 40 20"><path d="M29 4.5l-1.5-3M33 4.5l1.5-3" stroke="#6BA84A" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="8" cy="13" r="5" fill="#9BDB6A"/><circle cx="15" cy="12" r="5.5" fill="#8BD45A"/><circle cx="22.5" cy="12" r="5.5" fill="#9BDB6A"/>
+            <circle cx="31" cy="10.5" r="6.5" fill="#B5E77F"/><circle cx="29.5" cy="9.5" r="1.3" fill="#2B2140"/><circle cx="33.5" cy="9.5" r="1.3" fill="#2B2140"/>
+            <ellipse cx="27.6" cy="12.6" rx="1.6" ry="1" fill="#FF9DB8"/><path d="M30 13q1.5 1.3 3 0" stroke="#2B2140" stroke-width="1" fill="none" stroke-linecap="round"/></svg>`;
+        function emptyPlot() { return { seed: null, stage: 0, golden: false, pest: false, lastGrowAt: Date.now() }; }
+        function loadVeg() {
+            let v = null;
+            try { v = JSON.parse(localStorage.getItem('veggie_garden') || 'null'); } catch (e) {}
+            if (!v || typeof v !== 'object') v = {};
+            const plots = [0, 1, 2].map(i => {
+                const p = (Array.isArray(v.plots) && v.plots[i]) || {};
+                if (!VEGGIES[p.seed]) return emptyPlot();
+                return { seed: p.seed, stage: Math.min(VEG_READY, Math.max(0, Math.floor(+p.stage) || 0)), golden: !!p.golden, pest: !!p.pest, lastGrowAt: +p.lastGrowAt || Date.now() };
+            });
+            const harvest = {};
+            Object.keys(VEGGIES).forEach(k => { const n = v.harvest && +v.harvest[k]; if (n > 0) harvest[k] = Math.floor(n); });
+            return {
+                plots, harvest, golden: Math.max(0, Math.floor(+v.golden || 0)), lastWaterAt: +v.lastWaterAt || 0,
+                pantry: Array.isArray(v.pantry) ? v.pantry.filter(k => VEGGIES[k]).slice(-VEG_PANTRY_MAX) : [],
+                pestDay: typeof v.pestDay === 'string' ? v.pestDay : '', badge: !!v.badge
+            };
+        }
+        let veg = loadVeg();
+        function saveVeg() { safeSetItem('veggie_garden', JSON.stringify(veg)); }
+
+        function vegPlotSVG(p) {
+            const soil = `<ellipse cx="40" cy="60" rx="34" ry="9" fill="#7A4E2D"/><ellipse cx="40" cy="57" rx="31" ry="7" fill="#9C6B43"/>`
+                + `<circle cx="26" cy="57" r="1.2" fill="#6B4226"/><circle cx="53" cy="58" r="1.2" fill="#6B4226"/><circle cx="40" cy="60" r="1" fill="#6B4226"/>`;
+            let plant = '';
+            if (p.seed && p.stage === 0) plant = `<ellipse cx="40" cy="54" rx="7" ry="3.5" fill="#6B4226"/><circle cx="40" cy="52" r="2" fill="#E8C27A"/>`;
+            if (p.seed && p.stage === 1) plant = `<path d="M40 56V44" stroke="#3E9A5E" stroke-width="2.6" stroke-linecap="round"/><ellipse cx="34.5" cy="42" rx="6" ry="3.4" fill="#6BCB5B" transform="rotate(-30 34.5 42)"/><ellipse cx="45.5" cy="42" rx="6" ry="3.4" fill="#6BCB5B" transform="rotate(30 45.5 42)"/>`;
+            if (p.seed && p.stage >= 2) plant = `<path d="M40 57V30" stroke="#3E9A5E" stroke-width="3" stroke-linecap="round"/>`
+                + `<ellipse cx="31" cy="44" rx="10" ry="4.6" fill="#5CB85C" transform="rotate(-28 31 44)"/><ellipse cx="49" cy="44" rx="10" ry="4.6" fill="#5CB85C" transform="rotate(28 49 44)"/>`
+                + `<ellipse cx="33" cy="34" rx="8" ry="4" fill="#6BCB5B" transform="rotate(-35 33 34)"/><ellipse cx="47" cy="34" rx="8" ry="4" fill="#6BCB5B" transform="rotate(35 47 34)"/>`;
+            return `<svg viewBox="0 0 80 72" aria-hidden="true">${soil}<g class="veg-sway">${plant}</g></svg>`;
+        }
+        function vegPlotLabel(p) {
+            if (p.pest) return 'มีหนอน! แตะไล่';
+            if (!p.seed) return '';
+            if (p.stage >= VEG_READY) return p.golden ? '✨ ผักทอง!' : 'พร้อมเก็บ!';
+            return VEG_STAGE_NAMES[p.stage];
+        }
+        function setVegProgress(text) {
+            const el = document.getElementById('veg-progress');
+            if (el) el.textContent = text;
+        }
+        function vegDefaultProgress() {
+            if (veg.plots.some(p => p.pest)) return 'มีหนอนแอบกินผัก แตะที่แปลงเพื่อไล่ก่อนนะ 🐛';
+            if (veg.plots.some(p => p.seed && p.stage >= VEG_READY)) return 'มีผักพร้อมเก็บ! แตะที่แปลงเพื่อเก็บเลย';
+            const growing = veg.plots.filter(p => p.seed);
+            if (!growing.length) return 'แตะแปลงว่างเพื่อปลูกผัก แล้วพักให้ดีเพื่อรดน้ำ';
+            const need = Math.min(...growing.map(p => VEG_READY - p.stage));
+            return `พักไม่เกินลิมิตอีก ${need} ครั้งก็เก็บได้ 💧`;
+        }
+        function updateVegTools() {
+            const btn = document.getElementById('veg-water-btn');
+            if (btn) {
+                const wait = VEG_WATER_COOLDOWN - (Date.now() - veg.lastWaterAt);
+                btn.classList.toggle('is-cooling', wait > 0);
+                btn.textContent = wait > 0 ? `💧 อีก ${Math.ceil(wait / 60000)} น.` : '💧 รดน้ำ';
+            }
+            const total = document.getElementById('veg-total');
+            if (total) total.textContent = Object.values(veg.harvest).reduce((a, b) => a + b, 0);
+            updateBasketFood();
+        }
+        function renderVeggies() {
+            const wrap = document.getElementById('veg-plots');
+            if (!wrap) return;
+            wrap.innerHTML = '';
+            veg.plots.forEach((p, i) => {
+                const v = VEGGIES[p.seed], ready = p.seed && p.stage >= VEG_READY;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'veg-plot' + (p.seed ? ` stage-${p.stage}` : ' is-empty') + (ready ? ' is-ready' : '') + (ready && p.golden ? ' is-golden' : '') + (p.pest ? ' has-pest' : '');
+                btn.setAttribute('aria-label', p.seed ? `แปลงที่ ${i + 1}: ${v.name} ${vegPlotLabel(p)}` : `แปลงที่ ${i + 1}: ว่าง แตะเพื่อปลูก`);
+                btn.innerHTML = vegPlotSVG(p)
+                    + (p.seed && !ready ? `<span class="veg-sign">${v.e}</span>` : '')
+                    + (ready ? `<span class="veg-crop">${v.e}</span>` : '')
+                    + (!p.seed ? '<span class="veg-empty">+ ปลูก</span>' : '')
+                    + (p.pest ? `<span class="veg-pest">${VEG_PEST}</span>` : '')
+                    + `<span class="veg-stage">${vegPlotLabel(p)}</span>`;
+                btn.addEventListener('click', () => onVegPlotTap(i, btn));
+                wrap.appendChild(btn);
+            });
+            setVegProgress(vegDefaultProgress());
+            updateVegTools();
+        }
+        function vegFx(el, emojis) {
+            emojis.forEach((emoji, k) => {
+                const p = document.createElement('span');
+                p.className = 'critter-pop'; p.textContent = emoji;
+                p.style.setProperty('--dx', `${Math.round(rnd(-24, 24))}px`);
+                p.style.animationDelay = `${k * 0.08}s`;
+                el.appendChild(p);
+                setTimeout(() => p.remove(), 1100);
+            });
+        }
+        function onVegPlotTap(i, el) {
+            const p = veg.plots[i];
+            if (p.pest) {
+                p.pest = false; p.lastGrowAt = Date.now(); saveVeg();
+                vegFx(el, ['💨', '✨']); playSound('pop');
+                mascotSay('ไล่หนอนไปแล้ว เก่งมาก! 🐛💨', 2200);
+                setTimeout(renderVeggies, 350);
+                return;
+            }
+            if (!p.seed) { openVegPicker(i); return; }
+            if (p.stage >= VEG_READY) { harvestVeg(i, el); return; }
+            el.classList.remove('nudge'); void el.offsetWidth; el.classList.add('nudge');
+            setVegProgress(`${VEGGIES[p.seed].name}จะโตเมื่อพักไม่เกินลิมิตอีก ${VEG_READY - p.stage} ครั้ง หรือรดน้ำช่วยก็ได้ 💧`);
+        }
+        function openVegPicker(i) {
+            const pk = document.getElementById('veg-picker');
+            if (!pk) return;
+            pk.dataset.plot = i;
+            const seasonal = SEASON_VEGGIE[currentTheme()];
+            const seeds = seasonal ? [seasonal, ...BASE_VEGGIES] : BASE_VEGGIES;
+            pk.innerHTML = '<span class="veg-picker-title">เลือกเมล็ดผัก 🌱</span>' + seeds.map(k =>
+                `<button type="button" class="veg-seed${k === seasonal ? ' is-season' : ''}" data-seed="${k}"><span>${VEGGIES[k].e}</span>${VEGGIES[k].name}${k === seasonal ? ' ✨' : ''}</button>`).join('');
+            pk.querySelectorAll('.veg-seed').forEach(b => b.addEventListener('click', () => plantVeg(b.dataset.seed)));
+            pk.classList.add('open');
+        }
+        function closeVegPicker() {
+            const pk = document.getElementById('veg-picker');
+            if (pk) pk.classList.remove('open');
+        }
+        function plantVeg(key) {
+            const pk = document.getElementById('veg-picker');
+            const i = +pk.dataset.plot;
+            if (!VEGGIES[key] || !veg.plots[i] || veg.plots[i].seed) { closeVegPicker(); return; }
+            veg.plots[i] = { seed: key, stage: 0, golden: Math.random() < 0.1, pest: false, lastGrowAt: Date.now() };
+            saveVeg(); closeVegPicker(); renderVeggies(); playSound('pop');
+            setVegProgress(`ปลูก${VEGGIES[key].name}แล้ว! พักไม่เกินลิมิต 3 ครั้งก็เก็บได้`);
+        }
+        function harvestVeg(i, el) {
+            const p = veg.plots[i], key = p.seed, golden = p.golden;
+            veg.harvest[key] = (veg.harvest[key] || 0) + 1;
+            if (golden) veg.golden += 1;
+            veg.pantry.push(key);
+            if (veg.pantry.length > VEG_PANTRY_MAX) veg.pantry.shift();
+            veg.plots[i] = emptyPlot();
+            saveVeg();
+            const crop = el.querySelector('.veg-crop');
+            if (crop) crop.classList.add('harvested');
+            vegFx(el, golden ? ['✨', '🌟', '✨'] : ['✨', VEGGIES[key].e]);
+            playSound('welcome');
+            mascotSay(golden ? `ว้าว! ได้${VEGGIES[key].name}ทองคำ ✨` : `เก็บ${VEGGIES[key].name}ได้แล้ว! เอาไปป้อนเพื่อนท้ายหน้าได้นะ`, 3000);
+            setTimeout(renderVeggies, 650);
+            if (!veg.badge && BASE_VEGGIES.every(k => (veg.harvest[k] || 0) > 0)) {
+                veg.badge = true; saveVeg();
+                setTimeout(() => showBadgeCelebration({ icon: '🧑‍🌾', desc: 'ชาวสวนตัวจริง: เก็บผักครบทุกชนิดแล้ว!' }), 900);
+            }
+        }
+        // reason: 'break' = พักไม่เกินลิมิต (โตทันที), 'time' = ผ่านไป 1 ชั่วโมงแล้วโตเอง
+        function growVeggies(reason) {
+            const now = Date.now();
+            let grew = false, ready = false;
+            veg.plots.forEach(p => {
+                if (!p.seed || p.pest || p.stage >= VEG_READY) return;
+                if (reason === 'break') { p.stage += 1; p.lastGrowAt = now; }
+                else {
+                    // นับย้อนหลังด้วย เผื่อปิดเว็บไปหลายชั่วโมง ผักก็ยังโตต่อ
+                    const steps = Math.floor((now - p.lastGrowAt) / VEG_GROW_MS);
+                    if (steps < 1) return;
+                    p.stage = Math.min(VEG_READY, p.stage + steps);
+                    p.lastGrowAt += steps * VEG_GROW_MS;
+                }
+                grew = true;
+                if (p.stage >= VEG_READY) ready = true;
+            });
+            if (!grew) { updateVegTools(); return; }
+            saveVeg(); renderVeggies();
+            if (ready && isGardenEnabled()) showToast('🥕 ผักพร้อมเก็บแล้ว! ไปเก็บที่สวนพักผ่อนกัน', 'success', { duration: 4500 });
+        }
+        function waterVeggies() {
+            const now = Date.now(), wait = VEG_WATER_COOLDOWN - (now - veg.lastWaterAt);
+            if (wait > 0) { setVegProgress(`เพิ่งรดน้ำไป รดได้อีกครั้งใน ${Math.ceil(wait / 60000)} นาที`); return; }
+            const growing = veg.plots.filter(p => p.seed && !p.pest && p.stage < VEG_READY);
+            if (!growing.length) { setVegProgress('ยังไม่มีผักที่ต้องรดน้ำ ปลูกผักก่อนนะ 🌱'); return; }
+            veg.lastWaterAt = now;
+            growing.forEach(p => { p.lastGrowAt -= 30 * 60 * 1000; }); // รดน้ำ = ร่นเวลาโตเองลง 30 นาที
+            saveVeg();
+            waterGarden();
+            document.querySelectorAll('.veg-plot').forEach((el, i) => { if (growing.includes(veg.plots[i])) vegFx(el, ['💧', '💧']); });
+            playSound('pop');
+            growVeggies('time');
+            setVegProgress('รดน้ำแล้ว ผักจะโตเร็วขึ้น 💧');
+            updateVegTools();
+        }
+        // วันที่พักเกินโควตา หนอนจะโผล่มาในแปลงที่ยังไม่โตเต็มที่ (ผักไม่ตาย แค่หยุดโตจนกว่าจะไล่)
+        function addVeggiePests(dayKey) {
+            if (veg.pestDay === dayKey) return;
+            veg.pestDay = dayKey;
+            let added = false;
+            veg.plots.forEach(p => { if (p.seed && p.stage < VEG_READY && !p.pest) { p.pest = true; added = true; } });
+            saveVeg();
+            if (!added) return;
+            renderVeggies();
+            if (isGardenEnabled()) mascotSay('มีหนอนแอบเข้าแปลงผัก! ไปไล่เร็ว 🐛', 3500);
+        }
+        function updateBasketFood() {
+            const food = document.getElementById('snack-basket-food');
+            if (!food) return;
+            food.textContent = veg.pantry.length ? VEGGIES[veg.pantry[veg.pantry.length - 1]].e : (SNACKS[currentTheme()] || '🍪');
+            let badge = document.getElementById('snack-count');
+            if (veg.pantry.length) {
+                if (!badge) { badge = document.createElement('span'); badge.id = 'snack-count'; badge.className = 'snack-count'; food.parentElement.appendChild(badge); }
+                badge.textContent = veg.pantry.length;
+            } else if (badge) badge.remove();
+        }
+        function openVegBook() {
+            const grid = document.getElementById('veg-book-grid');
+            const keys = [...BASE_VEGGIES, ...Object.values(SEASON_VEGGIE)];
+            grid.innerHTML = keys.map(k => {
+                const n = veg.harvest[k] || 0;
+                return `<div class="veg-book-item${n ? '' : ' locked'}"><span>${VEGGIES[k].e}</span><small>${VEGGIES[k].name}</small><b>${n}</b></div>`;
+            }).join('');
+            const got = BASE_VEGGIES.filter(k => veg.harvest[k]).length;
+            const total = Object.values(veg.harvest).reduce((a, b) => a + b, 0);
+            document.getElementById('veg-book-summary').innerHTML =
+                `เก็บไปแล้วทั้งหมด <strong>${total}</strong> ชิ้น · ผักทอง ✨ <strong>${veg.golden}</strong> ชิ้น<br>`
+                + `ผักหลักครบ <strong>${got}/${BASE_VEGGIES.length}</strong> ชนิด${veg.badge ? ' 🧑‍🌾 ได้ป้ายชาวสวนตัวจริงแล้ว!' : ' (ครบแล้วได้ป้ายพิเศษ 🧑‍🌾)'}<br>`
+                + `ผักในตะกร้าขนม <strong>${veg.pantry.length}</strong> ชิ้น ลากไปป้อนเพื่อนท้ายหน้าได้เลย`;
+            document.getElementById('veg-book').style.display = 'flex';
+        }
+        function closeVegBook() { document.getElementById('veg-book').style.display = 'none'; }
+        function initVeggies() {
+            renderVeggies();
+            growVeggies('time');
+            setInterval(() => growVeggies('time'), 60 * 1000);
+            document.addEventListener('pointerdown', (e) => {
+                const pk = document.getElementById('veg-picker');
+                if (pk && pk.classList.contains('open') && !pk.contains(e.target) && !e.target.closest('.veg-plot')) closeVegPicker();
+            });
         }
 
         SEASON_DECOR.valentine = () => {
@@ -4125,6 +4472,8 @@
                     setTimeout(() => showToast(`🚻 เข้าห้องน้ำเกินเวลาฟรี ${freeMin} นาที ส่วนเกิน ${diffMins - freeMin} นาที จะถูกหักจากโควตาเวลาพัก`, 'warning', { duration: 6000 }), 700);
                 }
             }
+            // พักดี = ไม่เกินลิมิต และถ้าเป็นห้องน้ำต้องไม่เกินเวลาฟรี
+            const goodBreak = withinLimit && !(activeBreak.isToilet && diffMins > getToiletFreeMinutes());
             saveLog(activeBreak.action, activeBreak.startStr, getThaiTimeString(new Date()), diffMins, activeBreak.isToilet);
             activeBreak = null;
             document.body.classList.remove('on-break', 'break-over');
@@ -4133,7 +4482,7 @@
             cardElement.classList.remove('expanded', 'has-target', 'is-warn', 'is-over');
             setTimeout(() => { showSuccessOverlay(cardElement, 'ยินดีต้อนรับกลับมา! 🏠', textToCopy, 1500); }, 100);
             cheerMascot();
-            if (withinLimit) setTimeout(waterGarden, 400);
+            if (goodBreak) { growVeggies('break'); setTimeout(waterGarden, 400); }
         }
 
         function saveLog(action, start, end, duration, isToilet) {
@@ -4343,6 +4692,7 @@
             if (water) water.style.transform = `translateY(${(87 - 74 * progressRatio).toFixed(1)}px)`; // เต็ม = 13, หมด = 87 (ขอบวงในของวงแหวน)
             ring.closest('.quota-ring-wrap').classList.toggle('is-low', progressRatio < 0.25);
             updateMascot(remain, dailyQuota, totalUsed);
+            if (totalUsed > dailyQuota) addVeggiePests(today);
 
             checkQuotaWarning(remain, dailyQuota);
             const dailyStats = buildDailyStats(logs);
@@ -4786,10 +5136,10 @@
             hint.textContent = `${streak} วัน`;
 
             const maxPairs = 6;
-            const leafPairs = Math.min(Math.floor(streak / 2) + (streak > 0 ? 1 : 0), maxPairs);
+            const leafPairs = Math.min(streak, maxPairs); // ใบงอกเพิ่มทุกวัน
             const stemBaseY = 145, stemTopY = stemBaseY - 26 - leafPairs * 14;
-            const hasFlower = streak >= 7;
-            const bigFlower = streak >= 30;
+            const hasFlower = streak >= 3;
+            const bigFlower = streak >= 10;
             const flowerScale = bigFlower ? 1.35 : 1;
 
             let leavesSvg = '';
@@ -4822,7 +5172,7 @@
             let butterflySvg = '';
             if (!isOverQuotaToday && streak >= 1) {
                 butterflySvg += buildButterfly('', 'var(--accent)');
-                if (streak >= 14) butterflySvg += buildButterfly('b2', 'var(--accent2)');
+                if (streak >= 7) butterflySvg += buildButterfly('b2', 'var(--accent2)');
             }
 
             svg.innerHTML = `
@@ -4893,7 +5243,8 @@
                 shift_boundary_time: localStorage.getItem('shift_boundary_time') || '09:30',
                 earned_badges: JSON.parse(localStorage.getItem('earned_badges') || '[]'),
                 toilet_free_minutes: localStorage.getItem('toilet_free_minutes') || '10',
-                garden_enabled: localStorage.getItem('garden_enabled') || 'false',
+                garden_enabled: isGardenEnabled() ? 'true' : 'false',
+                veggie_garden: veg,
                 stickers: JSON.parse(localStorage.getItem('stickers') || '[]')
             };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -4926,6 +5277,7 @@
                     if (typeof data.toilet_free_minutes !== 'undefined') safeSetItem('toilet_free_minutes', data.toilet_free_minutes);
                     if (typeof data.garden_enabled !== 'undefined') safeSetItem('garden_enabled', data.garden_enabled);
                     if (Array.isArray(data.stickers)) safeSetItem('stickers', JSON.stringify(data.stickers));
+                    if (data.veggie_garden && typeof data.veggie_garden === 'object') safeSetItem('veggie_garden', JSON.stringify(data.veggie_garden));
                     showToast('นำเข้าข้อมูลสำเร็จ! กำลังโหลดหน้าใหม่', 'success');
                     setTimeout(() => location.reload(), 1200);
                 } catch (err) {
@@ -5010,9 +5362,9 @@
             scene.addEventListener('pointercancel', resetStem);
         }
 
-        // --- 🌱 เปิด/ปิดการแสดงสวนพักผ่อนจากหน้าตั้งค่า (ปิดไว้เป็นค่าเริ่มต้น) ---
+        // --- 🌱 เปิด/ปิดการแสดงสวนพักผ่อนจากหน้าตั้งค่า (เปิดเป็นค่าเริ่มต้น คนที่เคยปิดเองยังปิดอยู่) ---
         function isGardenEnabled() {
-            return localStorage.getItem('garden_enabled') === 'true';
+            return localStorage.getItem('garden_enabled') !== 'false';
         }
         function applyGardenVisibility(enabled) {
             const card = document.getElementById('garden-card');
@@ -5054,6 +5406,7 @@
             initSnackBasket();
             initSky();
             loadStickers(); renderStickers();
+            initVeggies();
         };
 
         // --- 🔄 ซิงก์ข้อมูลข้ามแท็บ กันข้อมูลเก่าจากแท็บที่ค้างอยู่ไปทับข้อมูลใหม่โดยไม่ตั้งใจ ---
@@ -5065,6 +5418,7 @@
                 renderDashboardAndLogs();
                 if (currentDetailDate) renderDayDetailContent();
             }
+            if (e.key === 'veggie_garden') { veg = loadVeg(); renderVeggies(); }
             if (e.key === 'active_break_state') {
                 if (e.newValue && !activeBreak) {
                     restoreActiveBreakIfAny(); // แท็บอื่นเริ่มพัก ให้แท็บนี้โชว์สถานะเดียวกัน
