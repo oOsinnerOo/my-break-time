@@ -1271,48 +1271,6 @@
         @keyframes ch-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.45); } 50% { box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0); } }
         .challenge-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; font-size: 12px; color: var(--ink-3); font-weight: 600; }
 
-        /* 🫧 ระหว่างพัก: ปุ่มหายใจ ยืดเส้น เสียงผ่อนคลาย */
-        .break-relax { display: none; }
-        .action-card.expanded .break-relax { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2; }
-        .relax-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-        .relax-chip {
-            border: none; cursor: pointer; padding: 9px 15px; border-radius: 999px; font: inherit; font-size: 14px; font-weight: 700;
-            background: rgba(255, 255, 255, 0.65); color: var(--key-ink); box-shadow: 0 6px 14px -10px rgba(0, 0, 0, 0.4); transition: transform 0.15s, background-color 0.2s;
-        }
-        body.is-dark .relax-chip { background: rgba(255, 255, 255, 0.12); color: #FFFFFF; }
-        .relax-chip:hover { transform: translateY(-2px); }
-        .relax-chip.is-on { background: var(--key-edge); color: #FFFFFF; }
-        .ambient-menu { display: none; gap: 6px; flex-wrap: wrap; justify-content: center; }
-        .ambient-menu.open { display: flex; }
-        .ambient-menu .relax-chip { font-size: 13px; padding: 7px 12px; }
-        .relax-overlay {
-            display: none; position: fixed; inset: 0; z-index: 10050; align-items: center; justify-content: center; padding: 16px;
-            background: rgba(var(--shadow-rgb), 0.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        }
-        .relax-overlay.open { display: flex; }
-        .relax-box { position: relative; width: min(420px, 100%); padding: 26px 22px 22px; border-radius: 30px; text-align: center; background: var(--surface-solid); border: 1px solid var(--line); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.5); }
-        .relax-box h3 { margin: 0 0 6px; font-size: 19px; color: var(--ink); }
-        .relax-close { position: absolute; top: 14px; right: 14px; }
-        .relax-sub { margin: 8px 0 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
-        .breath-stage { position: relative; width: 210px; height: 210px; margin: 14px auto 4px; display: flex; align-items: center; justify-content: center; }
-        .breath-circle {
-            position: absolute; inset: 0; border-radius: 50%; transform: scale(0.55); transition-property: transform, box-shadow; transition-timing-function: ease-in-out;
-            background: radial-gradient(circle at 40% 35%, rgba(255, 255, 255, 0.9), rgba(var(--accent-rgb), 0.35) 55%, rgba(var(--accent-rgb), 0.55));
-            box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.3);
-        }
-        .breath-circle.is-in { transform: scale(1); }
-        .breath-circle.is-hold { transform: scale(1); box-shadow: 0 0 0 12px rgba(var(--accent-rgb), 0.12); }
-        .breath-circle.is-out { transform: scale(0.55); }
-        .breath-circle.is-done { transform: scale(0.8); transition-duration: 0.8s; }
-        .breath-text { position: relative; font-family: var(--font-display); font-size: 18px; font-weight: 600; color: var(--ink); }
-        .stretch-emoji { font-size: 64px; line-height: 1.1; margin: 10px 0 2px; animation: emoji-float 3.2s ease-in-out infinite; }
-        .stretch-title { margin: 4px 0 0; font-size: 17px; color: var(--ink); }
-        .stretch-timer { margin: 12px auto 8px; font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--accent-ink); }
-        .stretch-timer span { font-size: 30px; }
-        .stretch-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
-        .stretch-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
-        .stretch-dots i.done { background: rgba(var(--accent-rgb), 0.5); }
-        .stretch-dots i.now { background: var(--accent); transform: scale(1.3); }
         /* ➕ ฟอร์มเพิ่ม/แก้ไขรายการพัก */
         .lf-times { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: 8px; }
         .lf-arrow { padding-bottom: 13px; font-weight: 700; color: var(--ink-3); }
@@ -2566,13 +2524,6 @@
             <div class="shop-tabs" id="shop-tabs" role="tablist" aria-label="หมวดสินค้า"></div>
             <div class="shop-grid" id="shop-grid"></div>
             <p class="shop-note">ได้เหรียญจากการเก็บผัก (ผักทอง ✨ = 5 เหรียญ · ผักหายาก = 2) และทำชาเลนจ์ประจำสัปดาห์</p>
-        </div>
-    </div>
-
-    <div class="relax-overlay" id="relax-overlay" role="dialog" aria-modal="true" aria-labelledby="relax-title" onclick="if(event.target===this) closeRelax()">
-        <div class="relax-box">
-            <button type="button" class="settings-close-btn relax-close" onclick="closeRelax()" aria-label="ปิด">✕</button>
-            <div id="relax-content"></div>
         </div>
     </div>
 
@@ -4312,6 +4263,7 @@
             if (stickers.length >= MAX_STICKERS) { showToast(`แปะได้สูงสุด ${MAX_STICKERS} ชิ้นนะ`, 'info'); return; }
             stickers.push({ e: emoji, x: cx / pageWidth(), y: cy + window.scrollY, r: Math.round(rnd(-14, 14)), s: Math.round(rnd(30, 40)) });
             saveStickers(); renderStickers(); playSound('pop');
+            bumpChallenge('sticker');
         }
         function renderStickerTray() {
             const grid = document.getElementById('sticker-grid');
@@ -4742,7 +4694,7 @@
             if (tray && tray.classList.contains('open')) renderStickerTray();
         }
 
-        // --- 🏆 ชาเลนจ์ประจำสัปดาห์: สัปดาห์ละ 3 อย่าง (งาน · สวน · ผ่อนคลาย) ทำครบได้เหรียญ ---
+        // --- 🏆 ชาเลนจ์ประจำสัปดาห์: สัปดาห์ละ 3 อย่าง (งาน · สวน · นิสัยดี) ทำครบได้เหรียญ ---
         const CHALLENGE_POOL = [
             { id: 'quota5', kind: 'work', icon: '🎯', text: 'อยู่ในโควตา 5 วัน', goal: 5, reward: 15, stat: 'daysWithin' },
             { id: 'quotaRun3', kind: 'work', icon: '🔥', text: 'อยู่ในโควตาติดกัน 3 วันทำงาน', goal: 3, reward: 12, stat: 'bestRun' },
@@ -4752,12 +4704,12 @@
             { id: 'golden1', kind: 'fun', icon: '✨', text: 'เก็บผักทองได้ 1 ชิ้น', goal: 1, reward: 15, counter: 'golden' },
             { id: 'feed5', kind: 'fun', icon: '🧺', text: 'ป้อนผักให้เพื่อนท้ายหน้า 5 ครั้ง', goal: 5, reward: 8, counter: 'feed' },
             { id: 'water3', kind: 'fun', icon: '💧', text: 'รดน้ำผัก 3 ครั้ง', goal: 3, reward: 6, counter: 'water' },
-            { id: 'relax3', kind: 'calm', icon: '🫧', text: 'ฝึกหายใจหรือยืดเส้นระหว่างพัก 3 ครั้ง', goal: 3, reward: 12, counter: 'relax' },
-            { id: 'stretch2', kind: 'calm', icon: '🙆', text: 'ยืดเส้นจนครบชุด 2 ครั้ง', goal: 2, reward: 12, counter: 'stretch' },
-            { id: 'sound2', kind: 'calm', icon: '🎧', text: 'ฟังเสียงผ่อนคลายระหว่างพัก 2 ครั้ง', goal: 2, reward: 8, counter: 'sound' }
+            { id: 'onTime5', kind: 'habit', icon: '⏰', text: 'กลับจากพักตรงเวลา (ไม่เกินลิมิต) 5 ครั้ง', goal: 5, reward: 10, counter: 'onTime' },
+            { id: 'report2', kind: 'habit', icon: '📊', text: 'เปิดดูรายงานสรุปแบบละเอียด 2 ครั้ง', goal: 2, reward: 6, counter: 'report' },
+            { id: 'sticker3', kind: 'habit', icon: '🎀', text: 'แปะสติกเกอร์ 3 อัน', goal: 3, reward: 6, counter: 'sticker' }
         ];
         const CHALLENGE_BONUS = 10;
-        const CHALLENGE_COUNTERS = ['harvest', 'golden', 'feed', 'water', 'relax', 'stretch', 'sound'];
+        const CHALLENGE_COUNTERS = ['harvest', 'golden', 'feed', 'water', 'onTime', 'report', 'sticker'];
         function weekStartKey(d = new Date()) {
             const s = new Date(d.getFullYear(), d.getMonth(), d.getDate());
             s.setDate(s.getDate() - ((s.getDay() + 6) % 7)); // สัปดาห์เริ่มวันจันทร์
@@ -4779,7 +4731,7 @@
         function weekChallenges(week = chal.week) {
             let h = 7;
             for (const ch of week) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-            return ['work', 'fun', 'calm'].map((kind, k) => {
+            return ['work', 'fun', 'habit'].map((kind, k) => {
                 const list = CHALLENGE_POOL.filter(c => c.kind === kind);
                 return list[(h >>> (k * 4)) % list.length];
             });
@@ -4844,182 +4796,6 @@
             mascotSay(allDone ? 'เก่งมาก ครบทุกชาเลนจ์เลย! 🏆' : 'เย้! ได้เหรียญแล้ว 🪙', 2600);
         }
 
-        // --- 🫧 ระหว่างพัก: หายใจผ่อนคลาย · ยืดเส้นสั้นๆ · เสียงผ่อนคลาย (สร้างเสียงสดๆ ไม่ต้องโหลดไฟล์) ---
-        const BREATH_PHASES = [['หายใจเข้า…', 4, 'in'], ['กลั้นไว้…', 3, 'hold'], ['หายใจออกช้าๆ…', 6, 'out']];
-        const BREATH_ROUNDS = 3;
-        const STRETCHES = [
-            { e: '🙆', t: 'ยืดแขนขึ้นฟ้า', d: 'ประสานมือ ยืดแขนขึ้นเหนือหัว ค้างไว้ หายใจลึกๆ', s: 15 },
-            { e: '🔄', t: 'หมุนไหล่', d: 'หมุนไหล่ไปข้างหลังช้าๆ 10 รอบ แล้วหมุนกลับมาข้างหน้า', s: 15 },
-            { e: '🙇', t: 'ยืดคอ', d: 'เอียงหัวไปทางขวา ค้างไว้สักพัก แล้วสลับไปทางซ้าย', s: 20 },
-            { e: '🤲', t: 'ยืดข้อมือ', d: 'เหยียดแขนตรง ใช้มืออีกข้างดึงนิ้วเข้าหาตัวเบาๆ แล้วสลับข้าง', s: 20 },
-            { e: '👀', t: 'พักสายตา 20-20-20', d: 'มองไกลๆ สัก 6 เมตร นาน 20 วินาที แล้วกะพริบตาช้าๆ', s: 20 }
-        ];
-        const relax = { mode: null, timers: [], step: 0 };
-        function clearRelaxTimers() { relax.timers.forEach(t => clearTimeout(t)); relax.timers = []; }
-        function openRelax(mode, ev) {
-            if (ev) ev.stopPropagation();
-            clearRelaxTimers();
-            relax.mode = mode; relax.step = 0;
-            document.getElementById('relax-overlay').classList.add('open');
-            if (mode === 'breath') startBreathing(); else showStretch(0);
-        }
-        function closeRelax() {
-            clearRelaxTimers();
-            relax.mode = null;
-            document.getElementById('relax-overlay').classList.remove('open');
-        }
-        function startBreathing() {
-            const box = document.getElementById('relax-content');
-            box.innerHTML = `<h3 id="relax-title">🫧 หายใจผ่อนคลาย</h3>
-                <div class="breath-stage"><div class="breath-circle" id="breath-circle"></div><span class="breath-text" id="breath-text">เตรียมตัว…</span></div>
-                <p class="relax-sub" id="breath-count">นั่งสบายๆ ทำตามวงกลมไปพร้อมกัน</p>`;
-            let t = 1500;
-            for (let r = 0; r < BREATH_ROUNDS; r++) {
-                BREATH_PHASES.forEach(([text, secs, cls]) => {
-                    relax.timers.push(setTimeout(() => {
-                        const circle = document.getElementById('breath-circle');
-                        if (!circle) return;
-                        circle.style.transitionDuration = secs + 's';
-                        circle.className = 'breath-circle is-' + cls;
-                        document.getElementById('breath-text').textContent = text;
-                        document.getElementById('breath-count').textContent = `รอบที่ ${r + 1} จาก ${BREATH_ROUNDS}`;
-                    }, t));
-                    t += secs * 1000;
-                });
-            }
-            relax.timers.push(setTimeout(() => {
-                document.getElementById('breath-text').textContent = 'เยี่ยมเลย 😊';
-                document.getElementById('breath-count').textContent = 'รู้สึกเบาขึ้นไหม พักต่อได้ตามสบายนะ';
-                document.getElementById('breath-circle').className = 'breath-circle is-done';
-                playSound('welcome');
-                bumpChallenge('relax');
-            }, t));
-        }
-        function showStretch(i) {
-            clearRelaxTimers();
-            relax.step = i;
-            const box = document.getElementById('relax-content');
-            if (i >= STRETCHES.length) {
-                box.innerHTML = `<h3 id="relax-title">🙆 ยืดเส้นครบแล้ว!</h3><div class="stretch-emoji">🎉</div>
-                    <p class="relax-sub">ร่างกายสดชื่นขึ้นแล้ว กลับไปทำงานต่อได้อย่างสบายตัว</p>
-                    <div class="modal-btn-group"><button type="button" class="modal-btn btn-primary" onclick="closeRelax()">เสร็จแล้ว</button></div>`;
-                playSound('welcome');
-                bumpChallenge('relax'); bumpChallenge('stretch');
-                return;
-            }
-            const st = STRETCHES[i];
-            box.innerHTML = `<h3 id="relax-title">🙆 ยืดเส้นสั้นๆ</h3>
-                <div class="stretch-emoji">${st.e}</div><h4 class="stretch-title">${st.t}</h4><p class="relax-sub">${st.d}</p>
-                <div class="stretch-timer"><span id="stretch-left">${st.s}</span> วินาที</div>
-                <div class="stretch-dots" aria-label="ท่าที่ ${i + 1} จาก ${STRETCHES.length}">${STRETCHES.map((_, k) => `<i class="${k < i ? 'done' : k === i ? 'now' : ''}"></i>`).join('')}</div>
-                <div class="modal-btn-group"><button type="button" class="modal-btn btn-primary" onclick="showStretch(${i + 1})">ท่าถัดไป →</button></div>`;
-            for (let k = 1; k <= st.s; k++) {
-                relax.timers.push(setTimeout(() => {
-                    const left = document.getElementById('stretch-left');
-                    if (left) left.textContent = st.s - k;
-                    if (k === st.s) { playSound('pop'); showStretch(i + 1); }
-                }, k * 1000));
-            }
-        }
-
-        // เสียงผ่อนคลาย: ฝน (noise กรองความถี่ + เม็ดฝนเปาะแปะ) · คลื่น (เสียงทุ้มดังเบาสลับกันช้าๆ) · ลม (ความถี่เลื่อนไปมา)
-        const AMBIENT_KINDS = [['rain', '🌧️ ฝนตก'], ['waves', '🌊 คลื่นทะเล'], ['wind', '🍃 ลมเย็น']];
-        const ambient = { kind: null, master: null, nodes: [], timers: [], countedFor: null };
-        function makeNoise(type) {
-            const len = audioCtx.sampleRate * 2, buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate), data = buf.getChannelData(0);
-            let last = 0, b0 = 0, b1 = 0, b2 = 0;
-            for (let i = 0; i < len; i++) {
-                const w = Math.random() * 2 - 1;
-                if (type === 'brown') { last = (last + 0.02 * w) / 1.02; data[i] = last * 3.5; }
-                else { b0 = 0.99765 * b0 + w * 0.099; b1 = 0.963 * b1 + w * 0.2965; b2 = 0.57 * b2 + w * 1.0526; data[i] = (b0 + b1 + b2 + w * 0.1848) * 0.18; }
-            }
-            const src = audioCtx.createBufferSource(); src.buffer = buf; src.loop = true;
-            return src;
-        }
-        function startAmbient(kind) {
-            if (isMuted || soundVolume <= 0) { showToast('เปิดเสียงในหน้าตั้งค่าก่อนนะ 🔊', 'info'); return; }
-            stopAmbient(true);
-            try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const now = audioCtx.currentTime;
-                const master = audioCtx.createGain();
-                master.gain.setValueAtTime(0.0001, now);
-                master.gain.exponentialRampToValueAtTime(0.5 * soundVolume, now + 1.5);
-                master.connect(audioCtx.destination);
-                const nodes = [];
-                const lfo = (freq, depth, target) => {
-                    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-                    o.frequency.value = freq; g.gain.value = depth; o.connect(g); g.connect(target); o.start(); nodes.push(o);
-                };
-                if (kind === 'rain') {
-                    const n = makeNoise('pink'), hp = audioCtx.createBiquadFilter(), lp = audioCtx.createBiquadFilter();
-                    hp.type = 'highpass'; hp.frequency.value = 500; lp.type = 'lowpass'; lp.frequency.value = 7000;
-                    n.connect(hp); hp.connect(lp); lp.connect(master); n.start(); nodes.push(n);
-                    const drip = () => {
-                        if (ambient.kind !== 'rain') return;
-                        const t = audioCtx.currentTime, o = audioCtx.createOscillator(), g = audioCtx.createGain();
-                        o.type = 'sine'; o.frequency.setValueAtTime(1800 + Math.random() * 2200, t); o.frequency.exponentialRampToValueAtTime(600, t + 0.06);
-                        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.05, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
-                        o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.08);
-                        ambient.timers.push(setTimeout(drip, 120 + Math.random() * 520));
-                    };
-                    ambient.timers.push(setTimeout(drip, 400));
-                } else if (kind === 'waves') {
-                    const n = makeNoise('brown'), lp = audioCtx.createBiquadFilter(), swell = audioCtx.createGain();
-                    lp.type = 'lowpass'; lp.frequency.value = 900; swell.gain.value = 0.55;
-                    n.connect(lp); lp.connect(swell); swell.connect(master); n.start(); nodes.push(n);
-                    lfo(0.09, 0.45, swell.gain); lfo(0.09, 350, lp.frequency);
-                } else {
-                    const n = makeNoise('pink'), bp = audioCtx.createBiquadFilter();
-                    bp.type = 'bandpass'; bp.frequency.value = 520; bp.Q.value = 0.9;
-                    n.connect(bp); bp.connect(master); n.start(); nodes.push(n);
-                    lfo(0.06, 320, bp.frequency);
-                }
-                Object.assign(ambient, { kind, master, nodes });
-            } catch (e) { return; }
-            // นับชาเลนจ์ครั้งเดียวต่อการพักหนึ่งครั้ง
-            const breakId = activeBreak ? activeBreak.startTime : null;
-            if (breakId && ambient.countedFor !== breakId) { ambient.countedFor = breakId; bumpChallenge('sound'); }
-            renderAmbientButtons();
-        }
-        function stopAmbient(immediate) {
-            ambient.timers.forEach(t => clearTimeout(t)); ambient.timers = [];
-            const { master, nodes } = ambient;
-            ambient.kind = null; ambient.master = null; ambient.nodes = [];
-            if (master) {
-                try {
-                    const now = audioCtx.currentTime;
-                    master.gain.cancelScheduledValues(now);
-                    master.gain.setValueAtTime(Math.max(0.0001, master.gain.value), now);
-                    master.gain.exponentialRampToValueAtTime(0.0001, now + (immediate ? 0.05 : 0.8));
-                    setTimeout(() => { nodes.forEach(n => { try { n.stop(); } catch (e) {} }); master.disconnect(); }, immediate ? 80 : 900);
-                } catch (e) {}
-            }
-            renderAmbientButtons();
-        }
-        function toggleAmbientMenu(ev) {
-            if (ev) ev.stopPropagation();
-            const card = ev && ev.target.closest('.action-card');
-            const menu = card && card.querySelector('.ambient-menu');
-            if (menu) { menu.classList.toggle('open'); renderAmbientButtons(); }
-        }
-        function pickAmbient(kind, ev) {
-            if (ev) ev.stopPropagation();
-            if (!kind || ambient.kind === kind) stopAmbient(); else startAmbient(kind);
-        }
-        function renderAmbientButtons() {
-            document.querySelectorAll('.ambient-menu').forEach(menu => {
-                menu.innerHTML = AMBIENT_KINDS.map(([k, label]) => `<button type="button" class="relax-chip${ambient.kind === k ? ' is-on' : ''}" onclick="pickAmbient('${k}', event)">${label}</button>`).join('')
-                    + (ambient.kind ? `<button type="button" class="relax-chip" onclick="pickAmbient(null, event)">⏹ ปิดเสียง</button>` : '');
-            });
-            document.querySelectorAll('.relax-sound-btn').forEach(b => b.classList.toggle('is-on', !!ambient.kind));
-        }
-        // จบการพักแล้ว ปิดเสียงและหน้าต่างผ่อนคลายให้เอง
-        function stopRelaxForBreakEnd() {
-            stopAmbient();
-            closeRelax();
-            document.querySelectorAll('.ambient-menu.open').forEach(m => m.classList.remove('open'));
-        }
 
         SEASON_DECOR.valentine = () => {
             const colors = ['#E0245E', '#FF4D6D', '#FF7AA8', '#FFB3C7', '#FF8FA3'];
@@ -5575,14 +5351,6 @@
                     <div class="back-box" role="button" tabindex="0" onclick="endBreak(${index}, this.parentElement, event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();endBreak(${index}, this.parentElement, event);}">
                         <div class="back-title">🏠 กลับมาแล้ว</div>
                     </div>
-                    <div class="break-relax" role="group" aria-label="ผ่อนคลายระหว่างพัก">
-                        <div class="relax-row">
-                            <button type="button" class="relax-chip" onclick="openRelax('breath', event)">🫧 หายใจ</button>
-                            <button type="button" class="relax-chip" onclick="openRelax('stretch', event)">🙆 ยืดเส้น</button>
-                            <button type="button" class="relax-chip relax-sound-btn" onclick="toggleAmbientMenu(event)">🎧 เสียงผ่อนคลาย</button>
-                        </div>
-                        <div class="ambient-menu"></div>
-                    </div>
                     <div class="success-overlay">
                         <div class="success-title result-title">คัดลอกสำเร็จ! ✨</div>
                         <div class="success-text result-text"></div>
@@ -5795,8 +5563,7 @@
             cardElement.classList.remove('expanded', 'has-target', 'is-warn', 'is-over');
             setTimeout(() => { showSuccessOverlay(cardElement, 'ยินดีต้อนรับกลับมา! 🏠', textToCopy, 1500); }, 100);
             cheerMascot();
-            if (goodBreak) { growVeggies('break'); setTimeout(waterGarden, 400); }
-            stopRelaxForBreakEnd();
+            if (goodBreak) { growVeggies('break'); setTimeout(waterGarden, 400); bumpChallenge('onTime'); }
         }
 
         function saveLog(action, start, end, duration, isToilet) {
@@ -6246,6 +6013,7 @@
         }
         function openReportPage() {
             document.getElementById('report-page').style.display = 'flex';
+            bumpChallenge('report');
             document.body.style.overflow = 'hidden';
             reportOpenPeriod = null;
             setReportPeriod(reportPeriodDays);
@@ -7156,7 +6924,6 @@
                     if (cardElement) cardElement.classList.remove('expanded', 'has-target', 'is-warn', 'is-over');
                     document.body.classList.remove('on-break', 'break-over');
                     activeBreak = null;
-                    stopRelaxForBreakEnd();
                 }
             }
         });
