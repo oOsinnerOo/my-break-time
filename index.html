@@ -2,92 +2,164 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ระบบแจ้งเวลาพัก - 888 Edition</title>
-    
+
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#FFE3EE">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#FFE8F1">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* 🎨 โทเคนสีของแต่ละธีม — ทุกคอมโพเนนต์อ่านสีจากตัวแปรชุดนี้ เพิ่มธีมใหม่ได้แค่ประกาศโทเคนชุดใหม่ */
         :root {
-            --accent: #FF5A8C; --accent-rgb: 255, 90, 140;
-            --accent2: #C084FC; --accent2-rgb: 192, 132, 252;
-            --bubble-1: rgba(255, 90, 140, 0.5);
-            --bubble-2: rgba(192, 132, 252, 0.5);
-            --bubble-3: rgba(255, 183, 77, 0.45);
-            --bubble-4: rgba(52, 211, 153, 0.45);
-            --aurora-1: #FFC1D9; --aurora-2: #D8B4FE; --aurora-3: #FFE3A3; --aurora-4: #A7F3D0;
-        }
-        body[data-theme="night"] {
-            --bg-gradient: linear-gradient(135deg, #2B1B3D 0%, #3A2450 35%, #442A5E 70%, #5C3A87 100%);
-        }
-        body[data-theme="ocean"] {
-            --bg-gradient: linear-gradient(135deg, #E0F7FA 0%, #B3ECF5 35%, #A0DEF0 70%, #CDEFFF 100%);
-            --accent: #FF7A59; --accent-rgb: 255, 122, 89;
-            --accent2: #06B6D4; --accent2-rgb: 6, 182, 212;
-            --bubble-1: rgba(255, 122, 89, 0.5); --bubble-2: rgba(6, 182, 212, 0.5);
-            --bubble-3: rgba(255, 214, 102, 0.5); --bubble-4: rgba(255, 255, 255, 0.6);
-            --aurora-1: #FFD3C2; --aurora-2: #A0E9F5; --aurora-3: #FFF3B0; --aurora-4: #BFEFFF;
-        }
-        body[data-theme="forest"] {
-            --bg-gradient: linear-gradient(135deg, #F1F8E9 0%, #DCEDC8 35%, #C8E6C9 70%, #FFF3D6 100%);
-            --accent: #F5A623; --accent-rgb: 245, 166, 35;
-            --accent2: #4CAF7D; --accent2-rgb: 76, 175, 125;
-            --bubble-1: rgba(245, 166, 35, 0.45); --bubble-2: rgba(76, 175, 125, 0.5);
-            --bubble-3: rgba(233, 140, 166, 0.4); --bubble-4: rgba(255, 241, 181, 0.55);
-            --aurora-1: #FFE0A3; --aurora-2: #BFE6C6; --aurora-3: #F6C6D0; --aurora-4: #FFF6DC;
+            --font-display: 'Mitr', 'Anuphan', sans-serif;
+            --font-body: 'Anuphan', 'Mitr', sans-serif;
+
+            /* ☀️ กลางวัน (ค่าเริ่มต้น) */
+            --bg-solid: #FFF3F7;
+            --bg-gradient: linear-gradient(160deg, #FFF7F1 0%, #FFE8F1 36%, #F0E9FF 70%, #E5F0FF 100%);
+            --ink: #2B2140; --ink-2: #594F6E; --ink-3: #776E8C;
+            --line: rgba(89, 79, 110, 0.14);
+            --surface: rgba(255, 255, 255, 0.62); --surface-2: rgba(255, 255, 255, 0.7);
+            --surface-solid: rgba(255, 255, 255, 0.97); --surface-edge: rgba(255, 255, 255, 0.85);
+            --field: #FFFFFF;
+            --shadow-rgb: 76, 42, 96;
+            --accent: #F0487A; --accent-rgb: 240, 72, 122; --accent-ink: #C41D59;
+            --accent2: #8B6CF6; --accent2-rgb: 139, 108, 246;
+            --on-accent: #FFFFFF;
+            --danger: #E11D48; --danger-rgb: 225, 29, 72;
+            --streak: #E8590C;
+            --aurora-1: #FFC4D8; --aurora-2: #D9C6FF; --aurora-3: #FFE2B5; --aurora-4: #C3EEDD;
+            --bubble-1: rgba(240, 72, 122, 0.42); --bubble-2: rgba(139, 108, 246, 0.42);
+            --bubble-3: rgba(255, 176, 72, 0.38); --bubble-4: rgba(45, 200, 150, 0.34);
         }
         body[data-theme="sunset"] {
-            --bg-gradient: linear-gradient(135deg, #FFE0D6 0%, #FFC2D1 35%, #E4B8F5 70%, #C7B8F0 100%);
-            --accent: #FF4D8D; --accent-rgb: 255, 77, 141;
-            --accent2: #8B5CF6; --accent2-rgb: 139, 92, 246;
-            --bubble-1: rgba(255, 77, 141, 0.5); --bubble-2: rgba(139, 92, 246, 0.5);
-            --bubble-3: rgba(255, 175, 89, 0.45); --bubble-4: rgba(255, 214, 235, 0.55);
-            --aurora-1: #FFB4C6; --aurora-2: #D6BBFA; --aurora-3: #FFD08A; --aurora-4: #F5C6E0;
+            --bg-solid: #FFE6EA;
+            --bg-gradient: linear-gradient(160deg, #FFEBDD 0%, #FFD6E0 38%, #EFD6F6 70%, #D9D3FA 100%);
+            --ink: #3A1934; --ink-2: #6E4866; --ink-3: #8D6A86;
+            --line: rgba(110, 72, 102, 0.16);
+            --shadow-rgb: 110, 40, 80;
+            --accent: #F2386F; --accent-rgb: 242, 56, 111; --accent-ink: #C0144E;
+            --accent2: #7B4DFF; --accent2-rgb: 123, 77, 255;
+            --aurora-1: #FFB8C9; --aurora-2: #D4B8FA; --aurora-3: #FFCF92; --aurora-4: #F7C3DF;
+            --bubble-1: rgba(242, 56, 111, 0.42); --bubble-2: rgba(123, 77, 255, 0.4);
+            --bubble-3: rgba(255, 160, 80, 0.4); --bubble-4: rgba(255, 214, 235, 0.5);
+        }
+        body[data-theme="ocean"] {
+            --bg-solid: #E3F6F8;
+            --bg-gradient: linear-gradient(160deg, #EFFBFA 0%, #D5F1F5 38%, #C9E7F5 72%, #E0EBFF 100%);
+            --ink: #0D3040; --ink-2: #3F6170; --ink-3: #5D7E8B;
+            --line: rgba(63, 97, 112, 0.16);
+            --shadow-rgb: 10, 60, 80;
+            --accent: #FF6A4D; --accent-rgb: 255, 106, 77; --accent-ink: #C8432A;
+            --accent2: #0AA3C2; --accent2-rgb: 10, 163, 194;
+            --aurora-1: #FFD2C4; --aurora-2: #A6E8F3; --aurora-3: #FFF0B3; --aurora-4: #BCE3FF;
+            --bubble-1: rgba(255, 106, 77, 0.4); --bubble-2: rgba(10, 163, 194, 0.42);
+            --bubble-3: rgba(255, 210, 100, 0.42); --bubble-4: rgba(255, 255, 255, 0.6);
+        }
+        body[data-theme="forest"] {
+            --bg-solid: #EAF3E2;
+            --bg-gradient: linear-gradient(160deg, #F6FAEE 0%, #E3F0D6 38%, #D8EBD4 70%, #FBF3DE 100%);
+            --ink: #1C3224; --ink-2: #4A6252; --ink-3: #66806D;
+            --line: rgba(74, 98, 82, 0.16);
+            --shadow-rgb: 30, 70, 40;
+            --accent: #E4850E; --accent-rgb: 228, 133, 14; --accent-ink: #A65C05;
+            --accent2: #3A9867; --accent2-rgb: 58, 152, 103;
+            --aurora-1: #FFE0A6; --aurora-2: #BEE5C4; --aurora-3: #F5C9D2; --aurora-4: #FFF4D8;
+            --bubble-1: rgba(228, 133, 14, 0.38); --bubble-2: rgba(58, 152, 103, 0.42);
+            --bubble-3: rgba(233, 140, 166, 0.36); --bubble-4: rgba(255, 241, 181, 0.5);
+        }
+        body[data-theme="minimal"] {
+            --bg-solid: #F2F3F6;
+            --bg-gradient: linear-gradient(160deg, #F8F8FA 0%, #F1F2F6 50%, #EAECF2 100%);
+            --ink: #1B1F2C; --ink-2: #4E5466; --ink-3: #6B7183;
+            --line: rgba(27, 31, 44, 0.1);
+            --surface: rgba(255, 255, 255, 0.78); --surface-2: rgba(246, 247, 250, 0.95);
+            --shadow-rgb: 30, 35, 55;
+            --accent: #5555D6; --accent-rgb: 85, 85, 214; --accent-ink: #4040BF;
+            --accent2: #0E9F9A; --accent2-rgb: 14, 159, 154;
+            --aurora-1: #E4E4F7; --aurora-2: #DDEFF0; --aurora-3: #F3EDE4; --aurora-4: #E8E8EE;
+            --bubble-1: rgba(85, 85, 214, 0.2); --bubble-2: rgba(14, 159, 154, 0.2);
+            --bubble-3: rgba(150, 150, 170, 0.18); --bubble-4: rgba(255, 255, 255, 0.5);
+        }
+        body[data-theme="night"] {
+            --bg-solid: #1E1636;
+            --bg-gradient: linear-gradient(160deg, #191230 0%, #231940 40%, #2E2052 74%, #3A2766 100%);
+            --ink: #F6F2FF; --ink-2: #CEC5E8; --ink-3: #A49ABF;
+            --line: rgba(255, 255, 255, 0.1);
+            --surface: rgba(40, 30, 68, 0.58); --surface-2: rgba(255, 255, 255, 0.06);
+            --surface-solid: rgba(38, 29, 66, 0.97); --surface-edge: rgba(255, 255, 255, 0.1);
+            --field: rgba(255, 255, 255, 0.07);
+            --shadow-rgb: 5, 2, 15;
+            --accent: #FF6B9D; --accent-rgb: 255, 107, 157; --accent-ink: #FF92B6;
+            --accent2: #B69BFF; --accent2-rgb: 182, 155, 255;
+            --danger: #FB7185; --danger-rgb: 251, 113, 133;
+            --streak: #FDA45C;
+            --aurora-1: #7B2F72; --aurora-2: #4B2E95; --aurora-3: #8A4366; --aurora-4: #2C4A85;
+            --bubble-1: rgba(255, 107, 157, 0.35); --bubble-2: rgba(182, 155, 255, 0.35);
+            --bubble-3: rgba(253, 164, 92, 0.3); --bubble-4: rgba(255, 255, 255, 0.18);
+        }
+        body[data-theme="galaxy"] {
+            --bg-solid: #0E1530;
+            --bg-gradient: linear-gradient(160deg, #090E22 0%, #0F1736 40%, #152049 74%, #1C295C 100%);
+            --ink: #EDF2FF; --ink-2: #B9C5E7; --ink-3: #8F9CC4;
+            --line: rgba(255, 255, 255, 0.1);
+            --surface: rgba(19, 28, 62, 0.58); --surface-2: rgba(255, 255, 255, 0.06);
+            --surface-solid: rgba(18, 26, 58, 0.97); --surface-edge: rgba(255, 255, 255, 0.1);
+            --field: rgba(255, 255, 255, 0.07);
+            --shadow-rgb: 0, 3, 14;
+            --accent: #3CD3F2; --accent-rgb: 60, 211, 242; --accent-ink: #72E1F8;
+            --accent2: #A68BFA; --accent2-rgb: 166, 139, 250;
+            --on-accent: #071230;
+            --danger: #FB7185; --danger-rgb: 251, 113, 133;
+            --streak: #FDBA74;
+            --aurora-1: #1B4A8F; --aurora-2: #4A2C8C; --aurora-3: #0B6B85; --aurora-4: #6B2B7B;
+            --bubble-1: rgba(60, 211, 242, 0.32); --bubble-2: rgba(166, 139, 250, 0.34);
+            --bubble-3: rgba(244, 114, 182, 0.28); --bubble-4: rgba(255, 255, 255, 0.18);
         }
 
-        * {
-            box-sizing: border-box;
-            transition: background-color 0.4s, box-shadow 0.4s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s, border-color 0.3s;
-        }
+        * { box-sizing: border-box; }
+        /* เปลี่ยนธีมแล้วสีค่อยๆ ไล่เปลี่ยนตาม (คอมโพเนนต์ที่ประกาศ transition เองจะใช้ของตัวเองแทน) */
+        body, body * { transition: background-color 0.45s ease, border-color 0.35s ease, color 0.35s ease; }
 
+        html { background: var(--bg-solid); }
         body {
-            font-family: 'Kanit', sans-serif;
-            display: flex; flex-direction: column; align-items: center;
-            padding: 20px; margin: 0; min-height: 100vh;
-            background: linear-gradient(135deg, #FFF6E9 0%, #FFE3EE 35%, #F1E6FF 70%, #E6F3FF 100%);
-            background: var(--bg-gradient, linear-gradient(135deg, #FFF6E9 0%, #FFE3EE 35%, #F1E6FF 70%, #E6F3FF 100%));
-            transition: background 0.7s ease, color 0.5s ease;
+            font-family: var(--font-body); color: var(--ink);
+            margin: 0; min-height: 100vh; min-height: 100dvh;
+            padding: max(18px, env(safe-area-inset-top)) 16px 48px;
+            background: var(--bg-gradient);
+            -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
         }
-        
-        body[data-theme="night"] { color: #f8fafc; }
+        button { font-family: inherit; }
+        h1, h2, h3 { font-family: var(--font-display); font-weight: 500; }
+        :focus-visible { outline: 3px solid rgba(var(--accent-rgb), 0.55); outline-offset: 3px; }
 
-        /* 🎀 สกอลบาร์น่ารักเข้าธีม */
+        /* 🎀 สกอลบาร์เข้าธีม */
         ::-webkit-scrollbar { width: 10px; height: 10px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb {
             background: linear-gradient(180deg, var(--accent), var(--accent2)); border-radius: 20px;
-            border: 2px solid rgba(255,255,255,0.5);
+            border: 3px solid transparent; background-clip: padding-box;
         }
-        ::-webkit-scrollbar-thumb:hover { filter: brightness(1.1); }
-        * { scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+        * { scrollbar-width: thin; scrollbar-color: rgba(var(--accent-rgb), 0.6) transparent; }
 
-        /* 💬 ทูลทิปน่ารักๆ แทน title="" ของเบราว์เซอร์ */
+        /* 💬 ทูลทิปแทน title="" ของเบราว์เซอร์ (สีกลับด้านกับธีมอัตโนมัติ) */
         [data-tooltip] { position: relative; }
         [data-tooltip]::after {
             content: attr(data-tooltip); position: absolute; bottom: calc(100% + 9px); left: 50%;
             transform: translateX(-50%) translateY(4px) scale(0.85); white-space: nowrap;
-            background: #1e293b; color: #fff; font-size: 11px; font-weight: 600; font-family: 'Kanit', sans-serif;
+            background: var(--ink); color: var(--bg-solid); font-size: 11.5px; font-weight: 600; font-family: var(--font-body);
             padding: 6px 10px; border-radius: 10px; pointer-events: none; z-index: 80;
             opacity: 0; transition: opacity 0.18s, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+            box-shadow: 0 8px 18px -6px rgba(var(--shadow-rgb), 0.4);
         }
         [data-tooltip]::before {
             content: ''; position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%) translateY(4px);
-            border: 5px solid transparent; border-top-color: #1e293b; pointer-events: none; z-index: 80; opacity: 0;
+            border: 5px solid transparent; border-top-color: var(--ink); pointer-events: none; z-index: 80; opacity: 0;
             transition: opacity 0.18s, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         [data-tooltip]:hover::after, [data-tooltip]:hover::before { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
@@ -99,159 +171,274 @@
             opacity: 0; transition: opacity 1.1s ease;
         }
 
-        /* 🌈 เลเยอร์ออโรร่าเคลื่อนไหวช้าๆ ด้านหลังสุด */
+        /* 🌈 ออโรร่าเคลื่อนไหวช้าๆ ด้านหลังสุด */
         .bg-aurora { position: fixed; inset: 0; z-index: -3; overflow: hidden; pointer-events: none; }
         .bg-aurora span {
-            position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55;
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.55;
             animation: aurora-drift ease-in-out infinite alternate;
             transition: background 1.1s ease; will-change: transform;
         }
-        .bg-aurora span:nth-child(1) { width: 55vw; height: 55vw; top: -15%; left: -10%; background: radial-gradient(circle, var(--aurora-1), transparent 70%); animation-duration: 22s; }
-        .bg-aurora span:nth-child(2) { width: 50vw; height: 50vw; bottom: -20%; right: -10%; background: radial-gradient(circle, var(--aurora-2), transparent 70%); animation-duration: 26s; animation-delay: -6s; }
-        .bg-aurora span:nth-child(3) { width: 40vw; height: 40vw; bottom: 10%; left: 5%; background: radial-gradient(circle, var(--aurora-3), transparent 70%); animation-duration: 19s; animation-delay: -3s; }
-        .bg-aurora span:nth-child(4) { width: 38vw; height: 38vw; top: 20%; right: 15%; background: radial-gradient(circle, var(--aurora-4), transparent 70%); animation-duration: 24s; animation-delay: -10s; }
-        body[data-theme="night"] .bg-aurora span { opacity: 0.35; }
+        .bg-aurora span:nth-child(1) { width: 60vw; height: 60vw; top: -18%; left: -14%; background: radial-gradient(circle, var(--aurora-1), transparent 70%); animation-duration: 26s; }
+        .bg-aurora span:nth-child(2) { width: 52vw; height: 52vw; bottom: -22%; right: -12%; background: radial-gradient(circle, var(--aurora-2), transparent 70%); animation-duration: 30s; animation-delay: -6s; }
+        .bg-aurora span:nth-child(3) { width: 42vw; height: 42vw; bottom: 8%; left: 2%; background: radial-gradient(circle, var(--aurora-3), transparent 70%); animation-duration: 23s; animation-delay: -3s; }
+        .bg-aurora span:nth-child(4) { width: 40vw; height: 40vw; top: 18%; right: 12%; background: radial-gradient(circle, var(--aurora-4), transparent 70%); animation-duration: 28s; animation-delay: -10s; }
+        body.is-dark .bg-aurora span { opacity: 0.5; }
         @keyframes aurora-drift {
             0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-            100% { transform: translate(6vw, 8vh) scale(1.25) rotate(25deg); }
+            100% { transform: translate(6vw, 8vh) scale(1.2) rotate(25deg); }
         }
 
         /* ✨ ดาวกระพริบลอยเบาๆ */
         .bg-sparkles { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
         .bg-sparkles span {
             position: absolute; font-size: 16px; animation: sparkle-twinkle ease-in-out infinite;
-            filter: drop-shadow(0 0 4px rgba(255,255,255,0.8));
+            filter: drop-shadow(0 0 4px rgba(255,255,255,0.7));
         }
         @keyframes sparkle-twinkle {
             0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg); }
-            50% { opacity: 1; transform: scale(1.15) rotate(20deg); }
+            50% { opacity: 0.75; transform: scale(1) rotate(20deg); }
         }
 
-        /* ✨ เลเยอร์ฟองสบู่ (ขยับตามเมาส์ได้ด้วย JS) */
+        /* 🫧 ฟองสบู่ลอย (ขยับตามเมาส์ได้ด้วย JS) */
         .bg-bubbles {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -2; overflow: hidden; pointer-events: none; margin: 0; padding: 0;
-            transition: transform 0.1s ease-out; /* สำหรับ Parallax */
+            transition: transform 0.1s ease-out;
         }
         .bg-bubbles li {
             position: absolute; list-style: none; display: block;
-            bottom: -160px; border-radius: 50%; animation: float-bubble linear infinite;
-            background: radial-gradient(circle at 30% 26%, rgba(255,255,255,0.95), var(--tint, rgba(255,90,140,0.45)) 42%, rgba(255,255,255,0) 78%);
-            border: 1px solid rgba(255,255,255,0.45);
-            box-shadow: 0 10px 24px -8px var(--glow, rgba(255,90,140,0.4)), inset 0 0 10px rgba(255,255,255,0.35);
+            bottom: -120px; border-radius: 50%; animation: float-bubble linear infinite;
+            background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.9), var(--tint, rgba(240,72,122,0.4)) 45%, rgba(255,255,255,0) 78%);
+            border: 1px solid rgba(255,255,255,0.4);
+            box-shadow: 0 10px 22px -10px var(--glow, rgba(240,72,122,0.4));
             will-change: transform;
         }
-        body[data-theme="night"] .bg-bubbles li {
-            border-color: rgba(255,255,255,0.15);
-            background: radial-gradient(circle at 30% 26%, rgba(255,255,255,0.55), var(--tint, rgba(192,132,252,0.4)) 45%, rgba(255,255,255,0) 78%);
+        body.is-dark .bg-bubbles li {
+            border-color: rgba(255,255,255,0.12);
+            background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.45), var(--tint, rgba(182,155,255,0.35)) 48%, rgba(255,255,255,0) 78%);
         }
         @keyframes float-bubble {
-            0% { transform: translate(0, 0) scale(0.6) rotate(0deg); opacity: 0; }
-            12% { opacity: var(--peak, 0.85); }
-            50% { transform: translate(var(--dx, 40px), -58vh) scale(1.1) rotate(160deg); }
-            88% { opacity: var(--peak, 0.85); }
-            100% { transform: translate(calc(var(--dx, 40px) * -0.6), -125vh) scale(1.3) rotate(320deg); opacity: 0; }
+            0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+            12% { opacity: var(--peak, 0.6); }
+            50% { transform: translate(var(--dx, 40px), -58vh) scale(1); }
+            88% { opacity: var(--peak, 0.6); }
+            100% { transform: translate(calc(var(--dx, 40px) * -0.6), -125vh) scale(1.15); opacity: 0; }
         }
 
+        /* 📐 เลย์เอาต์: มือถือเป็นคอลัมน์เดียว (เรียงลำดับด้วย order) — จอกว้างแยกเป็น 2 คอลัมน์ */
         .container {
-            display: flex; flex-direction: column; gap: 18px;
-            width: 100%; max-width: 400px; position: relative; z-index: 10;
+            width: 100%; max-width: 460px; margin: 0 auto; position: relative; z-index: 10;
+            display: flex; flex-direction: column; gap: 16px;
+        }
+        .col-side, .col-main { display: contents; }
+        .header-row { order: 0; }
+        .dashboard { order: 1; }
+        .keypad-section { order: 2; }
+        .report-cta { order: 3; }
+        .garden-card { order: 4; }
+        .history-section { order: 5; }
+        .heatmap-section { order: 6; }
+
+        @media (min-width: 980px) {
+            body { padding: 28px 32px 56px; }
+            .container {
+                max-width: 1140px; display: grid; gap: 24px; align-items: start;
+                grid-template-columns: minmax(340px, 392px) minmax(0, 1fr);
+            }
+            .header-row { grid-column: 1 / -1; }
+            .col-side, .col-main { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
         }
 
         /* 🎬 การ์ดเด้งเข้ามาตอนโหลดหน้า */
         @keyframes card-pop-in {
-            0% { opacity: 0; transform: translateY(28px) scale(0.85) rotate(-3deg); }
-            60% { opacity: 1; transform: translateY(-4px) scale(1.03) rotate(1deg); }
-            100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+            0% { opacity: 0; transform: translateY(16px) scale(0.94); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .action-card.card-enter { animation: card-pop-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.4) backwards; }
-
-        /* 🫧 ไอคอนลอยเบาๆ ตลอดเวลาแม้ไม่ hover */
-        @keyframes emoji-idle-float {
-            0%, 100% { transform: translateY(-50%) rotate(-4deg); }
-            50% { transform: translateY(-58%) rotate(4deg); }
+        @keyframes emoji-float {
+            0%, 100% { transform: translateY(0) rotate(-4deg); }
+            50% { transform: translateY(-8px) rotate(4deg); }
         }
-
-        /* ✨ หัวข้อกระดิกเบาๆ */
         @keyframes title-bounce {
             0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-3px) rotate(-2deg); }
-            75% { transform: translateY(1px) rotate(2deg); }
+            25% { transform: translateY(-3px) rotate(-6deg); }
+            75% { transform: translateY(1px) rotate(6deg); }
         }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-        /* 💗 ปุ่มเด้งตอนกด */
-        button, .icon-btn, .theme-toggle, .mute-toggle, .gender-toggle, .notify-toggle, .pagination-btn { transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s, color 0.3s, box-shadow 0.3s; }
-        button:active, .theme-toggle:active, .mute-toggle:active, .gender-toggle:active, .notify-toggle:active { transform: scale(0.9) !important; }
-
-        /* 💎 Glassmorphism UI (ดีไซน์กระจกฝ้า) */
+        /* 💎 พาเนลกระจกฝ้า */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.55);
-            backdrop-filter: blur(22px) saturate(1.7);
-            -webkit-backdrop-filter: blur(22px) saturate(1.7);
-            border: 1px solid rgba(255, 255, 255, 0.65);
-            border-radius: 26px;
+            background: var(--surface);
+            backdrop-filter: blur(22px) saturate(1.5);
+            -webkit-backdrop-filter: blur(22px) saturate(1.5);
+            border: 1px solid var(--surface-edge);
+            border-radius: 28px;
             box-shadow:
-                inset 0 1.5px 0 rgba(255,255,255,0.95),
-                inset 0 -12px 20px -14px rgba(255,255,255,0.5),
-                0 24px 45px -18px rgba(30, 20, 45, 0.16),
-                0 8px 18px -10px rgba(30, 20, 45, 0.08);
+                inset 0 1px 0 rgba(255,255,255,0.5),
+                0 24px 44px -28px rgba(var(--shadow-rgb), 0.35),
+                0 2px 8px -4px rgba(var(--shadow-rgb), 0.08);
             position: relative; isolation: isolate;
         }
-        .glass-panel::before {
-            content: ''; position: absolute; top: 0; left: 18%; right: 18%; height: 1px; z-index: 1;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent);
-            pointer-events: none;
-        }
-        body[data-theme="night"] .glass-panel {
-            background: rgba(24, 20, 38, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            box-shadow:
-                inset 0 1.5px 0 rgba(255,255,255,0.08),
-                inset 0 -12px 20px -14px rgba(255,255,255,0.03),
-                0 24px 45px -18px rgba(0, 0, 0, 0.45),
-                0 8px 18px -10px rgba(0, 0, 0, 0.3);
-        }
-        body[data-theme="night"] .glass-panel::before { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent); }
 
-        .dashboard { padding: 22px; }
-        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .dash-title { font-size: 15px; color: #475569; font-weight: 800; }
-        body[data-theme="night"] .dash-title { color: #cbd5e1; }
+        /* 🏷️ หัวเว็บ */
+        .header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 2px 2px 0; }
+        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .brand-mark {
+            width: 48px; height: 48px; border-radius: 16px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 24px;
+            background: var(--surface-solid); border: 1px solid var(--surface-edge);
+            box-shadow: 0 10px 20px -12px rgba(var(--accent-rgb), 0.6), inset 0 -3px 0 rgba(var(--accent-rgb), 0.12);
+        }
+        .brand-mark .title-emoji { display: inline-block; animation: title-bounce 2.6s ease-in-out infinite; }
+        .app-title {
+            font-size: 25px; font-weight: 600; margin: 0; line-height: 1.15; letter-spacing: -0.01em;
+            background: linear-gradient(100deg, var(--accent), var(--accent2), var(--accent));
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            background-size: 200% 100%; animation: gradient-text 7s ease-in-out infinite alternate;
+        }
+        @keyframes gradient-text { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+        .greeting-line { margin: 3px 0 0; font-size: 13.5px; font-weight: 500; color: var(--ink-2); }
 
-        .report-cta {
-            display: flex; align-items: center; gap: 14px; padding: 16px 18px; cursor: pointer;
+        /* 🔘 ปุ่มทรงแคปซูล (ตั้งค่า เสียง แจ้งเตือน ฯลฯ) */
+        .theme-toggle, .mute-toggle, .gender-toggle, .notify-toggle {
+            display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+            font-size: 13px; font-weight: 600; padding: 9px 15px; border-radius: 999px;
+            background: var(--surface-solid); color: var(--ink-2); cursor: pointer; user-select: none;
+            border: 1px solid var(--line); box-shadow: 0 8px 18px -12px rgba(var(--shadow-rgb), 0.45);
+            transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+        .theme-toggle:hover, .mute-toggle:hover, .gender-toggle:hover, .notify-toggle:hover { transform: translateY(-2px); color: var(--ink); }
+        .theme-toggle:active, .mute-toggle:active, .gender-toggle:active, .notify-toggle:active { transform: scale(0.94); }
+        @media (max-width: 480px) {
+            #settings-btn { width: 44px; height: 44px; padding: 0; justify-content: center; font-size: 18px; }
+            #settings-btn .settings-label { display: none; }
+        }
+        .notify-toggle.active { background: rgba(var(--accent-rgb), 0.14); color: var(--accent-ink); border-color: rgba(var(--accent-rgb), 0.45); }
+        .volume-slider { width: 110px; height: 28px; vertical-align: middle; accent-color: var(--accent); cursor: pointer; touch-action: none; }
+
+        /* 📊 แดชบอร์ดโควตา */
+        .dashboard { padding: 20px; }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .dash-title { font-family: var(--font-display); font-size: 16px; font-weight: 500; color: var(--ink); }
+        .quota-setting { font-size: 12.5px; color: var(--ink-2); display: flex; align-items: center; gap: 6px; font-weight: 500; }
+        .quota-stepper {
+            display: inline-flex; align-items: center; gap: 2px; padding: 3px;
+            border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line);
+        }
+        .quota-step-btn {
+            width: 26px; height: 26px; border-radius: 50%; border: none; cursor: pointer; padding: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700;
+            background: rgba(var(--accent-rgb), 0.12); color: var(--accent-ink);
+            transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), background-color 0.2s;
+        }
+        .quota-step-btn:hover { background: rgba(var(--accent-rgb), 0.24); transform: scale(1.1); }
+        .quota-step-btn:active { transform: scale(0.85); }
+        .quota-input {
+            width: 64px; padding: 7px 8px; border: 1.5px solid var(--line); border-radius: 12px;
+            font-family: var(--font-display); font-size: 15px; font-weight: 500; text-align: center;
+            color: var(--ink); background: var(--field); -moz-appearance: textfield;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .quota-input::-webkit-outer-spin-button, .quota-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .quota-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.15); }
+        .quota-stepper .quota-input { width: 44px; padding: 3px 2px; border: none; background: transparent; box-shadow: none; }
+        body.is-dark .quota-input { color-scheme: dark; }
+
+        .dash-main { display: flex; align-items: center; gap: 18px; margin-top: 16px; }
+        .quota-ring-wrap { position: relative; width: 124px; height: 124px; flex-shrink: 0; }
+        .quota-ring { width: 124px; height: 124px; transform: rotate(-90deg); }
+        .ring-track { fill: none; stroke: rgba(var(--accent2-rgb), 0.14); stroke-width: 14; }
+        #ringGradient stop { transition: stop-color 0.5s ease; }
+        .ring-progress {
+            fill: none; stroke: url(#ringGradient); stroke-width: 14; stroke-linecap: round;
+            stroke-dasharray: 427; stroke-dashoffset: 427;
+            transition: stroke-dashoffset 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.4s;
+        }
+        .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .time-val { font-family: var(--font-display); font-size: 32px; font-weight: 600; line-height: 1; color: var(--ink); }
+        .ring-center-lbl { font-size: 11.5px; color: var(--ink-3); font-weight: 600; margin-top: 4px; }
+
+        .dash-stats { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+        .dash-stat {
+            display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+            border-radius: 18px; background: var(--surface-2); border: 1px solid var(--line);
+        }
+        .dash-stat-icon {
+            width: 34px; height: 34px; border-radius: 12px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 17px;
+            background: rgba(var(--accent-rgb), 0.12);
+        }
+        .dash-stat-icon.is-streak { background: rgba(232, 89, 12, 0.12); }
+        .dash-stat-text { display: flex; flex-direction: column; min-width: 0; }
+        .time-val-sm, .streak-num { font-family: var(--font-display); font-size: 20px; font-weight: 600; line-height: 1.15; color: var(--ink); }
+        .streak-num { color: var(--streak); }
+        .time-lbl, .streak-lbl { font-size: 11.5px; color: var(--ink-3); font-weight: 600; line-height: 1.3; }
+
+        .dash-sub-title { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink-2); margin-bottom: 8px; }
+        .dash-week { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--line); }
+        .week-chart { display: flex; align-items: flex-end; gap: 8px; height: 62px; }
+        .week-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; height: 100%; justify-content: flex-end; }
+        .week-bar {
+            width: 100%; max-width: 30px; border-radius: 8px 8px 4px 4px; min-height: 4px; cursor: pointer;
+            background: rgba(var(--accent2-rgb), 0.24); transition: transform 0.15s, background-color 0.3s;
+        }
+        .week-bar:hover { transform: scaleY(1.06); transform-origin: bottom; }
+        .week-bar.today { background: linear-gradient(180deg, var(--accent), var(--accent2)); }
+        .week-lbl { font-size: 11px; color: var(--ink-3); font-weight: 600; }
+
+        .badges-section {
+            margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line);
+            display: flex; align-items: center; justify-content: space-between; gap: 8px 10px; flex-wrap: wrap;
+        }
+        .badges-title { font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+        .badges-row { display: flex; gap: 6px; flex-wrap: wrap; }
+        .badge-item {
+            width: 34px; height: 34px; border-radius: 11px; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; background: rgba(var(--shadow-rgb), 0.06); filter: grayscale(1); opacity: 0.45;
             transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
         }
-        .report-cta:hover { transform: translateY(-2px) scale(1.01); }
+        body.is-dark .badge-item { background: rgba(255,255,255,0.06); }
+        .badge-item.unlocked {
+            background: linear-gradient(135deg, rgba(var(--accent-rgb),0.18), rgba(var(--accent2-rgb),0.18));
+            filter: none; opacity: 1; animation: badge-pop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .badge-item:hover { transform: scale(1.15) rotate(-6deg); }
+        @keyframes badge-pop { 0% { transform: scale(0.3) rotate(-20deg); } 60% { transform: scale(1.2) rotate(8deg); } 100% { transform: scale(1) rotate(0); } }
+
+        /* 📈 ปุ่มเปิดหน้ารายงาน */
+        .report-cta {
+            display: flex; align-items: center; gap: 14px; padding: 14px 16px; cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), background-color 0.3s;
+        }
+        .report-cta:hover { transform: translateY(-2px); }
         .report-cta-icon {
-            width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0; font-size: 22px;
+            width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0; font-size: 21px;
             display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, rgba(var(--accent-rgb),0.2), rgba(var(--accent2-rgb),0.2));
+            background: linear-gradient(135deg, rgba(var(--accent-rgb),0.16), rgba(var(--accent2-rgb),0.2));
         }
         .report-cta-text { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-        .report-cta-title { font-size: 14px; font-weight: 800; color: #1e293b; }
-        body[data-theme="night"] .report-cta-title { color: #f1f5f9; }
-        .report-cta-sub { font-size: 11px; color: #94a3b8; }
-        .report-cta-arrow { font-size: 26px; color: var(--accent); flex-shrink: 0; }
+        .report-cta-title { font-family: var(--font-display); font-size: 15px; font-weight: 500; color: var(--ink); }
+        .report-cta-sub { font-size: 12px; color: var(--ink-3); }
+        .report-cta-arrow { font-size: 26px; color: var(--accent-ink); flex-shrink: 0; transition: transform 0.2s; }
+        .report-cta:hover .report-cta-arrow { transform: translateX(3px); }
 
         /* 🌱 สวนพักผ่อน - ต้นไม้ที่โตขึ้นตามสตรีค เหี่ยวถ้าพักเกินโควตา */
-        .garden-card { padding: 20px 20px 16px; }
+        .garden-card { padding: 18px 20px 16px; }
         .garden-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
         .garden-badge-hint {
-            font-size: 11px; font-weight: 700; color: var(--accent); background: rgba(var(--accent-rgb), 0.12);
+            font-size: 12px; font-weight: 700; color: var(--accent-ink); background: rgba(var(--accent-rgb), 0.12);
             padding: 4px 10px; border-radius: 20px;
         }
         .garden-scene { width: 100%; display: flex; justify-content: center; }
         .garden-svg { width: 100%; max-width: 260px; height: auto; overflow: visible; cursor: pointer; }
-        .garden-caption { text-align: center; font-size: 12px; color: #94a3b8; margin: 6px 0 0; font-weight: 500; }
-        body[data-theme="night"] .garden-caption { color: #64748b; }
+        .garden-caption { text-align: center; font-size: 12.5px; color: var(--ink-3); margin: 6px 0 0; font-weight: 500; }
         .garden-card.garden-off { display: none !important; }
 
-        .garden-pot { fill: #B5794A; }
-        .garden-pot-rim { fill: #C98A5A; }
-        body[data-theme="night"] .garden-pot { fill: #7A5432; }
-        body[data-theme="night"] .garden-pot-rim { fill: #8C6238; }
-        .garden-ground { fill: rgba(148, 163, 184, 0.18); }
+        .garden-pot { fill: #C08055; }
+        .garden-pot-rim { fill: #D39466; }
+        body.is-dark .garden-pot { fill: #7A5432; }
+        body.is-dark .garden-pot-rim { fill: #8C6238; }
+        .garden-ground { fill: rgba(var(--shadow-rgb), 0.1); }
+        body.is-dark .garden-ground { fill: rgba(255, 255, 255, 0.08); }
 
         .garden-stem-group { transform-origin: 110px 145px; animation: garden-sway 4.5s ease-in-out infinite; transition: transform 0.25s ease-out; }
         .garden-stem-group.interacting { animation: none; }
@@ -291,299 +478,154 @@
         .garden-sparkle { animation: garden-sparkle-twinkle 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
         @keyframes garden-sparkle-twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.15); } }
 
-        .quota-setting { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 6px; font-weight: 600;}
-        body[data-theme="night"] .quota-setting { color: #94a3b8; }
-        .quota-stepper { display: inline-flex; align-items: center; gap: 4px; }
-        .quota-step-btn {
-            width: 22px; height: 22px; border-radius: 50%; border: none; cursor: pointer; padding: 0;
-            display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800;
-            background: rgba(var(--accent-rgb), 0.15); color: var(--accent); font-family: inherit;
-            transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), background 0.2s;
-        }
-        .quota-step-btn:hover { background: rgba(var(--accent-rgb), 0.3); transform: scale(1.15); }
-        .quota-step-btn:active { transform: scale(0.85); }
-        .quota-input {
-            width: 58px; padding: 4px 4px; border: 2px solid rgba(203, 213, 225, 0.5); border-radius: 8px;
-            font-family: inherit; font-size: 15px; font-weight: bold; text-align: center; color: #0f172a; background: rgba(255,255,255,0.8);
-            transition: all 0.3s; -moz-appearance: textfield;
-        }
-        .quota-input::-webkit-outer-spin-button, .quota-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .quota-input:focus { outline: none; border-color: var(--accent); transform: scale(1.1); }
-        body[data-theme="night"] .quota-input { background: rgba(15, 23, 42, 0.6); border-color: rgba(71, 85, 105, 0.5); color: #ffffff; }
+        /* 🎹 แป้นกิจกรรม — ปุ่มนูนแบบคีย์แคป กดแล้วยุบลงจริง (จุดเด่นหลักของหน้า) */
+        .keypad-section { display: flex; flex-direction: column; gap: 12px; }
+        .keypad-head { padding: 0 4px; }
+        .keypad-title { margin: 0; font-size: 17px; font-weight: 500; color: var(--ink); }
+        .keypad-hint { margin: 2px 0 0; font-size: 12.5px; color: var(--ink-3); }
+        .keypad { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; }
+        #activities-container { display: contents; }
+        @media (min-width: 980px) { .keypad { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
-        /* 🍱 Bento grid — เลย์เอาต์แดชบอร์ดสไตล์โมเดิร์น */
-        .bento-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px;
-            grid-template-areas: "ring ring" "streak week";
+        .action-card {
+            position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+            min-height: 140px; padding: 20px 12px 16px; border-radius: 26px; text-align: center;
+            cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation;
+            background: var(--key-grad, linear-gradient(160deg, #F3EAFF, #D9C2FE)); color: var(--key-ink, #4A1D96);
+            box-shadow:
+                inset 0 2px 0 rgba(255,255,255,0.75),
+                inset 0 -2px 0 rgba(0,0,0,0.04),
+                0 6px 0 var(--key-edge, #B58EF5),
+                0 18px 26px -12px var(--hover-color, rgba(169,124,248,0.45));
+            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.16s ease;
         }
-        .bento-tile {
-            background: rgba(255,255,255,0.42); border-radius: 20px; padding: 14px;
-            border: 1px solid rgba(255,255,255,0.55);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 8px 18px -10px rgba(30,20,45,0.1);
+        .action-card.card-enter { animation: card-pop-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+        .action-card:hover:not(.expanded) {
+            transform: translateY(-2px);
+            box-shadow:
+                inset 0 2px 0 rgba(255,255,255,0.75),
+                inset 0 -2px 0 rgba(0,0,0,0.04),
+                0 8px 0 var(--key-edge, #B58EF5),
+                0 24px 32px -12px var(--hover-color, rgba(169,124,248,0.5));
         }
-        body[data-theme="night"] .bento-tile {
-            background: rgba(15,23,42,0.38); border-color: rgba(255,255,255,0.07);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 18px -10px rgba(0,0,0,0.35);
+        .action-card:active:not(.expanded) {
+            transform: translateY(5px); transition-duration: 0.06s;
+            box-shadow:
+                inset 0 2px 0 rgba(255,255,255,0.6),
+                inset 0 -2px 0 rgba(0,0,0,0.04),
+                0 1px 0 var(--key-edge, #B58EF5),
+                0 6px 12px -8px var(--hover-color, rgba(169,124,248,0.45));
         }
-        .bento-ring { grid-area: ring; display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; }
-        .bento-streak { grid-area: streak; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .bento-week { grid-area: week; display: flex; flex-direction: column; }
-        .bento-tile-title { font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; color: #64748b; margin-bottom: 8px; }
-        body[data-theme="night"] .bento-tile-title { color: #94a3b8; }
+        .action-card:focus-visible { outline-offset: 5px; }
 
-        .quota-ring-wrap { position: relative; width: 112px; height: 112px; flex-shrink: 0; }
-        .quota-ring { width: 112px; height: 112px; transform: rotate(-90deg); }
-        .ring-track { fill: none; stroke: rgba(148, 163, 184, 0.22); stroke-width: 13; }
-        body[data-theme="night"] .ring-track { stroke: rgba(148, 163, 184, 0.15); }
-        #ringGradient stop { transition: stop-color 0.5s ease; }
-        .ring-progress {
-            fill: none; stroke: url(#ringGradient); stroke-width: 13; stroke-linecap: round;
-            stroke-dasharray: 427; stroke-dashoffset: 427;
-            transition: stroke-dashoffset 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.4s;
-        }
-        .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .ring-center .time-val { font-size: 26px; line-height: 1; }
-        .ring-center-lbl { font-size: 10px; color: #64748b; font-weight: 600; margin-top: 2px; }
-        body[data-theme="night"] .ring-center-lbl { color: #94a3b8; }
-
-        .ring-side-stat { display: flex; align-items: center; gap: 10px; }
-        .ring-side-icon {
-            width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            font-size: 16px; background: rgba(var(--accent-rgb), 0.15); flex-shrink: 0;
-        }
-        .time-val { font-size: 32px; font-weight: 800; color: #0f172a; text-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        body[data-theme="night"] .time-val { color: #ffffff; text-shadow: 0 2px 10px rgba(255,255,255,0.1); }
-        .time-val-sm { font-size: 19px; font-weight: 800; color: #0f172a; display: block; line-height: 1.1; }
-        body[data-theme="night"] .time-val-sm { color: #ffffff; }
-        .time-lbl { font-size: 11px; color: #64748b; font-weight: 600; }
-        body[data-theme="night"] .time-lbl { color: #94a3b8; }
-
-        .badges-section { margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(203, 213, 225, 0.6); }
-        body[data-theme="night"] .badges-section { border-top-color: rgba(71, 85, 105, 0.6); }
-        .badges-title { font-size: 12px; font-weight: 700; color: #64748b; }
-        body[data-theme="night"] .badges-title { color: #94a3b8; }
-        .badges-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-        .badge-item {
-            width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
-            font-size: 19px; background: rgba(148, 163, 184, 0.12); filter: grayscale(1); opacity: 0.5;
-            transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        .badge-item.unlocked {
-            background: linear-gradient(135deg, rgba(var(--accent-rgb),0.18), rgba(var(--accent2-rgb),0.18));
-            filter: none; opacity: 1; animation: badge-pop 0.5s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        .badge-item:hover { transform: scale(1.15) rotate(-6deg); }
-        @keyframes badge-pop { 0% { transform: scale(0.3) rotate(-20deg); } 60% { transform: scale(1.2) rotate(8deg); } 100% { transform: scale(1) rotate(0); } }
-        .week-chart { display: flex; align-items: flex-end; gap: 5px; height: 46px; flex: 1; }
-        .week-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
-        .week-bar { width: 100%; border-radius: 4px 4px 2px 2px; background: rgba(148, 163, 184, 0.4); min-height: 3px; cursor: pointer; }
-        .week-bar.today { background: linear-gradient(180deg, var(--accent), var(--accent2)); }
-        .week-lbl { font-size: 9px; color: #94a3b8; font-weight: 700; }
-        .streak-num { font-size: 26px; font-weight: 800; color: #f97316; line-height: 1; }
-        .streak-lbl { font-size: 9px; color: #64748b; font-weight: 700; margin-top: 3px; text-align: center; }
-        body[data-theme="night"] .streak-lbl { color: #94a3b8; }
-
-        /* ✨ อัปเกรด Title ให้เป็นแสงสีรุ้งวิ่งได้ */
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; flex-wrap: wrap; gap: 10px;}
-        .app-title { 
-            font-size: 22px; font-weight: 800; margin: 0;
-            background: linear-gradient(to right, var(--accent2), var(--accent), var(--accent2));
-            -webkit-background-clip: text; color: transparent;
-            background-size: 300% 300%; animation: gradient-text 4s linear infinite;
-        }
-        @keyframes gradient-text { 0%{background-position: 0% 50%} 100%{background-position: 100% 50%} }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .app-title .title-emoji { display: inline-block; animation: title-bounce 2.2s ease-in-out infinite; }
-        .greeting-line { margin: 2px 0 0; font-size: 13px; font-weight: 500; color: #64748b; }
-        body[data-theme="night"] .greeting-line { color: #94a3b8; }
-
-        .controls-group { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; flex: 1; }
-        .theme-toggle, .mute-toggle, .gender-toggle, .notify-toggle {
-            font-size: 11px; font-weight: 700; padding: 8px 12px; border-radius: 30px;
-            background: rgba(255, 255, 255, 0.8); color: #475569; cursor: pointer; user-select: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.5);
-            backdrop-filter: blur(5px);
-        }
-        body[data-theme="night"] .theme-toggle, body[data-theme="night"] .mute-toggle, body[data-theme="night"] .gender-toggle, body[data-theme="night"] .notify-toggle { 
-            background: rgba(30, 41, 59, 0.8); color: #cbd5e1; border-color: rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .theme-toggle:hover, .mute-toggle:hover, .gender-toggle:hover, .notify-toggle:hover { transform: translateY(-2px) scale(1.05); }
-        .notify-toggle.active { background: rgba(var(--accent-rgb), 0.25); color: #D6336C; border-color: var(--accent); }
-        body[data-theme="night"] .notify-toggle.active { background: rgba(var(--accent-rgb), 0.2); color: var(--accent); }
-        .volume-slider { width: 110px; height: 28px; vertical-align: middle; accent-color: var(--accent); cursor: pointer; touch-action: none; }
-
-        .theme-swatch-row { display: flex; gap: 8px; flex-wrap: wrap; }
-        .auto-theme-row {
-            display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #64748b; cursor: pointer;
-        }
-        body[data-theme="night"] .auto-theme-row { color: #94a3b8; }
-
-        /* 🔘 Toggle switch น่ารักๆ แทน checkbox ธรรมดา */
-        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 26px; flex-shrink: 0; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
-        .toggle-slider {
-            position: absolute; inset: 0; cursor: pointer; background: #cbd5e1; border-radius: 30px;
-            transition: background 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
-        }
-        .toggle-slider::before {
-            content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px;
-            background: white; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        .floating-emoji {
+            width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0; margin-bottom: 4px;
+            display: flex; align-items: center; justify-content: center; font-size: 29px; line-height: 1;
+            background: rgba(255,255,255,0.55); box-shadow: inset 0 -3px 0 rgba(0,0,0,0.04);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .toggle-switch input:checked + .toggle-slider { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
-        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
-        .toggle-switch input:focus-visible + .toggle-slider { box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.35); }
-        .toggle-switch:active .toggle-slider::before { width: 24px; }
-        .toggle-switch-sm { width: 36px; height: 21px; }
-        .toggle-switch-sm .toggle-slider::before { width: 15px; height: 15px; }
-        .toggle-switch-sm input:checked + .toggle-slider::before { transform: translateX(15px); }
-        body[data-theme="night"] .toggle-slider { background: #475569; }
-        .theme-swatch {
-            width: 38px; height: 38px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;
-            display: flex; align-items: center; justify-content: center; font-size: 16px;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+        .action-card:hover:not(.expanded) .floating-emoji { transform: scale(1.1) rotate(-8deg); }
+        .capsule { display: flex; flex-direction: column; align-items: center; max-width: 100%; }
+        .capsule-name {
+            font-family: var(--font-display); font-size: 17px; font-weight: 500; line-height: 1.25;
+            overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
-        .theme-swatch:hover { transform: scale(1.18) translateY(-2px); }
-        .theme-swatch.selected { border-color: #1e293b; }
-        body[data-theme="night"] .theme-swatch.selected { border-color: #ffffff; }
-        .swatch-day { background: linear-gradient(135deg, #FFF6E9, #FFE3EE, #F1E6FF); }
-        .swatch-night { background: linear-gradient(135deg, #2B1B3D, #5C3A87); }
-        .swatch-ocean { background: linear-gradient(135deg, #E0F7FA, #80DEEA); }
-        .swatch-forest { background: linear-gradient(135deg, #F1F8E9, #AED581); }
-        .swatch-sunset { background: linear-gradient(135deg, #FFC2D1, #C7B8F0); }
+        .live-timer { display: none; font-family: var(--font-display); font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+        .helper-text { font-size: 12px; font-weight: 600; opacity: 0.72; }
+        .helper-text:empty { display: none; }
 
-        .drag-handle {
-            position: absolute; top: 15px; left: 15px; width: 32px; height: 32px; z-index: 10;
-            display: flex; align-items: center; justify-content: center; cursor: grab;
-            font-size: 18px; color: #94a3b8; background: rgba(255,255,255,0.7); border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08); touch-action: none;
+        .drag-handle, .edit-btn {
+            position: absolute; top: 8px; z-index: 3; width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 13px;
+            background: rgba(255,255,255,0.55); color: var(--key-ink, #4A1D96);
+            transition: opacity 0.2s, transform 0.2s cubic-bezier(0.34,1.56,0.64,1), background-color 0.2s;
         }
+        .drag-handle { left: 8px; cursor: grab; touch-action: none; font-size: 15px; font-weight: 700; }
         .drag-handle:active { cursor: grabbing; }
-        body[data-theme="night"] .drag-handle { background: rgba(51, 65, 85, 0.8); color: #cbd5e1; }
-        .action-card.expanded .drag-handle { display: none; }
-        .action-card.drag-over { outline: 3px dashed var(--accent); outline-offset: 4px; }
+        .edit-btn { right: 8px; cursor: pointer; }
+        .edit-btn:hover { background: #FFFFFF; transform: rotate(15deg) scale(1.12); }
+        @media (hover: hover) {
+            .action-card .drag-handle, .action-card .edit-btn { opacity: 0.4; }
+            .action-card:hover .drag-handle, .action-card:hover .edit-btn,
+            .action-card:focus-within .drag-handle, .action-card:focus-within .edit-btn { opacity: 1; }
+        }
+        .action-card.drag-over { outline: 3px dashed var(--accent); outline-offset: 5px; }
         .action-card.dragging { opacity: 0.55; }
 
-        .btn-backup { color: #7c3aed; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(124, 58, 237, 0.15); transition: 0.2s; }
-        .btn-import { color: #ea580c; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(234, 88, 12, 0.15); transition: 0.2s; }
-        .btn-backup:hover, .btn-import:hover { transform: scale(1.05); filter: brightness(1.1); }
+        .add-act-btn {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+            min-height: 140px; padding: 16px 12px; border-radius: 26px; cursor: pointer; text-align: center;
+            border: 2px dashed rgba(var(--accent-rgb), 0.35); background: var(--surface);
+            color: var(--ink-2); font-family: var(--font-display); font-size: 15px; font-weight: 500;
+            transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s, color 0.2s, background-color 0.2s;
+        }
+        .add-plus {
+            width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 26px; font-weight: 400; line-height: 1; background: rgba(var(--accent-rgb), 0.12); color: var(--accent-ink);
+        }
+        .add-act-btn:hover { border-style: solid; border-color: var(--accent); color: var(--accent-ink); transform: translateY(-2px); }
 
-        .heatmap-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 4px; }
-        .heatmap-cell { aspect-ratio: 1; border-radius: 5px; background: rgba(148, 163, 184, 0.15); transition: transform 0.15s; }
-        #heatmap-grid .heatmap-cell { cursor: pointer; }
-        #heatmap-grid .heatmap-cell:hover { transform: scale(1.15); }
-        body[data-theme="night"] .heatmap-cell { background: rgba(71, 85, 105, 0.3); }
-        .heatmap-cell.lvl-1 { background: rgba(var(--accent-rgb), 0.35); }
-        .heatmap-cell.lvl-2 { background: rgba(var(--accent-rgb), 0.6); }
-        .heatmap-cell.lvl-3 { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
-        .heatmap-cell.lvl-over { background: linear-gradient(135deg, #f43f5e, #fb7185); }
-        .heatmap-lbl-row { display: flex; justify-content: flex-end; align-items: center; gap: 6px; font-size: 10px; color: #94a3b8; margin-top: 8px; font-weight: 700; }
-
-        /* ✨ การ์ดปุ่มกด + เอฟเฟกต์เรืองแสงทะลุกระจก */
-        .action-card {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 18px; cursor: pointer; user-select: none;
-            position: relative; transform-style: preserve-3d;
-        }
-        .action-card:hover:not(.expanded) { 
-            box-shadow: 0 15px 35px var(--hover-color), inset 0 0 0 1px rgba(255, 255, 255, 0.8); 
-            transform: translateY(-5px) scale(1.03) rotateX(5deg); 
-            border-color: transparent;
-        }
-
-        .capsule {
-            width: 100%; padding: 18px 0; border-radius: 100px;
-            text-align: center; font-size: 28px; font-weight: 800;
-            letter-spacing: 0.5px; margin-bottom: 8px;
-            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.15), 0 10px 20px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
-        }
-        /* แสงสะท้อนบน Capsule */
-        .capsule::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg); transition: 0.5s;
-        }
-        .action-card:hover:not(.expanded) .capsule::after { left: 200%; transition: 0.8s ease-in-out; }
-        
-        .floating-emoji {
-            position: absolute; right: 25px; top: 50%; transform: translateY(-50%);
-            font-size: 38px; opacity: 0.15; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
-            animation: emoji-idle-float 3.5s ease-in-out infinite;
-        }
-        .action-card:hover:not(.expanded) .floating-emoji {
-            opacity: 1; transform: translateY(-50%) scale(1.3) rotate(15deg);
-            animation-play-state: paused;
-        }
-
-        .helper-text {
-            font-size: 13px; color: #64748b; background: rgba(255,255,255,0.7);
-            padding: 6px 16px; border-radius: 20px; font-weight: 600;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        body[data-theme="night"] .helper-text { background: rgba(15, 23, 42, 0.6); color: var(--accent); }
-
-        /* 👑 Running Timer */
-        .live-timer { display: none; font-size: min(5vh, 5vw, 42px); font-weight: 600; margin-top: 10px; opacity: 0.9; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .action-card.expanded .live-timer { display: block; }
-
-        /* 🎭 แอนิเมชันเปิดหน้าต่าง 3D Super Pop */
+        /* 🎭 หน้าจอระหว่างพัก (การ์ดขยายเต็มจอ) */
         .action-card.expanded {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            max-width: none; border-radius: 0; z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 30px; gap: 6vh; overflow: hidden; cursor: default;
-            border: none; background: var(--expand-bg-light);
-            animation: super-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; z-index: 9999;
+            border-radius: 0; padding: 32px 20px; gap: 3.5vh; cursor: default; overflow: hidden;
+            background: var(--expand-bg-light); box-shadow: none; transform: none;
+            animation: break-open 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; animation-delay: 0s !important;
         }
-        body[data-theme="night"] .action-card.expanded { background: var(--expand-bg-dark); }
-        
-        @keyframes super-pop {
-            0% { transform: scale(0.1) rotateY(-90deg) rotateX(30deg) translateY(200px); opacity: 0; border-radius: 100px; }
-            50% { transform: scale(1.1) rotateY(15deg) translateY(-20px); }
-            100% { transform: scale(1) rotateY(0deg) rotateX(0deg) translateY(0); opacity: 1; border-radius: 0; }
+        body.is-dark .action-card.expanded { background: var(--expand-bg-dark); }
+        @keyframes break-open {
+            0% { opacity: 0; transform: scale(0.8); border-radius: 64px; }
+            100% { opacity: 1; transform: scale(1); border-radius: 0; }
         }
-
+        .action-card.expanded .floating-emoji {
+            width: auto; height: auto; margin: 0; background: none; box-shadow: none;
+            font-size: min(11vh, 88px); animation: emoji-float 3.2s ease-in-out infinite;
+        }
         .action-card.expanded .capsule {
-            width: 90vw; max-width: 1400px; height: 48vh; max-height: 500px;
-            font-size: min(15vh, 140px); font-weight: 800; border-radius: 60px;
-            margin-bottom: 0; box-shadow: 0 30px 60px rgba(0,0,0,0.2), inset 0 -12px 0 rgba(0,0,0,0.15);
+            width: min(92vw, 880px); padding: 4.5vh 24px 5vh; border-radius: 44px; gap: 1.5vh;
+            background: var(--key-grad); color: var(--key-ink);
+            box-shadow: inset 0 3px 0 rgba(255,255,255,0.7), 0 10px 0 var(--key-edge), 0 40px 70px -30px var(--hover-color);
         }
-        body[data-theme="night"] .action-card.expanded .capsule { box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 -12px 0 rgba(0,0,0,0.3); }
-        .action-card.expanded .helper-text, .action-card.expanded .edit-btn, .action-card.expanded .floating-emoji { display: none; }
-        .action-card.expanded .live-timer { font-size: min(12vh, 100px); font-weight: 800; margin-top: 20px;}
+        .action-card.expanded .capsule-name { font-size: min(6.5vh, 11vw, 54px); -webkit-line-clamp: 1; }
+        .action-card.expanded .live-timer { display: block; font-size: min(17vh, 21vw, 150px); }
+        .action-card.expanded .helper-text, .action-card.expanded .edit-btn, .action-card.expanded .drag-handle { display: none; }
 
-        /* ปุ่มกลับมาแล้วเด้งดึ๋ง */
         .back-box {
-            display: none; width: 85vw; max-width: 1000px; height: 16vh; max-height: 140px; min-height: 90px;
-            background: rgba(255,255,255,0.9); border: 5px dashed #cbd5e1; border-radius: 80px;
-            cursor: pointer; align-items: center; justify-content: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: none; align-items: center; justify-content: center;
+            width: min(88vw, 520px); height: 14vh; min-height: 84px; max-height: 116px;
+            border-radius: 32px; cursor: pointer; background: var(--surface-solid);
+            border: 2px solid rgba(var(--accent-rgb), 0.35);
+            box-shadow: inset 0 2px 0 rgba(255,255,255,0.5), 0 8px 0 rgba(var(--accent-rgb), 0.45), 0 26px 40px -20px rgba(var(--accent-rgb), 0.6);
+            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.16s, border-color 0.2s;
         }
         .action-card.expanded .back-box { display: flex; }
-        .back-box:hover { background: #ffffff; border-color: var(--accent); border-style: solid; transform: translateY(-10px) scale(1.05); box-shadow: 0 25px 50px rgba(var(--accent-rgb), 0.3); }
-        .back-box:active { transform: translateY(5px) scale(0.95); }
-        .back-title { font-size: min(6vh, 50px); font-weight: 800; color: #64748b; transition: 0.3s;}
-        .back-box:hover .back-title { color: var(--accent); }
-        
-        body[data-theme="night"] .back-box { background: rgba(30, 41, 59, 0.9); border-color: #475569; }
-        body[data-theme="night"] .back-title { color: #cbd5e1; }
-        body[data-theme="night"] .back-box:hover { background: #1e293b; border-color: var(--accent); }
+        .back-box:hover { transform: translateY(-3px); border-color: var(--accent); }
+        .back-box:active {
+            transform: translateY(7px); transition-duration: 0.06s;
+            box-shadow: inset 0 2px 0 rgba(255,255,255,0.5), 0 1px 0 rgba(var(--accent-rgb), 0.45), 0 8px 14px -10px rgba(var(--accent-rgb), 0.6);
+        }
+        .back-title { font-family: var(--font-display); font-size: min(5.5vh, 9vw, 44px); font-weight: 500; color: var(--accent-ink); }
 
-        /* พลุกระดาษฉลอง (Confetti) */
+        /* ✅ แผ่นยืนยันหลังกด (คัดลอกข้อความแล้ว) */
+        .success-overlay {
+            position: absolute; inset: 0; z-index: 10000; border-radius: inherit; padding: 12px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px;
+            background: linear-gradient(160deg, rgba(34, 197, 94, 0.97), rgba(16, 163, 127, 0.97)); color: #FFFFFF;
+            opacity: 0; pointer-events: none; transform: scale(0.92);
+            transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .success-overlay.show { opacity: 1; transform: scale(1); }
+        .success-title { font-family: var(--font-display); font-size: 16px; font-weight: 500; text-align: center; }
+        .success-text { font-size: 12px; color: #ECFDF5; font-weight: 600; text-align: center; overflow-wrap: anywhere; }
+        .action-card.expanded .success-title { font-size: min(5vh, 42px); }
+        .action-card.expanded .success-text { font-size: min(3vh, 26px); padding: 0 20px; }
+
+        /* 🎉 พลุกระดาษ + อนุภาคตอนกด */
         .confetti {
             position: fixed; width: 10px; height: 20px; z-index: 100000; pointer-events: none;
             animation: fall linear forwards;
         }
-        @keyframes fall {
-            to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
         .particle { position: absolute; pointer-events: none; border-radius: 50%; animation: float-up forwards ease-in-out; z-index: 100; }
         @keyframes float-up {
             0% { transform: translateY(10px) scale(0.6) rotate(0deg); opacity: 0; }
@@ -591,266 +633,315 @@
             100% { transform: translateY(-150px) translateX(var(--dx)) scale(1.5) rotate(45deg); opacity: 0; }
         }
 
-        .edit-btn {
-            position: absolute; top: 15px; right: 15px; width: 38px; height: 38px;
-            background: rgba(255,255,255,0.95); border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-size: 16px; z-index: 10;
+        /* 📜 ประวัติ + ภาพรวมรายเดือน */
+        .history-box { padding: 20px; }
+        .history-title {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            margin-bottom: 14px; font-family: var(--font-display); font-size: 16px; font-weight: 500; color: var(--ink);
         }
-        .edit-btn:hover { transform: rotate(20deg) scale(1.15); background: var(--accent); color: white;}
-        body[data-theme="night"] .edit-btn { background: #334155; }
-        
-        .add-act-btn {
-            background: rgba(255,255,255,0.5); border: 3px dashed rgba(203, 213, 225, 0.8); color: #64748b;
-            padding: 18px; text-align: center; border-radius: 28px; font-weight: 800; font-size: 16px;
-            cursor: pointer; margin-bottom: 5px; transition: all 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            backdrop-filter: blur(10px);
+        .history-actions { display: flex; gap: 6px; flex-wrap: wrap; font-family: var(--font-body); }
+        .chip-btn {
+            display: inline-flex; align-items: center; gap: 4px; cursor: pointer; user-select: none;
+            font-size: 12.5px; font-weight: 600; padding: 6px 11px; border-radius: 999px;
+            background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line);
+            transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), color 0.2s, border-color 0.2s, background-color 0.2s;
         }
-        .add-act-btn:hover { background: rgba(255,255,255,0.9); border-color: var(--accent); border-style: solid; color: var(--accent); transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 25px rgba(var(--accent-rgb), 0.2); }
-        body[data-theme="night"] .add-act-btn { background: rgba(30, 41, 59, 0.5); border-color: rgba(71, 85, 105, 0.8); color: #94a3b8; }
-        body[data-theme="night"] .add-act-btn:hover { background: rgba(30, 41, 59, 0.9); border-color: var(--accent); color: var(--accent); }
+        .chip-btn:hover { color: var(--accent-ink); border-color: rgba(var(--accent-rgb), 0.45); transform: translateY(-1px); }
+        .chip-btn:active { transform: scale(0.94); }
+        .chip-btn.chip-danger { color: var(--danger); }
+        .chip-btn.chip-danger:hover { border-color: rgba(var(--danger-rgb), 0.5); background: rgba(var(--danger-rgb), 0.08); }
 
-        /* Modal จัดการกิจกรรม */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            z-index: 100000; align-items: center; justify-content: center;
+        .log-list { display: flex; flex-direction: column; gap: 8px; }
+        .log-row {
+            position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 11px 12px 11px 16px; border-radius: 16px;
+            background: var(--surface-2); border: 1px solid var(--line);
+            transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+            animation: card-pop-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
         }
+        .log-row::before {
+            content: ''; position: absolute; left: -1px; top: 10px; bottom: 10px; width: 4px; border-radius: 0 4px 4px 0;
+            background: linear-gradient(180deg, var(--accent), var(--accent2));
+        }
+        .log-row:hover { transform: translateX(3px); }
+        .log-row-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .log-action { font-weight: 700; font-size: 14px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .log-time { font-size: 11.5px; color: var(--ink-3); font-weight: 600; }
+        .log-row-side { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .log-duration { font-family: var(--font-display); font-weight: 500; font-size: 14px; white-space: nowrap; color: var(--ink); }
+        .log-row-actions { display: flex; gap: 2px; }
+        .log-icon-btn {
+            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; cursor: pointer; font-size: 12px; background: transparent;
+            transition: transform 0.2s, background-color 0.2s; flex-shrink: 0;
+        }
+        .log-icon-btn:hover { transform: scale(1.12) rotate(-6deg); background: rgba(var(--accent-rgb), 0.14); }
+        .empty-log {
+            display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center;
+            color: var(--ink-2); padding: 28px 0; font-size: 15px; font-weight: 600;
+        }
+        .empty-log small { font-size: 12.5px; font-weight: 500; color: var(--ink-3); }
+        .empty-emoji { font-size: 34px; margin-bottom: 6px; animation: bounce 2.4s ease-in-out infinite; }
+
+        .pagination-btn {
+            display: block; width: 100%; text-align: center; padding: 11px; margin-top: 12px;
+            font-size: 13.5px; color: var(--ink-2); font-weight: 600; cursor: pointer;
+            border: 1.5px dashed var(--line); border-radius: 16px; background: transparent;
+            transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+        }
+        .pagination-btn:hover { color: var(--accent-ink); border-color: var(--accent); border-style: solid; background: var(--surface-2); }
+
+        .heatmap-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 4px auto 0; max-width: 300px; }
+        .heatmap-cell { aspect-ratio: 1; border-radius: 7px; background: rgba(var(--accent2-rgb), 0.1); transition: transform 0.15s; }
+        #heatmap-grid .heatmap-cell { cursor: pointer; }
+        #heatmap-grid .heatmap-cell:hover { transform: scale(1.12); }
+        .heatmap-cell.lvl-1 { background: rgba(var(--accent-rgb), 0.3); }
+        .heatmap-cell.lvl-2 { background: rgba(var(--accent-rgb), 0.6); }
+        .heatmap-cell.lvl-3 { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+        .heatmap-cell.lvl-over { background: linear-gradient(135deg, var(--danger), #FB7185); }
+        .heatmap-lbl-row { display: flex; justify-content: flex-end; align-items: center; gap: 5px; font-size: 11px; color: var(--ink-3); margin: 10px auto 0; max-width: 300px; font-weight: 600; }
+        .heatmap-lbl-row .heatmap-cell { width: 12px; height: 12px; border-radius: 4px; }
+
+        /* 🪟 หน้าต่างโมดัล */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; width: 100vw; height: 100vh;
+            background: rgba(var(--shadow-rgb), 0.35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            z-index: 100000; align-items: center; justify-content: center; padding: 16px;
+        }
+        body.is-dark .modal-overlay { background: rgba(0, 0, 0, 0.5); }
         .modal-box {
-            background: rgba(255,255,255,0.95); padding: 30px; border-radius: 32px; width: 90%; max-width: 380px;
-            display: flex; flex-direction: column; gap: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid rgba(255,255,255,0.8);
+            background: var(--surface-solid); color: var(--ink); padding: 26px; border-radius: 30px; width: 100%; max-width: 400px;
+            display: flex; flex-direction: column; gap: 16px; border: 1px solid var(--surface-edge);
+            box-shadow: 0 40px 80px -30px rgba(var(--shadow-rgb), 0.55);
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             max-height: 90vh; overflow-y: auto;
         }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        body[data-theme="night"] .modal-box { background: rgba(30, 41, 59, 0.95); color: #f8fafc; border: 1px solid rgba(255,255,255,0.1); }
-
+        .modal-box h3 { margin: 0; color: var(--ink); }
+        .modal-heading { text-align: center; font-size: 22px; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.92); } to { opacity: 1; transform: translateY(0) scale(1); } }
         .dialog-icon { font-size: 44px; text-align: center; animation: title-bounce 2.2s ease-in-out infinite; }
+        .dialog-message { margin: 0; text-align: center; font-size: 14px; color: var(--ink-2); white-space: pre-line; line-height: 1.6; }
 
         /* ⚙️ หน้าตั้งค่ารวม */
-        .settings-box { padding: 24px; max-height: 82vh; overflow: hidden; }
-        .day-detail-box { padding: 24px; max-height: 82vh; overflow: hidden; }
+        .settings-box { padding: 24px; max-height: 84vh; overflow: hidden; }
+        .day-detail-box { padding: 24px; max-height: 84vh; overflow: hidden; }
         .day-detail-summary {
-            font-size: 13px; color: #64748b; padding-bottom: 12px; margin-bottom: 4px; flex-shrink: 0;
-            border-bottom: 1px dashed rgba(203, 213, 225, 0.6);
+            font-size: 13px; color: var(--ink-2); padding-bottom: 12px; margin-bottom: 4px; flex-shrink: 0;
+            border-bottom: 1px dashed var(--line);
         }
-        body[data-theme="night"] .day-detail-summary { color: #94a3b8; border-bottom-color: rgba(71, 85, 105, 0.6); }
-        .day-detail-summary strong { color: var(--accent); }
+        .day-detail-summary strong { color: var(--accent-ink); }
         .settings-modal-header { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .settings-modal-header h3 { font-size: 20px; }
         .settings-close-btn {
-            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; background: rgba(148,163,184,0.15); font-size: 14px; color: #64748b; flex-shrink: 0;
-            transition: transform 0.2s, background 0.2s;
+            width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; background: var(--surface-2); border: 1px solid var(--line); font-size: 14px; color: var(--ink-2); flex-shrink: 0;
+            transition: transform 0.2s, background-color 0.2s, color 0.2s;
         }
-        .settings-close-btn:hover { background: rgba(239,68,68,0.15); color: #ef4444; transform: rotate(90deg); }
+        .settings-close-btn:hover { background: rgba(var(--danger-rgb), 0.12); color: var(--danger); transform: rotate(90deg); }
         .settings-scroll { overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin: 0 -6px; padding: 0 6px; min-height: 0; }
-        .settings-section { padding: 14px 0; border-bottom: 1px solid rgba(203, 213, 225, 0.5); }
+        .settings-section { padding: 16px 0; border-bottom: 1px solid var(--line); }
         .settings-section:last-child { border-bottom: none; padding-bottom: 0; }
-        body[data-theme="night"] .settings-section { border-bottom-color: rgba(71, 85, 105, 0.5); }
-        .settings-section-title { font-size: 12.5px; font-weight: 800; color: #64748b; margin-bottom: 12px; letter-spacing: 0.02em; }
-        body[data-theme="night"] .settings-section-title { color: #94a3b8; }
+        .settings-section-title { font-size: 13px; font-weight: 700; color: var(--ink-2); margin-bottom: 12px; }
         .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 0; }
-        .settings-row-label { font-size: 14px; font-weight: 600; color: #334155; }
-        body[data-theme="night"] .settings-row-label { color: #e2e8f0; }
+        .settings-row-label { font-size: 14px; font-weight: 600; color: var(--ink); }
         .settings-row-control { display: flex; align-items: center; gap: 8px; }
-        .settings-hint { font-size: 11px; color: #94a3b8; line-height: 1.5; margin: 8px 0 0; }
-        body[data-theme="night"] .settings-hint { color: #64748b; }
-        #dialog-input {
-            padding: 14px 18px; border-radius: 16px; border: 2px solid #e2e8f0; font-family: 'Kanit'; font-size: 15px;
-            outline: none; transition: all 0.3s; background: rgba(255,255,255,0.8); font-weight: 600; width: 100%;
-        }
-        #dialog-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.1); }
-        body[data-theme="night"] #dialog-input { background: rgba(15, 23, 42, 0.8); border-color: #475569; color: white; }
+        .settings-hint { font-size: 12px; color: var(--ink-3); line-height: 1.55; margin: 8px 0 0; }
 
+        /* 🎨 ตัวเลือกธีม */
+        .theme-swatch-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 6px; }
+        .theme-swatch {
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            padding: 0; border: none; background: none; cursor: pointer; color: var(--ink-2);
+        }
+        .swatch-chip {
+            position: relative; width: 50px; height: 50px; border-radius: 17px;
+            display: flex; align-items: center; justify-content: center; font-size: 20px;
+            background: var(--sw-bg); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06), 0 8px 16px -8px rgba(var(--shadow-rgb), 0.45);
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+        }
+        .swatch-chip::after {
+            content: ''; position: absolute; right: -3px; bottom: -3px; width: 16px; height: 16px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--sw-a), var(--sw-b)); border: 2px solid var(--surface-solid);
+        }
+        .theme-swatch:hover .swatch-chip { transform: translateY(-2px) scale(1.06); }
+        .theme-swatch.selected .swatch-chip { box-shadow: 0 0 0 3px var(--surface-solid), 0 0 0 5px var(--accent); }
+        .swatch-name { font-size: 12px; font-weight: 600; }
+        .theme-swatch.selected .swatch-name { color: var(--ink); font-weight: 700; }
+        .swatch-day     { --sw-bg: linear-gradient(140deg, #FFF7F1, #FFE8F1 50%, #E5F0FF); --sw-a: #F0487A; --sw-b: #8B6CF6; }
+        .swatch-sunset  { --sw-bg: linear-gradient(140deg, #FFEBDD, #FFD6E0 50%, #D9D3FA); --sw-a: #F2386F; --sw-b: #7B4DFF; }
+        .swatch-ocean   { --sw-bg: linear-gradient(140deg, #EFFBFA, #C9E7F5); --sw-a: #FF6A4D; --sw-b: #0AA3C2; }
+        .swatch-forest  { --sw-bg: linear-gradient(140deg, #F6FAEE, #D8EBD4 60%, #FBF3DE); --sw-a: #E4850E; --sw-b: #3A9867; }
+        .swatch-minimal { --sw-bg: linear-gradient(140deg, #FFFFFF, #E6E8EF); --sw-a: #5555D6; --sw-b: #0E9F9A; }
+        .swatch-night   { --sw-bg: linear-gradient(140deg, #231940, #3A2766); --sw-a: #FF6B9D; --sw-b: #B69BFF; }
+        .swatch-galaxy  { --sw-bg: linear-gradient(140deg, #0F1736, #1C295C); --sw-a: #3CD3F2; --sw-b: #A68BFA; }
+        .auto-theme-row { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 600; color: var(--ink-2); cursor: pointer; margin-top: 16px; }
+
+        /* 🔘 สวิตช์เปิดปิด แทน checkbox ธรรมดา */
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 26px; flex-shrink: 0; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .toggle-slider {
+            position: absolute; inset: 0; cursor: pointer; background: rgba(var(--shadow-rgb), 0.2); border-radius: 30px;
+            transition: background-color 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
+        }
+        body.is-dark .toggle-slider { background: rgba(255, 255, 255, 0.18); }
+        .toggle-slider::before {
+            content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px;
+            background: white; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.2s;
+        }
+        .toggle-switch input:checked + .toggle-slider { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
+        .toggle-switch input:focus-visible + .toggle-slider { box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.35); }
+        .toggle-switch-sm { width: 36px; height: 21px; }
+        .toggle-switch-sm .toggle-slider::before { width: 15px; height: 15px; }
+        .toggle-switch-sm input:checked + .toggle-slider::before { transform: translateX(15px); }
+        .toggle-card {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer;
+            font-size: 14px; font-weight: 600; color: var(--ink); padding: 12px 16px; border-radius: 16px;
+            background: var(--surface-2); border: 1.5px dashed var(--line);
+        }
+
+        /* 📝 ฟอร์มในโมดัล */
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-label { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+        .field {
+            width: 100%; padding: 13px 16px; border-radius: 14px; border: 1.5px solid var(--line);
+            font-family: var(--font-body); font-size: 15px; font-weight: 600; color: var(--ink); background: var(--field);
+            outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .field::placeholder { color: var(--ink-3); font-weight: 500; }
+        .field:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.15); }
+        body.is-dark .field { color-scheme: dark; }
+
+        .emoji-picker {
+            display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 60; margin-top: 6px;
+            background: var(--surface-solid); border-radius: 16px; padding: 8px; border: 1px solid var(--line);
+            box-shadow: 0 18px 34px -14px rgba(var(--shadow-rgb), 0.45);
+            grid-template-columns: repeat(6, 1fr); gap: 2px; max-height: 168px; overflow-y: auto;
+        }
+        .emoji-picker.open { display: grid; }
+        .emoji-opt { background: none; border: none; font-size: 19px; padding: 6px 0; border-radius: 8px; cursor: pointer; transition: transform 0.15s, background-color 0.15s; }
+        .emoji-opt:hover { background: rgba(var(--accent-rgb), 0.14); transform: scale(1.2); }
+
+        .color-picker-container { display: flex; gap: 12px; margin-top: 4px; flex-wrap: wrap; justify-content: center; }
+        .color-dot {
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: none;
+            transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+            box-shadow: inset 0 -3px 0 rgba(0,0,0,0.08), 0 6px 12px -6px rgba(var(--shadow-rgb), 0.4);
+        }
+        .color-dot:hover { transform: scale(1.12); }
+        .color-dot.selected { transform: scale(1.12); box-shadow: 0 0 0 3px var(--surface-solid), 0 0 0 5px var(--ink); }
+
+        .modal-btn-group { display: flex; gap: 10px; margin-top: 6px; }
+        .modal-btn {
+            flex: 1; padding: 14px; border: none; border-radius: 16px; cursor: pointer;
+            font-family: var(--font-display); font-weight: 500; font-size: 16px;
+            transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.15s, filter 0.2s;
+        }
+        .modal-btn:hover { transform: translateY(-2px); }
+        .modal-btn:active { transform: translateY(2px) scale(0.98); }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--on-accent);
+            box-shadow: 0 12px 22px -12px rgba(var(--accent-rgb), 0.8);
+        }
+        .btn-secondary { background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line); }
+        .btn-danger { background: rgba(var(--danger-rgb), 0.08); color: var(--danger); border: 1.5px dashed rgba(var(--danger-rgb), 0.5); }
+
+        /* 🍞 Toast แจ้งเตือนแบบไม่บล็อกหน้าจอ */
         .toast-container {
-            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 200000;
+            position: fixed; bottom: max(24px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); z-index: 200000;
             display: flex; flex-direction: column-reverse; gap: 10px; align-items: center; pointer-events: none;
             width: 100%; padding: 0 16px;
         }
         .toast {
-            background: rgba(255,255,255,0.97); color: #334155; padding: 13px 18px; border-radius: 18px;
-            display: flex; align-items: center; gap: 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.18);
-            border: 1px solid rgba(255,255,255,0.6);
+            background: var(--surface-solid); color: var(--ink); padding: 13px 18px; border-radius: 18px;
+            display: flex; align-items: center; gap: 10px; border: 1px solid var(--line);
+            box-shadow: 0 20px 40px -18px rgba(var(--shadow-rgb), 0.5);
             animation: toast-in 0.35s cubic-bezier(0.34,1.56,0.64,1); pointer-events: auto;
-            font-size: 14px; font-weight: 600; max-width: 420px; backdrop-filter: blur(10px);
+            font-size: 14px; font-weight: 600; max-width: 440px; backdrop-filter: blur(10px);
         }
-        body[data-theme="night"] .toast { background: rgba(30, 41, 59, 0.97); color: #f1f5f9; border-color: rgba(255,255,255,0.1); }
         .toast.hide { animation: toast-out 0.3s ease forwards; }
         @keyframes toast-in { from { opacity: 0; transform: translateY(24px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes toast-out { to { opacity: 0; transform: translateY(10px) scale(0.9); } }
-        .toast-success { border-left: 4px solid #4CAF7D; }
-        .toast-warning { border-left: 4px solid #f59e0b; }
-        .toast-error { border-left: 4px solid #ef4444; }
+        .toast-success { border-left: 4px solid #22C55E; }
+        .toast-warning { border-left: 4px solid #F59E0B; }
+        .toast-error { border-left: 4px solid var(--danger); }
+        .toast-info { border-left: 4px solid var(--accent2); }
         .toast-action-btn {
-            background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; border: none;
-            font-weight: 700; padding: 6px 14px; border-radius: 10px; cursor: pointer; font-family: 'Kanit'; font-size: 13px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--on-accent); border: none;
+            font-weight: 700; padding: 6px 14px; border-radius: 10px; cursor: pointer; font-size: 13px;
             flex-shrink: 0; transition: transform 0.2s;
         }
         .toast-action-btn:active { transform: scale(0.92); }
-        
-        .input-group { display: flex; flex-direction: column; gap: 6px; }
-        .input-label { font-size: 13px; font-weight: 800; color: #475569; }
-        body[data-theme="night"] .input-label { color: #cbd5e1; }
-        .modal-box input {
-            padding: 14px 18px; border-radius: 16px; border: 2px solid #e2e8f0; font-family: 'Kanit'; font-size: 15px; outline: none; transition: all 0.3s; background: rgba(255,255,255,0.8); font-weight: 600;
-        }
-        .modal-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.1); transform: translateY(-2px); }
-        body[data-theme="night"] .modal-box input { background: rgba(15, 23, 42, 0.8); border-color: #475569; color: white; }
-
-        .emoji-picker {
-            display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 60; margin-top: 6px;
-            background: rgba(255,255,255,0.98); border-radius: 16px; padding: 8px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.18); border: 1px solid rgba(255,255,255,0.8);
-            grid-template-columns: repeat(6, 1fr); gap: 2px; max-height: 160px; overflow-y: auto;
-        }
-        .emoji-picker.open { display: grid; }
-        body[data-theme="night"] .emoji-picker { background: rgba(30,41,59,0.98); border-color: rgba(255,255,255,0.1); }
-        .emoji-opt { background: none; border: none; font-size: 19px; padding: 6px 0; border-radius: 8px; cursor: pointer; transition: transform 0.15s, background 0.15s; }
-        .emoji-opt:hover { background: rgba(var(--accent-rgb), 0.15); transform: scale(1.25); }
-        
-        .color-picker-container { display: flex; gap: 12px; margin-top: 5px; flex-wrap: wrap; justify-content: center;}
-        .color-dot { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .color-dot:hover { transform: scale(1.15); }
-        .color-dot.selected { border-color: #0f172a; transform: scale(1.2); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        body[data-theme="night"] .color-dot.selected { border-color: #fff; }
-        
-        .modal-btn-group { display: flex; gap: 12px; margin-top: 10px; }
-        .modal-btn { flex: 1; padding: 16px; border: none; border-radius: 16px; font-weight: 800; font-family: 'Kanit'; font-size: 16px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
-        .modal-btn:active { transform: translateY(2px) scale(0.98); }
-
-        /* 📜 ตารางสรุปประวัติ */
-        .history-box { padding: 22px; margin-top: 5px;}
-        .history-title { font-size: 16px; font-weight: 800; color: #334155; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        body[data-theme="night"] .history-title { color: #f1f5f9; }
-        
-        .history-actions { display: flex; gap: 8px; font-size: 12px; font-weight: 800; flex-wrap: wrap; }
-        .btn-copy-summary { color: #D6336C; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(var(--accent-rgb), 0.2); transition: 0.2s;}
-        .btn-export-csv { color: #059669; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(16, 185, 129, 0.2); transition: 0.2s;}
-        .btn-share-image { color: #7c3aed; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(124, 58, 237, 0.15); transition: 0.2s;}
-        .btn-share-image:hover { transform: scale(1.05); filter: brightness(1.1); }
-        .btn-search-history { color: #0891B2; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(8, 145, 178, 0.15); transition: 0.2s;}
-        .btn-clear-history { color: #dc2626; cursor: pointer; padding: 6px 12px; border-radius: 10px; background: rgba(239, 68, 68, 0.2); transition: 0.2s;}
-        .btn-copy-summary:hover, .btn-export-csv:hover, .btn-clear-history:hover, .btn-search-history:hover { transform: scale(1.05); filter: brightness(1.1); }
-
-        .log-list { display: flex; flex-direction: column; gap: 8px; }
-        .log-row {
-            display: flex; align-items: center; justify-content: space-between; gap: 12px;
-            background: rgba(255,255,255,0.45); border-radius: 16px; padding: 11px 14px;
-            border-left: 4px solid var(--accent); box-shadow: 0 3px 10px rgba(0,0,0,0.03);
-            transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
-            animation: card-pop-in 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.4) backwards;
-        }
-        .log-row:hover { transform: translateX(3px); box-shadow: 0 6px 16px rgba(0,0,0,0.07); }
-        body[data-theme="night"] .log-row { background: rgba(15, 23, 42, 0.4); }
-        .log-row-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-        .log-action { font-weight: 700; font-size: 13.5px; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        body[data-theme="night"] .log-action { color: #f1f5f9; }
-        .log-time { font-size: 10.5px; color: #94a3b8; font-weight: 600; }
-        .log-row-side { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-        .log-duration { font-weight: 800; font-size: 13.5px; white-space: nowrap; }
-        .log-row-actions { display: flex; gap: 2px; }
-        .log-icon-btn {
-            width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
-            border-radius: 50%; cursor: pointer; font-size: 12px; background: rgba(148,163,184,0.12);
-            transition: transform 0.2s, background 0.2s; flex-shrink: 0;
-        }
-        .log-icon-btn:hover { transform: scale(1.15) rotate(-6deg); background: rgba(var(--accent-rgb), 0.18); }
-        .empty-log { text-align: center; color: #94a3b8; padding: 40px 0; font-size: 15px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 12px;}
-        .empty-log::before { content: '🚀'; font-size: 40px; animation: bounce 2s infinite; }
-
-        .pagination-btn {
-            display: block; width: 100%; text-align: center; padding: 12px; margin-top: 15px;
-            font-size: 14px; color: #64748b; font-weight: 800; cursor: pointer;
-            border: 2px dashed rgba(203, 213, 225, 0.8); border-radius: 16px; background: rgba(255,255,255,0.5); transition: all 0.3s;
-        }
-        .pagination-btn:hover { background: #ffffff; color: var(--accent2); border-color: var(--accent2); border-style: solid; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(var(--accent2-rgb), 0.15);}
-        body[data-theme="night"] .pagination-btn { background: rgba(15, 23, 42, 0.5); border-color: rgba(71, 85, 105, 0.8); color: #94a3b8; }
-        body[data-theme="night"] .pagination-btn:hover { background: #1e293b; color: var(--accent); border-color: var(--accent); }
-
-        .success-overlay {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(34, 197, 94, 0.95); backdrop-filter: blur(10px);
-            color: white; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; z-index: 10000; border-radius: 28px;
-            transform: scale(0.9); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .action-card.expanded .success-overlay { border-radius: 0; }
-        .success-overlay.show { opacity: 1; transform: scale(1); }
-        .success-title { font-size: min(5vh, 42px); font-weight: 800; margin-bottom: 8px; text-shadow: 0 4px 10px rgba(0,0,0,0.2);}
-        .success-text { font-size: min(3vh, 28px); color: #ecfdf5; font-weight: 600; text-align: center; padding: 0 20px; }
 
         /* 📊 หน้ารายงานสรุปแบบเต็มจอ */
         .report-page {
             display: none; position: fixed; inset: 0; z-index: 90000;
-            background: var(--bg-gradient, linear-gradient(135deg, #FFF6E9 0%, #FFE3EE 35%, #F1E6FF 70%, #E6F3FF 100%));
+            background: var(--bg-gradient); color: var(--ink);
             flex-direction: column; animation: report-page-in 0.3s ease;
         }
         @keyframes report-page-in { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         .report-header {
-            display: flex; align-items: center; justify-content: space-between; padding: 18px 20px;
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: max(16px, env(safe-area-inset-top)) 20px 14px; flex-shrink: 0;
+            width: 100%; max-width: 560px; margin: 0 auto;
         }
         .report-back-btn {
-            font-size: 14px; font-weight: 700; color: var(--accent); cursor: pointer; padding: 8px 12px;
-            border-radius: 12px; background: rgba(255,255,255,0.5); width: 60px; text-align: center; flex-shrink: 0;
+            font-size: 14px; font-weight: 700; color: var(--accent-ink); cursor: pointer; padding: 8px 12px;
+            border-radius: 999px; background: var(--surface-solid); border: 1px solid var(--line); min-width: 72px; text-align: center; flex-shrink: 0;
         }
-        body[data-theme="night"] .report-back-btn { background: rgba(15,23,42,0.5); }
-        .report-page-title { font-size: 17px; font-weight: 800; margin: 0; color: #1e293b; }
-        body[data-theme="night"] .report-page-title { color: #f1f5f9; }
-        .report-scroll { flex: 1; overflow-y: auto; padding: 0 20px 40px; display: flex; flex-direction: column; gap: 16px; max-width: 500px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .report-page-title { font-size: 18px; margin: 0; color: var(--ink); }
+        .report-header-spacer { width: 72px; flex-shrink: 0; }
+        .report-scroll { flex: 1; overflow-y: auto; padding: 0 20px 40px; display: flex; flex-direction: column; gap: 14px; max-width: 560px; margin: 0 auto; width: 100%; }
 
-        .report-period-tabs { display: flex; gap: 8px; background: rgba(148,163,184,0.15); padding: 5px; border-radius: 16px; }
+        .report-period-tabs { display: flex; gap: 6px; background: var(--surface); border: 1px solid var(--surface-edge); padding: 5px; border-radius: 18px; }
         .report-tab {
-            flex: 1; border: none; background: transparent; padding: 9px 0; border-radius: 12px; cursor: pointer;
-            font-family: inherit; font-size: 13px; font-weight: 700; color: #64748b; transition: all 0.2s;
+            flex: 1; border: none; background: transparent; padding: 9px 0; border-radius: 13px; cursor: pointer;
+            font-size: 13.5px; font-weight: 700; color: var(--ink-2); transition: background-color 0.2s, color 0.2s;
         }
-        .report-tab.active { background: rgba(255,255,255,0.9); color: var(--accent); box-shadow: 0 3px 8px rgba(0,0,0,0.08); }
-        body[data-theme="night"] .report-tab { color: #94a3b8; }
-        body[data-theme="night"] .report-tab.active { background: rgba(30,41,59,0.9); color: var(--accent); }
+        .report-tab.active { background: var(--surface-solid); color: var(--accent-ink); box-shadow: 0 6px 14px -8px rgba(var(--shadow-rgb), 0.45); }
 
         .report-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .report-stat-card { padding: 14px; text-align: center; }
-        .report-stat-val { display: block; font-size: 22px; font-weight: 800; color: #1e293b; }
-        body[data-theme="night"] .report-stat-val { color: #f1f5f9; }
-        .report-stat-lbl { display: block; font-size: 11px; color: #94a3b8; font-weight: 600; margin-top: 3px; }
+        .report-stat-card { padding: 14px; text-align: center; border-radius: 22px; }
+        .report-stat-val { display: block; font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+        .report-stat-lbl { display: block; font-size: 12px; color: var(--ink-3); font-weight: 600; margin-top: 3px; }
 
-        .report-section { padding: 18px; }
-        .report-section-title { font-size: 13px; font-weight: 800; color: #475569; margin: 0 0 12px; }
-        body[data-theme="night"] .report-section-title { color: #cbd5e1; }
+        .report-section { padding: 18px; border-radius: 24px; }
+        .report-section-title { font-size: 14.5px; color: var(--ink); margin: 0 0 12px; }
         .report-chart-wrap { width: 100%; }
         .report-chart-wrap svg { width: 100%; height: auto; overflow: visible; }
         .report-bar { fill: var(--accent); transition: height 0.5s cubic-bezier(0.34,1.56,0.64,1), y 0.5s cubic-bezier(0.34,1.56,0.64,1); }
-        .report-bar.over { fill: #f43f5e; }
-        .report-bar-label { font-size: 8px; fill: #94a3b8; font-family: inherit; }
-        .report-axis-line { stroke: rgba(148,163,184,0.3); stroke-width: 1; stroke-dasharray: 3 3; }
+        .report-bar.over { fill: var(--danger); }
+        .report-bar-label { font-size: 8px; fill: var(--ink-3); font-family: var(--font-body); }
+        .report-axis-line { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 3; }
 
         .report-table-wrap { overflow-x: auto; }
-        .report-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-        .report-table th { text-align: left; color: #94a3b8; font-weight: 700; padding: 6px 8px; border-bottom: 2px solid rgba(203,213,225,0.4); white-space: nowrap; }
-        .report-table td { padding: 9px 8px; border-bottom: 1px solid rgba(203,213,225,0.25); color: #334155; font-weight: 600; }
-        body[data-theme="night"] .report-table td { color: #e2e8f0; }
+        .report-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .report-table th { text-align: left; color: var(--ink-3); font-weight: 700; padding: 6px 8px; border-bottom: 2px solid var(--line); white-space: nowrap; }
+        .report-table td { padding: 9px 8px; border-bottom: 1px solid var(--line); color: var(--ink); font-weight: 600; }
         .report-table tr:last-child td { border-bottom: none; }
         .report-table .report-bar-cell { display: flex; align-items: center; gap: 6px; }
         .report-table .report-bar-mini { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); flex-shrink: 0; }
-        .report-empty { text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 0; }
+        .report-pct { color: var(--ink-3); font-weight: 500; }
+        .report-empty { text-align: center; color: var(--ink-3); font-size: 13px; padding: 20px 0; }
 
         .report-daily-scroll { max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 0 -4px; padding: 0 4px; }
         .report-day-row {
-            padding: 10px 12px; border-radius: 14px; background: rgba(148,163,184,0.08); cursor: pointer;
-            transition: transform 0.15s, background 0.15s;
+            padding: 10px 12px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); cursor: pointer;
+            transition: transform 0.15s, background-color 0.15s;
         }
-        .report-day-row:hover { transform: translateX(3px); background: rgba(var(--accent-rgb), 0.1); }
-        .report-day-row.today { border: 1.5px solid rgba(var(--accent-rgb), 0.4); }
-        .report-day-row.over-quota { background: rgba(244, 63, 94, 0.08); }
+        .report-day-row:hover { transform: translateX(3px); background: rgba(var(--accent-rgb), 0.08); }
+        .report-day-row.today { border: 1.5px solid rgba(var(--accent-rgb), 0.45); }
+        .report-day-row.over-quota { background: rgba(var(--danger-rgb), 0.07); }
         .report-day-row-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-        .report-day-date { font-size: 12.5px; font-weight: 700; color: #334155; }
-        body[data-theme="night"] .report-day-date { color: #e2e8f0; }
-        .report-day-total { font-size: 12.5px; font-weight: 800; color: var(--accent); white-space: nowrap; }
-        .report-day-total.over { color: #f43f5e; }
-        .report-day-total.empty { color: #94a3b8; font-weight: 500; }
-        .report-day-activities { font-size: 11px; color: #94a3b8; margin-top: 4px; line-height: 1.5; }
+        .report-day-date { font-size: 13px; font-weight: 700; color: var(--ink); }
+        .report-day-total { font-family: var(--font-display); font-size: 13.5px; font-weight: 500; color: var(--accent-ink); white-space: nowrap; }
+        .report-day-total.over { color: var(--danger); }
+        .report-day-total.empty { color: var(--ink-3); font-family: var(--font-body); font-weight: 500; }
+        .report-day-activities { font-size: 12px; color: var(--ink-3); margin-top: 4px; line-height: 1.5; }
+
+        .muted-note { text-align: center; font-size: 12px; color: var(--ink-3); margin-top: 10px; }
+        .text-danger { color: var(--danger); }
 
         /* ♿️⚡ เคารพการตั้งค่า "ลดการเคลื่อนไหว" ของระบบปฏิบัติการ - ทั้งเพื่อการเข้าถึงและลดการใช้ CPU/แบตเตอรี่ */
         @media (prefers-reduced-motion: reduce) {
@@ -873,41 +964,31 @@
     <div class="bg-sparkles" id="bg-sparkles"></div>
 
     <div class="container">
-        <div class="header-row">
-            <div>
-                <h1 class="app-title"><span class="title-emoji" id="title-emoji">✨</span> Break Recorder</h1>
-                <p class="greeting-line" id="greeting-line"></p>
-            </div>
-            <div class="controls-group">
-                <div class="theme-toggle" id="settings-btn" onclick="openSettingsModal()">⚙️ ตั้งค่า</div>
-            </div>
-        </div>
-
-        <div class="garden-card glass-panel" id="garden-card">
-            <div class="garden-header">
-                <span class="dash-title">🌱 สวนพักผ่อนของคุณ</span>
-                <span class="garden-badge-hint" id="garden-streak-hint">0 วัน</span>
-            </div>
-            <div class="garden-scene" id="garden-scene-wrap">
-                <svg viewBox="0 0 220 170" class="garden-svg" id="garden-svg" aria-hidden="true"></svg>
-            </div>
-            <p class="garden-caption" id="garden-caption">พักให้พอดี ต้นไม้จะเติบโตไปกับคุณ 🌱</p>
-        </div>
-
-        <div class="dashboard glass-panel">
-            <div class="dash-header">
-                <span class="dash-title" id="dash-title">📊 โควตาเวลาพักวันนี้</span>
-                <div class="quota-setting">
-                    ตั้งค่าโควตา:
-                    <span class="quota-stepper">
-                        <button type="button" class="quota-step-btn" onclick="stepQuota(-5)">−</button>
-                        <input type="number" id="quota-input" class="quota-input" min="1" oninput="updateQuota(this.value)">
-                        <button type="button" class="quota-step-btn" onclick="stepQuota(5)">+</button>
-                    </span> นาที
+        <header class="header-row">
+            <div class="brand">
+                <span class="brand-mark"><span class="title-emoji" id="title-emoji">✨</span></span>
+                <div>
+                    <h1 class="app-title">Break Recorder</h1>
+                    <p class="greeting-line" id="greeting-line"></p>
                 </div>
             </div>
-            <div class="bento-grid">
-                <div class="bento-tile bento-ring">
+            <button type="button" class="theme-toggle" id="settings-btn" onclick="openSettingsModal()" aria-label="ตั้งค่า">⚙️<span class="settings-label">ตั้งค่า</span></button>
+        </header>
+
+        <div class="col-side">
+            <section class="dashboard glass-panel">
+                <div class="dash-header">
+                    <span class="dash-title" id="dash-title">📊 เวลาพักวันนี้</span>
+                    <div class="quota-setting">
+                        โควตา
+                        <span class="quota-stepper">
+                            <button type="button" class="quota-step-btn" onclick="stepQuota(-5)" aria-label="ลดโควตา 5 นาที">−</button>
+                            <input type="number" id="quota-input" class="quota-input" min="1" oninput="updateQuota(this.value)" aria-label="โควตาเวลาพัก (นาที)">
+                            <button type="button" class="quota-step-btn" onclick="stepQuota(5)" aria-label="เพิ่มโควตา 5 นาที">+</button>
+                        </span> นาที
+                    </div>
+                </div>
+                <div class="dash-main">
                     <div class="quota-ring-wrap">
                         <svg class="quota-ring" viewBox="0 0 160 160">
                             <defs>
@@ -928,124 +1009,152 @@
                             <span class="ring-center-lbl">นาทีเหลือ</span>
                         </div>
                     </div>
-                    <div class="ring-side-stat">
-                        <span class="ring-side-icon">⏱️</span>
-                        <div>
-                            <span class="time-val-sm" id="quota-used">0</span>
-                            <span class="time-lbl">นาทีที่ใช้ไป</span>
+                    <div class="dash-stats">
+                        <div class="dash-stat">
+                            <span class="dash-stat-icon">⏱️</span>
+                            <div class="dash-stat-text">
+                                <span class="time-val-sm" id="quota-used">0</span>
+                                <span class="time-lbl">นาทีที่ใช้ไป</span>
+                            </div>
+                        </div>
+                        <div class="dash-stat">
+                            <span class="dash-stat-icon is-streak">🔥</span>
+                            <div class="dash-stat-text">
+                                <span class="streak-num" id="streak-num">0</span>
+                                <span class="streak-lbl">วันติดไม่เกินโควตา</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="bento-tile bento-streak">
-                    <span class="streak-num" id="streak-num">0</span>
-                    <span class="streak-lbl">วันติด<br>ไม่เกินโควตา</span>
-                </div>
-                <div class="bento-tile bento-week">
-                    <span class="bento-tile-title">7 วันล่าสุด</span>
+                <div class="dash-week">
+                    <span class="dash-sub-title">7 วันล่าสุด</span>
                     <div class="week-chart" id="week-chart"></div>
                 </div>
-            </div>
-            <div class="badges-section">
-                <span class="badges-title">🏅 ป้ายรางวัล</span>
-                <div class="badges-row" id="badges-row"></div>
-            </div>
-        </div>
-
-        <div class="report-cta glass-panel" onclick="openReportPage()">
-            <div class="report-cta-icon">📊</div>
-            <div class="report-cta-text">
-                <span class="report-cta-title">รายงานสรุปแบบละเอียด</span>
-                <span class="report-cta-sub">กราฟแนวโน้ม · แยกตามกิจกรรม · รูปแบบตามวัน</span>
-            </div>
-            <div class="report-cta-arrow">›</div>
-        </div>
-
-        <div id="activities-container" style="display: flex; flex-direction: column; gap: 18px;"></div>
-        
-        <div class="add-act-btn" onclick="openModal(-1)">✨ สร้างกิจกรรมใหม่ ✨</div>
-
-        <div class="history-box glass-panel">
-            <div class="history-title">
-                <span>📜 ประวัติการพัก</span>
-                <div class="history-actions">
-                    <span class="btn-search-history" onclick="openSearchModal()">🔍 ค้นหา</span>
-                    <span class="btn-copy-summary" onclick="copySummary()">📋 คัดลอก</span>
-                    <span class="btn-share-image" onclick="shareSummaryImage()">🖼️ แชร์รูป</span>
-                    <span class="btn-export-csv" onclick="exportCSV()">📥 CSV</span>
-                    <span class="btn-clear-history" onclick="clearLogs()">🗑️ ล้าง</span>
+                <div class="badges-section">
+                    <span class="badges-title">🏅 ป้ายรางวัล</span>
+                    <div class="badges-row" id="badges-row"></div>
                 </div>
+            </section>
+
+            <div class="report-cta glass-panel" role="button" tabindex="0" onclick="openReportPage()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openReportPage();}">
+                <div class="report-cta-icon">📊</div>
+                <div class="report-cta-text">
+                    <span class="report-cta-title">รายงานสรุปแบบละเอียด</span>
+                    <span class="report-cta-sub">ดูแนวโน้ม แยกตามกิจกรรมและวันในสัปดาห์</span>
+                </div>
+                <div class="report-cta-arrow">›</div>
             </div>
-            <div id="log-container"></div>
-            <div id="pagination-container"></div>
+
+            <section class="garden-card glass-panel" id="garden-card">
+                <div class="garden-header">
+                    <span class="dash-title">🌱 สวนพักผ่อนของคุณ</span>
+                    <span class="garden-badge-hint" id="garden-streak-hint">0 วัน</span>
+                </div>
+                <div class="garden-scene" id="garden-scene-wrap">
+                    <svg viewBox="0 0 220 170" class="garden-svg" id="garden-svg" aria-hidden="true"></svg>
+                </div>
+                <p class="garden-caption" id="garden-caption">พักให้พอดี ต้นไม้จะเติบโตไปกับคุณ 🌱</p>
+            </section>
+
+            <section class="history-box glass-panel heatmap-section">
+                <div class="history-title"><span>📅 ภาพรวมรายเดือน</span></div>
+                <div class="heatmap-grid" id="heatmap-grid"></div>
+                <div class="heatmap-lbl-row">
+                    <span>น้อย</span>
+                    <div class="heatmap-cell"></div>
+                    <div class="heatmap-cell lvl-1"></div>
+                    <div class="heatmap-cell lvl-2"></div>
+                    <div class="heatmap-cell lvl-3"></div>
+                    <div class="heatmap-cell lvl-over"></div>
+                    <span>เกินโควตา</span>
+                </div>
+            </section>
         </div>
 
-        <div class="history-box glass-panel">
-            <div class="history-title"><span>📅 ภาพรวมรายเดือน</span></div>
-            <div class="heatmap-grid" id="heatmap-grid"></div>
-            <div class="heatmap-lbl-row">
-                <span>น้อย</span>
-                <div class="heatmap-cell" style="width:12px; height:12px;"></div>
-                <div class="heatmap-cell lvl-1" style="width:12px; height:12px;"></div>
-                <div class="heatmap-cell lvl-2" style="width:12px; height:12px;"></div>
-                <div class="heatmap-cell lvl-3" style="width:12px; height:12px;"></div>
-                <div class="heatmap-cell lvl-over" style="width:12px; height:12px;"></div>
-                <span>เกินโควตา</span>
-            </div>
+        <div class="col-main">
+            <section class="keypad-section">
+                <div class="keypad-head">
+                    <h2 class="keypad-title">แตะกิจกรรมเพื่อเริ่มพัก</h2>
+                    <p class="keypad-hint">ข้อความแจ้งเวลาจะถูกคัดลอกให้ทันที นำไปวางในแชตงานได้เลย</p>
+                </div>
+                <div class="keypad">
+                    <div id="activities-container"></div>
+                    <div class="add-act-btn" role="button" tabindex="0" onclick="openModal(-1)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal(-1);}">
+                        <span class="add-plus">+</span>
+                        สร้างกิจกรรมใหม่
+                    </div>
+                </div>
+            </section>
+
+            <section class="history-box glass-panel history-section">
+                <div class="history-title">
+                    <span>📜 ประวัติการพัก</span>
+                    <div class="history-actions">
+                        <span class="chip-btn btn-search-history" onclick="openSearchModal()">🔍 ค้นหา</span>
+                        <span class="chip-btn btn-copy-summary" onclick="copySummary()">📋 คัดลอก</span>
+                        <span class="chip-btn btn-share-image" onclick="shareSummaryImage()">🖼️ แชร์รูป</span>
+                        <span class="chip-btn btn-export-csv" onclick="exportCSV()">📥 CSV</span>
+                        <span class="chip-btn chip-danger btn-clear-history" onclick="clearLogs()">🗑️ ล้าง</span>
+                    </div>
+                </div>
+                <div id="log-container"></div>
+                <div id="pagination-container"></div>
+            </section>
         </div>
     </div>
 
     <div class="modal-overlay" id="activity-modal">
         <div class="modal-box">
-            <h3 id="modal-title" style="margin: 0; color: #1e293b; text-align: center; font-size: 24px; font-weight: 800;">เพิ่มกิจกรรม</h3>
-            
+            <h3 id="modal-title" class="modal-heading">เพิ่มกิจกรรม</h3>
+
             <div class="input-group">
                 <span class="input-label">ชื่อกิจกรรม</span>
-                <input type="text" id="act-name" placeholder="เช่น ชงกาแฟ ฯลฯ">
+                <input type="text" id="act-name" class="field" placeholder="เช่น ชงกาแฟ ฯลฯ">
             </div>
-            
+
             <div style="display: flex; gap: 12px;">
                 <div class="input-group" style="flex: 1; position: relative;">
                     <span class="input-label">อิโมจิ</span>
-                    <input type="text" id="act-emoji" placeholder="☕" style="text-align: center; font-size: 20px;" onfocus="showEmojiPicker()">
+                    <input type="text" id="act-emoji" class="field" placeholder="☕" style="text-align: center; font-size: 20px; padding: 10px;" onfocus="showEmojiPicker()">
                     <div class="emoji-picker" id="emoji-picker"></div>
                 </div>
                 <div class="input-group" style="flex: 2;">
                     <span class="input-label">เตือนเมื่อเกิน (นาที)</span>
-                    <input type="number" id="act-limit" placeholder="0 = ไม่จำกัด">
+                    <input type="number" id="act-limit" class="field" placeholder="0 = ไม่จำกัด">
                 </div>
             </div>
 
             <div class="input-group">
-                <span class="input-label">เลือกออร่าสี 🎨</span>
+                <span class="input-label">เลือกสีปุ่ม 🎨</span>
                 <div class="color-picker-container" id="color-picker">
-                    <div class="color-dot theme-purple selected" data-color="purple" style="background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);"></div>
-                    <div class="color-dot theme-yellow" data-color="yellow" style="background: linear-gradient(135deg, #fef08a 0%, #facc15 100%);"></div>
-                    <div class="color-dot theme-green" data-color="green" style="background: linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%);"></div>
-                    <div class="color-dot theme-pink" data-color="pink" style="background: linear-gradient(135deg, #fecdd3 0%, #fb7185 100%);"></div>
-                    <div class="color-dot theme-blue" data-color="blue" style="background: linear-gradient(135deg, #bae6fd 0%, #0ea5e9 100%);"></div>
-                    <div class="color-dot theme-mint" data-color="mint" style="background: linear-gradient(135deg, #a7f3d0 0%, #10b981 100%);"></div>
+                    <div class="color-dot theme-purple selected" data-color="purple" style="background: linear-gradient(160deg, #F3EAFF 0%, #D9C2FE 100%);"></div>
+                    <div class="color-dot theme-yellow" data-color="yellow" style="background: linear-gradient(160deg, #FFF7CC 0%, #FDE58A 100%);"></div>
+                    <div class="color-dot theme-green" data-color="green" style="background: linear-gradient(160deg, #E0F9E8 0%, #AEEDC3 100%);"></div>
+                    <div class="color-dot theme-pink" data-color="pink" style="background: linear-gradient(160deg, #FFE6EC 0%, #FFB7C9 100%);"></div>
+                    <div class="color-dot theme-blue" data-color="blue" style="background: linear-gradient(160deg, #E2F3FF 0%, #AEDCFB 100%);"></div>
+                    <div class="color-dot theme-mint" data-color="mint" style="background: linear-gradient(160deg, #DCFBF1 0%, #A3ECD5 100%);"></div>
                 </div>
             </div>
-            
-            <label style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; background: rgba(241, 245, 249, 0.8); padding: 12px 16px; border-radius: 16px; border: 2px dashed #cbd5e1; transition: 0.3s;" id="toilet-label">
+
+            <label class="toggle-card" id="toilet-label">
                 <span>🌟 กิจกรรมห้องน้ำ (ฟรี <span id="toilet-free-min-label">10</span> นาที/ครั้ง)</span>
                 <span class="toggle-switch"><input type="checkbox" id="act-istoilet"><span class="toggle-slider"></span></span>
             </label>
 
             <div class="modal-btn-group">
-                <button class="modal-btn" onclick="saveActivity()" style="background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white;">💾 บันทึก</button>
-                <button class="modal-btn" onclick="closeModal()" style="background: #e2e8f0; color: #475569;">❌ ยกเลิก</button>
+                <button class="modal-btn btn-primary" onclick="saveActivity()">💾 บันทึก</button>
+                <button class="modal-btn btn-secondary" onclick="closeModal()">ยกเลิก</button>
             </div>
-            <button id="btn-delete" class="modal-btn" onclick="deleteActivity()" style="background: #fee2e2; color: #ef4444; border: 2px dashed #ef4444; display: none; margin-top: 0;">🗑️ ลบกิจกรรมนี้</button>
+            <button id="btn-delete" class="modal-btn btn-danger" onclick="deleteActivity()" style="display: none;">🗑️ ลบกิจกรรมนี้</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="custom-dialog" onclick="if(event.target===this) closeDialog(null)">
         <div class="modal-box dialog-box">
             <div class="dialog-icon" id="dialog-icon">💬</div>
-            <h3 id="dialog-title-text" style="margin: 0; text-align: center; font-size: 20px; font-weight: 800;"></h3>
-            <p id="dialog-message" style="margin: 0; text-align: center; font-size: 14px; color: #64748b; white-space: pre-line; line-height: 1.6;"></p>
-            <input type="text" id="dialog-input" style="display:none;">
+            <h3 id="dialog-title-text" style="text-align: center; font-size: 20px;"></h3>
+            <p id="dialog-message" class="dialog-message"></p>
+            <input type="text" id="dialog-input" class="field" style="display:none;">
             <div class="modal-btn-group" id="dialog-actions"></div>
         </div>
     </div>
@@ -1053,10 +1162,27 @@
     <div class="modal-overlay" id="settings-modal" onclick="if(event.target===this) closeSettingsModal()">
         <div class="modal-box settings-box">
             <div class="settings-modal-header">
-                <h3 style="margin:0; font-size:20px; font-weight:800;">⚙️ ตั้งค่า</h3>
+                <h3>⚙️ ตั้งค่า</h3>
                 <span class="settings-close-btn" onclick="closeSettingsModal()">✕</span>
             </div>
             <div class="settings-scroll">
+
+                <div class="settings-section">
+                    <div class="settings-section-title">🎨 ธีม</div>
+                    <div class="theme-swatch-row">
+                        <button type="button" class="theme-swatch swatch-day" data-theme="day" onclick="setSiteTheme('day', event)"><span class="swatch-chip">☀️</span><span class="swatch-name">กลางวัน</span></button>
+                        <button type="button" class="theme-swatch swatch-sunset" data-theme="sunset" onclick="setSiteTheme('sunset', event)"><span class="swatch-chip">🌅</span><span class="swatch-name">ซันเซ็ต</span></button>
+                        <button type="button" class="theme-swatch swatch-ocean" data-theme="ocean" onclick="setSiteTheme('ocean', event)"><span class="swatch-chip">🌊</span><span class="swatch-name">ทะเล</span></button>
+                        <button type="button" class="theme-swatch swatch-forest" data-theme="forest" onclick="setSiteTheme('forest', event)"><span class="swatch-chip">🌿</span><span class="swatch-name">ป่าไม้</span></button>
+                        <button type="button" class="theme-swatch swatch-minimal" data-theme="minimal" onclick="setSiteTheme('minimal', event)"><span class="swatch-chip">🤍</span><span class="swatch-name">มินิมอล</span></button>
+                        <button type="button" class="theme-swatch swatch-night" data-theme="night" onclick="setSiteTheme('night', event)"><span class="swatch-chip">🌙</span><span class="swatch-name">กลางคืน</span></button>
+                        <button type="button" class="theme-swatch swatch-galaxy" data-theme="galaxy" onclick="setSiteTheme('galaxy', event)"><span class="swatch-chip">🪐</span><span class="swatch-name">กาแล็กซี</span></button>
+                    </div>
+                    <label class="auto-theme-row">
+                        <span class="toggle-switch toggle-switch-sm"><input type="checkbox" id="auto-theme-check" onchange="toggleAutoTheme(this.checked)"><span class="toggle-slider"></span></span>
+                        <span>🕐 สลับอัตโนมัติตามเวลา (กลางวัน ซันเซ็ต กลางคืน)</span>
+                    </label>
+                </div>
 
                 <div class="settings-section">
                     <div class="settings-section-title">👤 ทั่วไป</div>
@@ -1080,11 +1206,11 @@
                 <div class="settings-section">
                     <div class="settings-section-title">🚻 นโยบายเวลาห้องน้ำ</div>
                     <div class="settings-row">
-                        <span class="settings-row-label">เวลาฟรีต่อครั้ง</span>
+                        <span class="settings-row-label">เวลาฟรีต่อครั้ง (นาที)</span>
                         <span class="quota-stepper">
-                            <button type="button" class="quota-step-btn" onclick="stepToiletFreeMinutes(-1)">−</button>
-                            <input type="number" id="toilet-free-min-input" class="quota-input" min="0" oninput="updateToiletFreeMinutes(this.value)">
-                            <button type="button" class="quota-step-btn" onclick="stepToiletFreeMinutes(1)">+</button>
+                            <button type="button" class="quota-step-btn" onclick="stepToiletFreeMinutes(-1)" aria-label="ลด 1 นาที">−</button>
+                            <input type="number" id="toilet-free-min-input" class="quota-input" min="0" oninput="updateToiletFreeMinutes(this.value)" aria-label="เวลาฟรีต่อครั้ง (นาที)">
+                            <button type="button" class="quota-step-btn" onclick="stepToiletFreeMinutes(1)" aria-label="เพิ่ม 1 นาที">+</button>
                         </span>
                     </div>
                     <p class="settings-hint">เข้าห้องน้ำได้ฟรีครั้งละเท่านี้โดยไม่หักโควตา ถ้าเกินเวลานี้ ส่วนที่เกินจะถูกนำไปหักกับโควตาเวลาพักหลัก</p>
@@ -1097,21 +1223,6 @@
                         <span class="toggle-switch"><input type="checkbox" id="garden-enable-check" onchange="toggleGardenEnabled(this.checked)"><span class="toggle-slider"></span></span>
                     </label>
                     <p class="settings-hint">ต้นไม้จะโตขึ้นตามสตรีคที่ทำได้ และเหี่ยวถ้าพักเกินโควตา ปิดไว้ได้ถ้าไม่อยากให้กินพื้นที่หน้าจอ</p>
-                </div>
-
-                <div class="settings-section">
-                    <div class="settings-section-title">🎨 ธีม</div>
-                    <div class="theme-swatch-row">
-                        <button type="button" class="theme-swatch swatch-day" data-theme="day" title="กลางวัน" onclick="setSiteTheme('day', event)"><span>☀️</span></button>
-                        <button type="button" class="theme-swatch swatch-night" data-theme="night" title="กลางคืน" onclick="setSiteTheme('night', event)"><span>🌙</span></button>
-                        <button type="button" class="theme-swatch swatch-ocean" data-theme="ocean" title="ทะเล" onclick="setSiteTheme('ocean', event)"><span>🌊</span></button>
-                        <button type="button" class="theme-swatch swatch-forest" data-theme="forest" title="ป่าไม้" onclick="setSiteTheme('forest', event)"><span>🌿</span></button>
-                        <button type="button" class="theme-swatch swatch-sunset" data-theme="sunset" title="ซันเซ็ต" onclick="setSiteTheme('sunset', event)"><span>🌅</span></button>
-                    </div>
-                    <label class="auto-theme-row" style="margin-top:12px;">
-                        <span class="toggle-switch toggle-switch-sm"><input type="checkbox" id="auto-theme-check" onchange="toggleAutoTheme(this.checked)"><span class="toggle-slider"></span></span>
-                        <span>🕐 สลับอัตโนมัติตามเวลา</span>
-                    </label>
                 </div>
 
                 <div class="settings-section">
@@ -1132,8 +1243,8 @@
                     <div class="settings-row">
                         <span class="settings-row-label">สำรอง/นำเข้าข้อมูลทั้งหมด</span>
                         <div class="settings-row-control">
-                            <span class="btn-backup" onclick="exportBackup()">💾 สำรอง</span>
-                            <label class="btn-import" for="import-file">📤 นำเข้า</label>
+                            <span class="chip-btn btn-backup" onclick="exportBackup()">💾 สำรอง</span>
+                            <label class="chip-btn btn-import" for="import-file">📤 นำเข้า</label>
                             <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importBackup(event)">
                         </div>
                     </div>
@@ -1154,7 +1265,7 @@
     <div class="modal-overlay" id="day-detail-modal" onclick="if(event.target===this) closeDayDetail()">
         <div class="modal-box day-detail-box">
             <div class="settings-modal-header">
-                <h3 id="day-detail-title" style="margin:0; font-size:18px; font-weight:800;">📅</h3>
+                <h3 id="day-detail-title" style="font-size:18px;">📅</h3>
                 <span class="settings-close-btn" onclick="closeDayDetail()">✕</span>
             </div>
             <div class="day-detail-summary" id="day-detail-summary"></div>
@@ -1165,10 +1276,10 @@
     <div class="modal-overlay" id="search-modal" onclick="if(event.target===this) closeSearchModal()">
         <div class="modal-box day-detail-box">
             <div class="settings-modal-header">
-                <h3 style="margin:0; font-size:18px; font-weight:800;">🔍 ค้นหาประวัติ</h3>
+                <h3 style="font-size:18px;">🔍 ค้นหาประวัติ</h3>
                 <span class="settings-close-btn" onclick="closeSearchModal()">✕</span>
             </div>
-            <input type="text" id="search-input" class="quota-input" style="width:100%; text-align:left; padding:12px 14px; font-size:14px; flex-shrink:0;" placeholder="พิมพ์ชื่อกิจกรรม เช่น กาแฟ, ห้องน้ำ..." oninput="renderSearchResults()">
+            <input type="text" id="search-input" class="field" style="font-size:14px; flex-shrink:0;" placeholder="พิมพ์ชื่อกิจกรรม เช่น กาแฟ, ห้องน้ำ..." oninput="renderSearchResults()">
             <div class="day-detail-summary" id="search-summary"></div>
             <div class="settings-scroll" id="search-results"></div>
         </div>
@@ -1180,7 +1291,7 @@
         <div class="report-header">
             <span class="report-back-btn" onclick="closeReportPage()">← กลับ</span>
             <h2 class="report-page-title">📊 รายงานสรุป</h2>
-            <span style="width:60px;"></span>
+            <span class="report-header-spacer"></span>
         </div>
         <div class="report-scroll">
 
@@ -1260,7 +1371,6 @@
                 dialogResolve = resolve;
                 document.getElementById('dialog-icon').textContent = icon;
                 document.getElementById('dialog-title-text').textContent = title;
-                document.getElementById('dialog-title-text').style.color = isNightTheme() ? '#f8fafc' : '#1e293b';
                 document.getElementById('dialog-message').textContent = message;
                 document.getElementById('dialog-message').style.display = message ? 'block' : 'none';
                 const input = document.getElementById('dialog-input');
@@ -1272,15 +1382,15 @@
                 } else { input.style.display = 'none'; }
 
                 if (type === 'alert') {
-                    actions.innerHTML = `<button class="modal-btn" style="background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white;" onclick="closeDialog(true)">ตกลง</button>`;
+                    actions.innerHTML = `<button class="modal-btn btn-primary" onclick="closeDialog(true)">ตกลง</button>`;
                 } else if (type === 'confirm') {
                     actions.innerHTML = `
-                        <button class="modal-btn" style="background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white;" onclick="closeDialog(true)">ยืนยัน</button>
-                        <button class="modal-btn" style="background: #e2e8f0; color: #475569;" onclick="closeDialog(false)">ยกเลิก</button>`;
+                        <button class="modal-btn btn-primary" onclick="closeDialog(true)">ยืนยัน</button>
+                        <button class="modal-btn btn-secondary" onclick="closeDialog(false)">ยกเลิก</button>`;
                 } else if (type === 'prompt') {
                     actions.innerHTML = `
-                        <button class="modal-btn" style="background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white;" onclick="closeDialog(document.getElementById('dialog-input').value)">ตกลง</button>
-                        <button class="modal-btn" style="background: #e2e8f0; color: #475569;" onclick="closeDialog(null)">ยกเลิก</button>`;
+                        <button class="modal-btn btn-primary" onclick="closeDialog(document.getElementById('dialog-input').value)">ตกลง</button>
+                        <button class="modal-btn btn-secondary" onclick="closeDialog(null)">ยกเลิก</button>`;
                 }
                 document.getElementById('custom-dialog').style.display = 'flex';
                 document.addEventListener('keydown', handleDialogKeydown);
@@ -1325,15 +1435,15 @@
                 { tint: 'var(--bubble-3)', glow: 'var(--bubble-3)' },
                 { tint: 'var(--bubble-4)', glow: 'var(--bubble-4)' }
             ];
-            const count = 16;
+            const count = 10;
             for (let i = 0; i < count; i++) {
                 const li = document.createElement('li');
-                const size = Math.round(14 + Math.random() * 76);
+                const size = Math.round(12 + Math.random() * 40);
                 const c = tints[i % tints.length];
-                const duration = (16 + Math.random() * 16).toFixed(1);
+                const duration = (18 + Math.random() * 16).toFixed(1);
                 const delay = (Math.random() * -duration).toFixed(1);
                 const drift = Math.round((Math.random() - 0.5) * 220);
-                const peak = (0.5 + Math.random() * 0.4).toFixed(2);
+                const peak = (0.35 + Math.random() * 0.3).toFixed(2);
                 li.style.cssText = `
                     left:${(Math.random() * 100).toFixed(1)}%;
                     width:${size}px; height:${size}px;
@@ -1351,14 +1461,16 @@
             night: ['🌙', '⭐', '✨'],
             ocean: ['🫧', '🐚', '✨'],
             forest: ['🍃', '🦋', '✨'],
-            sunset: ['🌅', '🌸', '✨']
+            sunset: ['🌅', '🌸', '✨'],
+            minimal: ['🤍', '☁️', '✨'],
+            galaxy: ['🪐', '⭐', '✨']
         };
         function renderSparkles(theme) {
             const container = document.getElementById('bg-sparkles');
             if (!container) return;
             container.innerHTML = '';
             const glyphs = SPARKLE_GLYPHS[theme] || SPARKLE_GLYPHS.day;
-            const count = 12;
+            const count = 8;
             for (let i = 0; i < count; i++) {
                 const s = document.createElement('span');
                 s.textContent = glyphs[i % glyphs.length];
@@ -1383,11 +1495,13 @@
 
         // --- 🎉 ระบบจุดพลุกระดาษฉลอง (Confetti) ---
         const CONFETTI_COLORS = {
-            day: ['#ff758c', '#ff7eb3', '#c084fc', '#FF5A8C', '#facc15', '#4ade80'],
-            night: ['#FF5A8C', '#C084FC', '#38bdf8', '#facc15', '#a78bfa', '#f8fafc'],
-            ocean: ['#FF7A59', '#06B6D4', '#FFD666', '#ffffff', '#0891B2', '#FFB199'],
-            forest: ['#F5A623', '#4CAF7D', '#E98CA6', '#FFF1B5', '#8BC34A', '#D8895A'],
-            sunset: ['#FF4D8D', '#8B5CF6', '#FFAF59', '#FFD6EB', '#C77DFF', '#FF8FA3']
+            day: ['#F0487A', '#FF8FB1', '#8B6CF6', '#C4B1FF', '#FACC15', '#4ADE80'],
+            night: ['#FF6B9D', '#B69BFF', '#38BDF8', '#FACC15', '#A78BFA', '#F8FAFC'],
+            ocean: ['#FF6A4D', '#0AA3C2', '#FFD666', '#FFFFFF', '#0891B2', '#FFB199'],
+            forest: ['#E4850E', '#3A9867', '#E98CA6', '#FFF1B5', '#8BC34A', '#D8895A'],
+            sunset: ['#F2386F', '#7B4DFF', '#FFAF59', '#FFD6EB', '#C77DFF', '#FF8FA3'],
+            minimal: ['#5555D6', '#0E9F9A', '#F59E0B', '#F43F5E', '#CBD5E1', '#1B1F2C'],
+            galaxy: ['#3CD3F2', '#A68BFA', '#F472B6', '#FDE68A', '#E0E7FF', '#22D3EE']
         };
         function fireConfetti() {
             const currentTheme = document.body.getAttribute('data-theme') || 'day';
@@ -1409,12 +1523,13 @@
         }
 
         const themes = {
-            purple: { grad: 'linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%)', text: '#4c1d95', expandLight: 'radial-gradient(circle, #f3e8ff 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #2e1065 0%, #0f172a 100%)', particle: '#c084fc', hover: 'rgba(192, 132, 252, 0.4)' },
-            yellow: { grad: 'linear-gradient(135deg, #fef08a 0%, #facc15 100%)', text: '#713f12', expandLight: 'radial-gradient(circle, #fef9c3 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #451a03 0%, #0f172a 100%)', particle: '#facc15', hover: 'rgba(250, 204, 21, 0.4)' },
-            green: { grad: 'linear-gradient(135deg, #bbf7d0 0%, #4ade80 100%)', text: '#14532d', expandLight: 'radial-gradient(circle, #dcfce7 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #064e3b 0%, #0f172a 100%)', particle: '#4ade80', hover: 'rgba(74, 222, 128, 0.4)' },
-            pink: { grad: 'linear-gradient(135deg, #fecdd3 0%, #fb7185 100%)', text: '#881337', expandLight: 'radial-gradient(circle, #ffe4e6 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #4c0519 0%, #0f172a 100%)', particle: '#fb7185', hover: 'rgba(251, 113, 133, 0.4)' },
-            blue: { grad: 'linear-gradient(135deg, #bae6fd 0%, #0ea5e9 100%)', text: '#0c4a6e', expandLight: 'radial-gradient(circle, #e0f2fe 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #0c4a6e 0%, #0f172a 100%)', particle: '#0ea5e9', hover: 'rgba(14, 165, 233, 0.4)' },
-            mint: { grad: 'linear-gradient(135deg, #a7f3d0 0%, #10b981 100%)', text: '#064e3b', expandLight: 'radial-gradient(circle, #ecfdf5 0%, #ffffff 100%)', expandDark: 'radial-gradient(circle, #064e3b 0%, #0f172a 100%)', particle: '#10b981', hover: 'rgba(16, 185, 129, 0.4)' }
+            // edge = สีขอบล่างของปุ่ม ทำให้ปุ่มดูนูนเหมือนคีย์แคป และยุบลงตอนกด
+            purple: { grad: 'linear-gradient(160deg, #F3EAFF 0%, #D9C2FE 100%)', text: '#4A1D96', edge: '#B58EF5', expandLight: 'radial-gradient(circle at 50% 35%, #F5EDFF 0%, #FFFFFF 75%)', expandDark: 'radial-gradient(circle at 50% 35%, #3B1E6E 0%, #120D24 75%)', particle: '#A97CF8', hover: 'rgba(169, 124, 248, 0.45)' },
+            yellow: { grad: 'linear-gradient(160deg, #FFF7CC 0%, #FDE58A 100%)', text: '#6B4400', edge: '#EDC34A', expandLight: 'radial-gradient(circle at 50% 35%, #FFF9DB 0%, #FFFFFF 75%)', expandDark: 'radial-gradient(circle at 50% 35%, #4A3306 0%, #15110A 75%)', particle: '#F5C518', hover: 'rgba(237, 195, 74, 0.5)' },
+            green: { grad: 'linear-gradient(160deg, #E0F9E8 0%, #AEEDC3 100%)', text: '#14532D', edge: '#71D398', expandLight: 'radial-gradient(circle at 50% 35%, #E6FBEC 0%, #FFFFFF 75%)', expandDark: 'radial-gradient(circle at 50% 35%, #0D4A2C 0%, #0B1712 75%)', particle: '#4ADE80', hover: 'rgba(113, 211, 152, 0.5)' },
+            pink: { grad: 'linear-gradient(160deg, #FFE6EC 0%, #FFB7C9 100%)', text: '#8A1538', edge: '#F48DA8', expandLight: 'radial-gradient(circle at 50% 35%, #FFEAF0 0%, #FFFFFF 75%)', expandDark: 'radial-gradient(circle at 50% 35%, #561029 0%, #180B12 75%)', particle: '#FB7185', hover: 'rgba(244, 141, 168, 0.5)' },
+            blue: { grad: 'linear-gradient(160deg, #E2F3FF 0%, #AEDCFB 100%)', text: '#0B4A70', edge: '#6FBEF0', expandLight: 'radial-gradient(circle at 50% 35%, #E6F4FF 0%, #FFFFFF 75%)', expandDark: 'radial-gradient(circle at 50% 35%, #0C3A5C 0%, #0A1320 75%)', particle: '#38BDF8', hover: 'rgba(111, 190, 240, 0.5)' },
+            mint: { grad: 'linear-gradient(160deg, #DCFBF1 0%, #A3ECD5 100%)', text: '#065F46', edge: '#5FD2AF', expandLight: 'radial-gradient(circle at 50% 35%, #E3FCF4 0%, #FFFFFF 75%)', expandDark: 'radial-gradient(circle at 50% 35%, #08473A 0%, #0A1714 75%)', particle: '#10B981', hover: 'rgba(95, 210, 175, 0.5)' }
         };
 
         const defaultActivities = [
@@ -1532,7 +1647,9 @@
                     night:  [{f:440,t:0,d:0.30,type:'sine'},{f:330,t:0.18,d:0.40,type:'sine'}],
                     ocean:  [{f:900,t:0,d:0.08,type:'sine'},{f:500,t:0.06,d:0.18,type:'sine'},{f:700,t:0.20,d:0.15,type:'sine'}],
                     forest: [{f:660,t:0,d:0.08,type:'triangle'},{f:880,t:0.07,d:0.08,type:'triangle'},{f:740,t:0.16,d:0.12,type:'triangle'}],
-                    sunset: [{f:587,t:0,d:0.20,type:'triangle'},{f:494,t:0.15,d:0.20,type:'triangle'},{f:392,t:0.30,d:0.30,type:'sine'}]
+                    sunset: [{f:587,t:0,d:0.20,type:'triangle'},{f:494,t:0.15,d:0.20,type:'triangle'},{f:392,t:0.30,d:0.30,type:'sine'}],
+                    minimal: [{f:660,t:0,d:0.10,type:'sine'},{f:990,t:0.09,d:0.18,type:'sine'}],
+                    galaxy: [{f:1047,t:0,d:0.10,type:'sine'},{f:1319,t:0.08,d:0.12,type:'sine'},{f:1568,t:0.16,d:0.16,type:'sine'},{f:784,t:0.26,d:0.35,type:'sine'}]
                 };
                 (notes[theme] || notes.day).forEach(n => {
                     const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
@@ -1560,27 +1677,22 @@
             }
         }
 
-        function isNightTheme() { return document.body.getAttribute('data-theme') === 'night'; }
-
-        function applyModalThemeColors() {
-            document.getElementById('modal-title').style.color = isNightTheme() ? '#f8fafc' : '#1e293b';
-            document.getElementById('toilet-label').style.background = isNightTheme() ? 'rgba(30, 41, 59, 0.8)' : 'rgba(241, 245, 249, 0.8)';
-            document.getElementById('toilet-label').style.borderColor = isNightTheme() ? '#475569' : '#cbd5e1';
-        }
-
-        const THEME_META_COLORS = { day: '#FFE3EE', night: '#442A5E', ocean: '#B3ECF5', forest: '#DCEDC8', sunset: '#FFC2D1' };
-        const THEME_EMOJIS = { day: '☀️', night: '🌙', ocean: '🌊', forest: '🌿', sunset: '🌅' };
-        const THEME_GRADIENTS = {
-            day:    'linear-gradient(135deg, #FFF6E9 0%, #FFE3EE 35%, #F1E6FF 70%, #E6F3FF 100%)',
-            night:  'linear-gradient(135deg, #2B1B3D 0%, #3A2450 35%, #442A5E 70%, #5C3A87 100%)',
-            ocean:  'linear-gradient(135deg, #E0F7FA 0%, #B3ECF5 35%, #A0DEF0 70%, #CDEFFF 100%)',
-            forest: 'linear-gradient(135deg, #F1F8E9 0%, #DCEDC8 35%, #C8E6C9 70%, #FFF3D6 100%)',
-            sunset: 'linear-gradient(135deg, #FFE0D6 0%, #FFC2D1 35%, #E4B8F5 70%, #C7B8F0 100%)'
+        // ข้อมูลประกอบของแต่ละธีม (สีของธีมจริงๆ อยู่ในโทเคน CSS ด้านบน) — bg ใช้วาดพื้นหลังรูปสรุปที่แชร์
+        const THEME_META = {
+            day:     { emoji: '☀️', meta: '#FFE8F1', dark: false, bg: ['#FFF7F1', '#FFE8F1', '#E5F0FF'] },
+            sunset:  { emoji: '🌅', meta: '#FFD6E0', dark: false, bg: ['#FFEBDD', '#FFD6E0', '#D9D3FA'] },
+            ocean:   { emoji: '🌊', meta: '#D5F1F5', dark: false, bg: ['#EFFBFA', '#D5F1F5', '#E0EBFF'] },
+            forest:  { emoji: '🌿', meta: '#E3F0D6', dark: false, bg: ['#F6FAEE', '#E3F0D6', '#FBF3DE'] },
+            minimal: { emoji: '🤍', meta: '#F1F2F6', dark: false, bg: ['#F8F8FA', '#F1F2F6', '#EAECF2'] },
+            night:   { emoji: '🌙', meta: '#231940', dark: true,  bg: ['#191230', '#2E2052', '#3A2766'] },
+            galaxy:  { emoji: '🪐', meta: '#0F1736', dark: true,  bg: ['#090E22', '#152049', '#1C295C'] }
         };
+        function currentTheme() { return document.body.getAttribute('data-theme') || 'day'; }
+
         // เลเยอร์พื้นหลัง 2 ชั้นสลับกัน ไล่สีเข้าหากันแบบนุ่มๆ ด้วย opacity crossfade (แม่นยำกว่าไล่สี gradient ตรงๆ ทุกเบราว์เซอร์)
         let activeBgLayer = 'a';
-        function crossfadeThemeBg(theme) {
-            const grad = THEME_GRADIENTS[theme] || THEME_GRADIENTS.day;
+        function crossfadeThemeBg() {
+            const grad = getComputedStyle(document.body).getPropertyValue('--bg-gradient').trim();
             const showEl = document.getElementById(activeBgLayer === 'a' ? 'theme-bg-b' : 'theme-bg-a');
             const hideEl = document.getElementById(activeBgLayer === 'a' ? 'theme-bg-a' : 'theme-bg-b');
             if (!showEl || !hideEl) return;
@@ -1600,18 +1712,20 @@
                     if (cb) cb.checked = false;
                 }
             }
-            if (!theme || theme === 'day') { document.body.removeAttribute('data-theme'); theme = 'day'; }
-            else { document.body.setAttribute('data-theme', theme); }
+            if (!theme || !THEME_META[theme]) theme = 'day';
+            if (theme === 'day') document.body.removeAttribute('data-theme');
+            else document.body.setAttribute('data-theme', theme);
+            const meta = THEME_META[theme];
+            document.body.classList.toggle('is-dark', meta.dark);
             safeSetItem('site_theme', theme);
-            crossfadeThemeBg(theme);
+            crossfadeThemeBg();
             document.querySelectorAll('.theme-swatch').forEach(s => s.classList.toggle('selected', s.dataset.theme === theme));
             const titleEmoji = document.getElementById('title-emoji');
-            if (titleEmoji) titleEmoji.textContent = THEME_EMOJIS[theme] || '✨';
+            if (titleEmoji) titleEmoji.textContent = meta.emoji;
             renderSparkles(theme);
             if (event) playThemeChime(theme);
             const metaTheme = document.querySelector('meta[name="theme-color"]');
-            if (metaTheme) metaTheme.setAttribute('content', THEME_META_COLORS[theme] || THEME_META_COLORS.day);
-            applyModalThemeColors();
+            if (metaTheme) metaTheme.setAttribute('content', meta.meta);
         }
 
         // --- ⚙️ หน้าตั้งค่ารวม ---
@@ -1773,6 +1887,7 @@
             const modalLabel = document.getElementById('toilet-free-min-label');
             if (input) input.value = mins;
             if (modalLabel) modalLabel.textContent = mins;
+            document.querySelectorAll('.toilet-free-min').forEach(el => el.textContent = mins);
         }
         function updateToiletFreeMinutes(val) {
             let mins = parseInt(val); if (isNaN(mins) || mins < 0) mins = 0;
@@ -1808,10 +1923,10 @@
         function formatLogDurationSpan(log) {
             if (log.isToilet) {
                 const over = quotaMinutesForLog(log);
-                if (over === 0) return `<span class="log-duration" style="color:var(--accent);">${log.duration} น. <span style="font-weight:600; opacity:0.75;">(ฟรี) 🌟</span></span>`;
-                return `<span class="log-duration" style="color:#f43f5e;">${log.duration} น. <span style="font-weight:600; opacity:0.85;">(หัก ${over}) ⚠️</span></span>`;
+                if (over === 0) return `<span class="log-duration" style="color:var(--accent-ink);">${log.duration} น. <span style="opacity:0.75;">(ฟรี) 🌟</span></span>`;
+                return `<span class="log-duration" style="color:var(--danger);">${log.duration} น. <span style="opacity:0.85;">(หัก ${over}) ⚠️</span></span>`;
             }
-            return `<span class="log-duration" style="color:var(--accent2);">${log.duration} น.</span>`;
+            return `<span class="log-duration">${log.duration} น.</span>`;
         }
 
         function renderActivities() {
@@ -1820,24 +1935,32 @@
             
             activities.forEach((act, index) => {
                 const t = themes[act.theme] || themes['purple'];
-                const card = document.createElement('div'); card.className = 'action-card glass-panel card-enter';
+                const card = document.createElement('div'); card.className = 'action-card card-enter';
+                card.style.setProperty('--key-grad', t.grad); card.style.setProperty('--key-ink', t.text); card.style.setProperty('--key-edge', t.edge);
                 card.style.setProperty('--hover-color', t.hover); card.style.setProperty('--expand-bg-light', t.expandLight);
                 card.style.setProperty('--expand-bg-dark', t.expandDark); card.style.setProperty('--particle-color', t.particle);
-                card.style.animationDelay = `${index * 0.08}s`;
-                
-                card.onclick = (e) => { if(!e.target.closest('.edit-btn') && !e.target.closest('.back-box') && !e.target.closest('.drag-handle')) startBreak(index, card); };
+                card.style.animationDelay = `${index * 0.06}s`;
+                card.tabIndex = 0; card.setAttribute('role', 'button');
 
+                card.onclick = (e) => { if(!e.target.closest('.edit-btn') && !e.target.closest('.back-box') && !e.target.closest('.drag-handle')) startBreak(index, card); };
+                card.onkeydown = (e) => {
+                    if (e.target !== card || (e.key !== 'Enter' && e.key !== ' ')) return;
+                    e.preventDefault(); startBreak(index, card);
+                };
+
+                const helper = act.limit > 0 ? `ลิมิต ${act.limit} นาที`
+                    : act.isToilet ? `ฟรี <span class="toilet-free-min">${getToiletFreeMinutes()}</span> นาทีแรก` : '';
                 card.innerHTML = `
                     <div class="drag-handle" title="ลากเพื่อจัดเรียงลำดับ">⠿</div>
-                    <div class="edit-btn" onclick="openModal(${index}, event)">✏️</div>
-                    <div class="capsule" style="background: ${t.grad}; color: ${t.text};">
-                        <span>${act.name}</span>
+                    <div class="edit-btn" title="แก้ไขกิจกรรม" onclick="openModal(${index}, event)">✏️</div>
+                    <div class="floating-emoji">${act.emoji}</div>
+                    <div class="capsule">
+                        <span class="capsule-name">${act.name}</span>
                         <div class="live-timer">00:00</div>
                     </div>
-                    <div class="floating-emoji">${act.emoji}</div>
-                    <div class="helper-text">กดแจ้งเวลาพัก ${act.emoji} ${act.limit > 0 ? `(ลิมิต ${act.limit} น.)` : ''}</div>
-                    <div class="back-box" onclick="endBreak(${index}, this.parentElement, event)">
-                        <div class="back-title">กลับมาแล้ว</div>
+                    <div class="helper-text">${helper}</div>
+                    <div class="back-box" role="button" tabindex="0" onclick="endBreak(${index}, this.parentElement, event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();endBreak(${index}, this.parentElement, event);}">
+                        <div class="back-title">🏠 กลับมาแล้ว</div>
                     </div>
                     <div class="success-overlay">
                         <div class="success-title result-title">คัดลอกสำเร็จ! ✨</div>
@@ -1858,9 +1981,10 @@
                     if (dragSrcIndex === null) return;
                     const cards = Array.from(container.querySelectorAll('.action-card'));
                     cards.forEach(c => c.classList.remove('drag-over'));
+                    // การ์ดเรียงเป็นตาราง 2-3 คอลัมน์ จึงต้องเช็คทั้งแกน X และ Y
                     const overCard = cards.find(c => {
                         const r = c.getBoundingClientRect();
-                        return e.clientY >= r.top && e.clientY <= r.bottom;
+                        return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
                     });
                     if (overCard && overCard !== card) {
                         overCard.classList.add('drag-over');
@@ -1911,9 +2035,7 @@
                 document.querySelector('.color-dot[data-color="purple"]').classList.add('selected');
                 document.getElementById('act-istoilet').checked = false; document.getElementById('btn-delete').style.display = 'none';
             }
-            
-            document.getElementById('modal-title').style.color = isNightTheme() ? '#f8fafc' : '#1e293b';
-            document.getElementById('toilet-label').style.background = isNightTheme() ? 'rgba(30, 41, 59, 0.8)' : 'rgba(241, 245, 249, 0.8)';
+
             document.getElementById('activity-modal').style.display = 'flex';
         }
 
@@ -2033,38 +2155,33 @@
             const remain = Math.max(0, dailyQuota - totalUsed);
             const streak = document.getElementById('streak-num').textContent;
 
-            const theme = document.body.getAttribute('data-theme') || 'day';
+            const meta = THEME_META[currentTheme()] || THEME_META.day;
             const cs = getComputedStyle(document.body);
-            const accent = (cs.getPropertyValue('--accent').trim()) || '#FF5A8C';
-            const accent2 = (cs.getPropertyValue('--accent2').trim()) || '#C084FC';
-            const bgColors = {
-                day: ['#FFF6E9', '#FFE3EE', '#F1E6FF'], night: ['#2B1B3D', '#3A2450', '#5C3A87'],
-                ocean: ['#E0F7FA', '#B3ECF5', '#CDEFFF'], forest: ['#F1F8E9', '#DCEDC8', '#FFF3D6'],
-                sunset: ['#FFE0D6', '#FFC2D1', '#C7B8F0']
-            };
-            const isDark = theme === 'night';
-            const textColor = isDark ? '#f8fafc' : '#1e293b';
-            const subTextColor = isDark ? '#cbd5e1' : '#64748b';
+            const accent = (cs.getPropertyValue('--accent-ink').trim()) || '#C41D59';
+            const accent2 = (cs.getPropertyValue('--accent2').trim()) || '#8B6CF6';
+            const isDark = meta.dark;
+            const textColor = (cs.getPropertyValue('--ink').trim()) || '#2B2140';
+            const subTextColor = (cs.getPropertyValue('--ink-2').trim()) || '#594F6E';
 
             await document.fonts.ready;
             const canvas = document.getElementById('share-canvas');
             const ctx = canvas.getContext('2d');
             const W = canvas.width, H = canvas.height;
 
-            const [c1, c2, c3] = bgColors[theme] || bgColors.day;
+            const [c1, c2, c3] = meta.bg;
             const bgGrad = ctx.createLinearGradient(0, 0, W, H);
             bgGrad.addColorStop(0, c1); bgGrad.addColorStop(0.5, c2); bgGrad.addColorStop(1, c3);
             ctx.fillStyle = bgGrad; ctx.fillRect(0, 0, W, H);
 
-            ctx.fillStyle = isDark ? 'rgba(30,41,59,0.55)' : 'rgba(255,255,255,0.55)';
+            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.6)';
             drawRoundedRect(ctx, 30, 30, W - 60, H - 60, 32); ctx.fill();
 
             const now = new Date();
             const dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
             ctx.textAlign = 'center';
-            ctx.fillStyle = textColor; ctx.font = "700 30px 'Kanit', sans-serif";
+            ctx.fillStyle = textColor; ctx.font = "700 30px 'Mitr', sans-serif";
             ctx.fillText('✨ สรุปเวลาพักวันนี้', W / 2, 90);
-            ctx.fillStyle = subTextColor; ctx.font = "500 16px 'Kanit', sans-serif";
+            ctx.fillStyle = subTextColor; ctx.font = "500 16px 'Mitr', sans-serif";
             ctx.fillText(dateStr, W / 2, 118);
 
             let y = 165;
@@ -2078,14 +2195,14 @@
                 const x = 50 + i * (pillW + 20);
                 ctx.fillStyle = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.7)';
                 drawRoundedRect(ctx, x, y, pillW, 70, 16); ctx.fill();
-                ctx.fillStyle = accent; ctx.textAlign = 'center'; ctx.font = "700 20px 'Kanit', sans-serif";
+                ctx.fillStyle = accent; ctx.textAlign = 'center'; ctx.font = "700 20px 'Mitr', sans-serif";
                 ctx.fillText(s.value, x + pillW / 2, y + 32);
-                ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Kanit', sans-serif";
+                ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Mitr', sans-serif";
                 ctx.fillText(s.label, x + pillW / 2, y + 54);
             });
 
             y += 100;
-            ctx.textAlign = 'left'; ctx.fillStyle = textColor; ctx.font = "700 15px 'Kanit', sans-serif";
+            ctx.textAlign = 'left'; ctx.fillStyle = textColor; ctx.font = "700 15px 'Mitr', sans-serif";
             ctx.fillText('รายการวันนี้', 50, y);
             logs.slice(0, 9).forEach((log, i) => {
                 y += 42;
@@ -2093,17 +2210,17 @@
                 ctx.fillStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.6)';
                 drawRoundedRect(ctx, 50, y - 26, W - 100, 36, 12); ctx.fill();
                 ctx.fillStyle = barColor; drawRoundedRect(ctx, 50, y - 26, 5, 36, 3); ctx.fill();
-                ctx.fillStyle = textColor; ctx.font = "600 14px 'Kanit', sans-serif"; ctx.textAlign = 'left';
+                ctx.fillStyle = textColor; ctx.font = "600 14px 'Mitr', sans-serif"; ctx.textAlign = 'left';
                 ctx.fillText(`${log.action}`, 68, y - 4);
-                ctx.textAlign = 'right'; ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Kanit', sans-serif";
+                ctx.textAlign = 'right'; ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Mitr', sans-serif";
                 ctx.fillText(`${log.start} - ${log.end} · ${log.duration} น.`, W - 60, y - 4);
             });
             if (logs.length > 9) {
-                y += 32; ctx.textAlign = 'center'; ctx.fillStyle = subTextColor; ctx.font = "500 13px 'Kanit', sans-serif";
+                y += 32; ctx.textAlign = 'center'; ctx.fillStyle = subTextColor; ctx.font = "500 13px 'Mitr', sans-serif";
                 ctx.fillText(`และอีก ${logs.length - 9} รายการ...`, W / 2, y);
             }
 
-            ctx.textAlign = 'center'; ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Kanit', sans-serif";
+            ctx.textAlign = 'center'; ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Mitr', sans-serif";
             ctx.fillText('สร้างจาก Break Recorder ✨', W / 2, H - 45);
 
             canvas.toBlob(async (blob) => {
@@ -2168,7 +2285,7 @@
             const logs = JSON.parse(localStorage.getItem('break_logs') || '[]');
             const todayLogs = logs.filter(log => (log.shiftKey || log.date) === today).reverse();
             const dashTitleEl = document.getElementById('dash-title');
-            if (dashTitleEl) dashTitleEl.textContent = getShiftBoundaryMinutes() !== null ? '📊 โควตาเวลาพักกะนี้' : '📊 โควตาเวลาพักวันนี้';
+            if (dashTitleEl) dashTitleEl.textContent = getShiftBoundaryMinutes() !== null ? '📊 เวลาพักกะนี้' : '📊 เวลาพักวันนี้';
             let dailyQuota = parseInt(localStorage.getItem('daily_quota') || '60');
             document.getElementById('quota-input').value = dailyQuota;
             let totalUsed = 0; todayLogs.forEach(log => totalUsed += quotaMinutesForLog(log));
@@ -2177,7 +2294,7 @@
             const paginationContainer = document.getElementById('pagination-container');
             
             if (todayLogs.length === 0) {
-                logContainer.innerHTML = '<div class="empty-log">เริ่มลุยงานกันเลย! 🚀</div>'; paginationContainer.innerHTML = '';
+                logContainer.innerHTML = '<div class="empty-log"><span class="empty-emoji">🚀</span>ยังไม่มีการพักวันนี้<small>แตะกิจกรรมด้านบนเพื่อเริ่มพักได้เลย</small></div>'; paginationContainer.innerHTML = '';
             } else {
                 const displayedLogs = showAllLogs ? todayLogs : todayLogs.slice(0, 5);
                 let rowsHtml = '<div class="log-list">';
@@ -2302,7 +2419,7 @@
             const quotaTotal = dayLogs.reduce((s, l) => s + quotaMinutesForLog(l), 0);
             const overQuota = quotaTotal > dailyQuota;
             const diffNote = realTotal !== quotaTotal ? ` (ใช้เวลาจริงรวม ${realTotal} นาที)` : '';
-            summaryEl.innerHTML = `นับผลกับโควตา <strong style="${overQuota ? 'color:#f43f5e;' : ''}">${quotaTotal} นาที</strong>${diffNote} จากโควตา ${dailyQuota} นาที · ${dayLogs.length} รายการ${overQuota ? ' <span style="color:#f43f5e;">(เกินโควตา ⚠️)</span>' : ''}`;
+            summaryEl.innerHTML = `นับผลกับโควตา <strong class="${overQuota ? 'text-danger' : ''}">${quotaTotal} นาที</strong>${diffNote} จากโควตา ${dailyQuota} นาที · ${dayLogs.length} รายการ${overQuota ? ' <span class="text-danger">(เกินโควตา ⚠️)</span>' : ''}`;
 
             let rowsHtml = '<div class="log-list">';
             dayLogs.forEach((log, i) => {
@@ -2529,7 +2646,7 @@
                 html += `<tr>
                     <td>${name}</td>
                     <td>${g.count}</td>
-                    <td><div class="report-bar-cell"><span>${g.real}</span><div class="report-bar-mini" style="width:${barWidth.toFixed(0)}px;"></div><span style="color:#94a3b8; font-weight:500;">${pct}%</span></div></td>
+                    <td><div class="report-bar-cell"><span>${g.real}</span><div class="report-bar-mini" style="width:${barWidth.toFixed(0)}px;"></div><span class="report-pct">${pct}%</span></div></td>
                 </tr>`;
             });
             html += '</tbody>';
@@ -2567,7 +2684,7 @@
                     </div>`;
             });
             html += '</div>';
-            if (results.length > showLimit) html += `<p style="text-align:center; font-size:11px; color:#94a3b8; margin-top:10px;">แสดง ${showLimit} จาก ${results.length} รายการ ลองพิมพ์คำค้นให้เจาะจงขึ้น</p>`;
+            if (results.length > showLimit) html += `<p class="muted-note">แสดง ${showLimit} จาก ${results.length} รายการ ลองพิมพ์คำค้นให้เจาะจงขึ้น</p>`;
             listEl.innerHTML = html;
         }
 
@@ -2806,7 +2923,7 @@
         try {
             const manifestData = {
                 name: 'ระบบแจ้งเวลาพัก - Super WOW Edition', short_name: 'Break Time',
-                start_url: '.', display: 'standalone', background_color: '#FFE3EE', theme_color: '#FF5A8C'
+                start_url: '.', display: 'standalone', background_color: '#FFE8F1', theme_color: '#F0487A'
             };
             const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
             const link = document.createElement('link');
