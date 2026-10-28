@@ -120,12 +120,30 @@
             --bubble-1: rgba(60, 211, 242, 0.32); --bubble-2: rgba(166, 139, 250, 0.34);
             --bubble-3: rgba(244, 114, 182, 0.28); --bubble-4: rgba(255, 255, 255, 0.18);
         }
+        /* 🎃 ฮาโลวีน (ธีมตามเทศกาล) — ฟ้าคืนสีม่วง ฟักทองส้ม แม่มดม่วง */
+        body[data-theme="halloween"] {
+            --bg-solid: #1E1230;
+            --bg-gradient: linear-gradient(165deg, #140C24 0%, #22133A 38%, #34194A 72%, #4A1F3F 100%);
+            --ink: #FFF3E3; --ink-2: #E5CFE6; --ink-3: #B79CC0;
+            --line: rgba(255, 255, 255, 0.1);
+            --surface: rgba(40, 22, 60, 0.6); --surface-2: rgba(255, 255, 255, 0.06);
+            --surface-solid: rgba(36, 20, 54, 0.97); --surface-edge: rgba(255, 170, 90, 0.16);
+            --field: rgba(255, 255, 255, 0.07);
+            --shadow-rgb: 8, 2, 14;
+            --accent: #FF8A1F; --accent-rgb: 255, 138, 31; --accent-ink: #FFA552;
+            --accent2: #B07CFF; --accent2-rgb: 176, 124, 255;
+            --on-accent: #2A1300;
+            --danger: #FF6B81; --danger-rgb: 255, 107, 129;
+            --streak: #FFB347;
+            --aurora-1: #6A2C8E; --aurora-2: #8A3A12; --aurora-3: #2D5C3A; --aurora-4: #5A2160;
+            --bubble-1: rgba(255, 138, 31, 0.35); --bubble-2: rgba(176, 124, 255, 0.35);
+            --bubble-3: rgba(139, 224, 78, 0.28); --bubble-4: rgba(255, 255, 255, 0.16);
+        }
 
         * { box-sizing: border-box; }
         /* เปลี่ยนธีมแล้วสีค่อยๆ ไล่เปลี่ยนตาม (คอมโพเนนต์ที่ประกาศ transition เองจะใช้ของตัวเองแทน) */
         body, body * { transition: background-color 0.45s ease, border-color 0.35s ease, color 0.35s ease; }
 
-        html { background: var(--bg-solid); }
         body {
             font-family: var(--font-body); color: var(--ink);
             margin: 0; min-height: 100vh; min-height: 100dvh;
@@ -214,15 +232,128 @@
             will-change: transform;
         }
         body.is-dark .bg-bubbles li {
-            border-color: rgba(255,255,255,0.12);
-            background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.45), var(--tint, rgba(182,155,255,0.35)) 48%, rgba(255,255,255,0) 78%);
+            border: none; mix-blend-mode: screen;
+            background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.5), var(--tint, rgba(182,155,255,0.35)) 42%, rgba(255,255,255,0) 72%);
+            box-shadow: 0 0 22px -4px var(--glow, rgba(182,155,255,0.5));
         }
+        body[data-theme="halloween"] .bg-bubbles { display: none; }
         @keyframes float-bubble {
             0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
             12% { opacity: var(--peak, 0.6); }
             50% { transform: translate(var(--dx, 40px), -58vh) scale(1); }
             88% { opacity: var(--peak, 0.6); }
             100% { transform: translate(calc(var(--dx, 40px) * -0.6), -125vh) scale(1.15); opacity: 0; }
+        }
+
+        /* 🎃 ของตกแต่งฮาโลวีน (พระจันทร์ ใยแมงมุม ผีน้อย ค้างคาว แมงมุม ฟักทอง) — แสดงเฉพาะตอนใช้ธีมฮาโลวีน */
+        .bg-halloween { display: none; position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+        body[data-theme="halloween"] .bg-halloween { display: block; }
+        .bg-halloween svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+        .hw-moon {
+            position: absolute; top: 4px; right: 4px; width: 64px; aspect-ratio: 1; border-radius: 50%;
+            background: radial-gradient(circle at 38% 36%, #FFF8DC 0%, #FFE7A3 55%, #F3C462 100%);
+            box-shadow: 0 0 36px 8px rgba(255, 220, 140, 0.25), 0 0 110px 36px rgba(255, 180, 80, 0.12);
+            animation: hw-moon-glow 5s ease-in-out infinite alternate;
+        }
+        .hw-moon::before, .hw-moon::after { content: ''; position: absolute; border-radius: 50%; background: rgba(214, 160, 70, 0.3); }
+        .hw-moon::before { width: 20%; height: 20%; top: 26%; left: 54%; }
+        .hw-moon::after { width: 13%; height: 13%; top: 58%; left: 30%; }
+        @keyframes hw-moon-glow {
+            from { box-shadow: 0 0 28px 6px rgba(255, 220, 140, 0.2), 0 0 90px 30px rgba(255, 180, 80, 0.1); }
+            to { box-shadow: 0 0 46px 12px rgba(255, 220, 140, 0.34), 0 0 130px 44px rgba(255, 180, 80, 0.16); }
+        }
+
+        @media (min-width: 700px) { .hw-moon { top: 9vh; right: 6vw; width: clamp(84px, 10vw, 120px); } }
+        @media (min-width: 980px) { .hw-moon { top: 1.5vh; right: auto; left: 57%; width: 92px; } }
+
+        .hw-web { position: absolute; top: 0; left: 0; width: clamp(96px, 12vw, 150px); opacity: 0.45; }
+
+        .hw-ghost { position: absolute; width: var(--s, 56px); animation: hw-ghost-float var(--d, 7s) ease-in-out infinite alternate; will-change: transform; }
+        .hw-ghost svg { filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.35)); animation: hw-ghost-fade 11s ease-in-out infinite; }
+        .hw-ghost.g1 { --s: 58px; top: 26%; left: 3%; }
+        .hw-ghost.g2 { --s: 46px; top: 58%; right: 4%; --d: 6s; animation-delay: -2s; }
+        .hw-ghost.g2 svg { animation-delay: -5s; }
+        .hw-ghost.g3 { --s: 36px; bottom: 18%; left: 44%; --d: 8s; animation-delay: -4s; }
+        .hw-ghost.g3 svg { animation-delay: -8s; }
+        @keyframes hw-ghost-float {
+            0% { transform: translate(0, 0) rotate(-5deg); }
+            50% { transform: translate(10px, -16px) rotate(3deg); }
+            100% { transform: translate(-6px, -4px) rotate(6deg); }
+        }
+        /* ผีน้อยแอบหายตัวเป็นพักๆ */
+        @keyframes hw-ghost-fade { 0%, 70%, 100% { opacity: 0.92; } 80%, 88% { opacity: 0.18; } }
+        .hw-ghost-arm { transform-box: view-box; transform-origin: 54px 40px; animation: hw-wave 0.9s ease-in-out infinite alternate; }
+        @keyframes hw-wave { from { transform: rotate(-22deg); } to { transform: rotate(18deg); } }
+
+        .hw-bat { position: absolute; left: -100px; width: var(--s, 54px); animation: hw-bat-fly var(--d, 15s) linear infinite; will-change: transform; }
+        .hw-bat svg { filter: drop-shadow(0 0 6px rgba(255, 170, 90, 0.45)); }
+        .hw-bat.b1 { top: 13%; --s: 54px; }
+        .hw-bat.b2 { top: 36%; --s: 38px; --d: 19s; animation-delay: -8s; }
+        .hw-bat.b3 { top: 70%; --s: 30px; --d: 23s; animation-delay: -15s; }
+        @keyframes hw-bat-fly {
+            0% { transform: translate(0, 0); }
+            20% { transform: translate(22vw, -5vh); }
+            40% { transform: translate(44vw, 3vh); }
+            60% { transform: translate(66vw, -4vh); }
+            80% { transform: translate(88vw, 2vh); }
+            100% { transform: translate(calc(100vw + 200px), -3vh); }
+        }
+        .hw-wing-l, .hw-wing-r { transform-box: view-box; animation: 0.26s ease-in-out infinite alternate; }
+        .hw-wing-l { transform-origin: 27px 15px; animation-name: hw-flap-l; }
+        .hw-wing-r { transform-origin: 37px 15px; animation-name: hw-flap-r; }
+        @keyframes hw-flap-l { from { transform: rotate(-26deg); } to { transform: rotate(14deg) scaleY(0.6); } }
+        @keyframes hw-flap-r { from { transform: rotate(26deg); } to { transform: rotate(-14deg) scaleY(0.6); } }
+
+        /* 🕷️ แมงมุมน้อยห้อยลงมาจากใยตรงมุมจอ */
+        .hw-spider {
+            position: absolute; top: -150px; left: clamp(44px, 6vw, 92px); width: 36px;
+            display: flex; flex-direction: column; align-items: center; transform-origin: 50% 0;
+            animation: hw-spider-drop 7s ease-in-out infinite; will-change: transform;
+        }
+        .hw-thread { width: 1.5px; height: 170px; background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0.55)); }
+        @keyframes hw-spider-drop {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            40% { transform: translateY(110px) rotate(-3deg); }
+            55% { transform: translateY(96px) rotate(3deg); }
+            70% { transform: translateY(104px) rotate(-1deg); }
+        }
+        .hw-spider-legs { transform-box: fill-box; transform-origin: center; animation: hw-wiggle 0.5s ease-in-out infinite alternate; }
+        @keyframes hw-wiggle { from { transform: scaleY(0.92); } to { transform: scaleY(1.06); } }
+
+        /* 🎃 ฟักทองยิ้มแป้นมุมล่าง แสงเทียนในหน้ากระพริบ */
+        .hw-pumpkins { position: absolute; bottom: -4px; right: 2vw; display: flex; align-items: flex-end; gap: 2px; }
+        .hw-pumpkin { width: var(--s, 66px); transform-origin: 50% 100%; animation: hw-pumpkin-wobble 3.2s ease-in-out infinite; }
+        .hw-pumpkin.p2 { --s: 46px; animation-delay: -1.3s; }
+        .hw-pumpkin svg { filter: drop-shadow(0 0 16px rgba(255, 140, 40, 0.45)); }
+        @keyframes hw-pumpkin-wobble { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg) scale(1.03, 0.97); } }
+        .hw-face { animation: hw-flicker 2.6s linear infinite; }
+        @keyframes hw-flicker { 0%, 100% { opacity: 1; } 40% { opacity: 0.72; } 45% { opacity: 0.95; } 70% { opacity: 0.8; } }
+
+        @media (max-width: 600px) {
+            .hw-ghost.g3, .hw-bat.b3 { display: none; }
+        }
+
+        /* 👻 ชั้นหน้า: ผีน้อยแอบโผล่จากขอบจอ + ค้างคาวบินผ่าน (อยู่หน้าเนื้อหาแต่กดทะลุได้ มือถือจะได้เห็นด้วย) */
+        .fg-halloween { display: none; position: fixed; inset: 0; z-index: 50; overflow: hidden; pointer-events: none; }
+        body[data-theme="halloween"] .fg-halloween { display: block; }
+        .fg-halloween svg { display: block; width: 100%; height: auto; overflow: visible; }
+        .hw-peek { position: absolute; right: -16px; top: 54%; width: 52px; animation: hw-peek 11s ease-in-out infinite; will-change: transform; }
+        .hw-peek svg { filter: drop-shadow(0 4px 12px rgba(20, 8, 40, 0.35)); }
+        @keyframes hw-peek {
+            0%, 52% { transform: translateX(80px) rotate(-14deg); }
+            60% { transform: translateX(0) rotate(-14deg); }
+            66% { transform: translateX(6px) rotate(-6deg); }
+            72% { transform: translateX(0) rotate(-14deg); }
+            80%, 100% { transform: translateX(80px) rotate(-14deg); }
+        }
+        .hw-bat-front { position: absolute; left: 0; top: 30%; width: 42px; animation: hw-bat-dash 17s linear infinite; animation-delay: 3s; will-change: transform; transform: translateX(-120px); }
+        .hw-bat-front svg { filter: drop-shadow(0 0 6px rgba(255, 170, 90, 0.5)); }
+        @keyframes hw-bat-dash {
+            0% { transform: translate(-120px, 0); }
+            12% { transform: translate(35vw, -6vh); }
+            24% { transform: translate(70vw, 2vh); }
+            36%, 100% { transform: translate(calc(100vw + 120px), -10vh); }
         }
 
         /* 📐 เลย์เอาต์: มือถือเป็นคอลัมน์เดียว (เรียงลำดับด้วย order) — จอกว้างแยกเป็น 2 คอลัมน์ */
@@ -774,6 +905,7 @@
         .swatch-minimal { --sw-bg: linear-gradient(140deg, #FFFFFF, #E6E8EF); --sw-a: #5555D6; --sw-b: #0E9F9A; }
         .swatch-night   { --sw-bg: linear-gradient(140deg, #231940, #3A2766); --sw-a: #FF6B9D; --sw-b: #B69BFF; }
         .swatch-galaxy  { --sw-bg: linear-gradient(140deg, #0F1736, #1C295C); --sw-a: #3CD3F2; --sw-b: #A68BFA; }
+        .swatch-halloween { --sw-bg: linear-gradient(140deg, #22133A, #4A1F3F); --sw-a: #FF8A1F; --sw-b: #B07CFF; }
         .auto-theme-row { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 600; color: var(--ink-2); cursor: pointer; margin-top: 16px; }
 
         /* 🔘 สวิตช์เปิดปิด แทน checkbox ธรรมดา */
@@ -951,7 +1083,7 @@
                 transition-duration: 0.01ms !important;
                 scroll-behavior: auto !important;
             }
-            .bg-bubbles, .bg-sparkles, .bg-aurora, .garden-butterfly { display: none !important; }
+            .bg-bubbles, .bg-sparkles, .bg-aurora, .garden-butterfly, .hw-bat, .hw-spider, .fg-halloween { display: none !important; }
         }
     </style>
 </head>
@@ -962,6 +1094,8 @@
     <div class="bg-aurora"><span></span><span></span><span></span><span></span></div>
     <ul class="bg-bubbles" id="bg-bubbles"></ul>
     <div class="bg-sparkles" id="bg-sparkles"></div>
+    <div class="bg-halloween" id="bg-halloween" aria-hidden="true"></div>
+    <div class="fg-halloween" id="fg-halloween" aria-hidden="true"></div>
 
     <div class="container">
         <header class="header-row">
@@ -1177,11 +1311,13 @@
                         <button type="button" class="theme-swatch swatch-minimal" data-theme="minimal" onclick="setSiteTheme('minimal', event)"><span class="swatch-chip">🤍</span><span class="swatch-name">มินิมอล</span></button>
                         <button type="button" class="theme-swatch swatch-night" data-theme="night" onclick="setSiteTheme('night', event)"><span class="swatch-chip">🌙</span><span class="swatch-name">กลางคืน</span></button>
                         <button type="button" class="theme-swatch swatch-galaxy" data-theme="galaxy" onclick="setSiteTheme('galaxy', event)"><span class="swatch-chip">🪐</span><span class="swatch-name">กาแล็กซี</span></button>
+                        <button type="button" class="theme-swatch swatch-halloween" data-theme="halloween" onclick="setSiteTheme('halloween', event)"><span class="swatch-chip">🎃</span><span class="swatch-name">ฮาโลวีน</span></button>
                     </div>
                     <label class="auto-theme-row">
                         <span class="toggle-switch toggle-switch-sm"><input type="checkbox" id="auto-theme-check" onchange="toggleAutoTheme(this.checked)"><span class="toggle-slider"></span></span>
                         <span>🕐 สลับอัตโนมัติตามเวลา (กลางวัน ซันเซ็ต กลางคืน)</span>
                     </label>
+                    <p class="settings-hint">ช่วงฮาโลวีน (20 ต.ค. – 1 พ.ย.) ธีมอัตโนมัติจะเป็นธีมฮาโลวีน 🎃</p>
                 </div>
 
                 <div class="settings-section">
@@ -1463,7 +1599,8 @@
             forest: ['🍃', '🦋', '✨'],
             sunset: ['🌅', '🌸', '✨'],
             minimal: ['🤍', '☁️', '✨'],
-            galaxy: ['🪐', '⭐', '✨']
+            galaxy: ['🪐', '⭐', '✨'],
+            halloween: ['🍬', '🍭', '✨', '⭐']
         };
         function renderSparkles(theme) {
             const container = document.getElementById('bg-sparkles');
@@ -1501,20 +1638,29 @@
             forest: ['#E4850E', '#3A9867', '#E98CA6', '#FFF1B5', '#8BC34A', '#D8895A'],
             sunset: ['#F2386F', '#7B4DFF', '#FFAF59', '#FFD6EB', '#C77DFF', '#FF8FA3'],
             minimal: ['#5555D6', '#0E9F9A', '#F59E0B', '#F43F5E', '#CBD5E1', '#1B1F2C'],
-            galaxy: ['#3CD3F2', '#A68BFA', '#F472B6', '#FDE68A', '#E0E7FF', '#22D3EE']
+            galaxy: ['#3CD3F2', '#A68BFA', '#F472B6', '#FDE68A', '#E0E7FF', '#22D3EE'],
+            halloween: ['#FF8A1F', '#B07CFF', '#8BE04E', '#FFE8C2', '#FF6B81', '#FFB347']
         };
+        // ธีมฮาโลวีน: โปรยขนมกับผีน้อยปนไปกับกระดาษสี
+        const HALLOWEEN_CONFETTI = ['🍬', '🍭', '🍫', '🎃', '👻'];
         function fireConfetti() {
-            const currentTheme = document.body.getAttribute('data-theme') || 'day';
-            const colors = CONFETTI_COLORS[currentTheme] || CONFETTI_COLORS.day;
+            const theme = document.body.getAttribute('data-theme') || 'day';
+            const colors = CONFETTI_COLORS[theme] || CONFETTI_COLORS.day;
             for(let i=0; i<60; i++) {
                 let conf = document.createElement('div');
                 conf.className = 'confetti';
                 conf.style.left = Math.random() * 100 + 'vw';
                 conf.style.top = '-20px';
-                conf.style.width = Math.random() * 12 + 6 + 'px';
-                conf.style.height = Math.random() * 24 + 10 + 'px';
-                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '4px';
+                if (theme === 'halloween' && i % 3 === 0) {
+                    conf.textContent = HALLOWEEN_CONFETTI[Math.floor(Math.random() * HALLOWEEN_CONFETTI.length)];
+                    conf.style.width = 'auto'; conf.style.height = 'auto';
+                    conf.style.fontSize = Math.round(16 + Math.random() * 14) + 'px';
+                } else {
+                    conf.style.width = Math.random() * 12 + 6 + 'px';
+                    conf.style.height = Math.random() * 24 + 10 + 'px';
+                    conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '4px';
+                }
                 conf.style.animationDuration = Math.random() * 3 + 2 + 's';
                 conf.style.animationDelay = Math.random() * 0.5 + 's';
                 document.body.appendChild(conf);
@@ -1649,7 +1795,8 @@
                     forest: [{f:660,t:0,d:0.08,type:'triangle'},{f:880,t:0.07,d:0.08,type:'triangle'},{f:740,t:0.16,d:0.12,type:'triangle'}],
                     sunset: [{f:587,t:0,d:0.20,type:'triangle'},{f:494,t:0.15,d:0.20,type:'triangle'},{f:392,t:0.30,d:0.30,type:'sine'}],
                     minimal: [{f:660,t:0,d:0.10,type:'sine'},{f:990,t:0.09,d:0.18,type:'sine'}],
-                    galaxy: [{f:1047,t:0,d:0.10,type:'sine'},{f:1319,t:0.08,d:0.12,type:'sine'},{f:1568,t:0.16,d:0.16,type:'sine'},{f:784,t:0.26,d:0.35,type:'sine'}]
+                    galaxy: [{f:1047,t:0,d:0.10,type:'sine'},{f:1319,t:0.08,d:0.12,type:'sine'},{f:1568,t:0.16,d:0.16,type:'sine'},{f:784,t:0.26,d:0.35,type:'sine'}],
+                    halloween: [{f:330,t:0,d:0.16,type:'triangle'},{f:392,t:0.13,d:0.16,type:'triangle'},{f:466,t:0.26,d:0.16,type:'triangle'},{f:370,t:0.40,d:0.45,type:'sine'}]
                 };
                 (notes[theme] || notes.day).forEach(n => {
                     const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
@@ -1685,7 +1832,8 @@
             forest:  { emoji: '🌿', meta: '#E3F0D6', dark: false, bg: ['#F6FAEE', '#E3F0D6', '#FBF3DE'] },
             minimal: { emoji: '🤍', meta: '#F1F2F6', dark: false, bg: ['#F8F8FA', '#F1F2F6', '#EAECF2'] },
             night:   { emoji: '🌙', meta: '#231940', dark: true,  bg: ['#191230', '#2E2052', '#3A2766'] },
-            galaxy:  { emoji: '🪐', meta: '#0F1736', dark: true,  bg: ['#090E22', '#152049', '#1C295C'] }
+            galaxy:  { emoji: '🪐', meta: '#0F1736', dark: true,  bg: ['#090E22', '#152049', '#1C295C'] },
+            halloween: { emoji: '🎃', meta: '#22133A', dark: true, bg: ['#140C24', '#34194A', '#4A1F3F'] }
         };
         function currentTheme() { return document.body.getAttribute('data-theme') || 'day'; }
 
@@ -1703,6 +1851,90 @@
             activeBgLayer = activeBgLayer === 'a' ? 'b' : 'a';
         }
 
+        // --- 🎃 ของตกแต่งฮาโลวีน: สร้างครั้งแรกตอนเปิดธีมฮาโลวีน ธีมอื่นจะได้ไม่ต้องแบกโหนดพวกนี้ ---
+        const HW_GHOST = `<svg viewBox="-4 0 76 72">
+            <ellipse cx="6" cy="42" rx="5" ry="3.4" fill="#FFFFFF" transform="rotate(25 6 42)"/>
+            <g class="hw-ghost-arm"><ellipse cx="61" cy="38" rx="7" ry="3.6" fill="#FFFFFF" transform="rotate(-25 61 38)"/></g>
+            <path d="M32 4C17 4 8 15 8 30V62q0 6 6 3l4-3 5 4q3 2 6 0l3-2 3 2q3 2 6 0l5-4 4 3q6 3 6-3V30C56 15 47 4 32 4Z" fill="#FFFFFF"/>
+            <ellipse cx="24" cy="30" rx="3.6" ry="5" fill="#2B1B3D"/><ellipse cx="40" cy="30" rx="3.6" ry="5" fill="#2B1B3D"/>
+            <circle cx="25.3" cy="28" r="1.4" fill="#FFFFFF"/><circle cx="41.3" cy="28" r="1.4" fill="#FFFFFF"/>
+            <ellipse cx="17.5" cy="38" rx="4" ry="2.4" fill="#FFB3C7"/><ellipse cx="46.5" cy="38" rx="4" ry="2.4" fill="#FFB3C7"/>
+            <ellipse cx="32" cy="40" rx="2.8" ry="3.4" fill="#2B1B3D"/>
+        </svg>`;
+        const HW_BAT = `<svg viewBox="0 0 64 34">
+            <path class="hw-wing-l" d="M28 15C22 5 12 3 2 9c6 2 8 6 7 10 4-3 8-2 10 2 2-4 6-4 9-2Z" fill="#8E6BC0"/>
+            <path class="hw-wing-r" d="M36 15c6-10 16-12 26-6-6 2-8 6-7 10-4-3-8-2-10 2-2-4-6-4-9-2Z" fill="#8E6BC0"/>
+            <path d="M26.5 11 28 4.5l3 5.5ZM37.5 11 36 4.5l-3 5.5Z" fill="#9C7ACF"/>
+            <ellipse cx="32" cy="17" rx="6.5" ry="7.5" fill="#9C7ACF"/>
+            <circle cx="29.5" cy="15.5" r="1.8" fill="#FFE27A"/><circle cx="34.5" cy="15.5" r="1.8" fill="#FFE27A"/>
+            <ellipse cx="27.8" cy="19.4" rx="1.6" ry="1" fill="#FF9DB8"/><ellipse cx="36.2" cy="19.4" rx="1.6" ry="1" fill="#FF9DB8"/>
+            <path d="M30.4 21l.9 1.8.9-1.8ZM32.8 21l.9 1.8.9-1.8Z" fill="#FFFFFF"/>
+        </svg>`;
+        const HW_SPIDER = `<svg viewBox="0 0 44 40">
+            <line x1="22" y1="0" x2="22" y2="11" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
+            <g class="hw-spider-legs" stroke="#8A63B8" stroke-width="2.4" fill="none" stroke-linecap="round">
+                <path d="M14 18Q6 12 3 16M14 22Q5 21 2 26M15 26Q8 30 5 35M16 14Q10 6 6 7"/>
+                <path d="M30 18Q38 12 41 16M30 22Q39 21 42 26M29 26Q36 30 39 35M28 14Q34 6 38 7"/>
+            </g>
+            <circle cx="22" cy="21" r="11" fill="#5B3A7E"/>
+            <circle cx="18" cy="19" r="3.4" fill="#FFFFFF"/><circle cx="26" cy="19" r="3.4" fill="#FFFFFF"/>
+            <circle cx="18.6" cy="19.6" r="1.7" fill="#2B1B3D"/><circle cx="26.6" cy="19.6" r="1.7" fill="#2B1B3D"/>
+            <ellipse cx="15" cy="25" rx="2.2" ry="1.3" fill="#FF9DB8"/><ellipse cx="29" cy="25" rx="2.2" ry="1.3" fill="#FF9DB8"/>
+            <path d="M19.5 25.5q2.5 2.4 5 0" stroke="#2B1B3D" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        </svg>`;
+        const HW_PUMPKIN = `<svg viewBox="0 0 64 58">
+            <path d="M31 13c-1-6 2-10 6-10-2 3-2 7-1 10Z" fill="#4E8B3A"/>
+            <path d="M35 9c4-4 10-3 12 0-4 0-7 1-9 3Z" fill="#6BAF4E"/>
+            <ellipse cx="19" cy="35" rx="15" ry="20" fill="#E8741A"/><ellipse cx="45" cy="35" rx="15" ry="20" fill="#E8741A"/>
+            <ellipse cx="32" cy="35" rx="16" ry="22" fill="#FF8F2B"/>
+            <g class="hw-face" fill="#FFE27A" stroke="#FFE27A" stroke-width="2" stroke-linejoin="round">
+                <path d="M20 30l5-7 5 7Z"/><path d="M34 30l5-7 5 7Z"/>
+                <path d="M20 39q12 11 24 0q-12 5-24 0Z"/>
+            </g>
+        </svg>`;
+        const HW_WEB = `<svg viewBox="0 0 120 120" fill="none" stroke="#FFFFFF" stroke-width="1">
+            <path d="M0 0L120 8M0 0L104 62M0 0L62 104M0 0L8 120"/>
+            <path d="M36 2.4Q28.6 8.9 31.2 18.6Q21.2 21.2 18.6 31.2Q8.9 28.6 2.4 36"/>
+            <path d="M66 4.4Q52.4 16.4 57.2 34.1Q38.8 38.8 34.1 57.2Q16.4 52.4 4.4 66"/>
+            <path d="M96 6.4Q76.2 23.8 83.2 49.6Q56.4 56.4 49.6 83.2Q23.8 76.2 6.4 96"/>
+        </svg>`;
+        function ensureHalloweenDecor() {
+            const layer = document.getElementById('bg-halloween');
+            if (!layer || layer.childElementCount) return;
+            layer.innerHTML = `
+                <div class="hw-moon"></div>
+                <div class="hw-web">${HW_WEB}</div>
+                <div class="hw-spider"><span class="hw-thread"></span>${HW_SPIDER}</div>
+                <div class="hw-bat b1">${HW_BAT}</div><div class="hw-bat b2">${HW_BAT}</div><div class="hw-bat b3">${HW_BAT}</div>
+                <div class="hw-ghost g1">${HW_GHOST}</div><div class="hw-ghost g2">${HW_GHOST}</div><div class="hw-ghost g3">${HW_GHOST}</div>
+                <div class="hw-pumpkins"><div class="hw-pumpkin p2">${HW_PUMPKIN}</div><div class="hw-pumpkin">${HW_PUMPKIN}</div></div>`;
+            const front = document.getElementById('fg-halloween');
+            if (front) front.innerHTML = `<div class="hw-peek">${HW_GHOST}</div><div class="hw-bat-front">${HW_BAT}</div>`;
+        }
+
+        // --- 🎃 ธีมตามเทศกาล: ช่วงฮาโลวีนสลับเป็นธีมฮาโลวีนให้ครั้งเดียวต่อปี หมดเทศกาลแล้วคืนธีมเดิมให้ ---
+        function isHalloweenSeason(date = new Date()) {
+            const m = date.getMonth(), d = date.getDate();
+            return (m === 9 && d >= 20) || (m === 10 && d <= 1);
+        }
+        // คืนค่าธีมที่ควรใช้ตอนเปิดหน้า ถ้าต้องสลับตามเทศกาล (ไม่งั้นคืน null)
+        function getSeasonalThemeOverride() {
+            const saved = localStorage.getItem('site_theme') || 'day';
+            if (isHalloweenSeason()) {
+                const year = String(new Date().getFullYear());
+                if (localStorage.getItem('halloween_switched') === year || saved === 'halloween') return null;
+                safeSetItem('halloween_switched', year);
+                safeSetItem('theme_before_halloween', saved);
+                return 'halloween';
+            }
+            const before = localStorage.getItem('theme_before_halloween');
+            if (before) {
+                localStorage.removeItem('theme_before_halloween');
+                if (saved === 'halloween') return before;
+            }
+            return null;
+        }
+
         function setSiteTheme(theme, event) {
             if (event) {
                 event.stopPropagation();
@@ -1710,8 +1942,10 @@
                     safeSetItem('auto_theme', 'false');
                     const cb = document.getElementById('auto-theme-check');
                     if (cb) cb.checked = false;
+                    localStorage.removeItem('theme_before_halloween'); // เลือกธีมเองแล้ว ไม่ต้องคืนธีมเดิมให้หลังเทศกาล
                 }
             }
+            if (theme === 'halloween') ensureHalloweenDecor();
             if (!theme || !THEME_META[theme]) theme = 'day';
             if (theme === 'day') document.body.removeAttribute('data-theme');
             else document.body.setAttribute('data-theme', theme);
@@ -1726,6 +1960,7 @@
             if (event) playThemeChime(theme);
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (metaTheme) metaTheme.setAttribute('content', meta.meta);
+            renderGreeting();
         }
 
         // --- ⚙️ หน้าตั้งค่ารวม ---
@@ -1740,6 +1975,7 @@
         });
 
         function getAutoTheme() {
+            if (isHalloweenSeason()) return 'halloween';
             const h = new Date().getHours() + new Date().getMinutes() / 60;
             if (h >= 5 && h < 17) return 'day';
             if (h >= 17 && h < 19.5) return 'sunset';
@@ -1755,6 +1991,15 @@
             const g = document.getElementById('greeting-line'); if (!g) return;
             const hour = new Date().getHours();
             let text;
+            if (currentTheme() === 'halloween') {
+                if (hour >= 5 && hour < 11) text = '🎃 Happy Halloween! ขอให้วันนี้มีแต่ขนม ไม่โดนแกล้งนะ';
+                else if (hour >= 11 && hour < 13) text = '🍬 พักเที่ยงแล้ว แอบกินขนมสักชิ้นไหม?';
+                else if (hour >= 13 && hour < 17) text = '👻 ผีน้อยมาเตือนว่าพักสายตาบ้างนะ';
+                else if (hour >= 17 && hour < 20) text = '🦇 ค้างคาวออกบินแล้ว ใกล้เลิกงานแล้วนะ';
+                else text = '🌕 คืนฮาโลวีน ทำงานดึกอย่าลืมพักนะ';
+                g.textContent = text;
+                return;
+            }
             if (hour >= 5 && hour < 11) text = '☀️ สวัสดีตอนเช้า พร้อมลุยกันหรือยัง?';
             else if (hour >= 11 && hour < 13) text = '🍽️ ได้เวลาพักเที่ยงแล้วนะ';
             else if (hour >= 13 && hour < 17) text = '🌤️ พักบ่ายสักหน่อยไหม?';
@@ -3013,8 +3258,18 @@
 
         window.onload = () => {
             const autoOn = localStorage.getItem('auto_theme') === 'true';
-            const savedTheme = autoOn ? getAutoTheme() : (localStorage.getItem('site_theme') || 'day');
+            const seasonal = autoOn ? null : getSeasonalThemeOverride();
+            const savedTheme = autoOn ? getAutoTheme() : (seasonal || localStorage.getItem('site_theme') || 'day');
             setSiteTheme(savedTheme);
+            if (seasonal === 'halloween') {
+                showToast('🎃 ฮาโลวีนมาแล้ว! เปลี่ยนเป็นธีมฮาโลวีนให้ชั่วคราว', 'info', {
+                    duration: 8000, actionLabel: 'ใช้ธีมเดิม',
+                    onAction: () => {
+                        setSiteTheme(localStorage.getItem('theme_before_halloween') || 'day');
+                        localStorage.removeItem('theme_before_halloween');
+                    }
+                });
+            }
             const autoCb = document.getElementById('auto-theme-check');
             if (autoCb) autoCb.checked = autoOn;
             initShiftSettingsUI();
