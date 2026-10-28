@@ -139,6 +139,64 @@
             --bubble-1: rgba(255, 138, 31, 0.35); --bubble-2: rgba(176, 124, 255, 0.35);
             --bubble-3: rgba(139, 224, 78, 0.28); --bubble-4: rgba(255, 255, 255, 0.16);
         }
+        /* 🪷 ลอยกระทง — ฟ้าคืนเพ็ญเหนือสายน้ำ แสงเทียนสีทอง ดอกบัวชมพู */
+        body[data-theme="loykrathong"] {
+            --bg-solid: #13224A;
+            --bg-gradient: linear-gradient(170deg, #0C1633 0%, #13224A 40%, #183459 70%, #1B4A63 100%);
+            --ink: #FFF6E5; --ink-2: #D6DDF0; --ink-3: #9FAACB;
+            --line: rgba(255, 255, 255, 0.1);
+            --surface: rgba(20, 36, 72, 0.58); --surface-2: rgba(255, 255, 255, 0.06);
+            --surface-solid: rgba(19, 34, 70, 0.97); --surface-edge: rgba(255, 200, 112, 0.16);
+            --field: rgba(255, 255, 255, 0.07);
+            --shadow-rgb: 2, 6, 20;
+            --accent: #FFB547; --accent-rgb: 255, 181, 71; --accent-ink: #FFC870;
+            --accent2: #FF7EB6; --accent2-rgb: 255, 126, 182;
+            --on-accent: #2A1A00;
+            --danger: #FF6B81; --danger-rgb: 255, 107, 129;
+            --streak: #FFC870;
+            --aurora-1: #1F4E79; --aurora-2: #6B3A7A; --aurora-3: #8A5A12; --aurora-4: #0F5E6E;
+        }
+        /* 🎄 คริสต์มาส — หิมะขาวฟ้าอ่อน แดงคริสต์มาส เขียวสน */
+        body[data-theme="christmas"] {
+            --bg-solid: #E2EEF6;
+            --bg-gradient: linear-gradient(170deg, #F3F8FC 0%, #E2EEF6 40%, #DCEAF2 70%, #F6E9EC 100%);
+            --ink: #1D2E2A; --ink-2: #4A5F59; --ink-3: #607470;
+            --line: rgba(29, 46, 42, 0.12);
+            --shadow-rgb: 30, 60, 70;
+            --accent: #E0364C; --accent-rgb: 224, 54, 76; --accent-ink: #B91F35;
+            --accent2: #1F9A6A; --accent2-rgb: 31, 154, 106;
+            --aurora-1: #FFD6DC; --aurora-2: #CDEFE0; --aurora-3: #DCE9FF; --aurora-4: #FFF0C9;
+        }
+        /* 🎆 ปีใหม่ — ฟ้าเที่ยงคืน ทองพลุ ชมพูงานฉลอง */
+        body[data-theme="newyear"] {
+            --bg-solid: #11163A;
+            --bg-gradient: linear-gradient(165deg, #090B22 0%, #11163A 40%, #1C1846 72%, #2B1747 100%);
+            --ink: #FFF8EC; --ink-2: #D9D3EE; --ink-3: #A29DC2;
+            --line: rgba(255, 255, 255, 0.1);
+            --surface: rgba(26, 24, 60, 0.58); --surface-2: rgba(255, 255, 255, 0.06);
+            --surface-solid: rgba(24, 22, 58, 0.97); --surface-edge: rgba(255, 209, 102, 0.16);
+            --field: rgba(255, 255, 255, 0.07);
+            --shadow-rgb: 2, 2, 16;
+            --accent: #FFC94A; --accent-rgb: 255, 201, 74; --accent-ink: #FFD777;
+            --accent2: #FF5DA2; --accent2-rgb: 255, 93, 162;
+            --on-accent: #2A1A00;
+            --danger: #FF6B81; --danger-rgb: 255, 107, 129;
+            --streak: #FFD777;
+            --aurora-1: #3A2A7A; --aurora-2: #7A2A5E; --aurora-3: #6A5A12; --aurora-4: #1A3A7A;
+        }
+        /* 💦 สงกรานต์ — ฟ้าใส น้ำเย็น ดอกไม้ชมพูแบบเสื้อลายดอก */
+        body[data-theme="songkran"] {
+            --bg-solid: #D8F2FB;
+            --bg-gradient: linear-gradient(165deg, #F0FBFF 0%, #D8F2FB 38%, #CDEBF8 70%, #FFF1DE 100%);
+            --ink: #0B2F40; --ink-2: #3D6070; --ink-3: #557684;
+            --line: rgba(11, 47, 64, 0.12);
+            --shadow-rgb: 10, 70, 100;
+            --accent: #0093C4; --accent-rgb: 0, 147, 196; --accent-ink: #00739A;
+            --accent2: #F2558F; --accent2-rgb: 242, 85, 143;
+            --aurora-1: #BDEBFF; --aurora-2: #FFD6E7; --aurora-3: #FFF0BF; --aurora-4: #C8F5E6;
+            --bubble-1: rgba(0, 147, 196, 0.35); --bubble-2: rgba(120, 210, 255, 0.45);
+            --bubble-3: rgba(242, 85, 143, 0.3); --bubble-4: rgba(255, 255, 255, 0.6);
+        }
 
         * { box-sizing: border-box; }
         /* เปลี่ยนธีมแล้วสีค่อยๆ ไล่เปลี่ยนตาม (คอมโพเนนต์ที่ประกาศ transition เองจะใช้ของตัวเองแทน) */
@@ -245,27 +303,50 @@
             100% { transform: translate(calc(var(--dx, 40px) * -0.6), -125vh) scale(1.15); opacity: 0; }
         }
 
-        /* 🎃 ของตกแต่งฮาโลวีน (พระจันทร์ ใยแมงมุม ผีน้อย ค้างคาว แมงมุม ฟักทอง) — แสดงเฉพาะตอนใช้ธีมฮาโลวีน */
-        .bg-halloween { display: none; position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-        body[data-theme="halloween"] .bg-halloween { display: block; }
-        .bg-halloween svg { display: block; width: 100%; height: auto; overflow: visible; }
+        /* 🎉 ชั้นตกแต่งตามเทศกาล — ธีมปกติจะว่างเปล่า JS จะเติมของตกแต่งให้ตอนเปิดธีมเทศกาล
+           bg-season อยู่หลังเนื้อหา, fg-season อยู่หน้าเนื้อหาแต่กดทะลุได้ (มือถือจะได้เห็นอนิเมชันด้วย) */
+        .bg-season { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+        .fg-season { position: fixed; inset: 0; z-index: 50; overflow: hidden; pointer-events: none; }
+        .bg-season svg, .fg-season svg { display: block; width: 100%; height: auto; overflow: visible; }
+        body[data-theme="halloween"] .bg-bubbles, body[data-theme="loykrathong"] .bg-bubbles,
+        body[data-theme="christmas"] .bg-bubbles, body[data-theme="newyear"] .bg-bubbles { display: none; }
 
-        .hw-moon {
+        /* ชิ้นส่วนที่ใช้ร่วมกัน: ของที่ร่วงลงมา (หิมะ ดอกไม้) และของที่ลอยขึ้น (โคมลอย ลูกโป่ง) */
+        .sd-fall { position: absolute; top: -24px; width: var(--s, 8px); animation: sd-fall var(--d, 12s) linear infinite; will-change: transform; }
+        @keyframes sd-fall {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(var(--sway, 20px), 55vh) rotate(180deg); }
+            100% { transform: translate(0, calc(100vh + 48px)) rotate(360deg); }
+        }
+        .sd-rise { position: absolute; bottom: -70px; width: var(--s, 24px); animation: sd-rise var(--d, 30s) linear infinite; will-change: transform; }
+        @keyframes sd-rise {
+            0% { transform: translate(0, 0); opacity: 0; }
+            8% { opacity: 0.95; }
+            50% { transform: translate(var(--sway, 30px), -55vh); }
+            85% { opacity: 0.85; }
+            100% { transform: translate(calc(var(--sway, 30px) * -0.5), calc(-100vh - 90px)); opacity: 0; }
+        }
+        @keyframes sd-wave { from { transform: rotate(-22deg); } to { transform: rotate(18deg); } }
+
+        /* 🌕 พระจันทร์ (ฮาโลวีน ลอยกระทง): มือถืออยู่หลังปุ่มตั้งค่า แท็บเล็ตอยู่ข้างเนื้อหา คอมอยู่เหนือแป้นกิจกรรม */
+        .sd-moon {
             position: absolute; top: 4px; right: 4px; width: 64px; aspect-ratio: 1; border-radius: 50%;
             background: radial-gradient(circle at 38% 36%, #FFF8DC 0%, #FFE7A3 55%, #F3C462 100%);
             box-shadow: 0 0 36px 8px rgba(255, 220, 140, 0.25), 0 0 110px 36px rgba(255, 180, 80, 0.12);
-            animation: hw-moon-glow 5s ease-in-out infinite alternate;
+            animation: sd-moon-glow 5s ease-in-out infinite alternate;
         }
-        .hw-moon::before, .hw-moon::after { content: ''; position: absolute; border-radius: 50%; background: rgba(214, 160, 70, 0.3); }
-        .hw-moon::before { width: 20%; height: 20%; top: 26%; left: 54%; }
-        .hw-moon::after { width: 13%; height: 13%; top: 58%; left: 30%; }
-        @keyframes hw-moon-glow {
+        .sd-moon::before, .sd-moon::after { content: ''; position: absolute; border-radius: 50%; background: rgba(214, 160, 70, 0.3); }
+        .sd-moon::before { width: 20%; height: 20%; top: 26%; left: 54%; }
+        .sd-moon::after { width: 13%; height: 13%; top: 58%; left: 30%; }
+        @keyframes sd-moon-glow {
             from { box-shadow: 0 0 28px 6px rgba(255, 220, 140, 0.2), 0 0 90px 30px rgba(255, 180, 80, 0.1); }
             to { box-shadow: 0 0 46px 12px rgba(255, 220, 140, 0.34), 0 0 130px 44px rgba(255, 180, 80, 0.16); }
         }
 
-        @media (min-width: 700px) { .hw-moon { top: 9vh; right: 6vw; width: clamp(84px, 10vw, 120px); } }
-        @media (min-width: 980px) { .hw-moon { top: 1.5vh; right: auto; left: 57%; width: 92px; } }
+        @media (min-width: 700px) { .sd-moon { top: 9vh; right: 6vw; width: clamp(84px, 10vw, 120px); } }
+        @media (min-width: 980px) { .sd-moon { top: 1.5vh; right: auto; left: 57%; width: 92px; } }
+
+        /* 🎃 ฮาโลวีน: ใยแมงมุม ผีน้อย ค้างคาว แมงมุม ฟักทอง */
 
         .hw-web { position: absolute; top: 0; left: 0; width: clamp(96px, 12vw, 150px); opacity: 0.45; }
 
@@ -283,8 +364,7 @@
         }
         /* ผีน้อยแอบหายตัวเป็นพักๆ */
         @keyframes hw-ghost-fade { 0%, 70%, 100% { opacity: 0.92; } 80%, 88% { opacity: 0.18; } }
-        .hw-ghost-arm { transform-box: view-box; transform-origin: 54px 40px; animation: hw-wave 0.9s ease-in-out infinite alternate; }
-        @keyframes hw-wave { from { transform: rotate(-22deg); } to { transform: rotate(18deg); } }
+        .hw-ghost-arm { transform-box: view-box; transform-origin: 54px 40px; animation: sd-wave 0.9s ease-in-out infinite alternate; }
 
         .hw-bat { position: absolute; left: -100px; width: var(--s, 54px); animation: hw-bat-fly var(--d, 15s) linear infinite; will-change: transform; }
         .hw-bat svg { filter: drop-shadow(0 0 6px rgba(255, 170, 90, 0.45)); }
@@ -334,10 +414,7 @@
             .hw-ghost.g3, .hw-bat.b3 { display: none; }
         }
 
-        /* 👻 ชั้นหน้า: ผีน้อยแอบโผล่จากขอบจอ + ค้างคาวบินผ่าน (อยู่หน้าเนื้อหาแต่กดทะลุได้ มือถือจะได้เห็นด้วย) */
-        .fg-halloween { display: none; position: fixed; inset: 0; z-index: 50; overflow: hidden; pointer-events: none; }
-        body[data-theme="halloween"] .fg-halloween { display: block; }
-        .fg-halloween svg { display: block; width: 100%; height: auto; overflow: visible; }
+        /* 👻 ชั้นหน้า: ผีน้อยแอบโผล่จากขอบจอ + ค้างคาวบินผ่าน */
         .hw-peek { position: absolute; right: -16px; top: 54%; width: 52px; animation: hw-peek 11s ease-in-out infinite; will-change: transform; }
         .hw-peek svg { filter: drop-shadow(0 4px 12px rgba(20, 8, 40, 0.35)); }
         @keyframes hw-peek {
@@ -354,6 +431,92 @@
             12% { transform: translate(35vw, -6vh); }
             24% { transform: translate(70vw, 2vh); }
             36%, 100% { transform: translate(calc(100vw + 120px), -10vh); }
+        }
+
+        /* 🪷 ลอยกระทง: สายน้ำเป็นคลื่น กระทงยิ้มลอยผ่าน โคมลอยลอยขึ้นฟ้า */
+        .lk-water {
+            position: absolute; left: 0; right: 0; bottom: 0; height: 15vh; min-height: 90px;
+            background: linear-gradient(180deg, rgba(40, 110, 150, 0) 0, rgba(40, 110, 150, 0.35) 30px, rgba(18, 66, 104, 0.6) 100%);
+        }
+        .bg-season .lk-wave { position: absolute; left: 0; width: 200%; height: 34px; animation: lk-wave-move 14s linear infinite; }
+        .bg-season .lk-wave.w2 { top: 10px; animation-duration: 21s; animation-direction: reverse; opacity: 0.7; }
+        @keyframes lk-wave-move { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .lk-krathong { position: absolute; bottom: 38%; left: -90px; width: var(--s, 52px); animation: lk-drift 60s linear infinite; will-change: transform; }
+        .lk-krathong svg { animation: lk-bob 3.2s ease-in-out infinite; }
+        @keyframes lk-drift { from { transform: translateX(0); } to { transform: translateX(calc(100vw + 180px)); } }
+        @keyframes lk-bob { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-4px) rotate(3deg); } }
+        .lk-flame { transform-box: fill-box; transform-origin: 50% 100%; animation: lk-flicker 0.5s ease-in-out infinite alternate; filter: drop-shadow(0 0 4px #FFB547); }
+        @keyframes lk-flicker { from { transform: scaleY(0.85) rotate(-4deg); } to { transform: scaleY(1.12) rotate(4deg); } }
+        .lk-lantern svg { filter: drop-shadow(0 0 10px rgba(255, 170, 60, 0.75)); }
+
+        /* 🎄 คริสต์มาส: ไฟประดับกระพริบ หิมะตก ตุ๊กตาหิมะโบกมือ ต้นคริสต์มาสดาวระยิบ */
+        .xm-lights { position: absolute; top: 0; left: 0; right: 0; height: 40px; }
+        .bg-season .xm-wire { position: absolute; inset: 0; width: 100%; height: 40px; }
+        .xm-bulb {
+            position: absolute; width: 9px; height: 13px; transform: translate(-50%, 1px);
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; background: var(--c); box-shadow: 0 0 10px 2px var(--c);
+            animation: xm-blink 1.6s ease-in-out infinite; animation-delay: var(--delay, 0s);
+        }
+        .xm-bulb::before { content: ''; position: absolute; top: -3px; left: 2px; width: 5px; height: 4px; border-radius: 1px; background: #2F4A3A; }
+        @keyframes xm-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; box-shadow: 0 0 3px 0 var(--c); } }
+        .xm-flake { aspect-ratio: 1; border-radius: 50%; background: #FFFFFF; box-shadow: 0 0 3px rgba(100, 135, 175, 0.75); }
+        .xm-flake-lg svg { filter: drop-shadow(0 0 2px rgba(90, 120, 160, 0.8)); }
+        .bg-season .xm-ground { position: absolute; left: 0; bottom: -2px; width: 100%; height: 9vh; min-height: 50px; }
+        .xm-snowman { position: absolute; bottom: 4vh; left: 3vw; width: clamp(58px, 7vw, 86px); }
+        .xm-arm-r { transform-box: view-box; transform-origin: 58px 58px; animation: sd-wave 1s ease-in-out infinite alternate; }
+        .xm-tree { position: absolute; bottom: 2.5vh; right: 3vw; width: clamp(70px, 8vw, 104px); }
+        .xm-star { transform-box: fill-box; transform-origin: center; animation: xm-star 2.2s ease-in-out infinite; filter: drop-shadow(0 0 5px #FFD24D); }
+        @keyframes xm-star { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.2) rotate(12deg); } }
+        .xm-orn { animation: xm-blink 1.8s ease-in-out infinite; }
+
+        /* 🎆 ปีใหม่: พลุแตกกระจาย ลูกโป่งลอยขึ้น */
+        .ny-fw { position: absolute; width: 0; height: 0; }
+        .ny-fw i {
+            position: absolute; left: -1.5px; top: -4px; width: 3px; height: 9px; border-radius: 3px; opacity: 0;
+            background: var(--c); box-shadow: 0 0 6px 1px var(--c);
+            animation: ny-burst var(--d, 4s) ease-out infinite; animation-delay: var(--delay, 0s);
+        }
+        @keyframes ny-burst {
+            0%, 55% { transform: rotate(var(--a)) translateY(0) scale(0.4); opacity: 0; }
+            58% { opacity: 1; }
+            85% { transform: rotate(var(--a)) translateY(calc(var(--r, 60px) * -1)) scale(1); opacity: 0.9; }
+            100% { transform: rotate(var(--a)) translateY(calc(var(--r, 60px) * -1.15)) scale(0.4); opacity: 0; }
+        }
+        .ny-balloon svg { filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.25)); }
+
+        /* 💦 สงกรานต์: ดอกลีลาวดีร่วง ขันน้ำยิ้มพ่นน้ำ ปืนฉีดน้ำแอบโผล่มายิงจากขอบจอ */
+        .sk-flower svg { filter: drop-shadow(0 2px 3px rgba(0, 90, 130, 0.25)); }
+        .sk-bowl { position: absolute; bottom: 2vh; left: 3vw; width: clamp(72px, 8vw, 104px); }
+        .sk-fountain { position: absolute; bottom: calc(2vh + clamp(26px, 3vw, 38px)); left: calc(3vw + clamp(34px, 4vw, 50px)); }
+        .sk-drop, .sk-shot { position: absolute; left: 0; top: 0; animation: var(--d, 2s) linear infinite; animation-delay: var(--delay, 0s); }
+        .sk-drop i, .sk-shot i {
+            display: block; width: 7px; height: 9px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            background: linear-gradient(#D6F3FF, #36B1E4); box-shadow: 0 0 4px rgba(54, 177, 228, 0.5);
+            animation: var(--d, 2s) infinite; animation-delay: var(--delay, 0s);
+        }
+        .sk-drop { animation-name: sk-drop-x; }
+        .sk-drop i { animation-name: sk-drop-y; }
+        @keyframes sk-drop-x { 0% { transform: translateX(0); opacity: 1; } 85% { opacity: 1; } 100% { transform: translateX(var(--dx, 30px)); opacity: 0; } }
+        @keyframes sk-drop-y {
+            0% { transform: translateY(0); animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1); }
+            45% { transform: translateY(var(--h, -80px)); animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.4); }
+            100% { transform: translateY(30px); }
+        }
+        .sk-gun-wrap { position: absolute; right: 0; top: 46%; }
+        .sk-gun { position: absolute; right: -12px; top: -22px; width: 66px; animation: sk-gun-peek 12s ease-in-out infinite; will-change: transform; }
+        @keyframes sk-gun-peek {
+            0%, 50% { transform: translateX(90px) rotate(8deg); }
+            56%, 78% { transform: translateX(0) rotate(0deg); }
+            60%, 64%, 68%, 72% { transform: translateX(4px) rotate(-3deg); }
+            86%, 100% { transform: translateX(90px) rotate(8deg); }
+        }
+        .sk-shot { right: 48px; left: auto; --d: 12s; animation-name: sk-shot-x; }
+        .sk-shot i { animation-name: sk-shot-y; }
+        @keyframes sk-shot-x { 0%, 58% { transform: translateX(0); opacity: 0; } 59% { opacity: 1; } 74% { opacity: 0.9; } 78%, 100% { transform: translateX(-62vw); opacity: 0; } }
+        @keyframes sk-shot-y {
+            0%, 58% { transform: translateY(0); }
+            65% { transform: translateY(-7vh); animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.5); }
+            78%, 100% { transform: translateY(16vh); }
         }
 
         /* 📐 เลย์เอาต์: มือถือเป็นคอลัมน์เดียว (เรียงลำดับด้วย order) — จอกว้างแยกเป็น 2 คอลัมน์ */
@@ -721,6 +884,35 @@
         .action-card.expanded .live-timer { display: block; font-size: min(17vh, 21vw, 150px); }
         .action-card.expanded .helper-text, .action-card.expanded .edit-btn, .action-card.expanded .drag-handle { display: none; }
 
+        /* ⏳ วงแหวนนับถอยหลังรอบอิโมจิ + ป้ายเวลาที่เหลือ (เฉพาะกิจกรรมที่มีลิมิต/เวลาฟรี) */
+        .break-ring, .break-countdown { display: none; }
+        .action-card.expanded.has-target .floating-emoji {
+            position: relative; width: min(16vh, 128px); height: min(16vh, 128px); font-size: min(8.5vh, 68px);
+        }
+        .action-card.expanded.has-target .break-ring { display: block; position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+        .break-ring-track { fill: none; stroke: rgba(255, 255, 255, 0.55); stroke-width: 8; }
+        body.is-dark .break-ring-track { stroke: rgba(255, 255, 255, 0.14); }
+        .break-ring-fill {
+            fill: none; stroke: var(--meter, var(--key-edge)); stroke-width: 8; stroke-linecap: round;
+            stroke-dasharray: 339.3; stroke-dashoffset: 339.3;
+            transition: stroke-dashoffset 1s linear, stroke 0.8s ease;
+        }
+        .action-card.is-warn { --meter: #F59E0B; }
+        .action-card.is-over { --meter: #EF4444; }
+        .action-card.expanded.has-target .break-countdown {
+            display: inline-block; margin-top: 0.4vh; padding: 0.35em 0.95em; border-radius: 999px;
+            font-size: min(2.8vh, 22px); font-weight: 700; font-variant-numeric: tabular-nums;
+            background: rgba(255, 255, 255, 0.6); transition: background-color 0.6s, color 0.6s;
+        }
+        .action-card.expanded.is-warn .break-countdown { background: #FEF3C7; color: #92400E; }
+        .action-card.expanded.is-over .break-countdown { background: #FEE2E2; color: #B91C1C; animation: over-blink 1.4s ease-in-out infinite; }
+        .action-card.expanded.is-over .capsule { animation: over-pulse 1.6s ease-in-out infinite; }
+        @keyframes over-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.65; } }
+        @keyframes over-pulse {
+            0%, 100% { box-shadow: inset 0 3px 0 rgba(255,255,255,0.7), 0 10px 0 var(--key-edge), 0 0 0 0 rgba(239, 68, 68, 0.0), 0 40px 70px -30px var(--hover-color); }
+            50% { box-shadow: inset 0 3px 0 rgba(255,255,255,0.7), 0 10px 0 var(--key-edge), 0 0 0 8px rgba(239, 68, 68, 0.35), 0 40px 70px -30px var(--hover-color); }
+        }
+
         .back-box {
             display: none; align-items: center; justify-content: center;
             width: min(88vw, 520px); height: 14vh; min-height: 84px; max-height: 116px;
@@ -906,6 +1098,12 @@
         .swatch-night   { --sw-bg: linear-gradient(140deg, #231940, #3A2766); --sw-a: #FF6B9D; --sw-b: #B69BFF; }
         .swatch-galaxy  { --sw-bg: linear-gradient(140deg, #0F1736, #1C295C); --sw-a: #3CD3F2; --sw-b: #A68BFA; }
         .swatch-halloween { --sw-bg: linear-gradient(140deg, #22133A, #4A1F3F); --sw-a: #FF8A1F; --sw-b: #B07CFF; }
+        .swatch-loykrathong { --sw-bg: linear-gradient(170deg, #13224A, #1B4A63); --sw-a: #FFB547; --sw-b: #FF7EB6; }
+        .swatch-christmas { --sw-bg: linear-gradient(170deg, #F3F8FC, #DCEAF2 60%, #F6E9EC); --sw-a: #E0364C; --sw-b: #1F9A6A; }
+        .swatch-newyear { --sw-bg: linear-gradient(165deg, #11163A, #2B1747); --sw-a: #FFC94A; --sw-b: #FF5DA2; }
+        .swatch-songkran { --sw-bg: linear-gradient(165deg, #F0FBFF, #CDEBF8 60%, #FFF1DE); --sw-a: #0093C4; --sw-b: #F2558F; }
+        .theme-subtitle { font-size: 12.5px; font-weight: 600; color: var(--ink-3); margin: 18px 0 10px; }
+        .theme-swatch-row.is-season { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px 4px; }
         .auto-theme-row { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 600; color: var(--ink-2); cursor: pointer; margin-top: 16px; }
 
         /* 🔘 สวิตช์เปิดปิด แทน checkbox ธรรมดา */
@@ -1083,7 +1281,7 @@
                 transition-duration: 0.01ms !important;
                 scroll-behavior: auto !important;
             }
-            .bg-bubbles, .bg-sparkles, .bg-aurora, .garden-butterfly, .hw-bat, .hw-spider, .fg-halloween { display: none !important; }
+            .bg-bubbles, .bg-sparkles, .bg-aurora, .garden-butterfly, .hw-bat, .hw-spider, .fg-season { display: none !important; }
         }
     </style>
 </head>
@@ -1094,8 +1292,8 @@
     <div class="bg-aurora"><span></span><span></span><span></span><span></span></div>
     <ul class="bg-bubbles" id="bg-bubbles"></ul>
     <div class="bg-sparkles" id="bg-sparkles"></div>
-    <div class="bg-halloween" id="bg-halloween" aria-hidden="true"></div>
-    <div class="fg-halloween" id="fg-halloween" aria-hidden="true"></div>
+    <div class="bg-season" id="bg-season" aria-hidden="true"></div>
+    <div class="fg-season" id="fg-season" aria-hidden="true"></div>
 
     <div class="container">
         <header class="header-row">
@@ -1311,13 +1509,20 @@
                         <button type="button" class="theme-swatch swatch-minimal" data-theme="minimal" onclick="setSiteTheme('minimal', event)"><span class="swatch-chip">🤍</span><span class="swatch-name">มินิมอล</span></button>
                         <button type="button" class="theme-swatch swatch-night" data-theme="night" onclick="setSiteTheme('night', event)"><span class="swatch-chip">🌙</span><span class="swatch-name">กลางคืน</span></button>
                         <button type="button" class="theme-swatch swatch-galaxy" data-theme="galaxy" onclick="setSiteTheme('galaxy', event)"><span class="swatch-chip">🪐</span><span class="swatch-name">กาแล็กซี</span></button>
+                    </div>
+                    <div class="theme-subtitle">ธีมเทศกาล</div>
+                    <div class="theme-swatch-row is-season">
+                        <button type="button" class="theme-swatch swatch-songkran" data-theme="songkran" onclick="setSiteTheme('songkran', event)"><span class="swatch-chip">💦</span><span class="swatch-name">สงกรานต์</span></button>
                         <button type="button" class="theme-swatch swatch-halloween" data-theme="halloween" onclick="setSiteTheme('halloween', event)"><span class="swatch-chip">🎃</span><span class="swatch-name">ฮาโลวีน</span></button>
+                        <button type="button" class="theme-swatch swatch-loykrathong" data-theme="loykrathong" onclick="setSiteTheme('loykrathong', event)"><span class="swatch-chip">🪷</span><span class="swatch-name">ลอยกระทง</span></button>
+                        <button type="button" class="theme-swatch swatch-christmas" data-theme="christmas" onclick="setSiteTheme('christmas', event)"><span class="swatch-chip">🎄</span><span class="swatch-name">คริสต์มาส</span></button>
+                        <button type="button" class="theme-swatch swatch-newyear" data-theme="newyear" onclick="setSiteTheme('newyear', event)"><span class="swatch-chip">🎆</span><span class="swatch-name">ปีใหม่</span></button>
                     </div>
                     <label class="auto-theme-row">
                         <span class="toggle-switch toggle-switch-sm"><input type="checkbox" id="auto-theme-check" onchange="toggleAutoTheme(this.checked)"><span class="toggle-slider"></span></span>
                         <span>🕐 สลับอัตโนมัติตามเวลา (กลางวัน ซันเซ็ต กลางคืน)</span>
                     </label>
-                    <p class="settings-hint">ช่วงฮาโลวีน (20 ต.ค. – 1 พ.ย.) ธีมอัตโนมัติจะเป็นธีมฮาโลวีน 🎃</p>
+                    <p class="settings-hint">ช่วงเทศกาลจะเปลี่ยนเป็นธีมเทศกาลให้อัตโนมัติ (เปลี่ยนกลับได้): สงกรานต์ 10–17 เม.ย. · ฮาโลวีน 20 ต.ค.–1 พ.ย. · ลอยกระทง ช่วงวันเพ็ญเดือน 12 · คริสต์มาส 15–26 ธ.ค. · ปีใหม่ 27 ธ.ค.–3 ม.ค.</p>
                 </div>
 
                 <div class="settings-section">
@@ -1600,7 +1805,11 @@
             sunset: ['🌅', '🌸', '✨'],
             minimal: ['🤍', '☁️', '✨'],
             galaxy: ['🪐', '⭐', '✨'],
-            halloween: ['🍬', '🍭', '✨', '⭐']
+            halloween: ['🍬', '🍭', '✨', '⭐'],
+            loykrathong: ['✨', '⭐', '🌟'],
+            christmas: ['✨', '⭐', '❄️'],
+            newyear: ['✨', '🎉', '⭐'],
+            songkran: ['💦', '💧', '✨']
         };
         function renderSparkles(theme) {
             const container = document.getElementById('bg-sparkles');
@@ -1639,10 +1848,20 @@
             sunset: ['#F2386F', '#7B4DFF', '#FFAF59', '#FFD6EB', '#C77DFF', '#FF8FA3'],
             minimal: ['#5555D6', '#0E9F9A', '#F59E0B', '#F43F5E', '#CBD5E1', '#1B1F2C'],
             galaxy: ['#3CD3F2', '#A68BFA', '#F472B6', '#FDE68A', '#E0E7FF', '#22D3EE'],
-            halloween: ['#FF8A1F', '#B07CFF', '#8BE04E', '#FFE8C2', '#FF6B81', '#FFB347']
+            halloween: ['#FF8A1F', '#B07CFF', '#8BE04E', '#FFE8C2', '#FF6B81', '#FFB347'],
+            loykrathong: ['#FFB547', '#FF7EB6', '#FFE08A', '#7FD3F7', '#FFFFFF', '#FFC0DA'],
+            christmas: ['#E0364C', '#1F9A6A', '#FFD24D', '#FFFFFF', '#4DA3FF', '#B91F35'],
+            newyear: ['#FFC94A', '#FF5DA2', '#A68BFA', '#3CD3F2', '#FFF3C4', '#FFD777'],
+            songkran: ['#0093C4', '#36B1E4', '#F2558F', '#FFD24D', '#BDEBFF', '#FFFFFF']
         };
-        // ธีมฮาโลวีน: โปรยขนมกับผีน้อยปนไปกับกระดาษสี
-        const HALLOWEEN_CONFETTI = ['🍬', '🍭', '🍫', '🎃', '👻'];
+        // ธีมเทศกาล: โปรยของประจำเทศกาลปนไปกับกระดาษสี
+        const SEASON_CONFETTI = {
+            halloween: ['🍬', '🍭', '🍫', '🎃', '👻'],
+            loykrathong: ['🪷', '🌸', '✨'],
+            christmas: ['🎁', '❄️', '⭐', '🎄'],
+            newyear: ['🎉', '🎊', '✨', '🥳'],
+            songkran: ['💦', '💧', '🌼']
+        };
         function fireConfetti() {
             const theme = document.body.getAttribute('data-theme') || 'day';
             const colors = CONFETTI_COLORS[theme] || CONFETTI_COLORS.day;
@@ -1651,8 +1870,9 @@
                 conf.className = 'confetti';
                 conf.style.left = Math.random() * 100 + 'vw';
                 conf.style.top = '-20px';
-                if (theme === 'halloween' && i % 3 === 0) {
-                    conf.textContent = HALLOWEEN_CONFETTI[Math.floor(Math.random() * HALLOWEEN_CONFETTI.length)];
+                const emojis = SEASON_CONFETTI[theme];
+                if (emojis && i % 3 === 0) {
+                    conf.textContent = emojis[Math.floor(Math.random() * emojis.length)];
                     conf.style.width = 'auto'; conf.style.height = 'auto';
                     conf.style.fontSize = Math.round(16 + Math.random() * 14) + 'px';
                 } else {
@@ -1716,24 +1936,10 @@
             const cardElement = container && container.children[state.index];
             if (!cardElement) { localStorage.removeItem('active_break_state'); return; }
 
+            if (state.alerted === undefined) state.alerted = !!state.notified; // สถานะที่บันทึกจากเวอร์ชันก่อนยังไม่มี alerted
             activeBreak = state;
             cardElement.classList.add('expanded');
-            const timerDisplay = cardElement.querySelector('.live-timer');
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                if (!activeBreak) return;
-                const elapsedSecs = Math.floor((Date.now() - activeBreak.startTime) / 1000);
-                timerDisplay.textContent = `${String(Math.floor(elapsedSecs / 60)).padStart(2, '0')}:${String(elapsedSecs % 60).padStart(2, '0')}`;
-                if (!activeBreak.notified && activeBreak.limit > 0 && !activeBreak.isToilet && elapsedSecs >= activeBreak.limit * 60) {
-                    activeBreak.notified = true;
-                    persistActiveBreak();
-                    if (notifyEnabled) {
-                        new Notification('⏰ ถึงเวลาที่ตั้งไว้แล้ว', { body: `${activeBreak.action} เกินลิมิต ${activeBreak.limit} นาทีแล้ว กลับมาได้เลย` });
-                    }
-                }
-            }, 1000);
-            const elapsedSecs = Math.floor((Date.now() - activeBreak.startTime) / 1000);
-            timerDisplay.textContent = `${String(Math.floor(elapsedSecs / 60)).padStart(2, '0')}:${String(elapsedSecs % 60).padStart(2, '0')}`;
+            startBreakTicker(cardElement);
             showToast(`⏱️ กู้คืนสถานะ "${activeBreak.action}" ที่กำลังพักอยู่แล้ว`, 'info', { duration: 4000 });
         }
 
@@ -1747,6 +1953,22 @@
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (isMuted || soundVolume <= 0) return;
+            if (type === 'alarm') {
+                // ติ๊ด-ติ๊ด-ติ๊ด 3 ครั้ง ตอนครบเวลาลิมิต
+                try {
+                    const now = audioCtx.currentTime;
+                    [0, 0.26, 0.52].forEach(t => {
+                        const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+                        o.type = 'square'; o.frequency.setValueAtTime(880, now + t);
+                        o.connect(g); g.connect(audioCtx.destination);
+                        g.gain.setValueAtTime(0.001, now + t);
+                        g.gain.exponentialRampToValueAtTime(0.12 * soundVolume, now + t + 0.02);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + t + 0.18);
+                        o.start(now + t); o.stop(now + t + 0.2);
+                    });
+                } catch (e) {}
+                return;
+            }
             try {
                 const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
                 osc.connect(gain); gain.connect(audioCtx.destination);
@@ -1796,7 +2018,11 @@
                     sunset: [{f:587,t:0,d:0.20,type:'triangle'},{f:494,t:0.15,d:0.20,type:'triangle'},{f:392,t:0.30,d:0.30,type:'sine'}],
                     minimal: [{f:660,t:0,d:0.10,type:'sine'},{f:990,t:0.09,d:0.18,type:'sine'}],
                     galaxy: [{f:1047,t:0,d:0.10,type:'sine'},{f:1319,t:0.08,d:0.12,type:'sine'},{f:1568,t:0.16,d:0.16,type:'sine'},{f:784,t:0.26,d:0.35,type:'sine'}],
-                    halloween: [{f:330,t:0,d:0.16,type:'triangle'},{f:392,t:0.13,d:0.16,type:'triangle'},{f:466,t:0.26,d:0.16,type:'triangle'},{f:370,t:0.40,d:0.45,type:'sine'}]
+                    halloween: [{f:330,t:0,d:0.16,type:'triangle'},{f:392,t:0.13,d:0.16,type:'triangle'},{f:466,t:0.26,d:0.16,type:'triangle'},{f:370,t:0.40,d:0.45,type:'sine'}],
+                    loykrathong: [{f:523,t:0,d:0.3,type:'sine'},{f:659,t:0.18,d:0.3,type:'sine'},{f:784,t:0.36,d:0.3,type:'sine'},{f:880,t:0.54,d:0.5,type:'sine'}],
+                    christmas: [{f:659,t:0,d:0.12,type:'triangle'},{f:659,t:0.15,d:0.12,type:'triangle'},{f:659,t:0.30,d:0.3,type:'triangle'},{f:784,t:0.62,d:0.25,type:'triangle'}],
+                    newyear: [{f:523,t:0,d:0.12,type:'square'},{f:784,t:0.12,d:0.12,type:'square'},{f:1047,t:0.24,d:0.35,type:'triangle'}],
+                    songkran: [{f:1200,t:0,d:0.07,type:'sine'},{f:900,t:0.08,d:0.07,type:'sine'},{f:1400,t:0.17,d:0.09,type:'sine'},{f:1100,t:0.28,d:0.12,type:'sine'}]
                 };
                 (notes[theme] || notes.day).forEach(n => {
                     const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
@@ -1833,7 +2059,11 @@
             minimal: { emoji: '🤍', meta: '#F1F2F6', dark: false, bg: ['#F8F8FA', '#F1F2F6', '#EAECF2'] },
             night:   { emoji: '🌙', meta: '#231940', dark: true,  bg: ['#191230', '#2E2052', '#3A2766'] },
             galaxy:  { emoji: '🪐', meta: '#0F1736', dark: true,  bg: ['#090E22', '#152049', '#1C295C'] },
-            halloween: { emoji: '🎃', meta: '#22133A', dark: true, bg: ['#140C24', '#34194A', '#4A1F3F'] }
+            halloween: { emoji: '🎃', meta: '#22133A', dark: true, bg: ['#140C24', '#34194A', '#4A1F3F'] },
+            loykrathong: { emoji: '🪷', meta: '#13224A', dark: true, bg: ['#0C1633', '#183459', '#1B4A63'] },
+            christmas: { emoji: '🎄', meta: '#E2EEF6', dark: false, bg: ['#F3F8FC', '#DCEAF2', '#F6E9EC'] },
+            newyear: { emoji: '🎆', meta: '#11163A', dark: true, bg: ['#090B22', '#1C1846', '#2B1747'] },
+            songkran: { emoji: '💦', meta: '#D8F2FB', dark: false, bg: ['#F0FBFF', '#CDEBF8', '#FFF1DE'] }
         };
         function currentTheme() { return document.body.getAttribute('data-theme') || 'day'; }
 
@@ -1898,39 +2128,213 @@
             <path d="M66 4.4Q52.4 16.4 57.2 34.1Q38.8 38.8 34.1 57.2Q16.4 52.4 4.4 66"/>
             <path d="M96 6.4Q76.2 23.8 83.2 49.6Q56.4 56.4 49.6 83.2Q23.8 76.2 6.4 96"/>
         </svg>`;
-        function ensureHalloweenDecor() {
-            const layer = document.getElementById('bg-halloween');
-            if (!layer || layer.childElementCount) return;
-            layer.innerHTML = `
-                <div class="hw-moon"></div>
-                <div class="hw-web">${HW_WEB}</div>
-                <div class="hw-spider"><span class="hw-thread"></span>${HW_SPIDER}</div>
-                <div class="hw-bat b1">${HW_BAT}</div><div class="hw-bat b2">${HW_BAT}</div><div class="hw-bat b3">${HW_BAT}</div>
-                <div class="hw-ghost g1">${HW_GHOST}</div><div class="hw-ghost g2">${HW_GHOST}</div><div class="hw-ghost g3">${HW_GHOST}</div>
-                <div class="hw-pumpkins"><div class="hw-pumpkin p2">${HW_PUMPKIN}</div><div class="hw-pumpkin">${HW_PUMPKIN}</div></div>`;
-            const front = document.getElementById('fg-halloween');
-            if (front) front.innerHTML = `<div class="hw-peek">${HW_GHOST}</div><div class="hw-bat-front">${HW_BAT}</div>`;
+        // --- 🪷🎄🎆💦 ของตกแต่งเทศกาลอื่นๆ ---
+        const LK_KRATHONG = `<svg viewBox="0 0 60 52">
+            <path d="M3 38Q30 56 57 38Q30 46 3 38Z" fill="#2F7A4A"/>
+            <ellipse cx="30" cy="38" rx="27" ry="7" fill="#3E9A5E"/>
+            <path d="M12 38Q9 26 18 21Q21 31 22 38Z" fill="#FF9EC4"/><path d="M48 38Q51 26 42 21Q39 31 38 38Z" fill="#FF9EC4"/>
+            <path d="M20 38Q20 22 30 15Q40 22 40 38Z" fill="#FFC0DA"/><path d="M26 38Q26 28 30 24Q34 28 34 38Z" fill="#FFE1EE"/>
+            <line x1="23" y1="24" x2="21" y2="10" stroke="#C47A3A" stroke-width="1.1"/><line x1="37" y1="24" x2="39" y2="11" stroke="#C47A3A" stroke-width="1.1"/>
+            <rect x="28.6" y="9" width="2.8" height="12" rx="1.2" fill="#FFF5E0"/>
+            <path class="lk-flame" d="M30 1.5Q33.8 6 30 9Q26.2 6 30 1.5Z" fill="#FFC23D"/>
+            <circle cx="22.5" cy="41.5" r="1.4" fill="#163A26"/><circle cx="37.5" cy="41.5" r="1.4" fill="#163A26"/>
+            <ellipse cx="19" cy="43.5" rx="2.2" ry="1.2" fill="#FF9EC4"/><ellipse cx="41" cy="43.5" rx="2.2" ry="1.2" fill="#FF9EC4"/>
+            <path d="M28 43.5q2 2 4 0" stroke="#163A26" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        </svg>`;
+        const LK_LANTERN = `<svg viewBox="0 0 24 32">
+            <path d="M3 5Q12 0 21 5L18.5 25Q12 28.5 5.5 25Z" fill="#FFAA3B"/>
+            <path d="M7 7Q12 4 17 7L15.5 23Q12 25 8.5 23Z" fill="#FFE08A" opacity="0.85"/>
+            <path d="M7 26H17" stroke="#C9741E" stroke-width="1.2"/><ellipse cx="12" cy="29" rx="1.8" ry="2.4" fill="#FFF3C4"/>
+        </svg>`;
+        const lkWave = (cls, fill) => `<svg class="lk-wave ${cls}" viewBox="0 0 1200 34" preserveAspectRatio="none"><path d="M0 17Q75 4 150 17T300 17T450 17T600 17T750 17T900 17T1050 17T1200 17V34H0Z" fill="${fill}"/></svg>`;
+        const XM_SNOWMAN = `<svg viewBox="0 0 80 100">
+            <path d="M24 60L8 50M12 53L7 56" stroke="#7A4E2D" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+            <g class="xm-arm-r"><path d="M56 60L72 46M68 49L74 45" stroke="#7A4E2D" stroke-width="2.6" stroke-linecap="round" fill="none"/></g>
+            <circle cx="40" cy="74" r="22" fill="#FFFFFF" stroke="#D5E3EE" stroke-width="2"/>
+            <circle cx="40" cy="38" r="16" fill="#FFFFFF" stroke="#D5E3EE" stroke-width="2"/>
+            <rect x="27" y="20" width="26" height="4" rx="2" fill="#2B2B3A"/><rect x="31" y="6" width="18" height="16" rx="3" fill="#2B2B3A"/><rect x="31" y="16" width="18" height="3" fill="#E0364C"/>
+            <circle cx="35" cy="36" r="1.8" fill="#2B2B3A"/><circle cx="45" cy="36" r="1.8" fill="#2B2B3A"/>
+            <ellipse cx="31" cy="42" rx="2.6" ry="1.5" fill="#FFB3C7"/><ellipse cx="49" cy="42" rx="2.6" ry="1.5" fill="#FFB3C7"/>
+            <path d="M40 39L49 41L40 42Z" fill="#FF8A1F"/><path d="M36 45q4 3 8 0" stroke="#2B2B3A" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+            <path d="M26 52Q40 58 54 52L54 57Q40 63 26 57Z" fill="#E0364C"/><path d="M46 56L50 70L44 70L42 57Z" fill="#C42A3E"/>
+            <circle cx="40" cy="68" r="2" fill="#2B2B3A"/><circle cx="40" cy="77" r="2" fill="#2B2B3A"/>
+        </svg>`;
+        const XM_TREE = `<svg viewBox="0 0 80 110">
+            <rect x="35" y="90" width="10" height="12" rx="1" fill="#8A5A3B"/>
+            <path d="M40 16L64 50H16Z" fill="#22A06F"/><path d="M40 32L70 72H10Z" fill="#1C8E62"/><path d="M40 50L75 94H5Z" fill="#177A53"/>
+            <path d="M22 64Q40 72 58 60M14 86Q40 94 66 82" stroke="#FFD24D" stroke-width="1.6" fill="none" opacity="0.85"/>
+            <circle class="xm-orn" cx="32" cy="44" r="3" fill="#FF4D5E"/><circle class="xm-orn" cx="50" cy="56" r="3" fill="#4DA3FF" style="animation-delay:-0.6s"/>
+            <circle class="xm-orn" cx="26" cy="72" r="3.2" fill="#FFD24D" style="animation-delay:-1.1s"/><circle class="xm-orn" cx="55" cy="76" r="3.2" fill="#FF4D5E" style="animation-delay:-0.3s"/>
+            <circle class="xm-orn" cx="38" cy="84" r="3.2" fill="#4DA3FF" style="animation-delay:-1.4s"/><circle class="xm-orn" cx="62" cy="90" r="3" fill="#FFD24D" style="animation-delay:-0.9s"/>
+            <circle class="xm-orn" cx="18" cy="90" r="3" fill="#FFFFFF" style="animation-delay:-0.2s"/>
+            <path class="xm-star" d="M40 2L42.3 7.8L48.6 8.2L43.7 12.2L45.3 18.3L40 14.9L34.7 18.3L36.3 12.2L31.4 8.2L37.7 7.8Z" fill="#FFD24D"/>
+            <rect x="52" y="95" width="16" height="13" rx="2" fill="#E0364C"/><rect x="58.5" y="95" width="3" height="13" fill="#FFD24D"/>
+            <rect x="10" y="98" width="14" height="10" rx="2" fill="#4DA3FF"/><rect x="15.5" y="98" width="3" height="10" fill="#FFFFFF"/>
+        </svg>`;
+        const XM_FLAKE = `<svg viewBox="-10 -10 20 20"><g stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M0-9V9M-7.8-4.5 7.8 4.5M-7.8 4.5 7.8-4.5"/><path d="M-2.4-6.6 0-4.4 2.4-6.6M-2.4 6.6 0 4.4 2.4 6.6"/></g></svg>`;
+        const nyBalloon = (c) => `<svg viewBox="0 0 30 64"><path d="M15 30Q11 40 16 48Q20 56 14 64" stroke="rgba(255,255,255,0.6)" stroke-width="1" fill="none"/><ellipse cx="15" cy="14" rx="12" ry="14" fill="${c}"/><path d="M12.5 27.5L15 31L17.5 27.5Z" fill="${c}"/><ellipse cx="10.5" cy="9" rx="3" ry="4.5" fill="rgba(255,255,255,0.45)" transform="rotate(-20 10.5 9)"/></svg>`;
+        const skFlower = (petal) => {
+            const petals = [0, 72, 144, 216, 288];
+            return `<svg viewBox="-12 -12 24 24">${petals.map(a => `<ellipse cy="-6" rx="4.2" ry="6.4" fill="${petal}" transform="rotate(${a})"/>`).join('')}${petals.map(a => `<ellipse cy="-3.2" rx="1.8" ry="3" fill="#FFE07A" transform="rotate(${a})"/>`).join('')}<circle r="2.2" fill="#FFC93C"/></svg>`;
+        };
+        const SK_BOWL = `<svg viewBox="0 0 80 50">
+            <path d="M6 16H74Q72 44 40 47Q8 44 6 16Z" fill="#C6D1DB"/><path d="M12 24Q40 31 68 24" stroke="#A9B7C3" stroke-width="2" fill="none"/>
+            <ellipse cx="40" cy="16" rx="34" ry="6" fill="#E6EDF3"/><ellipse cx="40" cy="16" rx="29" ry="4" fill="#5CC8F0"/>
+            <circle cx="32" cy="33" r="1.8" fill="#24485A"/><circle cx="48" cy="33" r="1.8" fill="#24485A"/>
+            <ellipse cx="27" cy="37" rx="2.6" ry="1.4" fill="#FFB3C7"/><ellipse cx="53" cy="37" rx="2.6" ry="1.4" fill="#FFB3C7"/>
+            <path d="M37 37q3 2.6 6 0" stroke="#24485A" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+        </svg>`;
+        const SK_GUN = `<svg viewBox="0 0 70 44">
+            <rect x="2" y="15" width="16" height="7" rx="3" fill="#FFD24D"/><rect x="14" y="11" width="48" height="15" rx="7" fill="#FF7A3D"/>
+            <rect x="30" y="0" width="22" height="13" rx="6" fill="#36B1E4"/><rect x="33" y="3" width="16" height="4" rx="2" fill="#BDEBFF"/>
+            <path d="M46 24L54 24L58 42L48 42Z" fill="#7C5CFF"/><path d="M38 24Q38 33 44 33" stroke="#7C5CFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle cx="24" cy="18.5" r="1.6" fill="#5A2A10"/><circle cx="31" cy="18.5" r="1.6" fill="#5A2A10"/>
+            <path d="M25.5 21.5q2 1.6 4 0" stroke="#5A2A10" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+        </svg>`;
+
+        const rnd = (min, max) => min + Math.random() * (max - min);
+        // สร้างของที่ร่วงลงมา (หิมะ ดอกไม้) n ชิ้น
+        function fallingItems(n, cls, inner, size) {
+            let html = '';
+            for (let i = 0; i < n; i++) {
+                const d = rnd(9, 18);
+                html += `<span class="sd-fall ${cls}" style="left:${rnd(0, 100).toFixed(1)}%; --s:${rnd(size[0], size[1]).toFixed(1)}px; --d:${d.toFixed(1)}s; --sway:${rnd(-40, 40).toFixed(0)}px; animation-delay:-${rnd(0, d).toFixed(1)}s;">${typeof inner === 'function' ? inner(i) : inner}</span>`;
+            }
+            return html;
+        }
+        function firework(x, y, color, dur, delay, r) {
+            let sparks = '';
+            for (let k = 0; k < 14; k++) sparks += `<i style="--a:${(k * 360 / 14).toFixed(1)}deg"></i>`;
+            return `<div class="ny-fw" style="left:${x}%; top:${y}%; --c:${color}; --d:${dur}s; --delay:${delay}s; --r:${r}px;">${sparks}</div>`;
         }
 
-        // --- 🎃 ธีมตามเทศกาล: ช่วงฮาโลวีนสลับเป็นธีมฮาโลวีนให้ครั้งเดียวต่อปี หมดเทศกาลแล้วคืนธีมเดิมให้ ---
-        function isHalloweenSeason(date = new Date()) {
-            const m = date.getMonth(), d = date.getDate();
-            return (m === 9 && d >= 20) || (m === 10 && d <= 1);
+        // ของตกแต่งของแต่ละเทศกาล: back = หลังเนื้อหา, front = หน้าเนื้อหา (กดทะลุได้)
+        const SEASON_DECOR = {
+            halloween: () => ({
+                back: `<div class="sd-moon"></div>
+                    <div class="hw-web">${HW_WEB}</div>
+                    <div class="hw-spider"><span class="hw-thread"></span>${HW_SPIDER}</div>
+                    <div class="hw-bat b1">${HW_BAT}</div><div class="hw-bat b2">${HW_BAT}</div><div class="hw-bat b3">${HW_BAT}</div>
+                    <div class="hw-ghost g1">${HW_GHOST}</div><div class="hw-ghost g2">${HW_GHOST}</div><div class="hw-ghost g3">${HW_GHOST}</div>
+                    <div class="hw-pumpkins"><div class="hw-pumpkin p2">${HW_PUMPKIN}</div><div class="hw-pumpkin">${HW_PUMPKIN}</div></div>`,
+                front: `<div class="hw-peek">${HW_GHOST}</div><div class="hw-bat-front">${HW_BAT}</div>`
+            }),
+            loykrathong: () => {
+                let lanterns = '';
+                for (let i = 0; i < 6; i++) {
+                    const d = rnd(26, 40);
+                    lanterns += `<div class="sd-rise lk-lantern" style="left:${rnd(4, 92).toFixed(1)}%; --s:${rnd(16, 28).toFixed(0)}px; --d:${d.toFixed(1)}s; --sway:${rnd(-40, 40).toFixed(0)}px; animation-delay:-${rnd(0, d).toFixed(1)}s;">${LK_LANTERN}</div>`;
+                }
+                const boats = [[48, 62, -6], [36, 74, -30], [42, 68, -50]]
+                    .map(([size, dur, delay]) => `<div class="lk-krathong" style="--s:${size}px; animation-duration:${dur}s; animation-delay:${delay}s;">${LK_KRATHONG}</div>`).join('');
+                return {
+                    back: `<div class="sd-moon"></div>${lanterns}<div class="lk-water">${lkWave('w1', 'rgba(80, 160, 200, 0.35)')}${lkWave('w2', 'rgba(120, 190, 230, 0.25)')}${boats}</div>`,
+                    front: `<div class="sd-rise lk-lantern" style="left:76%; --s:30px; --d:28s; --sway:-50px; animation-delay:-9s;">${LK_LANTERN}</div>`
+                };
+            },
+            christmas: () => {
+                const colors = ['#FF4D5E', '#FFD24D', '#3DDC97', '#4DA3FF'];
+                let bulbs = '';
+                for (let i = 0; i < 18; i++) {
+                    const swag = Math.floor(i / 6), f = ((i % 6) + 0.5) / 6;
+                    // วางหลอดไฟตามแนวสายไฟที่ห้อยโค้ง (y = 6 + 72·f·(1-f) ตามเส้นโค้ง Q ของสายไฟ)
+                    bulbs += `<span class="xm-bulb" style="left:${((swag + f) / 3 * 100).toFixed(2)}%; top:${(6 + 72 * f * (1 - f)).toFixed(1)}px; --c:${colors[i % 4]}; --delay:-${(i * 0.37 % 1.6).toFixed(2)}s;"></span>`;
+                }
+                return {
+                    back: `<div class="xm-lights"><svg class="xm-wire" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0 6Q50 42 100 6Q150 42 200 6Q250 42 300 6" stroke="#3B5446" stroke-width="1.5" fill="none" vector-effect="non-scaling-stroke"/></svg>${bulbs}</div>
+                        ${fallingItems(26, 'xm-flake', '', [4, 9])}${fallingItems(5, 'xm-flake-lg', XM_FLAKE, [14, 22])}
+                        <svg class="xm-ground" viewBox="0 0 400 40" preserveAspectRatio="none"><path d="M0 18Q50 4 110 14T230 12T330 10T400 12V40H0Z" fill="#FFFFFF"/></svg>
+                        <div class="xm-snowman">${XM_SNOWMAN}</div><div class="xm-tree">${XM_TREE}</div>`,
+                    front: `${fallingItems(6, 'xm-flake', '', [6, 11])}${fallingItems(2, 'xm-flake-lg', XM_FLAKE, [18, 24])}`
+                };
+            },
+            newyear: () => {
+                const balloonColors = ['#FFC94A', '#FF5DA2', '#A68BFA', '#3CD3F2'];
+                let balloons = '';
+                for (let i = 0; i < 4; i++) {
+                    const d = rnd(24, 34);
+                    balloons += `<div class="sd-rise ny-balloon" style="left:${(8 + i * 24 + rnd(-6, 6)).toFixed(1)}%; --s:${rnd(26, 36).toFixed(0)}px; --d:${d.toFixed(1)}s; --sway:${rnd(-40, 40).toFixed(0)}px; animation-delay:-${rnd(0, d).toFixed(1)}s;">${nyBalloon(balloonColors[i])}</div>`;
+                }
+                return {
+                    back: firework(14, 16, '#FFC94A', 4.2, -0.5, 70) + firework(82, 12, '#FF5DA2', 5.1, -2.2, 80) + firework(52, 30, '#3CD3F2', 4.6, -3.4, 60)
+                        + firework(26, 58, '#A68BFA', 5.6, -1.4, 70) + firework(74, 66, '#FFF3C4', 4.9, -4.1, 64) + balloons,
+                    front: firework(6, 46, '#FFD777', 7.3, -2, 56) + firework(92, 72, '#FF8FC0', 8.1, -6, 50)
+                        + `<div class="sd-rise ny-balloon" style="left:84%; --s:34px; --d:30s; --sway:-40px; animation-delay:-12s;">${nyBalloon('#FFC94A')}</div>`
+                };
+            },
+            songkran: () => {
+                let drops = '';
+                for (let i = 0; i < 8; i++) {
+                    drops += `<span class="sk-drop" style="--d:${rnd(1.6, 2.4).toFixed(2)}s; --delay:-${(i * 0.27).toFixed(2)}s; --dx:${rnd(-40, 55).toFixed(0)}px; --h:${rnd(-110, -70).toFixed(0)}px;"><i></i></span>`;
+                }
+                let shots = '';
+                for (let i = 0; i < 7; i++) shots += `<span class="sk-shot" style="--delay:${(i * 0.07).toFixed(2)}s;"><i></i></span>`;
+                return {
+                    back: fallingItems(10, 'sk-flower', (i) => skFlower(i % 3 === 0 ? '#FFC2D9' : '#FFFFFF'), [16, 26])
+                        + `<div class="sk-bowl">${SK_BOWL}</div><div class="sk-fountain">${drops}</div>`,
+                    front: `<div class="sk-gun-wrap"><div class="sk-gun">${SK_GUN}</div>${shots}</div>`
+                };
+            }
+        };
+        function renderSeasonDecor(theme) {
+            const back = document.getElementById('bg-season'), front = document.getElementById('fg-season');
+            if (!back || !front || back.dataset.theme === theme) return;
+            back.dataset.theme = theme;
+            const decor = SEASON_DECOR[theme] ? SEASON_DECOR[theme]() : { back: '', front: '' };
+            back.innerHTML = decor.back;
+            front.innerHTML = decor.front;
+        }
+
+        // --- 📅 ธีมตามเทศกาล: ช่วงเทศกาลสลับเป็นธีมเทศกาลให้ครั้งเดียวต่อเทศกาล หมดเทศกาลแล้วคืนธีมเดิมให้ ---
+        // วันลอยกระทง = วันเพ็ญเดือน 12 ตามจันทรคติ ประมาณจากวันพระจันทร์เต็มดวงดวงแรกตั้งแต่ 29 ต.ค. (อาจคลาด ±1 วัน ช่วงธีมจึงเผื่อไว้)
+        function loyKrathongDate(year) {
+            const SYNODIC_MS = 29.530588853 * 864e5;
+            const REF_FULL_MOON = Date.UTC(2000, 0, 21, 4, 40);
+            const from = Date.UTC(year, 9, 29);
+            const fullMoon = REF_FULL_MOON + Math.ceil((from - REF_FULL_MOON) / SYNODIC_MS) * SYNODIC_MS;
+            const bangkok = new Date(fullMoon + 7 * 36e5);
+            return new Date(bangkok.getUTCFullYear(), bangkok.getUTCMonth(), bangkok.getUTCDate());
+        }
+        const SEASONS = [
+            { theme: 'songkran',    label: 'สงกรานต์',   window: y => [new Date(y, 3, 10), new Date(y, 3, 17)] },
+            { theme: 'loykrathong', label: 'ลอยกระทง',   window: y => { const d = loyKrathongDate(y); return [new Date(d.getFullYear(), d.getMonth(), d.getDate() - 5), new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)]; } },
+            { theme: 'halloween',   label: 'ฮาโลวีน',    window: y => [new Date(y, 9, 20), new Date(y, 10, 1)] },
+            { theme: 'christmas',   label: 'คริสต์มาส', window: y => [new Date(y, 11, 15), new Date(y, 11, 26)] },
+            { theme: 'newyear',     label: 'ปีใหม่',     window: y => [new Date(y, 11, 27), new Date(y + 1, 0, 3)] }
+        ];
+        const SEASON_THEMES = SEASONS.map(s => s.theme);
+        // คืนเทศกาลที่กำลังอยู่ในช่วง (year = ปีที่เทศกาลนั้นเริ่ม ใช้จำว่าสลับให้ไปแล้วหรือยัง)
+        function getActiveSeason(date = new Date()) {
+            const day = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            for (const season of SEASONS) {
+                for (const y of [day.getFullYear(), day.getFullYear() - 1]) {
+                    const [start, end] = season.window(y);
+                    if (day >= start && day <= end) return { ...season, year: y };
+                }
+            }
+            return null;
         }
         // คืนค่าธีมที่ควรใช้ตอนเปิดหน้า ถ้าต้องสลับตามเทศกาล (ไม่งั้นคืน null)
         function getSeasonalThemeOverride() {
             const saved = localStorage.getItem('site_theme') || 'day';
-            if (isHalloweenSeason()) {
-                const year = String(new Date().getFullYear());
-                if (localStorage.getItem('halloween_switched') === year || saved === 'halloween') return null;
-                safeSetItem('halloween_switched', year);
-                safeSetItem('theme_before_halloween', saved);
-                return 'halloween';
-            }
-            const before = localStorage.getItem('theme_before_halloween');
-            if (before) {
+            const legacy = localStorage.getItem('theme_before_halloween'); // คีย์จากเวอร์ชันที่มีแต่ธีมฮาโลวีน
+            if (legacy !== null) {
+                if (SEASON_THEMES.includes(saved) && !localStorage.getItem('theme_before_season')) safeSetItem('theme_before_season', legacy);
                 localStorage.removeItem('theme_before_halloween');
-                if (saved === 'halloween') return before;
+            }
+            const season = getActiveSeason();
+            if (season) {
+                const key = `${season.theme}_switched`;
+                if (localStorage.getItem(key) === String(season.year) || saved === season.theme) return null;
+                safeSetItem(key, String(season.year));
+                // เทศกาลต่อกัน (คริสต์มาส → ปีใหม่) ให้จำธีมก่อนเทศกาลแรกไว้ หลังจบจะได้คืนธีมที่ถูก
+                if (!localStorage.getItem('theme_before_season')) safeSetItem('theme_before_season', saved);
+                return season.theme;
+            }
+            const before = localStorage.getItem('theme_before_season');
+            if (before) {
+                localStorage.removeItem('theme_before_season');
+                if (SEASON_THEMES.includes(saved)) return before;
             }
             return null;
         }
@@ -1942,10 +2346,9 @@
                     safeSetItem('auto_theme', 'false');
                     const cb = document.getElementById('auto-theme-check');
                     if (cb) cb.checked = false;
-                    localStorage.removeItem('theme_before_halloween'); // เลือกธีมเองแล้ว ไม่ต้องคืนธีมเดิมให้หลังเทศกาล
+                    localStorage.removeItem('theme_before_season'); // เลือกธีมเองแล้ว ไม่ต้องคืนธีมเดิมให้หลังเทศกาล
                 }
             }
-            if (theme === 'halloween') ensureHalloweenDecor();
             if (!theme || !THEME_META[theme]) theme = 'day';
             if (theme === 'day') document.body.removeAttribute('data-theme');
             else document.body.setAttribute('data-theme', theme);
@@ -1957,6 +2360,7 @@
             const titleEmoji = document.getElementById('title-emoji');
             if (titleEmoji) titleEmoji.textContent = meta.emoji;
             renderSparkles(theme);
+            renderSeasonDecor(theme);
             if (event) playThemeChime(theme);
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (metaTheme) metaTheme.setAttribute('content', meta.meta);
@@ -1975,7 +2379,8 @@
         });
 
         function getAutoTheme() {
-            if (isHalloweenSeason()) return 'halloween';
+            const season = getActiveSeason();
+            if (season) return season.theme;
             const h = new Date().getHours() + new Date().getMinutes() / 60;
             if (h >= 5 && h < 17) return 'day';
             if (h >= 17 && h < 19.5) return 'sunset';
@@ -1987,16 +2392,23 @@
         }
         setInterval(() => { if (localStorage.getItem('auto_theme') === 'true') setSiteTheme(getAutoTheme()); }, 15 * 60 * 1000);
 
+        // ข้อความทักทายตามเทศกาล: [เช้า 5-11, เที่ยง 11-13, บ่าย 13-17, เย็น 17-20, ดึก]
+        const SEASON_GREETINGS = {
+            halloween: ['🎃 Happy Halloween! ขอให้วันนี้มีแต่ขนม ไม่โดนแกล้งนะ', '🍬 พักเที่ยงแล้ว แอบกินขนมสักชิ้นไหม?', '👻 ผีน้อยมาเตือนว่าพักสายตาบ้างนะ', '🦇 ค้างคาวออกบินแล้ว ใกล้เลิกงานแล้วนะ', '🌕 คืนฮาโลวีน ทำงานดึกอย่าลืมพักนะ'],
+            loykrathong: ['🪷 สุขสันต์วันลอยกระทง ขอให้ความเหนื่อยลอยไปกับสายน้ำนะ', '🍚 พักเที่ยงก่อน เย็นนี้ค่อยไปลอยกระทงกัน', '🌕 คืนนี้พระจันทร์เต็มดวง พักสายตาบ้างนะ', '🕯️ ใกล้เลิกงานแล้ว ไปลอยกระทงกันเถอะ', '🌕 คืนวันเพ็ญ ทำงานดึกอย่าลืมพักนะ'],
+            christmas: ['🎄 Merry Christmas! ขอให้วันนี้สดใสเหมือนไฟต้นคริสต์มาส', '🍪 พักเที่ยงแล้ว กินขนมให้ชื่นใจหน่อย', '🎁 พักสักหน่อย ให้รางวัลตัวเองบ้างนะ', '⛄ อากาศเย็นแล้ว พักจิบอะไรอุ่นๆ หน่อยไหม', '✨ ดึกแล้ว ซานต้ากำลังมา รีบพักผ่อนนะ'],
+            newyear: ['🎆 ใกล้ปีใหม่แล้ว สู้อีกนิดนะ', '🍽️ พักเที่ยงก่อน เก็บแรงไว้ฉลองปีใหม่', '🥂 พักสักหน่อย ปีนี้เหนื่อยมาเยอะแล้ว', '🎇 ใกล้เลิกงานแล้ว เตรียมตัวฉลองได้เลย', '🌙 ดึกแล้ว พักผ่อนเยอะๆ ก่อนปีใหม่นะ'],
+            songkran: ['💦 สุขสันต์วันสงกรานต์! ขอให้สดชื่นทั้งวัน', '🍧 พักเที่ยงแล้ว หาอะไรเย็นๆ กินกันเถอะ', '🌼 อากาศร้อน พักดื่มน้ำเย็นๆ บ้างนะ', '🐘 ใกล้เลิกงานแล้ว ระวังโดนสาดน้ำระหว่างทางนะ', '🌙 ดึกแล้ว เล่นน้ำมาเหนื่อย พักผ่อนนะ']
+        };
         function renderGreeting() {
             const g = document.getElementById('greeting-line'); if (!g) return;
-            const hour = new Date().getHours();
+            const now = new Date(), hour = now.getHours();
             let text;
-            if (currentTheme() === 'halloween') {
-                if (hour >= 5 && hour < 11) text = '🎃 Happy Halloween! ขอให้วันนี้มีแต่ขนม ไม่โดนแกล้งนะ';
-                else if (hour >= 11 && hour < 13) text = '🍬 พักเที่ยงแล้ว แอบกินขนมสักชิ้นไหม?';
-                else if (hour >= 13 && hour < 17) text = '👻 ผีน้อยมาเตือนว่าพักสายตาบ้างนะ';
-                else if (hour >= 17 && hour < 20) text = '🦇 ค้างคาวออกบินแล้ว ใกล้เลิกงานแล้วนะ';
-                else text = '🌕 คืนฮาโลวีน ทำงานดึกอย่าลืมพักนะ';
+            const seasonal = SEASON_GREETINGS[currentTheme()];
+            if (seasonal) {
+                const slot = hour >= 5 && hour < 11 ? 0 : hour >= 11 && hour < 13 ? 1 : hour >= 13 && hour < 17 ? 2 : hour >= 17 && hour < 20 ? 3 : 4;
+                text = seasonal[slot];
+                if (currentTheme() === 'newyear' && now.getMonth() === 0) text = `🎉 สวัสดีปีใหม่ ${now.getFullYear()}! ขอให้ปีนี้ได้พักพอดีๆ นะ`;
                 g.textContent = text;
                 return;
             }
@@ -2198,10 +2610,11 @@
                 card.innerHTML = `
                     <div class="drag-handle" title="ลากเพื่อจัดเรียงลำดับ">⠿</div>
                     <div class="edit-btn" title="แก้ไขกิจกรรม" onclick="openModal(${index}, event)">✏️</div>
-                    <div class="floating-emoji">${act.emoji}</div>
+                    <div class="floating-emoji"><svg class="break-ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="break-ring-track" cx="60" cy="60" r="54"></circle><circle class="break-ring-fill" cx="60" cy="60" r="54"></circle></svg>${act.emoji}</div>
                     <div class="capsule">
                         <span class="capsule-name">${act.name}</span>
                         <div class="live-timer">00:00</div>
+                        <div class="break-countdown"></div>
                     </div>
                     <div class="helper-text">${helper}</div>
                     <div class="back-box" role="button" tabindex="0" onclick="endBreak(${index}, this.parentElement, event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();endBreak(${index}, this.parentElement, event);}">
@@ -2314,6 +2727,58 @@
             }
         }
 
+        // --- ⏳ นับถอยหลังระหว่างพัก: กิจกรรมที่มีลิมิต (หรือห้องน้ำที่มีเวลาฟรี) จะโชว์เวลาที่เหลือ + วงแหวนรอบอิโมจิ ---
+        const BREAK_RING_CIRC = 2 * Math.PI * 54;
+        function formatMMSS(totalSecs) {
+            const s = Math.max(0, totalSecs);
+            return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+        }
+        function getBreakTargetSecs(state) {
+            if (state.limit > 0) return state.limit * 60;
+            if (state.isToilet) return getToiletFreeMinutes() * 60;
+            return 0;
+        }
+        function alertBreakTargetReached() {
+            const isFreeTime = !(activeBreak.limit > 0);
+            try { if (navigator.vibrate) navigator.vibrate(isFreeTime ? [180, 90, 180] : [300, 120, 300, 120, 500]); } catch (e) {}
+            playSound('alarm');
+            showToast(isFreeTime ? '🚻 หมดเวลาฟรีแล้ว ต่อจากนี้จะหักโควตาเวลาพัก' : `⏰ ครบ ${activeBreak.limit} นาทีแล้ว ได้เวลากลับแล้วนะ`, 'warning', { duration: 6000 });
+        }
+        function updateBreakDisplay(cardElement) {
+            if (!activeBreak) return;
+            const elapsedSecs = Math.floor((Date.now() - activeBreak.startTime) / 1000);
+            cardElement.querySelector('.live-timer').textContent = formatMMSS(elapsedSecs);
+            const target = getBreakTargetSecs(activeBreak);
+            cardElement.classList.toggle('has-target', target > 0);
+            if (target > 0) {
+                const ratio = elapsedSecs / target, remain = target - elapsedSecs;
+                const countdown = activeBreak.limit > 0
+                    ? (remain >= 0 ? `เหลืออีก ${formatMMSS(remain)}` : `เกินลิมิตมาแล้ว ${formatMMSS(-remain)}`)
+                    : (remain >= 0 ? `เวลาฟรีเหลือ ${formatMMSS(remain)}` : `เกินเวลาฟรี ${formatMMSS(-remain)}`);
+                cardElement.querySelector('.break-countdown').textContent = countdown;
+                cardElement.querySelector('.break-ring-fill').style.strokeDashoffset = BREAK_RING_CIRC * (1 - Math.min(ratio, 1));
+                cardElement.classList.toggle('is-warn', ratio >= 0.75 && ratio < 1);
+                cardElement.classList.toggle('is-over', ratio >= 1);
+                if (ratio >= 1 && !activeBreak.alerted) {
+                    activeBreak.alerted = true;
+                    persistActiveBreak();
+                    alertBreakTargetReached();
+                }
+            }
+            if (!activeBreak.notified && activeBreak.limit > 0 && !activeBreak.isToilet && elapsedSecs >= activeBreak.limit * 60) {
+                activeBreak.notified = true;
+                persistActiveBreak();
+                if (notifyEnabled) {
+                    new Notification('⏰ ถึงเวลาที่ตั้งไว้แล้ว', { body: `${activeBreak.action} เกินลิมิต ${activeBreak.limit} นาทีแล้ว กลับมาได้เลย` });
+                }
+            }
+        }
+        function startBreakTicker(cardElement) {
+            if (timerInterval) clearInterval(timerInterval);
+            updateBreakDisplay(cardElement);
+            timerInterval = setInterval(() => updateBreakDisplay(cardElement), 1000);
+        }
+
         function startBreak(index, cardElement) {
             if (cardElement.classList.contains('expanded')) return;
             if (activeBreak) return; // ป้องกันเริ่มพักซ้อนกันถ้ามีกิจกรรมที่กำลังพักอยู่แล้ว (กันแตะเร็วเกินไประหว่างเปลี่ยนหน้าจอ)
@@ -2325,23 +2790,9 @@
             const suffix = gender === 'male' ? 'ครับ' : 'ค่ะ'; const now = new Date(); const timeString = getThaiTimeString(now);
             const textToCopy = `${act.name} ${timeString} ${suffix}`; performCopy(textToCopy);
 
-            activeBreak = { index, action: act.name, startTime: now.getTime(), startStr: timeString, limit: act.limit, isToilet: act.isToilet, notified: false };
+            activeBreak = { index, action: act.name, startTime: now.getTime(), startStr: timeString, limit: act.limit, isToilet: act.isToilet, notified: false, alerted: false };
             persistActiveBreak();
-
-            const timerDisplay = cardElement.querySelector('.live-timer'); timerDisplay.textContent = '00:00';
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                if (!activeBreak) return;
-                const elapsedSecs = Math.floor((Date.now() - activeBreak.startTime) / 1000);
-                timerDisplay.textContent = `${String(Math.floor(elapsedSecs / 60)).padStart(2, '0')}:${String(elapsedSecs % 60).padStart(2, '0')}`;
-                if (!activeBreak.notified && activeBreak.limit > 0 && !activeBreak.isToilet && elapsedSecs >= activeBreak.limit * 60) {
-                    activeBreak.notified = true;
-                    persistActiveBreak();
-                    if (notifyEnabled) {
-                        new Notification('⏰ ถึงเวลาที่ตั้งไว้แล้ว', { body: `${activeBreak.action} เกินลิมิต ${activeBreak.limit} นาทีแล้ว กลับมาได้เลย` });
-                    }
-                }
-            }, 1000);
+            startBreakTicker(cardElement);
 
             showSuccessOverlay(cardElement, `เริ่มพักแล้ว! ${act.emoji}`, textToCopy);
             setTimeout(() => cardElement.classList.add('expanded'), 150);
@@ -2370,7 +2821,7 @@
             activeBreak = null;
             persistActiveBreak();
 
-            cardElement.classList.remove('expanded');
+            cardElement.classList.remove('expanded', 'has-target', 'is-warn', 'is-over');
             setTimeout(() => { showSuccessOverlay(cardElement, 'ยินดีต้อนรับกลับมา! 🏠', textToCopy, 1500); }, 100);
         }
 
@@ -3261,12 +3712,13 @@
             const seasonal = autoOn ? null : getSeasonalThemeOverride();
             const savedTheme = autoOn ? getAutoTheme() : (seasonal || localStorage.getItem('site_theme') || 'day');
             setSiteTheme(savedTheme);
-            if (seasonal === 'halloween') {
-                showToast('🎃 ฮาโลวีนมาแล้ว! เปลี่ยนเป็นธีมฮาโลวีนให้ชั่วคราว', 'info', {
+            const season = SEASONS.find(x => x.theme === seasonal);
+            if (season) {
+                showToast(`${THEME_META[season.theme].emoji} ${season.label}มาแล้ว! เปลี่ยนเป็นธีม${season.label}ให้ชั่วคราว`, 'info', {
                     duration: 8000, actionLabel: 'ใช้ธีมเดิม',
                     onAction: () => {
-                        setSiteTheme(localStorage.getItem('theme_before_halloween') || 'day');
-                        localStorage.removeItem('theme_before_halloween');
+                        setSiteTheme(localStorage.getItem('theme_before_season') || 'day');
+                        localStorage.removeItem('theme_before_season');
                     }
                 });
             }
@@ -3298,7 +3750,7 @@
                     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
                     const container = document.getElementById('activities-container');
                     const cardElement = container && container.children[activeBreak.index];
-                    if (cardElement) cardElement.classList.remove('expanded');
+                    if (cardElement) cardElement.classList.remove('expanded', 'has-target', 'is-warn', 'is-over');
                     activeBreak = null;
                 }
             }
