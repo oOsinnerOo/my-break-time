@@ -718,13 +718,21 @@
         .theme-toggle:hover { transform: translateY(-2px); color: var(--ink); }
         .theme-toggle:active { transform: scale(0.94); }
         @media (max-width: 480px) {
-            .header-actions { gap: 6px; }
-            .header-actions .theme-toggle { width: 42px; height: 42px; padding: 0; justify-content: center; font-size: 18px; }
+            .header-actions { gap: 5px; }
+            .header-actions .theme-toggle { width: 40px; height: 40px; padding: 0; justify-content: center; font-size: 17px; }
             .header-actions .settings-label { display: none; }
             .brand { gap: 10px; }
             .brand-mark { width: 42px; height: 42px; font-size: 21px; border-radius: 14px; }
-            .app-title { font-size: 21px; white-space: nowrap; }
+            .app-title { font-size: 20px; white-space: nowrap; }
         }
+        @media (max-width: 370px) {
+            .header-actions { gap: 4px; }
+            .header-actions .theme-toggle { width: 36px; height: 36px; font-size: 15px; }
+            .brand-mark { width: 38px; height: 38px; font-size: 19px; }
+            .app-title { font-size: 16px; }
+            .greeting-line { font-size: 12px; }
+        }
+        @media (max-width: 340px) { .brand-mark { display: none; } }
         .volume-slider { width: 110px; height: 28px; vertical-align: middle; accent-color: var(--accent); cursor: pointer; touch-action: none; }
 
         /* 📊 แดชบอร์ดโควตา */
@@ -1395,6 +1403,37 @@
             background: var(--surface-solid); border: 1px solid var(--line); transition: transform 0.15s, border-color 0.2s, background-color 0.2s;
         }
         .data-btn:hover { border-color: rgba(var(--accent-rgb), 0.5); transform: translateY(-1px); }
+        /* 💾 บันทึกง่าย + กันข้อมูลหาย */
+        #save-btn { position: relative; }
+        .save-dot { position: absolute; top: 6px; right: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--danger); box-shadow: 0 0 0 2px var(--surface-solid); }
+        .save-dot[hidden] { display: none; }
+        .data-safety { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; padding: 10px 12px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); }
+        .ds-row { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: baseline; gap: 6px; font-size: 12.5px; color: var(--ink-2); }
+        .ds-icon { text-align: center; }
+        .ds-label { font-weight: 600; }
+        .ds-value { font-weight: 700; color: var(--ink); text-align: right; }
+        .ds-row.is-warn .ds-value { color: var(--danger); }
+        .data-btn[hidden] { display: none; }
+        .restore-source { margin: 0; font-size: 13px; font-weight: 700; color: var(--ink-2); text-align: center; }
+        .restore-card { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); }
+        .restore-card .ds-row { font-size: 13.5px; grid-template-columns: 24px auto minmax(0, 1fr); }
+        .restore-vs { margin: 0; font-size: 12.5px; color: var(--ink-3); text-align: center; }
+        .restore-warn { margin: 0; font-size: 12.5px; color: var(--danger); text-align: center; font-weight: 600; line-height: 1.5; }
+        .restore-actions[hidden] { display: none; }
+        .snap-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+        .snap-item {
+            display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 11px 14px; border-radius: 16px; cursor: pointer; text-align: left;
+            font: inherit; background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); transition: border-color 0.2s, transform 0.15s;
+        }
+        .snap-item:hover { border-color: rgba(var(--accent-rgb), 0.5); transform: translateY(-1px); }
+        .snap-when { font-size: 13.5px; font-weight: 700; }
+        .snap-sum { font-size: 12px; color: var(--ink-3); font-weight: 600; }
+        .drop-overlay {
+            position: fixed; inset: 12px; z-index: 115000; display: none; align-items: center; justify-content: center; pointer-events: none;
+            border-radius: 28px; border: 3px dashed var(--accent); background: rgba(var(--accent-rgb), 0.12); backdrop-filter: blur(3px);
+            font-family: var(--font-display); font-size: 22px; color: var(--accent-ink); text-align: center; padding: 20px;
+        }
+        .drop-overlay.show { display: flex; }
         .data-btn.is-danger { grid-column: 1 / -1; color: var(--danger); background: transparent; border-style: dashed; border-color: rgba(var(--danger-rgb), 0.45); }
         .data-btn.is-danger:hover { background: rgba(var(--danger-rgb), 0.08); }
 
@@ -2202,6 +2241,7 @@
             </div>
             <div class="header-actions">
                 <button type="button" class="theme-toggle" id="sticker-btn" onclick="toggleStickerTray()" aria-label="สติกเกอร์">🎀<span class="settings-label">สติกเกอร์</span></button>
+                <button type="button" class="theme-toggle" id="save-btn" onclick="saveBackupNow()" aria-label="บันทึกไฟล์สำรอง">💾<span class="settings-label">บันทึก</span><span class="save-dot" id="save-dot" hidden></span></button>
                 <button type="button" class="theme-toggle" id="settings-btn" onclick="openSettingsModal()" aria-label="ตั้งค่า">⚙️<span class="settings-label">ตั้งค่า</span></button>
             </div>
         </header>
@@ -2594,12 +2634,17 @@
 
                 <div class="settings-section">
                     <div class="settings-section-title">💾 ข้อมูล</div>
-                    <p class="settings-hint settings-hint-top">ข้อมูลทั้งหมดเก็บอยู่ในเบราว์เซอร์เครื่องนี้เท่านั้น สำรองเป็นไฟล์ไว้เพื่อย้ายเครื่องหรือกันข้อมูลหาย</p>
+                    <p class="settings-hint settings-hint-top">ข้อมูลเก็บอยู่ในเบราว์เซอร์เครื่องนี้ ระบบเก็บจุดกู้คืนให้เองทุกวัน และกดปุ่ม 💾 บันทึก เพื่อเก็บไฟล์ไว้นอกเครื่อง (เช่น LINE หรือ Google Drive) กันเครื่องหาย/ย้ายเครื่อง</p>
+                    <div class="data-safety" id="data-safety"></div>
                     <div class="data-actions">
-                        <button type="button" class="data-btn" onclick="exportBackup()"><span aria-hidden="true">💾</span>สำรองข้อมูล</button>
+                        <button type="button" class="data-btn" onclick="saveBackupNow()"><span aria-hidden="true">💾</span>บันทึกไฟล์สำรอง</button>
                         <button type="button" class="data-btn" onclick="document.getElementById('import-file').click()"><span aria-hidden="true">📤</span>นำเข้าไฟล์</button>
+                        <button type="button" class="data-btn" onclick="openRestorePoints()"><span aria-hidden="true">🔁</span>จุดกู้คืน</button>
+                        <button type="button" class="data-btn" id="autosave-btn" onclick="onAutosaveButton()" hidden><span aria-hidden="true">📁</span>บันทึกลงไฟล์อัตโนมัติ</button>
+                        <button type="button" class="data-btn" id="persist-btn" onclick="onPersistButton()" hidden><span aria-hidden="true">🛡️</span>กันเบราว์เซอร์ลบข้อมูล</button>
                         <button type="button" class="data-btn is-danger" onclick="clearAllData()"><span aria-hidden="true">🗑️</span>ล้างข้อมูลทั้งหมด</button>
                     </div>
+                    <p class="settings-hint">💡 ลากไฟล์สำรองมาวางบนหน้าเว็บได้เลย ระบบจะให้ดูข้อมูลในไฟล์ก่อนกู้คืน</p>
                     <input type="file" id="import-file" accept="application/json,.json" hidden onchange="importBackup(event)">
                 </div>
 
@@ -2731,6 +2776,21 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="restore-modal" onclick="if(event.target===this) closeRestore(false)">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="restore-title">
+            <div class="settings-modal-header">
+                <h3 id="restore-title">📤 กู้คืนข้อมูล</h3>
+                <button type="button" class="settings-close-btn" onclick="closeRestore(false)" aria-label="ปิด">✕</button>
+            </div>
+            <div id="restore-body"></div>
+            <div class="modal-btn-group restore-actions" id="restore-actions">
+                <button type="button" class="modal-btn btn-primary" onclick="closeRestore(true)">กู้คืนข้อมูลนี้</button>
+                <button type="button" class="modal-btn btn-secondary" onclick="closeRestore(false)">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+    <div class="drop-overlay" id="drop-overlay" aria-hidden="true">📥 วางไฟล์สำรองตรงนี้เพื่อกู้คืนข้อมูล</div>
+
     <div class="phone-timer" id="phone-timer" hidden role="dialog" aria-modal="true" aria-labelledby="pt-name">
         <div class="pt-box">
             <div class="pt-ring-wrap">
@@ -2842,6 +2902,22 @@
     <canvas id="share-canvas" width="600" height="750" style="display:none;"></canvas>
 
     <script>
+        // --- 🩺 ตรวจข้อมูลก่อนโหลดอย่างอื่น: ถ้าข้อมูลในเครื่องเสีย (อ่านไม่ออก) ย้ายออกไปก่อน แอปจะได้ไม่พัง แล้วค่อยกู้จากจุดกู้คืน ---
+        const DATA_SHAPES = { activities: 'array', break_logs: 'array', earned_badges: 'array', stickers: 'array', veggie_garden: 'object', shop_state: 'object', challenges: 'object' };
+        const brokenDataKeys = (() => {
+            const broken = [];
+            try {
+                Object.entries(DATA_SHAPES).forEach(([k, shape]) => {
+                    const raw = localStorage.getItem(k);
+                    if (raw === null) return;
+                    let ok = false;
+                    try { const v = JSON.parse(raw); ok = shape === 'array' ? Array.isArray(v) : !!v && typeof v === 'object' && !Array.isArray(v); } catch (e) {}
+                    if (!ok) { broken.push(k); localStorage.removeItem(k); }
+                });
+            } catch (e) {}
+            return broken;
+        })();
+
         // --- 🎨 ไอคอนกิจกรรมวาดเอง: หน้าตาเหมือนกันทุกเครื่อง (อิโมจิของแต่ละระบบหน้าตาไม่เหมือนกัน บางตัวดูหม่น) ---
         const IC_INK = '#2B2140';
         function icFace(x, y, s = 1, mood = 'ok') {
@@ -3260,6 +3336,7 @@
         function safeSetItem(key, value) {
             try {
                 window.localStorage.setItem(key, value);
+                if (window.__safeReady) onDataChanged(key);
                 return true;
             } catch (err) {
                 console.error('บันทึกข้อมูลไม่สำเร็จ:', key, err);
@@ -4648,7 +4725,7 @@
                 pestDay: typeof v.pestDay === 'string' ? v.pestDay : '', badge: !!v.badge,
                 inv, cooked, animals, tools, orders,
                 // ชาวสวนเดิมได้ XP ย้อนหลังจากผักที่เคยเก็บ (ผักละ 10 XP)
-                xp: v.xp !== undefined && Number.isFinite(+v.xp) && +v.xp >= 0 ? Math.floor(+v.xp) : totalHarvest * 10,
+                xp: Math.min(1e7, v.xp !== undefined && Number.isFinite(+v.xp) && +v.xp >= 0 ? Math.floor(+v.xp) : totalHarvest * 10),
                 hybridSeeds: (Array.isArray(v.hybridSeeds) ? v.hybridSeeds : []).filter(k => HYBRID_VEGGIES.includes(k)).slice(0, HYBRID_SEED_MAX),
                 wormDay: typeof v.wormDay === 'string' ? v.wormDay.slice(0, 10) : ''
             };
@@ -5657,6 +5734,7 @@
         // --- ⚙️ หน้าตั้งค่ารวม ---
         function openSettingsModal() {
             syncSettingsUI();
+            renderDataSafety();
             document.getElementById('settings-modal').style.display = 'flex';
         }
         function closeSettingsModal() {
@@ -5854,9 +5932,11 @@
 
         // ล้างข้อมูลทั้งหมด: ดาวน์โหลดไฟล์สำรองให้ก่อนเสมอ เผื่อเปลี่ยนใจ
         async function clearAllData() {
-            const ok = await showConfirmDialog('จะลบประวัติการพัก กิจกรรม สวนผัก สติกเกอร์ และการตั้งค่าทั้งหมดในเบราว์เซอร์นี้ ระบบจะดาวน์โหลดไฟล์สำรองให้ก่อนอัตโนมัติ เผื่ออยากนำกลับมา', 'ล้างข้อมูลทั้งหมด?', '🗑️');
+            const ok = await showConfirmDialog('จะลบประวัติการพัก กิจกรรม สวนผัก สติกเกอร์ และการตั้งค่าทั้งหมดในเบราว์เซอร์นี้ ระบบจะดาวน์โหลดไฟล์สำรองให้ก่อน และเก็บไว้ในจุดกู้คืนด้วย เผื่ออยากนำกลับมา', 'ล้างข้อมูลทั้งหมด?', '🗑️');
             if (!ok) return;
             exportBackup();
+            await takeSnapshot('safety', 'ก่อนล้างข้อมูล');
+            snapshotsPaused = true;
             setTimeout(() => {
                 try { localStorage.clear(); } catch (e) {}
                 location.reload();
@@ -7685,8 +7765,22 @@
             if (activeBreak) { e.preventDefault(); e.returnValue = ''; }
         });
 
-        function exportBackup() {
-            const data = {
+        // --- 💾 บันทึกง่าย + กันข้อมูลหาย: ปุ่มบันทึกหน้าแรก · จุดกู้คืนอัตโนมัติ 7 วัน · บันทึกลงไฟล์อัตโนมัติ · เตือนสำรอง · ดูก่อนกู้คืน ---
+        const SNAP_DAYS = 7, SNAP_SAFETY = 3, BACKUP_REMIND_DAYS = 7;
+        const SAFE_IGNORE_KEYS = ['active_break_state', 'phone_qr_open', 'phone_qr_mode', 'last_backup_at', 'backup_reminded_day', 'autosave_at'];
+        const thaiAgo = (ms) => {
+            if (!ms) return 'ยังไม่เคย';
+            const d = new Date(ms), diff = Date.now() - ms, today = new Date(); today.setHours(0, 0, 0, 0);
+            const hm = `${pad2(d.getHours())}:${pad2(d.getMinutes())} น.`;
+            if (diff < 60000) return 'เมื่อสักครู่';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)} นาทีที่แล้ว`;
+            if (d >= today) return `วันนี้ ${hm}`;
+            if (d >= today - 864e5) return `เมื่อวาน ${hm}`;
+            return `${d.getDate()} ${THAI_MONTHS[d.getMonth()]} ${hm}`;
+        };
+        function collectBackupData() {
+            return {
+                backup_meta: { app: 'break-recorder', version: 2, savedAt: new Date().toISOString() },
                 activities: JSON.parse(localStorage.getItem('activities')) || defaultActivities,
                 break_logs: JSON.parse(localStorage.getItem('break_logs') || '[]'),
                 daily_quota: localStorage.getItem('daily_quota') || '60',
@@ -7706,11 +7800,375 @@
                 shop_state: shop, challenges: chal,
                 stickers: JSON.parse(localStorage.getItem('stickers') || '[]')
             };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url;
-            a.download = `break-time-backup-${new Date().toISOString().slice(0,10)}.json`;
-            a.click(); URL.revokeObjectURL(url);
+        }
+        const backupFileName = () => `break-time-backup-${dayKeyLocal()}.json`;
+        // สรุปสั้นๆ ของชุดข้อมูล ใช้โชว์ก่อนกู้คืนและในรายการจุดกู้คืน
+        function backupSummary(d) {
+            const logs = Array.isArray(d.break_logs) ? d.break_logs : [];
+            const dates = logs.map(l => new Date(l.date)).filter(x => !isNaN(x)).sort((a, b) => a - b);
+            const g = d.veggie_garden && typeof d.veggie_garden === 'object' ? d.veggie_garden : {};
+            const crops = Object.values(g.harvest || {}).reduce((a, b) => a + (+b || 0), 0);
+            const xp = Math.min(1e7, Number.isFinite(+g.xp) ? +g.xp : crops * 10);
+            return {
+                logs: logs.length, days: new Set(logs.map(l => l.date)).size,
+                from: dates.length ? dates[0].getTime() : 0, to: dates.length ? dates[dates.length - 1].getTime() : 0,
+                acts: Array.isArray(d.activities) ? d.activities.length : 0,
+                lvl: farmLevel(Math.max(0, xp)), coins: Math.max(0, Math.floor(+(d.shop_state || {}).coins || 0)), crops,
+                stickers: Array.isArray(d.stickers) ? d.stickers.length : 0,
+                savedAt: d.backup_meta && Date.parse(d.backup_meta.savedAt) || 0
+            };
+        }
+
+        // คลังจุดกู้คืนในเครื่อง (IndexedDB แยกจาก localStorage จึงไม่หายตอนล้างข้อมูลหรือข้อมูลเสีย)
+        function safeDB() {
+            if (!safeDB.p) safeDB.p = new Promise((res, rej) => {
+                if (!('indexedDB' in window)) { rej(new Error('no indexedDB')); return; }
+                const r = indexedDB.open('break-recorder-safe', 1);
+                r.onupgradeneeded = () => { r.result.createObjectStore('snapshots', { keyPath: 'id' }); r.result.createObjectStore('kv'); };
+                r.onsuccess = () => res(r.result);
+                r.onerror = () => rej(r.error);
+            });
+            return safeDB.p;
+        }
+        async function idb(store, mode, fn) {
+            const db = await safeDB();
+            return new Promise((res, rej) => {
+                const tx = db.transaction(store, mode);
+                let out;
+                const req = fn(tx.objectStore(store));
+                if (req) req.onsuccess = () => { out = req.result; };
+                tx.oncomplete = () => res(out);
+                tx.onerror = () => rej(tx.error);
+                tx.onabort = () => rej(tx.error);
+            });
+        }
+        let snapshotsPaused = brokenDataKeys.length > 0; // ข้อมูลเพิ่งเสีย อย่าเพิ่งเขียนทับสำเนาดีๆ จนกว่าจะกู้เสร็จ
+        // kind: 'daily' = สำเนาประจำวัน (เก็บ 7 วัน) · 'safety' = สำเนาก่อนนำเข้า/กู้คืน/ล้างข้อมูล (เก็บ 3 อันล่าสุด)
+        async function takeSnapshot(kind = 'daily', reason = '') {
+            if (snapshotsPaused && kind === 'daily') return false;
+            try {
+                const data = collectBackupData(), sum = backupSummary(data);
+                const id = kind === 'daily' ? 'd:' + dayKeyLocal() : 's:' + Date.now();
+                if (kind === 'daily') {
+                    const prev = await idb('snapshots', 'readonly', st => st.get(id));
+                    // ประวัติหายหมดกลางวัน (ลบพลาด/ล้างข้อมูล) ไม่เขียนทับสำเนาของวันนี้ที่ยังมีข้อมูล
+                    if (prev && prev.sum.logs > 0 && sum.logs === 0) return false;
+                }
+                await idb('snapshots', 'readwrite', st => st.put({ id, at: Date.now(), kind, reason, sum, data }));
+                const keys = await idb('snapshots', 'readonly', st => st.getAllKeys());
+                const daily = keys.filter(k => k.startsWith('d:')).sort();
+                const safety = keys.filter(k => k.startsWith('s:')).sort((a, b) => a.slice(2) - b.slice(2));
+                const drop = [...daily.slice(0, Math.max(0, daily.length - SNAP_DAYS)), ...safety.slice(0, Math.max(0, safety.length - SNAP_SAFETY))];
+                if (drop.length) await idb('snapshots', 'readwrite', st => { drop.forEach(k => st.delete(k)); });
+                return true;
+            } catch (e) { return false; }
+        }
+        async function listSnapshots() {
+            try { return ((await idb('snapshots', 'readonly', st => st.getAll())) || []).sort((a, b) => b.at - a.at); } catch (e) { return []; }
+        }
+
+        // จับทุกการบันทึกข้อมูล (ผ่าน safeSetItem) แล้วทยอยอัปเดตจุดกู้คืนและไฟล์บันทึกอัตโนมัติ
+        let snapTimer = 0;
+        function onDataChanged(key) {
+            if (SAFE_IGNORE_KEYS.includes(key)) return;
+            clearTimeout(snapTimer);
+            snapTimer = setTimeout(() => takeSnapshot('daily'), 60 * 1000);
+            scheduleAutosave();
+        }
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden' && snapTimer) { clearTimeout(snapTimer); snapTimer = 0; takeSnapshot('daily'); }
+        });
+
+        // 💾 ปุ่มบันทึก: มือถือเด้งเมนูแชร์ (ส่งเข้า LINE / Drive / อีเมล) คอมดาวน์โหลดไฟล์
+        function markBackedUp() {
+            safeSetItem('last_backup_at', String(Date.now()));
+            renderSaveIndicator(); renderDataSafety();
+        }
+        function downloadBackupFile(json) {
+            const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+            const a = document.createElement('a'); a.href = url; a.download = backupFileName();
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+        function exportBackup() { downloadBackupFile(JSON.stringify(collectBackupData(), null, 2)); markBackedUp(); }
+        async function saveBackupNow() {
+            const json = JSON.stringify(collectBackupData(), null, 2);
+            takeSnapshot('daily');
+            requestPersist(false);
+            const touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+            let file = null;
+            try { file = new File([json], backupFileName(), { type: 'application/json' }); } catch (e) {}
+            if (touch && file && navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({ files: [file], title: 'ไฟล์สำรอง Break Recorder' });
+                    markBackedUp();
+                    showToast('💾 ส่งไฟล์สำรองแล้ว เก็บไว้ใน LINE หรือ Drive ได้เลย', 'success');
+                } catch (e) {
+                    if (e && e.name === 'AbortError') return;
+                    downloadBackupFile(json); markBackedUp();
+                    showToast('💾 ดาวน์โหลดไฟล์สำรองแล้ว', 'success');
+                }
+                return;
+            }
+            downloadBackupFile(json); markBackedUp();
+            showToast('💾 บันทึกไฟล์สำรองแล้ว เก็บไว้ในที่ปลอดภัย เช่น Google Drive', 'success', { duration: 4500 });
+        }
+
+        // 🛡️ ขอเบราว์เซอร์ไม่ให้ลบข้อมูลเว็บนี้เอง (Firefox จะถามก่อน เลยขอเฉพาะตอนผู้ใช้กดเอง)
+        async function requestPersist(auto) {
+            try {
+                if (!navigator.storage || !navigator.storage.persist) return false;
+                if (await navigator.storage.persisted()) return true;
+                if (auto && /firefox/i.test(navigator.userAgent)) return false;
+                const ok = await navigator.storage.persist();
+                renderDataSafety();
+                return ok;
+            } catch (e) { return false; }
+        }
+
+        // 📁 บันทึกลงไฟล์อัตโนมัติ (Chrome/Edge บนคอม): เลือกไฟล์ครั้งเดียว แล้วเว็บเขียนทับให้เองทุกครั้งที่ข้อมูลเปลี่ยน
+        const autosave = { handle: null, state: 'off', timer: 0, lastAt: +localStorage.getItem('autosave_at') || 0 };
+        const canAutosaveFile = () => typeof window.showSaveFilePicker === 'function';
+        async function initAutosave() {
+            if (!canAutosaveFile()) return;
+            try { autosave.handle = (await idb('kv', 'readonly', st => st.get('autosave-handle'))) || null; } catch (e) {}
+            if (!autosave.handle) { autosave.state = 'off'; renderDataSafety(); return; }
+            let perm = 'denied';
+            try { perm = await autosave.handle.queryPermission({ mode: 'readwrite' }); } catch (e) {}
+            autosave.state = perm === 'granted' ? 'on' : 'paused';
+            renderDataSafety(); renderSaveIndicator();
+            if (autosave.state === 'on') scheduleAutosave(1500);
+            else showToast(`📁 เปิดบันทึกลงไฟล์ "${autosave.handle.name}" ต่อไหม?`, 'info', { duration: 10000, actionLabel: 'เปิดต่อ', onAction: resumeAutosave });
+        }
+        async function chooseAutosaveFile() {
+            let handle;
+            try {
+                handle = await window.showSaveFilePicker({ suggestedName: 'break-time-autosave.json', types: [{ description: 'ไฟล์สำรอง Break Recorder', accept: { 'application/json': ['.json'] } }] });
+            } catch (e) { if (!e || e.name !== 'AbortError') showToast('เลือกไฟล์ไม่สำเร็จ ลองใหม่อีกครั้งนะ', 'error'); return; }
+            autosave.handle = handle; autosave.state = 'on';
+            try { await idb('kv', 'readwrite', st => st.put(handle, 'autosave-handle')); } catch (e) {} // เก็บไม่ได้ก็ยังเขียนได้จนปิดหน้า
+            await writeAutosave();
+            requestPersist(false);
+            if (autosave.state === 'on') showToast(`📁 จะบันทึกลง "${handle.name}" ให้อัตโนมัติทุกครั้งที่ข้อมูลเปลี่ยน`, 'success', { duration: 5000 });
+        }
+        async function resumeAutosave() {
+            if (!autosave.handle) return;
+            let perm = 'denied';
+            try { perm = await autosave.handle.requestPermission({ mode: 'readwrite' }); } catch (e) {}
+            autosave.state = perm === 'granted' ? 'on' : 'paused';
+            if (autosave.state === 'on') { await writeAutosave(); showToast('📁 บันทึกลงไฟล์อัตโนมัติต่อแล้ว', 'success'); }
+            renderDataSafety(); renderSaveIndicator();
+        }
+        async function stopAutosave() {
+            autosave.handle = null; autosave.state = 'off';
+            try { await idb('kv', 'readwrite', st => st.delete('autosave-handle')); } catch (e) {}
+            renderDataSafety(); renderSaveIndicator();
+            showToast('หยุดบันทึกลงไฟล์อัตโนมัติแล้ว (ไฟล์เดิมยังอยู่)', 'info');
+        }
+        function scheduleAutosave(delay = 4000) {
+            if (autosave.state !== 'on') return;
+            clearTimeout(autosave.timer);
+            autosave.timer = setTimeout(writeAutosave, delay);
+        }
+        async function writeAutosave() {
+            if (!autosave.handle || autosave.state !== 'on') return;
+            try {
+                const w = await autosave.handle.createWritable();
+                await w.write(JSON.stringify(collectBackupData(), null, 2));
+                await w.close();
+                autosave.lastAt = Date.now();
+                safeSetItem('autosave_at', String(autosave.lastAt));
+            } catch (e) {
+                autosave.state = 'paused';
+                showToast('📁 บันทึกลงไฟล์ไม่สำเร็จ (ไฟล์อาจถูกย้ายหรือไม่ได้รับอนุญาต)', 'warning', { duration: 8000, actionLabel: 'ลองใหม่', onAction: resumeAutosave });
+            }
+            renderDataSafety(); renderSaveIndicator();
+        }
+
+        // ⏰ เตือนสำรองข้อมูล: มีข้อมูลพอสมควรแล้วแต่ไม่ได้สำรองเกิน 7 วัน (เตือนวันละครั้ง)
+        const lastBackupAt = () => Math.max(+localStorage.getItem('last_backup_at') || 0, autosave.state === 'on' ? autosave.lastAt : 0);
+        function backupOverdue() {
+            let logs = 0;
+            try { logs = JSON.parse(localStorage.getItem('break_logs') || '[]').length; } catch (e) {}
+            if (logs < 5 && veg.xp < 50) return false;
+            const last = lastBackupAt();
+            return !last || Date.now() - last > BACKUP_REMIND_DAYS * 864e5;
+        }
+        function renderSaveIndicator() {
+            const dot = document.getElementById('save-dot'), btn = document.getElementById('save-btn');
+            if (!dot || !btn) return;
+            const due = backupOverdue();
+            dot.hidden = !due;
+            btn.title = `บันทึกไฟล์สำรอง · สำรองล่าสุด: ${thaiAgo(lastBackupAt())}`;
+        }
+        function maybeRemindBackup() {
+            renderSaveIndicator();
+            if (!backupOverdue() || localStorage.getItem('backup_reminded_day') === dayKeyLocal()) return;
+            safeSetItem('backup_reminded_day', dayKeyLocal());
+            const last = lastBackupAt();
+            showToast(last ? `💾 ไม่ได้สำรองข้อมูลมา ${Math.floor((Date.now() - last) / 864e5)} วันแล้ว กดบันทึกเก็บไว้หน่อยนะ` : '💾 ยังไม่เคยสำรองข้อมูลเลย กดบันทึกเก็บไว้กันหายนะ',
+                'info', { duration: 9000, actionLabel: 'บันทึกเลย', onAction: saveBackupNow });
+        }
+
+        // ส่วน "ข้อมูล" ในหน้าตั้งค่า: สถานะการป้องกันทั้งหมดในที่เดียว
+        async function renderDataSafety() {
+            const box = document.getElementById('data-safety');
+            if (!box) return;
+            let persisted = null;
+            try { if (navigator.storage && navigator.storage.persisted) persisted = await navigator.storage.persisted(); } catch (e) {}
+            const snaps = await listSnapshots();
+            const rows = [];
+            const row = (icon, label, value, warn) => `<div class="ds-row${warn ? ' is-warn' : ''}"><span class="ds-icon">${icon}</span><span class="ds-label">${label}</span><span class="ds-value">${value}</span></div>`;
+            const last = +localStorage.getItem('last_backup_at') || 0;
+            rows.push(row('🕒', 'สำรองเป็นไฟล์ล่าสุด', escHtml(thaiAgo(last)), backupOverdue()));
+            rows.push(row('🔁', 'จุดกู้คืนอัตโนมัติ', snaps.length ? `${snaps.length} จุด · ล่าสุด ${escHtml(thaiAgo(snaps[0].at))}` : 'กำลังเริ่มเก็บ', false));
+            if (persisted !== null) rows.push(row('🛡️', 'กันเบราว์เซอร์ลบข้อมูลเอง', persisted ? 'เปิดแล้ว ✓' : 'ยังไม่เปิด', !persisted));
+            if (canAutosaveFile()) rows.push(row('📁', 'บันทึกลงไฟล์อัตโนมัติ',
+                autosave.state === 'on' ? `เปิดอยู่ · ${escHtml(autosave.handle.name)} · ${escHtml(thaiAgo(autosave.lastAt))}` : autosave.state === 'paused' ? 'หยุดชั่วคราว (ต้องอนุญาตใหม่)' : 'ปิดอยู่', autosave.state === 'paused'));
+            if (isIOS() && !isStandalone()) rows.push(row('⚠️', 'iPhone/iPad', 'Safari อาจลบข้อมูลถ้าไม่ได้เปิดเว็บ 7 วัน ติดตั้งเป็นแอป (หัวข้อ 📲 ด้านล่าง) เพื่อกันหาย', true));
+            box.innerHTML = rows.join('');
+            const auto = document.getElementById('autosave-btn');
+            if (auto) {
+                auto.hidden = !canAutosaveFile();
+                auto.innerHTML = autosave.state === 'on' ? '<span aria-hidden="true">⏹️</span>หยุดบันทึกลงไฟล์' : autosave.state === 'paused' ? '<span aria-hidden="true">📁</span>เปิดบันทึกลงไฟล์ต่อ' : '<span aria-hidden="true">📁</span>บันทึกลงไฟล์อัตโนมัติ';
+            }
+            const persistBtn = document.getElementById('persist-btn');
+            if (persistBtn) persistBtn.hidden = persisted !== false;
+        }
+        function onAutosaveButton() { if (autosave.state === 'on') stopAutosave(); else if (autosave.state === 'paused') resumeAutosave(); else chooseAutosaveFile(); }
+        async function onPersistButton() {
+            const ok = await requestPersist(false);
+            showToast(ok ? '🛡️ เบราว์เซอร์จะไม่ลบข้อมูลเว็บนี้เองแล้ว' : 'เบราว์เซอร์ยังไม่อนุญาต ลองติดตั้งเป็นแอป แล้วกดอีกครั้งนะ', ok ? 'success' : 'info', { duration: 5000 });
+            renderDataSafety();
+        }
+
+        // 👀 ดูตัวอย่างก่อนกู้คืน (ใช้ทั้งไฟล์สำรอง จุดกู้คืน และไฟล์ที่ลากมาวาง)
+        let restoreResolve = null;
+        function summaryLines(sum) {
+            const span = sum.from ? `${new Date(sum.from).getDate()} ${THAI_MONTHS[new Date(sum.from).getMonth()]} – ${new Date(sum.to).getDate()} ${THAI_MONTHS[new Date(sum.to).getMonth()]}` : '';
+            return [
+                ['📝', 'ประวัติการพัก', `${sum.logs} รายการ${sum.days ? ` · ${sum.days} วัน` : ''}${span ? ` (${span})` : ''}`],
+                ['🎯', 'กิจกรรม', `${sum.acts} อย่าง`],
+                ['🌾', 'ฟาร์ม', `เลเวล ${sum.lvl} · 🪙 ${sum.coins} · เก็บผักแล้ว ${sum.crops} ชิ้น`],
+                ['🎀', 'สติกเกอร์บนหน้า', `${sum.stickers} อัน`]
+            ];
+        }
+        function previewRestore(sum, source) {
+            const cur = backupSummary(collectBackupData());
+            const table = (lines) => lines.map(([i, l, v]) => `<div class="ds-row"><span class="ds-icon">${i}</span><span class="ds-label">${l}</span><span class="ds-value">${escHtml(v)}</span></div>`).join('');
+            document.getElementById('restore-title').textContent = '📤 กู้คืนข้อมูล';
+            document.getElementById('restore-body').innerHTML = `<p class="restore-source">${escHtml(source)}${sum.savedAt ? ` · บันทึกเมื่อ ${escHtml(thaiAgo(sum.savedAt))}` : ''}</p>
+                <div class="restore-card">${table(summaryLines(sum))}</div>
+                <p class="restore-vs">ข้อมูลตอนนี้ในเครื่อง: ประวัติ ${cur.logs} รายการ · ฟาร์มเลเวล ${cur.lvl} · 🪙 ${cur.coins}</p>
+                <p class="restore-warn">ข้อมูลตอนนี้จะถูกแทนที่ทั้งหมด (ระบบเก็บสำเนาของตอนนี้ไว้ในจุดกู้คืนให้ก่อน เผื่อเปลี่ยนใจ)</p>`;
+            document.getElementById('restore-actions').hidden = false;
+            document.getElementById('restore-modal').style.display = 'flex';
+            return new Promise(res => { restoreResolve = res; });
+        }
+        function closeRestore(ok) {
+            document.getElementById('restore-modal').style.display = 'none';
+            if (restoreResolve) { const r = restoreResolve; restoreResolve = null; r(!!ok); }
+        }
+        // เขียนข้อมูลที่ผ่านการตรวจแล้วลงเครื่อง (เก็บสำเนาของตอนนี้ก่อนเสมอ) แล้วโหลดหน้าใหม่
+        async function applyBackup(out, message = 'กู้คืนข้อมูลสำเร็จ! กำลังโหลดหน้าใหม่') {
+            snapshotsPaused = false;
+            await takeSnapshot('safety', 'ก่อนกู้คืน');
+            snapshotsPaused = true; // ไม่ให้สำเนาประจำวันถูกเขียนระหว่างรอโหลดหน้าใหม่
+            if (out.activities) { safeSetItem('activities', JSON.stringify(out.activities)); localStorage.removeItem('act_icons_v1'); }
+            if (out.break_logs) safeSetItem('break_logs', JSON.stringify(out.break_logs));
+            Object.entries(out.settings).forEach(([k, v]) => safeSetItem(k, v));
+            if (out.earned_badges) safeSetItem('earned_badges', JSON.stringify(out.earned_badges));
+            if (out.stickers) safeSetItem('stickers', JSON.stringify(out.stickers));
+            if (out.veggie_garden) safeSetItem('veggie_garden', JSON.stringify(out.veggie_garden));
+            if (out.shop_state) safeSetItem('shop_state', JSON.stringify(out.shop_state));
+            if (out.challenges) safeSetItem('challenges', JSON.stringify(out.challenges));
+            showToast(message, 'success');
+            setTimeout(() => location.reload(), 1200);
+        }
+        async function importBackupFile(file) {
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) { showToast('ไฟล์ใหญ่เกินไป ไม่น่าใช่ไฟล์สำรองของแอปนี้', 'error'); return; }
+            let raw = null, parsed = null;
+            try { raw = JSON.parse(await file.text()); parsed = sanitizeBackup(raw); } catch (err) { parsed = null; }
+            if (!parsed) { showToast('ไฟล์ไม่ถูกต้อง ไม่ใช่ไฟล์สำรองของแอปนี้', 'error'); return; }
+            const sum = backupSummary({ ...parsed.out, backup_meta: raw.backup_meta }); // นับเฉพาะที่จะนำเข้าจริง
+            const ok = await previewRestore(sum, `ไฟล์ ${file.name}${parsed.report.skipped ? ` (ข้ามรายการที่เสีย ${parsed.report.skipped} รายการ)` : ''}`);
+            if (ok) applyBackup(parsed.out, 'นำเข้าข้อมูลสำเร็จ! กำลังโหลดหน้าใหม่');
+        }
+        function importBackup(event) {
+            const file = event.target.files[0];
+            event.target.value = '';
+            importBackupFile(file);
+        }
+
+        // 🔁 รายการจุดกู้คืน
+        async function openRestorePoints() {
+            const snaps = await listSnapshots();
+            document.getElementById('restore-title').textContent = '🔁 จุดกู้คืนอัตโนมัติ';
+            document.getElementById('restore-actions').hidden = true;
+            document.getElementById('restore-body').innerHTML = (snaps.length ? `<div class="snap-list">${snaps.map(s => `
+                <button type="button" class="snap-item" onclick="pickRestorePoint('${s.id}')">
+                    <span class="snap-when">${s.kind === 'safety' ? '🛟' : '📅'} ${escHtml(thaiAgo(s.at))}${s.kind === 'safety' ? ` · ${escHtml(s.reason || 'สำเนาก่อนเปลี่ยนข้อมูล')}` : ''}</span>
+                    <span class="snap-sum">ประวัติ ${s.sum.logs} รายการ · ฟาร์มเลเวล ${s.sum.lvl} · 🪙 ${s.sum.coins}</span>
+                </button>`).join('')}</div>` : '<p class="rp-empty">ยังไม่มีจุดกู้คืน ระบบจะเริ่มเก็บให้เองวันละครั้ง</p>')
+                + `<p class="shop-note">ระบบเก็บสำเนาให้เองทุกวัน ย้อนได้ ${SNAP_DAYS} วัน และเก็บสำเนาก่อนนำเข้า/กู้คืน/ล้างข้อมูลทุกครั้ง<br>สำเนาอยู่ในเบราว์เซอร์นี้ ถ้าจะย้ายเครื่องให้ใช้ปุ่ม 💾 บันทึก</p>`;
+            document.getElementById('restore-modal').style.display = 'flex';
+        }
+        async function pickRestorePoint(id) {
+            let snap = null;
+            try { snap = await idb('snapshots', 'readonly', st => st.get(id)); } catch (e) {}
+            const parsed = snap && sanitizeBackup(snap.data);
+            if (!parsed) { showToast('จุดกู้คืนนี้อ่านไม่ได้แล้ว', 'error'); return; }
+            const ok = await previewRestore(snap.sum, `จุดกู้คืน ${thaiAgo(snap.at)}`);
+            if (ok) applyBackup(parsed.out);
+            else openRestorePoints();
+        }
+
+        // ลากไฟล์สำรองมาวางที่ไหนก็ได้บนหน้าเว็บเพื่อกู้คืน
+        let dropDepth = 0;
+        const hasFiles = e => e.dataTransfer && [...(e.dataTransfer.types || [])].includes('Files');
+        document.addEventListener('dragenter', (e) => { if (!hasFiles(e)) return; e.preventDefault(); dropDepth++; document.getElementById('drop-overlay').classList.add('show'); });
+        document.addEventListener('dragover', (e) => { if (hasFiles(e)) e.preventDefault(); });
+        document.addEventListener('dragleave', (e) => { if (!hasFiles(e)) return; dropDepth = Math.max(0, dropDepth - 1); if (!dropDepth) document.getElementById('drop-overlay').classList.remove('show'); });
+        document.addEventListener('drop', (e) => {
+            if (!hasFiles(e)) return;
+            e.preventDefault(); dropDepth = 0;
+            document.getElementById('drop-overlay').classList.remove('show');
+            const file = e.dataTransfer.files[0];
+            if (file && /\.json$/i.test(file.name)) importBackupFile(file);
+            else showToast('วางได้เฉพาะไฟล์สำรอง .json ของแอปนี้นะ', 'info');
+        });
+
+        // 🩺 ข้อมูลเสียตอนเปิดเว็บ: กู้ส่วนที่เสียจากจุดกู้คืนล่าสุดให้เอง
+        async function healBrokenData() {
+            if (!brokenDataKeys.length) return;
+            const names = { activities: 'กิจกรรม', break_logs: 'ประวัติการพัก', earned_badges: 'เหรียญตรา', stickers: 'สติกเกอร์', veggie_garden: 'ฟาร์ม', shop_state: 'ร้านค้า', challenges: 'ชาเลนจ์' };
+            const label = brokenDataKeys.map(k => names[k] || k).join(', ');
+            if (sessionStorage.getItem('heal_tried')) { snapshotsPaused = false; return; }
+            sessionStorage.setItem('heal_tried', '1');
+            const snap = (await listSnapshots()).find(s => s.data && brokenDataKeys.some(k => s.data[k] !== undefined));
+            const parsed = snap && sanitizeBackup(snap.data);
+            if (!parsed) {
+                snapshotsPaused = false;
+                showToast(`🩺 ข้อมูล${label}ในเครื่องเสีย และไม่มีจุดกู้คืน ถ้ามีไฟล์สำรอง ลากมาวางที่หน้านี้ได้เลย`, 'warning', { duration: 10000 });
+                return;
+            }
+            const out = parsed.out;
+            brokenDataKeys.forEach(k => {
+                const v = k === 'activities' ? out.activities : k === 'break_logs' ? out.break_logs : out[k];
+                if (v !== undefined) safeSetItem(k, JSON.stringify(v));
+            });
+            showToast(`🩺 พบข้อมูล${label}เสีย กู้คืนจากจุดกู้คืน ${thaiAgo(snap.at)} ให้แล้ว`, 'success', { duration: 6000 });
+            setTimeout(() => location.reload(), 1500);
+        }
+        function initDataSafety() {
+            window.__safeReady = true;
+            healBrokenData();
+            requestPersist(true);
+            initAutosave();
+            setTimeout(() => takeSnapshot('daily'), 3000);
+            setTimeout(maybeRemindBackup, 6000);
+            renderSaveIndicator();
         }
 
         // ตรวจและทำความสะอาดข้อมูลจากไฟล์สำรอง: ไฟล์เสียหรือแปลกปลอมจะไม่ทำให้แอปพัง และไม่มีโค้ดแฝงหลุดเข้ามาได้
@@ -7765,38 +8223,6 @@
             if (!out.activities && !out.break_logs && !Object.keys(st).length) return null;
             return { out, report };
         }
-        function importBackup(event) {
-            const file = event.target.files[0]; if (!file) return;
-            event.target.value = '';
-            if (file.size > 5 * 1024 * 1024) { showToast('ไฟล์ใหญ่เกินไป ไม่น่าใช่ไฟล์สำรองของแอปนี้', 'error'); return; }
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                let parsed = null;
-                try { parsed = sanitizeBackup(JSON.parse(e.target.result)); } catch (err) { parsed = null; }
-                if (!parsed) { showToast('ไฟล์ไม่ถูกต้อง ไม่ใช่ไฟล์สำรองของแอปนี้', 'error'); return; }
-                const { out, report } = parsed;
-                const days = out.break_logs ? new Set(out.break_logs.map(l => l.date)).size : 0;
-                const summary = [
-                    out.activities ? `กิจกรรม ${out.activities.length} อย่าง` : '',
-                    out.break_logs ? `ประวัติการพัก ${out.break_logs.length} รายการ (${days} วัน)` : '',
-                    report.skipped ? `ข้ามรายการที่เสีย ${report.skipped} รายการ` : ''
-                ].filter(Boolean).join(' · ');
-                const ok = await showConfirmDialog(`พบ${summary ? ' ' + summary : 'การตั้งค่า'}\nข้อมูลปัจจุบันในเครื่องนี้จะถูกแทนที่ ยืนยันหรือไม่?`, 'นำเข้าข้อมูล', '📤');
-                if (!ok) return;
-                if (out.activities) { safeSetItem('activities', JSON.stringify(out.activities)); localStorage.removeItem('act_icons_v1'); }
-                if (out.break_logs) safeSetItem('break_logs', JSON.stringify(out.break_logs));
-                Object.entries(out.settings).forEach(([k, v]) => safeSetItem(k, v));
-                if (out.earned_badges) safeSetItem('earned_badges', JSON.stringify(out.earned_badges));
-                if (out.stickers) safeSetItem('stickers', JSON.stringify(out.stickers));
-                if (out.veggie_garden) safeSetItem('veggie_garden', JSON.stringify(out.veggie_garden));
-                if (out.shop_state) safeSetItem('shop_state', JSON.stringify(out.shop_state));
-                if (out.challenges) safeSetItem('challenges', JSON.stringify(out.challenges));
-                showToast('นำเข้าข้อมูลสำเร็จ! กำลังโหลดหน้าใหม่', 'success');
-                setTimeout(() => location.reload(), 1200);
-            };
-            reader.readAsText(file);
-        }
-
         // --- 📲 ติดตั้งเป็นแอป + ใช้งานออฟไลน์ (manifest.webmanifest และ sw.js อยู่โฟลเดอร์เดียวกับหน้านี้) ---
         let deferredInstallPrompt = null;
         const isStandalone = () => (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
@@ -7925,6 +8351,7 @@
             applyShopItems();
             renderChallenges();
             initReportPage();
+            initDataSafety();
         };
 
         // --- 🔄 ซิงก์ข้อมูลข้ามแท็บ กันข้อมูลเก่าจากแท็บที่ค้างอยู่ไปทับข้อมูลใหม่โดยไม่ตั้งใจ ---
