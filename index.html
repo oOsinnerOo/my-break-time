@@ -1100,7 +1100,7 @@
         .break-phone-btn:hover { transform: translateY(-2px); }
         .break-phone-btn.is-on { background: var(--key-edge); color: #FFFFFF; }
         .break-phone-card {
-            position: fixed; right: 24px; bottom: 24px; z-index: 5; width: 236px; padding: 14px 14px 12px; border-radius: 24px; text-align: center; cursor: default;
+            position: fixed; right: 24px; bottom: 24px; z-index: 5; width: 300px; padding: 14px 14px 12px; border-radius: 24px; text-align: center; cursor: default;
             background: var(--surface-solid); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.5);
             animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -1109,6 +1109,11 @@
         .qr-svg { display: block; width: 100%; height: 100%; }
         .bp-text { margin: 8px 0; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); font-weight: 600; }
         .bp-warn { color: var(--danger); }
+        .bp-hint { display: block; margin-top: 6px; font-size: 11px; font-weight: 600; color: var(--ink-3); line-height: 1.45; }
+        .bp-copy[hidden], .break-phone-qr[hidden] { display: none; }
+        .bp-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 3px; margin-bottom: 10px; border-radius: 14px; background: var(--surface-2); }
+        .bp-mode { border: none; cursor: pointer; padding: 7px 4px; border-radius: 11px; font: inherit; font-size: 12.5px; font-weight: 700; color: var(--ink-2); background: transparent; transition: background-color 0.2s, color 0.2s; }
+        .bp-mode.is-on { background: var(--surface-solid); color: var(--accent-ink); box-shadow: 0 4px 10px -6px rgba(var(--shadow-rgb), 0.5); }
         .break-phone-close {
             position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font: inherit; font-size: 13px;
             background: var(--surface-solid); color: var(--ink-2); border: 1px solid var(--line); box-shadow: 0 6px 12px -6px rgba(0, 0, 0, 0.35);
@@ -6032,9 +6037,13 @@
                         <button type="button" class="break-phone-btn" aria-expanded="false" onclick="togglePhoneQR(this.closest('.action-card'), event)">📱 นับเวลาบนมือถือ</button>
                         <div class="break-phone-card" hidden>
                             <button type="button" class="break-phone-close" aria-label="ซ่อน QR" onclick="togglePhoneQR(this.closest('.action-card'), event)">✕</button>
+                            <div class="bp-modes">
+                                <button type="button" class="bp-mode" data-mode="timer" onclick="setPhoneQRMode(this.closest('.action-card'), 'timer', event)">⏱️ นับเวลา</button>
+                                <button type="button" class="bp-mode" data-mode="calendar" onclick="setPhoneQRMode(this.closest('.action-card'), 'calendar', event)">📅 ปฏิทิน</button>
+                            </div>
                             <div class="break-phone-qr"></div>
                             <p class="bp-text"></p>
-                            <button type="button" class="chip-btn" onclick="copyPhoneLink(event)">🔗 คัดลอกลิงก์</button>
+                            <button type="button" class="chip-btn bp-copy" onclick="copyPhoneLink(event)">🔗 คัดลอกลิงก์</button>
                         </div>
                     </div>
                     <div class="success-overlay">
@@ -6414,15 +6423,46 @@
             const free = state.isToilet ? getToiletFreeMinutes() : 0;
             return `${location.origin}${location.pathname}#t=${state.startTime.toString(36)}.${Math.max(0, state.limit | 0)}.${free}.${b64urlEncode(String(state.action).slice(0, 40))}.${b64urlEncode(String(icon).slice(0, 20))}`;
         }
+        // QR แบบนัดหมายในปฏิทิน: กล้องมือถือ (iPhone/Android) อ่านแล้วขึ้นปุ่ม "เพิ่มลงปฏิทิน" เอง
+        // ปฏิทินในเครื่องจะเตือนตอนครบเวลา แม้ล็อกจอหรือปิดเว็บไปแล้ว
+        const icsTime = ms => new Date(ms).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+        const icsText = t => String(t).replace(/[\\;,]/g, m => '\\' + m).replace(/[\r\n]+/g, ' ');
+        function phoneCalendarEvent(state) {
+            const target = getBreakTargetSecs(state);
+            if (!target) return null;
+            const end = state.startTime + target * 1000;
+            const title = `${state.limit > 0 ? '⏰ ครบเวลาพัก' : '⏰ หมดเวลาฟรี'}: ${String(state.action).slice(0, 40)}`;
+            return { end, text: ['BEGIN:VEVENT', `SUMMARY:${icsText(title)}`, `DTSTART:${icsTime(end)}`, `DTEND:${icsTime(end + 60000)}`,
+                'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:Break', 'TRIGGER:PT0S', 'END:VALARM', 'END:VEVENT'].join('\r\n') };
+        }
+        const phoneQRMode = () => localStorage.getItem('phone_qr_mode') === 'calendar' ? 'calendar' : 'timer';
+        function setPhoneQRMode(card, mode, event) {
+            if (event) event.stopPropagation();
+            safeSetItem('phone_qr_mode', mode);
+            renderPhoneQR(card);
+        }
         function renderPhoneQR(card) {
             const box = card.querySelector('.break-phone-card');
             if (!box || !activeBreak) return;
-            const link = phoneTimerLink(activeBreak);
-            if (box.dataset.link === link) return;
-            box.dataset.link = link;
+            const mode = phoneQRMode();
+            box.querySelectorAll('.bp-mode').forEach(b => { const on = b.dataset.mode === mode; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
+            box.querySelector('.bp-copy').hidden = mode !== 'timer';
+            const ev = mode === 'calendar' ? phoneCalendarEvent(activeBreak) : null;
+            const content = mode === 'timer' ? phoneTimerLink(activeBreak) : ev ? ev.text : '';
+            if (box.dataset.qr === mode + '|' + content) return;
+            box.dataset.qr = mode + '|' + content;
+            const qrBox = box.querySelector('.break-phone-qr'), text = box.querySelector('.bp-text');
+            qrBox.hidden = !content;
+            qrBox.innerHTML = content ? qrSVG(content) : '';
+            if (mode === 'calendar') {
+                text.innerHTML = ev
+                    ? `สแกนด้วยกล้องมือถือ แล้วกด <b>"เพิ่มลงปฏิทิน"</b><br>มือถือจะเตือนตอน <b>${getThaiTimeString(new Date(ev.end))}</b> แม้ล็อกจอ`
+                        + '<small class="bp-hint">ถ้าไม่เด้งเตือน: ตั้งค่าปฏิทินให้เตือน "ตอนเริ่มกิจกรรม" (ตั้งครั้งเดียว)</small>'
+                    : '<span class="bp-warn">กิจกรรมนี้ไม่ได้ตั้งลิมิต เลยไม่มีเวลาให้เตือน ตั้งลิมิตได้ที่ปุ่ม ✏️ บนการ์ดกิจกรรม</span>';
+                return;
+            }
             const local = location.protocol === 'file:' || /^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(location.hostname);
-            box.querySelector('.break-phone-qr').innerHTML = qrSVG(link);
-            box.querySelector('.bp-text').innerHTML = local
+            text.innerHTML = local
                 ? '<span class="bp-warn">⚠️ ตอนนี้เปิดเว็บจากในเครื่อง มือถือจะเปิดลิงก์นี้ไม่ได้ ให้เปิดเว็บจากลิงก์ออนไลน์ (github.io) ก่อนนะ</span>'
                 : 'สแกนด้วยกล้องมือถือ<br>มือถือจะนับถอยหลังและเตือนเมื่อครบเวลา';
         }
