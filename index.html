@@ -2147,6 +2147,7 @@
         .farm-tabs .report-tab span, .shop-tabs .report-tab span { display: block; font-size: 18px; line-height: 1.2; }
         .shop-tabs.has-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
         .farm-body { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; min-height: 0; padding: 2px; }
+        .farm-body > * { flex-shrink: 0; } /* เนื้อหายาวให้เลื่อนดูแทน ไม่บีบของข้างใน (บ่อปลาเคยแบนเหลือเส้นเดียวบนมือถือ) */
         .farm-card { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 18px; background: var(--surface-2); border: 1px solid var(--line); }
         .farm-card.is-done { opacity: 0.6; }
         .farm-card.is-locked .barn-emoji { filter: grayscale(1); opacity: 0.5; }
