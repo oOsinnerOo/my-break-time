@@ -686,7 +686,7 @@
         body.farm-app .col-side { display: contents; }
         body.farm-app .garden-card { order: 1; }
         body.farm-app .challenge-card { order: 2; }
-        body.farm-app .garden-svg { max-width: 200px; } /* ต้นไม้พักใจย่อลง เปิดมาเห็นแปลงผักเลย */
+        body.farm-app .garden-scene { max-width: 520px; }
         body.farm-app .farm-app-bar {
             display: flex; order: -2; position: sticky; top: 0; z-index: 60; align-items: center; gap: 8px; margin: 0 -10px;
             padding: calc(8px + env(safe-area-inset-top)) 12px 8px; background: var(--surface-solid); border-bottom: 1px solid var(--line);
@@ -939,8 +939,10 @@
             font-size: 12px; font-weight: 700; color: var(--accent-ink); background: rgba(var(--accent-rgb), 0.12);
             padding: 4px 10px; border-radius: 20px;
         }
-        .garden-scene { width: 100%; display: flex; justify-content: center; }
-        .garden-svg { width: 100%; max-width: 260px; height: auto; overflow: visible; cursor: pointer; }
+        /* 🎨 ฉากสวน: กล่องสัดส่วนคงที่ ชั้นล่างสุดเป็นฉากหลัง ต้นไม้อยู่กลาง ของแต่งเรียงหน้า-หลังตามความลึก */
+        .garden-scene { position: relative; width: 100%; max-width: 560px; aspect-ratio: 16 / 11; margin: 0 auto; border-radius: 18px; overflow: hidden; isolation: isolate; background: #BFE6FF; box-shadow: inset 0 0 0 1px rgba(var(--shadow-rgb), 0.08); }
+        .garden-bg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; }
+        .garden-svg { position: absolute; left: 50%; bottom: 1%; width: 46%; height: auto; translate: -50% 0; overflow: visible; cursor: pointer; z-index: 100; }
         .garden-caption { text-align: center; font-size: 12.5px; color: var(--ink-3); margin: 6px 0 0; font-weight: 500; }
         .garden-card.garden-off { display: none !important; }
 
@@ -967,7 +969,7 @@
         .garden-flower-group { animation: garden-flower-sway 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
         @keyframes garden-flower-sway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
 
-        .garden-stem-group.wilted { animation: none; transform: rotate(8deg); }
+        .garden-stem-group.wilted { animation: none; transform: rotate(3deg); }
         .garden-stem-group.wilted .garden-stem { stroke: #A78355; }
         .garden-stem-group.wilted .garden-leaf { fill: #B5A16C; opacity: 0.6; animation: none; }
 
@@ -1160,7 +1162,7 @@
         .bg-timer.is-over .bg-left { color: var(--danger); }
         .bg-slot { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; margin: 0 -4px; padding: 0 4px; }
         .bg-slot .garden-card { margin: 0; padding: 12px 12px 10px; box-shadow: none; background: transparent; border: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-        .bg-slot .garden-svg { max-width: 190px; }
+        .bg-slot .garden-scene { max-width: 360px; }
         .bg-foot { display: flex; gap: 8px; }
         .bg-foot .modal-btn { flex: 1; }
         .break-phone-btn, .break-garden-btn, .break-screen2-btn {
@@ -1413,8 +1415,26 @@
         .mascot-hat { position: absolute; left: 50%; bottom: 56%; transform: translateX(-46%) rotate(-10deg); font-size: 22px; line-height: 1; pointer-events: none; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.18)); }
         .garden-scene { position: relative; }
         .garden-decor { position: absolute; inset: 0; pointer-events: none; }
-        .garden-decor-item { position: absolute; line-height: 1; filter: drop-shadow(0 2px 2px rgba(var(--shadow-rgb), 0.25)); animation: garden-decor-bob 3.2s ease-in-out infinite alternate; }
-        .garden-decor-item:nth-child(2n) { animation-delay: -1.4s; }
+        .garden-decor-item { position: absolute; width: calc(var(--w, 10) * 1%); translate: -50% -100%; line-height: 0; pointer-events: none; filter: drop-shadow(0 2px 1.5px rgba(43, 33, 64, 0.18)); }
+        .garden-decor-item svg { display: block; width: 100%; height: auto; overflow: visible; }
+        .garden-decor-item.is-flip svg { transform: scaleX(-1); }
+        .garden-decor-item.is-bob { animation: garden-decor-bob 3.2s ease-in-out infinite alternate; }
+        .garden-decor-item.is-bob:nth-child(2n) { animation-delay: -1.4s; }
+        .garden-decor-item.is-glow { filter: drop-shadow(0 0 4px rgba(255, 214, 120, 0.95)) drop-shadow(0 0 12px rgba(255, 186, 90, 0.65)); }
+        #garden-scene-wrap .garden-weather { z-index: 150; }
+        #garden-scene-wrap .garden-pet { z-index: 120; }
+        #garden-scene-wrap .garden-visitor { z-index: 130; }
+        #garden-scene-wrap .garden-ghost, #garden-scene-wrap .garden-trick { z-index: 125; }
+        /* ✨ บรรยากาศ: หิ่งห้อยตอนกลางคืน กลีบซากุระ ใบเมเปิล หิมะ */
+        .garden-amb { position: absolute; inset: 0; z-index: 140; pointer-events: none; overflow: hidden; }
+        .garden-amb i { position: absolute; display: block; }
+        .gd-ff { width: 5px; height: 5px; border-radius: 50%; background: #FFF3A0; box-shadow: 0 0 8px 3px rgba(255, 236, 140, 0.8); animation: gd-ff 7s ease-in-out infinite; }
+        @keyframes gd-ff { 0%, 100% { transform: translate(0, 0); opacity: 0.15; } 30% { opacity: 1; } 50% { transform: translate(14px, -10px); opacity: 0.4; } 75% { transform: translate(-8px, 6px); opacity: 1; } }
+        .gd-petal { width: 7px; height: 5px; border-radius: 60% 0 60% 0; background: #FFC1D9; animation: gd-fall 8s linear infinite; }
+        .gd-leaf { width: 8px; height: 6px; border-radius: 0 70% 0 70%; background: #F2652D; animation: gd-fall 9s linear infinite; }
+        .gd-snow { width: 4px; height: 4px; border-radius: 50%; background: #FFFFFF; animation: gd-fall 7s linear infinite; }
+        @keyframes gd-fall { 0% { transform: translate(0, 0) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 100% { transform: translate(-36px, 420px) rotate(320deg); opacity: 0; } }
+        body.reduce-motion .garden-amb { display: none; }
         @keyframes garden-decor-bob { from { transform: translateY(0) rotate(-3deg); } to { transform: translateY(-3px) rotate(3deg); } }
 
         /* 🏆 ชาเลนจ์ประจำสัปดาห์ */
@@ -2629,15 +2649,56 @@
         .house-big { font-size: 64px; line-height: 1.1; animation: veg-bob 2s ease-in-out infinite alternate; }
         .house-perks { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--ink-3); font-weight: 600; }
         .house-perks .is-on { color: var(--accent-ink); }
-        .garden-house { z-index: 1; }
-        .garden-decor-item.has-pos { translate: -50% -50%; }
         #garden-scene-wrap.is-editing { outline: 2px dashed rgba(var(--accent-rgb), 0.7); outline-offset: -4px; }
-        #garden-scene-wrap.is-editing .garden-decor { pointer-events: auto; }
-        #garden-scene-wrap.is-editing .garden-decor-item { cursor: grab; pointer-events: auto; touch-action: none; animation: none; padding: 4px; border-radius: 10px; background: rgba(255, 255, 255, 0.35); box-shadow: 0 0 0 1.5px rgba(var(--accent-rgb), 0.55); }
-        #garden-scene-wrap.is-editing .garden-decor-item.is-dragging { cursor: grabbing; scale: 1.2; z-index: 5; }
+        #garden-scene-wrap.is-editing .garden-decor-item { cursor: grab; pointer-events: auto; touch-action: none; animation: none; border-radius: 8px; outline: 1.5px dashed rgba(255, 255, 255, 0.9); outline-offset: 1px; }
+        #garden-scene-wrap.is-editing .garden-decor-item.is-sel { outline: 2.5px solid var(--accent); background: rgba(255, 255, 255, 0.28); }
+        #garden-scene-wrap.is-editing .garden-decor-item.is-dragging { cursor: grabbing; scale: 1.08; }
+        #garden-scene-wrap.is-editing .garden-svg { pointer-events: none; }
         #garden-scene-wrap.is-editing .garden-pet, #garden-scene-wrap.is-editing .garden-visitor { pointer-events: none; opacity: 0.4; }
+        #garden-scene-wrap.show-grid::after { content: ''; position: absolute; inset: 0; z-index: 160; pointer-events: none;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.4) 1px, transparent 1px); background-size: 10% 10%; }
         .garden-edit-bar { margin-top: 8px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center;
             padding: 6px 8px; border-radius: 14px; font-size: 12px; font-weight: 700; color: var(--ink-2); background: var(--surface-solid); box-shadow: 0 8px 18px -10px rgba(var(--shadow-rgb), 0.5); }
+        .garden-header { flex-wrap: wrap; row-gap: 6px; }
+        .gd-head-btns { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+        body.farm-app #garden-scene-wrap { scroll-margin-top: 76px; }
+        .gd-head-btns .chip-btn { padding: 4px 10px; font-size: 12px; }
+        .gd-panel { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 8px; padding: 10px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); }
+        .gd-top, .gd-sel, .gd-tools { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .gd-score { margin-right: auto; font-size: 13.5px; color: var(--ink); }
+        .gd-sel { padding: 6px 8px; border-radius: 12px; background: rgba(var(--accent-rgb), 0.1); font-size: 13px; color: var(--ink); }
+        .gd-sel-btns { margin-left: auto; display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+        .gd-size { font-size: 12px; min-width: 30px; text-align: center; }
+        .gd-hint { margin: 0; font-size: 12px; font-weight: 600; color: var(--ink-2); text-align: center; }
+        .gd-tabs { margin: 0; justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+        .gd-tabs::-webkit-scrollbar { display: none; }
+        .gd-tabs .chip-btn { flex: none; white-space: nowrap; }
+        .gd-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 6px; max-height: 360px; overflow-y: auto; overscroll-behavior: contain; padding: 2px; }
+        .gd-sec { grid-column: 1 / -1; margin: 4px 0 0; font-size: 12.5px; font-weight: 700; color: var(--ink-2); }
+        .gd-note { font-weight: 600; color: var(--ink-3); }
+        .gd-card { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px; border-radius: 12px; background: var(--surface-solid); border: 1px solid var(--line); text-align: center; }
+        .gd-card.is-on { border-color: var(--accent); box-shadow: 0 0 0 1.5px rgba(var(--accent-rgb), 0.4); }
+        .gd-card.is-locked .gd-prev { opacity: 0.75; }
+        .gd-prev { width: 56px; height: 56px; display: flex; }
+        .gd-prev svg { width: 100%; height: 100%; }
+        .gd-prev.is-wide { width: 100%; height: auto; aspect-ratio: 16 / 10; border-radius: 8px; overflow: hidden; }
+        .gd-name { font-size: 12px; font-weight: 700; line-height: 1.25; color: var(--ink); }
+        .gd-meta { font-size: 11px; font-weight: 600; color: var(--ink-3); }
+        .gd-card .shop-buy { width: 100%; padding: 5px 4px; font-size: 12px; }
+        .gd-ok { font-size: 12px; font-weight: 700; color: #16A34A; }
+        .gd-src { font-size: 11px; font-weight: 600; color: var(--ink-3); line-height: 1.3; }
+        .gd-set, .gd-slot { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; padding: 8px 10px; border-radius: 12px; background: var(--surface-solid); border: 1px solid var(--line); }
+        .gd-set.is-on { border-color: #16A34A; box-shadow: 0 0 0 1.5px rgba(22, 163, 74, 0.35); }
+        .gd-set-head { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--ink); }
+        .gd-set-items { display: flex; gap: 6px; }
+        .gd-mini { width: 40px; height: 40px; padding: 3px; border-radius: 10px; background: var(--surface-2); opacity: 0.45; }
+        .gd-mini.is-on { opacity: 1; box-shadow: 0 0 0 1.5px #16A34A; }
+        .gd-mini svg { width: 100%; height: 100%; }
+        .gd-perk { font-size: 12px; font-weight: 700; color: var(--accent-ink); }
+        .gd-slot { flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; font-size: 13px; color: var(--ink); }
+        .gd-slot > div { display: flex; flex-direction: column; gap: 2px; }
+        .gd-slot-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+        .pond-bait-shop .chip-btn small { font-weight: 600; opacity: 0.8; }
         .garden-pet.is-dancing .garden-pet-face { animation: pet-dance 0.35s ease-in-out infinite alternate; }
         @keyframes pet-dance { from { transform: rotate(-18deg) translateY(0); } to { transform: rotate(18deg) translateY(-8px); } }
         .st-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
@@ -3078,10 +3139,12 @@
             <section class="garden-card glass-panel" id="garden-card">
                 <div class="garden-header">
                     <span class="dash-title">🌱 สวนพักผ่อนของคุณ</span>
-                    <span class="garden-badge-hint" id="garden-streak-hint">0 วัน</span>
+                    <span class="gd-head-btns"><span class="garden-badge-hint" id="garden-streak-hint">0 วัน</span><button type="button" class="chip-btn" id="gd-beauty" onclick="startGardenEdit('sets')">💖 0</button><button type="button" class="chip-btn" onclick="startGardenEdit()">🎨 แต่งสวน</button></span>
                 </div>
                 <div class="garden-scene" id="garden-scene-wrap">
+                    <svg viewBox="0 0 320 200" class="garden-bg" id="garden-bg" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
                     <svg viewBox="0 0 220 170" class="garden-svg" id="garden-svg" aria-hidden="true"></svg>
+                    <div class="garden-amb" id="garden-amb" aria-hidden="true"></div>
                 </div>
                 <p class="garden-caption" id="garden-caption">พักให้พอดี ต้นไม้จะเติบโตไปกับคุณ 🌱</p>
                 <div class="veg-section">
@@ -5649,7 +5712,7 @@
         };
         // 🎁 รางวัลเข้าฟาร์มต่อเนื่อง 7 วัน (วนรอบใหม่หลังวันที่ 7 · ขาดหนึ่งวันเริ่มนับใหม่)
         const CHECKIN_REWARDS = [
-            { e: '🪙', text: '5 เหรียญ' }, { e: '🧪', text: 'ปุ๋ยเร่งโต 1 ขวด' }, { e: '🪙', text: '10 เหรียญ' }, { e: '🪱', text: 'ปุ๋ยหมัก 1 ถุง' },
+            { e: '🪙', text: '5 เหรียญ' }, { e: '🧪', text: 'ปุ๋ยเร่งโต 1 ขวด' }, { e: '🪙', text: '10 เหรียญ' }, { e: '🪱', text: 'ปุ๋ยหมัก 2 ถุง + เหยื่อ 3 ตัว' },
             { e: '🎣', text: 'ตั๋วตกปลา 2 ใบ' }, { e: '🧬', text: 'เมล็ดลูกผสมลับ' }, { e: '🎁', text: '30 เหรียญ + ปุ๋ย 2 ขวด' }
         ];
         const STALL_SLOTS = 3, STALL_MS = 10 * 60 * 1000, FISH_TICKET_MAX = 5;
@@ -5728,7 +5791,7 @@
             const cost = Object.entries(r.need).reduce((sum, [n, q]) => sum + itemInfo(n).value * q, 0);
             FARM_PRODUCTS[r.out].value = Math.round(cost * 1.5 / (r.n || 1)) + 2;
         }));
-        const VEG_GROW_MS = 60 * 60 * 1000, FARM_MAX_PLOTS = 12, HYBRID_SEED_MAX = 6, SOIL_START = 80, COMPOST_SOIL = 35, COMPOST_PTS = 10;
+        const VEG_GROW_MS = 60 * 60 * 1000, FARM_MAX_PLOTS = 12, HYBRID_SEED_MAX = 6, SOIL_START = 80, COMPOST_SOIL = 35, COMPOST_PTS = 6;
         const VEG_STAGE_NAMES = ['เมล็ด', 'ต้นอ่อน', 'กำลังโต'];
         const VEG_PEST = `<svg viewBox="0 0 40 20"><path d="M29 4.5l-1.5-3M33 4.5l1.5-3" stroke="#6BA84A" stroke-width="1.2" stroke-linecap="round"/>
             <circle cx="8" cy="13" r="5" fill="#9BDB6A"/><circle cx="15" cy="12" r="5.5" fill="#8BD45A"/><circle cx="22.5" cy="12" r="5.5" fill="#9BDB6A"/>
@@ -5792,9 +5855,9 @@
             worm: { e: '🐛', name: 'หนอนผีเสื้อ', w: 70, taps: 1, coins: 1, xp: 2 },
             snail: { e: '🐌', name: 'หอยทาก', w: 20, taps: 2, coins: 2, xp: 3 },
             hopper: { e: '🦗', name: 'ตั๊กแตน', w: 5, taps: 1, coins: 3, xp: 4, hops: true },
-            golden: { e: '🐛', name: 'หนอนทอง', w: 5, taps: 1, coins: 10, xp: 5, gold: true }
+            golden: { e: '🐛', name: 'หนอนทอง', w: 8, taps: 1, coins: 10, xp: 5, gold: true }
         };
-        const ROAM_MAX = 5, ROAM_BITE_MS = 2 * 3600000, ROAM_ROLL_MS = 45 * 60000;
+        const ROAM_MAX = 8, ROAM_BITE_MS = 2 * 3600000, ROAM_ROLL_MS = 45 * 60000;
         // จำเวลาที่ผักสุก (เพื่อนช่วยเก็บหรือแอบเก็บได้เฉพาะผักที่สุกค้างไว้นานแล้ว)
         function markRipe(p) { if (p.type === 'veg' && p.seed && p.stage >= p.need && !p.ripeAt) p.ripeAt = Date.now(); }
         function emptyPlot(soil = SOIL_START) { return { type: 'veg', seed: null, stage: 0, need: 3, golden: false, pest: false, lastGrowAt: Date.now(), soil, cared: false, fruitDay: '', comp: false, bitten: false, worm: '', wormAt: 0, ripeAt: 0, stolen: 0 }; }
@@ -5887,7 +5950,7 @@
                 dailyPaid: keyMap(v.dailyPaid, /^\d{4}-\d{2}-\d{2}$/), leaguePaid: keyMap(v.leaguePaid, /^\d{4}-\d{2}$/), fishPaid: keyMap(v.fishPaid, /^\d{4}-\d{2}-\d{2}$/),
                 fishWeek: { wk: day((v.fishWeek || {}).wk), k: hasOwn(FISH, (v.fishWeek || {}).k) ? v.fishWeek.k : '', cm: Math.min(2000, Math.max(0, +((v.fishWeek || {}).cm) || 0)) },
                 eventDay: day(v.eventDay), eventClaim: day(v.eventClaim),
-                bait: int(v.bait, 99), goldBait: int(v.goldBait, 99), baitSel: v.baitSel === 'bait' || v.baitSel === 'gold' ? v.baitSel : '', cookHi: !!v.cookHi,
+                bait: int(v.bait, 99), goldBait: int(v.goldBait, 99), baitBuy: { day: day((v.baitBuy || {}).day), n: int((v.baitBuy || {}).n, 10) }, baitSel: v.baitSel === 'bait' || v.baitSel === 'gold' ? v.baitSel : '', cookHi: !!v.cookHi,
                 roam: { day: day((v.roam || {}).day), n: int((v.roam || {}).n, 8), at: Math.min(Date.now(), +((v.roam || {}).at) || Date.now()) }, // ครั้งแรกรอ 45 นาทีก่อนลุ้นหนอนจร
                 frags: int(v.frags, 999), box: { n: int((v.box || {}).n, 1e6), pity: int((v.box || {}).pity, BOX_PITY_MAX) },
                 fishRecord: (() => { const o = {}; Object.keys(FISH).forEach(k => { const x = +((v.fishRecord || {})[k]); if (x > 0 && x < 1000) o[k] = Math.round(x * 10) / 10; }); return o; })(),
@@ -5973,7 +6036,7 @@
         }
         function addXP(n) {
             const before = farmLevel();
-            veg.xp += Math.round(n * (veg.house >= 5 ? 1.2 : 1)); saveVeg();
+            veg.xp += Math.round(n * (veg.house >= 5 ? 1.2 : 1) * (gdSetOn('japan') ? 1.05 : 1)); saveVeg();
             const after = farmLevel();
             if (after > before) {
                 ensurePlots(); saveVeg(); renderVeggies();
@@ -6335,7 +6398,7 @@
         function yieldChance(p, key) {
             const cared = p.cared || hasTool('sprinkler') || todayWeather() === 'rain', special = hasOwn(SPECIAL_VEGGIES, key);
             const plus1 = 25 + (p.soil >= 70 ? 10 : 0) + (cared ? 10 : 0) + (inSeason(key) ? 10 : 0) + (p.comp ? 5 : 0);
-            return { plus1: special ? Math.round(plus1 / 2) : plus1, bumper: special ? 0 : 6 };
+            return { plus1: special ? Math.round(plus1 / 2) : plus1, bumper: special ? 0 : 6 + (gdSetOn('fairy') ? 3 : 0) };
         }
         function rollYield(p, key) {
             if (typeof window.fixedYield === 'number') return window.fixedYield; // ให้เทสต์กำหนดผลได้
@@ -6356,6 +6419,10 @@
             if (q >= 3) veg.stats.q3 += 1;
             if (q === QMAX) veg.stats.q5 += 1;
             noteCrops(amount); rmProg('harvest', amount);
+            const cBags = addCompostPts(1); // 🍂 เศษผักลงถังหมักเอง
+            // 🪱 ขุดเจอไส้เดือน 25% (เทสต์กำหนดผลได้ด้วย fixedDig)
+            const dug = typeof window.fixedDig === 'number' ? window.fixedDig > 0 : typeof window.fixedYield === 'number' ? false : Math.random() < 0.25;
+            if (dug) veg.bait = Math.min(99, veg.bait + 1);
             const fev = activeFarmEvent(), candy = fev ? addCandy(key === fev.crop ? 3 : 1) : 0;
             if (golden && todayWeather() === 'rainbow') setTimeout(() => unlockSecret('rainbowGold'), 1200);
             // ผสมสายพันธุ์: ถ้าแปลงติดกันปลูกผักต่างชนิดอยู่ มีลุ้น 15% ได้เมล็ดลูกผสม
@@ -6382,10 +6449,10 @@
             if (golden) addCoins(5);
             addXP((10 + (golden ? 15 : 0) + (grade === 'perfect' ? 5 : grade === 'good' ? 2 : 0) + (q - 1) * 2) * rx.xpMult);
             bumpChallenge('harvest'); if (golden) bumpChallenge('golden');
-            if (el) vegFx(el, [grade === 'perfect' ? '🎯' : '✨', VEGGIES[key].e, ...Array(extra).fill(VEGGIES[key].e), ...(candy ? ['🍬'] : []), ...(golden ? ['🪙'] : []), ...(grade === 'perfect' ? [VEGGIES[key].e] : []), ...(q >= 4 ? ['⭐'] : []), ...(q === QMAX ? ['🌟'] : []), ...(rx.frag ? ['🧩'] : [])]);
+            if (el) vegFx(el, [grade === 'perfect' ? '🎯' : '✨', VEGGIES[key].e, ...Array(extra).fill(VEGGIES[key].e), ...(candy ? ['🍬'] : []), ...(golden ? ['🪙'] : []), ...(grade === 'perfect' ? [VEGGIES[key].e] : []), ...(q >= 4 ? ['⭐'] : []), ...(q === QMAX ? ['🌟'] : []), ...(rx.frag ? ['🧩'] : []), ...(dug ? ['🪱'] : [])]);
             playSound('welcome');
             const gradeText = grade === 'perfect' ? 'เป๊ะ! ได้ 2 ชิ้น 🎯' : grade === 'good' ? 'จังหวะดี!' : '';
-            mascotSay(golden ? `ว้าว! ได้${VEGGIES[key].name}ทองคำ ✨ +5 เหรียญ` : `${gradeText || 'เก็บแล้ว!'} ${VEGGIES[key].e}${starText(q)}${q >= 4 ? ` ${QUALITY_NAME[q]}!` : ''} ×${amount} เข้ายุ้งฉางนะ${extra >= 2 ? ' 🎉 ผลดก!' : ''}${candy ? ` · 🍬+${candy}` : ''}`, 3000);
+            mascotSay(golden ? `ว้าว! ได้${VEGGIES[key].name}ทองคำ ✨ +5 เหรียญ` : `${gradeText || 'เก็บแล้ว!'} ${VEGGIES[key].e}${starText(q)}${q >= 4 ? ` ${QUALITY_NAME[q]}!` : ''} ×${amount} เข้ายุ้งฉางนะ${extra >= 2 ? ' 🎉 ผลดก!' : ''}${candy ? ` · 🍬+${candy}` : ''}${dug ? ' · 🪱 ขุดเจอไส้เดือน' : ''}${cBags ? ' · ได้ปุ๋ยหมักถุงใหม่' : ''}`, 3000);
             if (rx.say) setTimeout(() => mascotSay(rx.say, 3400), 400);
             if (wasSecret) setTimeout(() => { fireConfetti(); showToast(`🧬 ค้นพบผักลูกผสมใหม่: ${VEGGIES[key].e} ${VEGGIES[key].name}!`, 'success', { duration: 5500 }); }, 500);
             if (hybrid) setTimeout(() => showToast('🧬 ได้เมล็ดลูกผสม! ผักสองแปลงข้างกันผสมกัน ลองปลูกดูว่าจะได้อะไร', 'success', { duration: 5500 }), 900);
@@ -6512,7 +6579,7 @@
             saveVeg(); addCoins(w.coins); addXP(w.xp);
             vegFx(el, [w.e, w.gold ? '✨' : '🪱', '🪙']); playSound(w.gold ? 'welcome' : 'pop');
             if (w.gold) fireConfetti();
-            setVegProgress(`จับ${w.name}ได้! 🪙${w.coins} · ${w.gold ? 'เหยื่อทอง ✨' : 'เหยื่อตกปลา 🪱'} +1 · ปุ๋ยหมัก +1 แต้ม${bags ? ' (ได้ปุ๋ยหมักใหม่ 1 ถุง)' : ''}`);
+            setVegProgress(`จับ${w.name}ได้! 🪙${w.coins} · ${w.gold ? 'เหยื่อทอง ✨' : 'เหยื่อตกปลา 🪱'} +1 · ปุ๋ยหมัก +1 แต้ม${bags ? ' (ได้ปุ๋ยหมักใหม่ 1 ถุง + ไส้เดือน 🪱2)' : ''}`);
             setTimeout(() => { renderVeggies(); setVegProgress(`จับ${w.name}ได้! 🪙${w.coins} · ${w.gold ? 'เหยื่อทอง ✨' : 'เหยื่อตกปลา 🪱'} +1`); }, 600);
         }
         // 🐛 มินิเกมจับหนอน 15 วินาที: หนอนโผล่จากหลุม แตะให้ทัน จับได้เยอะได้เหรียญและ XP เยอะ
@@ -6678,6 +6745,7 @@
             const fc = forecastDays();
             out.push({ e: '🔮', name: `พยากรณ์ ${fc.map(x => WEATHERS[x.w].e).join(' ')}`, kind: fc[0].w === 'storm' && !gh ? 'bad' : '', desc: `อากาศ 3 วันข้างหน้า: ${forecastText()}` });
             Object.entries(VILLAGE_BUILDS).filter(([b]) => villagePerk(b)).forEach(([, B]) => out.push({ e: B.e, name: B.name, kind: 'good', desc: `อาคารของห้องเพื่อน: ${B.perk}` }));
+            Object.entries(GD_SETS).filter(([k]) => gdSetOn(k)).forEach(([, S]) => out.push({ e: S.e, name: 'ชุด' + S.name, kind: 'good', desc: `แต่งสวนครบชุด: ${S.perk}` }));
             const ev = typeof roomEvent === 'function' ? roomEvent() : null;
             if (ev) out.push({ e: ev.e, name: ev.name, kind: 'good', desc: `เหตุการณ์ห้องเพื่อนวันนี้: ${ev.desc}` });
             const fe = activeFarmEvent();
@@ -7114,6 +7182,7 @@
             const an = ANIMALS[a], st = veg.animals[a], good = goodDayToday(), fav = st.favDay === dayKeyLocal();
             const c = animalCount(a), n = c * (good ? 2 : 1) + (st.hearts >= 5 ? 1 : 0) + (st.hearts >= 10 ? 1 : 0) + (fav ? 1 : 0); // ทุกตัวในคอกให้ผลผลิต โบนัสหัวใจ/ของโปรดได้ทั้งคอกครั้งเดียว
             giveItem(an.product, n);
+            addCompostPts(1); // มูลสัตว์ลงถังหมัก
             st.lastDay = dayKeyLocal();
             const gift = st.hearts >= 10 && Math.random() < 0.2;
             if (gift) addCoins(10);
@@ -7140,9 +7209,10 @@
             while (veg.compost >= COMPOST_PTS && veg.tools.compost < 99) { veg.compost -= COMPOST_PTS; veg.tools.compost += 1; bags++; }
             veg.stats.compost += bags;
             veg.compost = Math.min(veg.compost, COMPOST_PTS - 1);
+            if (bags) veg.bait = Math.min(99, veg.bait + bags * 2); // ไส้เดือนในถังหมัก ได้เหยื่อตกปลาด้วย
             return bags;
         }
-        // 🪱 ถังปุ๋ยหมัก: ใส่ของในยุ้งฉางลงถัง ได้แต้มตามราคา ครบ 10 แต้มได้ปุ๋ยหมัก 1 ถุง (เติมดินแปลงละ +35)
+        // 🪱 ถังปุ๋ยหมัก: ใส่ของในยุ้งฉางลงถัง ได้แต้มตามราคา ครบ 6 แต้มได้ปุ๋ยหมัก 1 ถุง (เติมดินแปลงละ +35) และไส้เดือน 2 ตัว · เก็บผัก/เก็บผลผลิตสัตว์ได้แต้มเองด้วย
         function addToCompost(key, all) {
             const info = itemInfo(key), n = all ? (veg.inv[key] || 0) : Math.min(1, veg.inv[key] || 0);
             if (!info || !n) return;
@@ -7278,7 +7348,8 @@
                         <span class="compost-icon" aria-hidden="true">🪣</span>
                         <div class="farm-card-main"><span class="farm-card-title">ถังปุ๋ยหมัก ${veg.compost}/${COMPOST_PTS} แต้ม</span>
                             <span class="farm-xp compost-meter"><span style="width:${(veg.compost / COMPOST_PTS * 100).toFixed(0)}%"></span></span>
-                            <span class="farm-card-sub">มีปุ๋ยหมักพร้อมใช้ ${veg.tools.compost} ถุง · เติมดินแปลงละ +${compostSoil()}</span></div>
+                            <span class="farm-card-sub">มีปุ๋ยหมักพร้อมใช้ ${veg.tools.compost} ถุง · เติมดินแปลงละ +${compostSoil()} · ได้ถุงใหม่แถมไส้เดือน 🪱2</span>
+                            <span class="farm-card-sub">ได้แต้มเองด้วย: เก็บผัก +1 · เก็บผลผลิตสัตว์ +1 · จับหนอน +1</span></div>
                     </div>`
                     + (keys.length ? `<div class="barn-grid">${keys.map(k => {
                         const it = itemInfo(k);
@@ -7383,7 +7454,7 @@
             showToast(o.ask === 1 ? `💬 ${who.name}ยอมเพิ่มให้! ค่าจ้างเป็น 🪙${o.coins}` : o.ask === 2 ? `💬 ${who.name}ขอราคาเดิมนะ` : `😤 ${who.name}ไม่พอใจ ลดค่าจ้างเหลือ 🪙${o.coins} · ชื่อเสียงร้าน −2`, o.ask === 3 ? 'info' : 'success');
             renderFarmPanel();
         }
-        const stallMs = () => (STALL_MS - upgLv('stall') * 60000 - (veg.rep >= 80 ? 120000 : veg.rep >= 60 ? 60000 : 0) - (villagePerk('market') ? 60000 : 0)) * (roomEventIs('bazaar') ? 0.5 : 1);
+        const stallMs = () => (STALL_MS - upgLv('stall') * 60000 - (veg.rep >= 80 ? 120000 : veg.rep >= 60 ? 60000 : 0) - (villagePerk('market') ? 60000 : 0) - (gdSetOn('cafe') ? 60000 : 0)) * (roomEventIs('bazaar') ? 0.5 : 1);
         const stallMarkup = () => 1.4 + 0.05 * upgLv('stall');
         const stallPrice = key => Math.max(1, Math.round(marketPrice(key) * stallMarkup()));
         // 🙋 ลูกค้าเดินเข้ามาที่แผงหน้าฟาร์ม ขอซื้อของในยุ้งฉางแล้วต่อราคา (มีของในยุ้งฉางก็มีคนมา ไม่ต้องวางบนแผง)
@@ -7639,7 +7710,21 @@
         // เหยื่อ: 🪱 เหยื่อหนอน ปลาแรร์ขึ้นไป ×1.5 · ✨ เหยื่อทอง ปลาแรร์ขึ้นไป ×2.5 ปลาธรรมดาน้อยลง และเรียกปลาเทพได้
         const curBait = () => fishing.state !== 'idle' ? fishing.bait : veg.baitSel === 'gold' && veg.goldBait > 0 ? 'gold' : veg.baitSel === 'bait' && veg.bait > 0 ? 'bait' : '';
         const baitMult = f => { const b = curBait(); return f.r === 'mythic' ? 1 : b === 'gold' ? (f.r === 'common' ? 0.4 : 2.5) : b === 'bait' && f.r !== 'common' ? 1.5 : 1; };
-        const fishWeight = f => f.w * (f.boost && f.boost === todayWeather() ? 3 : 1) * (f.r !== 'common' ? 1 + 0.15 * upgLv('rod') : 1) * baitMult(f);
+        const fishWeight = f => f.w * (f.boost && f.boost === todayWeather() ? 3 : 1) * (f.r !== 'common' ? 1 + 0.15 * upgLv('rod') : 1) * (f.r !== 'common' && gdSetOn('beach') ? 1.1 : 1) * baitMult(f);
+        const BAIT_PRICE = 4, BAIT_BUY_MAX = 10;
+        const baitBuyLeft = () => BAIT_BUY_MAX - (veg.baitBuy.day === dayKeyLocal() ? veg.baitBuy.n : 0);
+        function buyBait() {
+            if (fishing.state !== 'idle' || baitBuyLeft() <= 0 || shop.coins < BAIT_PRICE || veg.bait >= 99) return;
+            if (veg.baitBuy.day !== dayKeyLocal()) veg.baitBuy = { day: dayKeyLocal(), n: 0 };
+            veg.baitBuy.n += 1; veg.bait += 1; shop.coins -= BAIT_PRICE;
+            saveShop(); saveVeg(); updateCoinUI(); playSound('pop'); renderFarmPanel();
+        }
+        function craftGoldBait() {
+            if (fishing.state !== 'idle' || veg.bait < 3 || countBase('honey') < 1 || veg.goldBait >= 99) return;
+            veg.bait -= 3; takeItems({ honey: 1 }); veg.goldBait += 1;
+            saveVeg(); playSound('welcome'); renderFarmPanel();
+            showToast('✨ ทำเหยื่อทองได้ 1 ตัว เอาไปตกปลาเทพได้เลย', 'success');
+        }
         function setBait(b) { if (fishing.state !== 'idle') return; veg.baitSel = b; saveVeg(); renderFarmPanel(); }
         function rollFish() {
             const pool = Object.keys(FISH).filter(fishOpen);
@@ -7754,6 +7839,8 @@
                 ${fight}
                 <div class="pond-bait" role="radiogroup" aria-label="เหยื่อตกปลา">${[['', '🎣 ไม่ใช้เหยื่อ', -1], ['bait', '🪱 เหยื่อหนอน', veg.bait], ['gold', '✨ เหยื่อทอง', veg.goldBait]].map(([k, l, n]) =>
                     `<button type="button" class="chip-btn${curBait() === k ? ' is-active' : ''}" role="radio" aria-checked="${curBait() === k}" ${n === 0 || f.state !== 'idle' ? 'disabled' : ''} onclick="setBait('${k}')">${l}${n >= 0 ? ` ×${n}` : ''}</button>`).join('')}</div>
+                <div class="pond-bait pond-bait-shop"><button type="button" class="chip-btn" ${f.state !== 'idle' || baitBuyLeft() <= 0 || shop.coins < BAIT_PRICE || veg.bait >= 99 ? 'disabled' : ''} onclick="buyBait()">🛒 ซื้อเหยื่อ 🪙${BAIT_PRICE} <small>(วันนี้อีก ${baitBuyLeft()})</small></button>
+                    <button type="button" class="chip-btn" ${f.state !== 'idle' || veg.bait < 3 || countBase('honey') < 1 || veg.goldBait >= 99 ? 'disabled' : ''} onclick="craftGoldBait()">✨ ทำเหยื่อทอง <small>(🪱3 + 🍯1)</small></button></div>
                 <div class="modal-btn-group">${action}</div>
                 <div class="pond-now"><span>ตอนนี้ในบ่อมี:</span>${now.map(k => `<span class="pond-now-fish rar-${FISH[k].r}" title="${veg.fishCaught[k] ? FISH[k].name : '???'} · ${RARITY[FISH[k].r].name}">${veg.fishCaught[k] ? FISH[k].e : '❔'}</span>`).join('')}</div>
                 <div class="pond-dex">${listed.map(([k, x]) => `<button type="button" class="pond-dex-item rar-${x.r}${veg.fishCaught[k] ? '' : ' locked'}" title="${veg.fishCaught[k] ? x.name : '???'}" onclick="openDex('fish', '${k}')">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></button>`).join('')}</div>
@@ -7779,7 +7866,7 @@
         function maybeSpawnVisitor() {
             if (!isGardenEnabled() || visitorActive()) return;
             const n = veg.visitorLog.day === dayKeyLocal() ? veg.visitorLog.n : 0;
-            if (n < 2 && Math.random() < 0.012) spawnVisitor();
+            if (n < 2 && Math.random() < 0.012 * (gdSetOn('thai') ? 1.3 : 1) * (1 + Math.min(0.3, gdBeauty() / 1000))) spawnVisitor(); // สวนสวยและชุดสวนไทยแขกมาบ่อยขึ้น
         }
         function renderVisitor() {
             const wrap = document.getElementById('garden-scene-wrap');
@@ -8041,7 +8128,7 @@
             if (day === 1) addCoins(5);
             else if (day === 2) veg.tools.fertilizer = Math.min(99, veg.tools.fertilizer + 1);
             else if (day === 3) addCoins(10);
-            else if (day === 4) veg.tools.compost = Math.min(99, veg.tools.compost + 1);
+            else if (day === 4) { veg.tools.compost = Math.min(99, veg.tools.compost + 2); veg.bait = Math.min(99, veg.bait + 3); }
             else if (day === 5) veg.fish.tickets = Math.min(FISH_TICKET_MAX, veg.fish.tickets + 2);
             else if (day === 6) { if (veg.hybridSeeds.length < HYBRID_SEED_MAX) veg.hybridSeeds.push(pick(HYBRID_VEGGIES)); else addCoins(10); }
             else { addCoins(30); veg.tools.fertilizer = Math.min(99, veg.tools.fertilizer + 2); }
@@ -8057,7 +8144,12 @@
             secretTick();
             maybeSpawnVisitor();
             const r = roamDay();
-            if (Date.now() - r.at >= ROAM_ROLL_MS) { r.at = Date.now(); saveVeg(); spawnRoamWorm(0.35); }
+            if (Date.now() - r.at >= ROAM_ROLL_MS) { // ปิดเว็บไปนาน กลับมามีหนอนรอสูงสุด 3 รอบ
+                const rolls = Math.min(3, Math.floor((Date.now() - r.at) / ROAM_ROLL_MS));
+                r.at = Date.now(); saveVeg();
+                for (let k = 0; k < rolls; k++) spawnRoamWorm(0.5);
+            }
+            renderGardenScene();
             if (veg.plots.some(p => p.worm && !p.bitten && Date.now() - p.wormAt > ROAM_BITE_MS)) growVeggies('time');
             eventTick();
             maybeWalkIn();
@@ -8252,77 +8344,9 @@
                     <button type="button" class="shop-buy farm-action" ${ok ? '' : 'disabled'} onclick="upgradeHouse()">${lvl < next.level ? `🔒 เลเวล ${next.level}` : ok ? 'อัปเกรด 🔨' : 'ของยังไม่ครบ'}</button></div>`
                     : '<p class="rp-empty">บ้านไร่ระดับสูงสุดแล้ว สวยที่สุดในย่าน 🏰</p>'}
                 <div class="house-perks">${HOUSE_LEVELS.map((h, i) => `<span class="${i < veg.house ? 'is-on' : ''}">${h.e} ระดับ ${i + 1}: ${h.perk}${i < veg.house ? ' ✓' : ''}</span>`).join('')}</div>
-                <div class="modal-btn-group"><button type="button" class="modal-btn btn-secondary" onclick="closeFarm(); startGardenEdit()">🖌️ จัดสวน: ลากบ้านและของแต่งไปวาง</button></div>
+                <div class="modal-btn-group"><button type="button" class="modal-btn btn-secondary" onclick="closeFarm(); startGardenEdit()">🎨 แต่งสวน: ฉาก ต้นไม้ ของแต่ง และจัดวาง</button></div>
                 <div class="modal-btn-group"><button type="button" class="modal-btn btn-secondary" onclick="setFarmTab('stats')">📊 ดูสถิติฟาร์ม</button></div>`;
         }
-        const HOUSE_POS = 'right:3%; top:3%; font-size:30px;';
-        const fontOf = pos => (/font-size:\s*(\d+)px/.exec(pos) || [0, 22])[1];
-        function placedStyle(id, pos) {
-            const p = shop.decorPos[id];
-            return p ? `left:${p.x}%; top:${p.y}%; font-size:${fontOf(pos)}px;` : pos;
-        }
-        function renderGardenHouse() {
-            const wrap = document.getElementById('garden-scene-wrap');
-            if (!wrap) return;
-            let el = document.getElementById('garden-house');
-            if (!el) { el = document.createElement('span'); el.id = 'garden-house'; el.className = 'garden-decor-item garden-house'; el.dataset.id = 'house'; el.setAttribute('aria-hidden', 'true'); wrap.appendChild(el); }
-            el.textContent = HOUSE_LEVELS[veg.house - 1].e;
-            el.style.cssText = placedStyle('house', HOUSE_POS);
-            el.classList.toggle('has-pos', !!shop.decorPos.house);
-        }
-        // 🖌️ โหมดจัดสวน: ลากของแต่ง ถ้วยรางวัล และบ้านไปวางตรงไหนก็ได้ในฉากสวน
-        let gardenEditing = false;
-        function startGardenEdit() {
-            const wrap = document.getElementById('garden-scene-wrap');
-            if (!wrap || gardenEditing) return;
-            gardenEditing = true;
-            wrap.classList.add('is-editing');
-            let bar = document.getElementById('garden-edit-bar');
-            if (!bar) {
-                bar = document.createElement('div'); bar.id = 'garden-edit-bar'; bar.className = 'garden-edit-bar';
-                bar.innerHTML = '<span>🖌️ ลากของในสวนไปวางได้เลย</span><button type="button" class="chip-btn" onclick="resetGardenLayout()">↺ ตำแหน่งเดิม</button><button type="button" class="chip-btn is-active" onclick="stopGardenEdit()">✓ เสร็จแล้ว</button>';
-                wrap.after(bar); // วางไว้ใต้ฉาก จะได้ไม่บังของที่อยู่ขอบล่าง
-            }
-            wrap.scrollIntoView({ block: 'center', behavior: motionReduced() ? 'auto' : 'smooth' });
-            showToast('🖌️ โหมดจัดสวน: ลากบ้าน ของแต่ง และถ้วยรางวัลไปวางตรงไหนก็ได้', 'info', { duration: 4500 });
-        }
-        function stopGardenEdit() {
-            const wrap = document.getElementById('garden-scene-wrap');
-            gardenEditing = false;
-            if (wrap) wrap.classList.remove('is-editing');
-            const bar = document.getElementById('garden-edit-bar');
-            if (bar) bar.remove();
-            saveShop();
-        }
-        function resetGardenLayout() { shop.decorPos = {}; saveShop(); renderGardenDecor(); renderGardenHouse(); }
-        (function setupGardenDrag() {
-            let drag = null;
-            document.addEventListener('pointerdown', (e) => {
-                if (!gardenEditing) return;
-                const item = e.target.closest('#garden-scene-wrap .garden-decor-item');
-                if (!item || !item.dataset.id) return;
-                e.preventDefault();
-                drag = { item, id: item.dataset.id, pid: e.pointerId };
-                try { item.setPointerCapture(e.pointerId); } catch (err) {}
-                item.classList.add('is-dragging');
-            });
-            document.addEventListener('pointermove', (e) => {
-                if (!drag || e.pointerId !== drag.pid) return;
-                const r = document.getElementById('garden-scene-wrap').getBoundingClientRect();
-                const x = Math.min(96, Math.max(4, (e.clientX - r.left) / r.width * 100)), y = Math.min(94, Math.max(6, (e.clientY - r.top) / r.height * 100));
-                shop.decorPos[drag.id] = { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 };
-                drag.item.style.left = x + '%'; drag.item.style.top = y + '%'; drag.item.style.right = 'auto'; drag.item.style.bottom = 'auto';
-                drag.item.classList.add('has-pos');
-            });
-            const end = (e) => {
-                if (!drag || e.pointerId !== drag.pid) return;
-                drag.item.classList.remove('is-dragging');
-                drag = null; saveShop();
-            };
-            document.addEventListener('pointerup', end);
-            document.addEventListener('pointercancel', end);
-        })();
-
         // 📊 หน้าสถิติฟาร์ม: ตัวเลขรวม + กราฟ 7 วันล่าสุด (คอลัมน์สีเดียว แตะ/ชี้ดูค่า) + ผักที่ปลูกบ่อยที่สุด
         function last7Days() {
             return Array.from({ length: 7 }, (_, k) => {
@@ -10660,6 +10684,660 @@
         }
 
         // --- 🛍️ ร้านค้า: ใช้เหรียญจากฟาร์มและชาเลนจ์ แลกสติกเกอร์ ของแต่งมาสคอต ของแต่งสวน เมล็ดหายาก และอุปกรณ์ฟาร์ม ---
+        // --- 🎨 สวนพักโฉมใหม่: ภาพวาดเวกเตอร์ของฉาก ต้นไม้ กระถาง บ้าน และของแต่ง (ไม่ใช้อิโมจิ หน้าตาเหมือนกันทุกเครื่อง) ---
+        // ของแต่งวาดในกรอบ 64×64 ฐานอยู่ที่ y≈61 · ฉากหลังวาดในกรอบ 320×200 พื้นดินเริ่มราว y=125 · ต้นไม้ใช้กรอบเดิม 220×170
+        const GD_SH = (rx = 18, cy = 60.5) => `<ellipse cx="32" cy="${cy}" rx="${rx}" ry="2.8" fill="#2B2140" opacity="0.14"/>`;
+        const gdRing = (n, f) => Array.from({ length: n }, (_, i) => f(i * 360 / n, i)).join('');
+        const gdFlower = (x, y, c, r = 3.2) => gdRing(5, a => `<ellipse cx="${x}" cy="${y - r}" rx="${r * 0.62}" ry="${r}" fill="${c}" transform="rotate(${a} ${x} ${y})"/>`) + `<circle cx="${x}" cy="${y}" r="${r * 0.55}" fill="#FFD84D"/>`;
+        const gdTulip = (x, y, c) => `<path d="M${x} ${y}v-9" stroke="#4E9F3D" stroke-width="1.6"/><path d="M${x - 3.4} ${y - 13}q0 6 3.4 6q3.4 0 3.4-6l-1.7 1.6-1.7-2.4-1.7 2.4z" fill="${c}"/>`;
+        const gdBulb = (x, y, c) => `<circle cx="${x}" cy="${y}" r="2.6" fill="${c}"/><circle cx="${x - 0.8}" cy="${y - 0.8}" r="0.9" fill="#FFFFFF" opacity="0.7"/>`;
+        // ของแต่งทั้งหมด: w = ความกว้างเป็น % ของฉาก · b = คะแนนความสวย · glow = เรืองแสงตอนกลางคืน · bob = ลอยขึ้นลงเบาๆ · multi = ซื้อได้หลายชิ้น · set = ชุดธีม
+        const GD_ART = {
+            'decor-sunflower': { w: 9, b: 6, svg: GD_SH(9) + '<path d="M32 60V27" stroke="#4E9F3D" stroke-width="3" stroke-linecap="round"/><path d="M32 50q-11-1-14-10q10-1 14 8zM32 43q11-1 14-10q-10-1-14 8z" fill="#6CC24A"/>'
+                + gdRing(12, a => `<ellipse cx="32" cy="12" rx="3.6" ry="7.5" fill="${a % 60 ? '#FFC93C' : '#FFB31F'}" transform="rotate(${a} 32 21)"/>`) + '<circle cx="32" cy="21" r="7" fill="#8A5A2B"/><circle cx="30" cy="19" r="2.2" fill="#A8743F"/>' },
+            'decor-snail': { w: 7, b: 3, svg: GD_SH(14) + '<path d="M12 59q-2-8 6-8h26q8 0 10 8z" fill="#E8D3B5"/><path d="M48 52l4-11M54 53l5-9" stroke="#C9B79C" stroke-width="2" stroke-linecap="round"/><circle cx="52" cy="41" r="2" fill="#4B3A2E"/><circle cx="59" cy="44" r="2" fill="#4B3A2E"/>'
+                + '<circle cx="30" cy="43" r="15" fill="#F2A65A"/><path d="M30 43m-10 0a10 10 0 1 1 10 10a6 6 0 1 1 5-8a3 3 0 1 1-4-2" stroke="#C97A35" stroke-width="2.4" fill="none" stroke-linecap="round"/>' },
+            'decor-mushroom': { w: 8, b: 4, svg: GD_SH(14) + '<path d="M24 60q-2-14 2-24h12q4 10 2 24z" fill="#FFF4E0"/><path d="M8 38q2-24 24-24t24 24q-24 6-48 0z" fill="#E5484D"/>'
+                + '<circle cx="22" cy="26" r="3.4" fill="#FFFFFF"/><circle cx="36" cy="21" r="4" fill="#FFFFFF"/><circle cx="46" cy="31" r="2.8" fill="#FFFFFF"/><circle cx="30" cy="33" r="2.4" fill="#FFFFFF"/>' },
+            'decor-ladybug': { w: 7, b: 3, svg: GD_SH(16) + '<path d="M6 60q8-22 26-22q20 0 26 22z" fill="#6CC24A"/><path d="M32 40v18" stroke="#4E9F3D" stroke-width="1.5"/>'
+                + '<path d="M20 48a12 11 0 0 1 24 0z" fill="#E5484D"/><path d="M32 37v11" stroke="#1F1A24" stroke-width="1.6"/><circle cx="32" cy="36" r="5" fill="#1F1A24"/><circle cx="25" cy="44" r="2" fill="#1F1A24"/><circle cx="39" cy="44" r="2" fill="#1F1A24"/><circle cx="27" cy="40" r="1.4" fill="#1F1A24"/><circle cx="37" cy="40" r="1.4" fill="#1F1A24"/>' },
+            'decor-lantern': { w: 8, b: 6, glow: true, svg: GD_SH(8) + '<path d="M32 61V14" stroke="#6B4A3A" stroke-width="3.4" stroke-linecap="round"/><path d="M32 14h12" stroke="#6B4A3A" stroke-width="3" stroke-linecap="round"/><path d="M44 14v5" stroke="#3B2A22" stroke-width="1.4"/>'
+                + '<rect x="39" y="19" width="10" height="3" rx="1" fill="#D9A520"/><ellipse cx="44" cy="31" rx="9" ry="10" fill="#E5484D"/><path d="M39 23q-2 8 0 16M49 23q2 8 0 16M44 21v20" stroke="#B8323A" stroke-width="1" fill="none"/><rect x="39" y="40" width="10" height="3" rx="1" fill="#D9A520"/><path d="M44 43v6" stroke="#D9A520" stroke-width="1.6"/>' },
+            'decor-fountain': { w: 15, b: 12, svg: GD_SH(26) + '<path d="M6 54q26 10 52 0v-6H6z" fill="#B8C4D2"/><ellipse cx="32" cy="48" rx="26" ry="6" fill="#DCE5EE"/><ellipse cx="32" cy="48" rx="21" ry="3.8" fill="#7CC7EF"/>'
+                + '<rect x="28" y="30" width="8" height="18" fill="#C9D3DE"/><ellipse cx="32" cy="30" rx="13" ry="4" fill="#DCE5EE"/><ellipse cx="32" cy="30" rx="9.5" ry="2.4" fill="#7CC7EF"/><rect x="30" y="18" width="4" height="12" fill="#C9D3DE"/>'
+                + '<path d="M32 14q-12 2-15 16M32 14q12 2 15 16M32 14q-6 6-8 15M32 14q6 6 8 15" stroke="#A5DDF7" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="32" cy="13" r="2.4" fill="#A5DDF7"/>' },
+            'decor-rock': { w: 8, b: 3, svg: GD_SH(20) + '<path d="M8 60q-2-12 10-16q8-10 18-4q14-2 18 10q4 8-2 10z" fill="#9AA5B1"/><path d="M14 52q6-6 14-4M34 44q8 0 12 6" stroke="#B9C2CC" stroke-width="2" fill="none" stroke-linecap="round"/>'
+                + '<path d="M40 60q-2-8 6-9q8 0 8 9z" fill="#808C99"/><path d="M12 47q4-4 9-2q-4 2-9 2zM34 41q4-3 8 0q-4 1-8 0z" fill="#7CC27A"/>' },
+            'decor-tree': { w: 15, b: 8, svg: GD_SH(16) + '<path d="M29 61l1-22h4l1 22z" fill="#8A5A3A"/><path d="M32 46l-8-8M32 42l7-7" stroke="#8A5A3A" stroke-width="2.4" stroke-linecap="round"/>'
+                + '<circle cx="32" cy="24" r="16" fill="#58B03C"/><circle cx="20" cy="30" r="11" fill="#4E9F3D"/><circle cx="44" cy="30" r="11" fill="#4E9F3D"/><circle cx="26" cy="17" r="10" fill="#6CC24A"/><circle cx="40" cy="18" r="9" fill="#6CC24A"/><circle cx="30" cy="12" r="5" fill="#93D66F"/>' },
+            'decor-mailbox': { w: 8, b: 4, svg: GD_SH(10) + '<rect x="29" y="34" width="6" height="27" fill="#8A5A3A"/><path d="M14 36V24q0-10 12-10h16q8 0 8 10v12z" fill="#E5484D"/><path d="M26 14q-12 0-12 10v12h24V24q0-10-12-10z" fill="#C83A40"/>'
+                + '<path d="M50 20v-10h8v6h-8" fill="#FFC93C" stroke="#D9A520" stroke-width="1"/><path d="M18 27h16" stroke="#9E2C33" stroke-width="1.6" stroke-linecap="round"/>' },
+            'decor-bench': { w: 14, b: 6, svg: GD_SH(26) + '<rect x="6" y="38" width="52" height="6" rx="2" fill="#B07A45"/><rect x="6" y="24" width="52" height="5" rx="2" fill="#C68B52"/><rect x="6" y="31" width="52" height="5" rx="2" fill="#C68B52"/>'
+                + '<path d="M10 44v16M54 44v16M10 22v18M54 22v18" stroke="#4B4F5C" stroke-width="3" stroke-linecap="round"/><path d="M8 52h48" stroke="#4B4F5C" stroke-width="2"/>' },
+            'decor-carp': { w: 10, b: 6, svg: GD_SH(6) + '<path d="M16 61V6" stroke="#B07A45" stroke-width="3" stroke-linecap="round"/><circle cx="16" cy="5" r="3" fill="#FFC93C"/>'
+                + '<path d="M18 10h30l8 5-8 5H18z" fill="#3B82F6"/><circle cx="24" cy="15" r="2.4" fill="#FFFFFF"/><circle cx="24" cy="15" r="1" fill="#1F1A24"/><path d="M32 12q3 3 0 6M40 12q3 3 0 6" stroke="#93C5FD" stroke-width="1.6" fill="none"/>'
+                + '<path d="M18 24h26l7 5-7 5H18z" fill="#E5484D"/><circle cx="24" cy="29" r="2.2" fill="#FFFFFF"/><circle cx="24" cy="29" r="0.9" fill="#1F1A24"/><path d="M31 26q3 3 0 6M38 26q3 3 0 6" stroke="#FCA5A5" stroke-width="1.6" fill="none"/>' },
+            'decor-tractor': { w: 13, b: 7, svg: GD_SH(24) + '<path d="M10 46V30h20l6 10h14q4 0 4 4v6H10z" fill="#4FAE5A"/><path d="M14 30V18h14l4 12z" fill="#CDEBF5" stroke="#2F7D3A" stroke-width="2.4" stroke-linejoin="round"/><rect x="44" y="30" width="3" height="10" fill="#4B4F5C"/>'
+                + '<circle cx="20" cy="50" r="10" fill="#2F343D"/><circle cx="20" cy="50" r="4.5" fill="#FFC93C"/><circle cx="47" cy="54" r="6.5" fill="#2F343D"/><circle cx="47" cy="54" r="2.8" fill="#FFC93C"/>' },
+            'decor-ghost': { w: 9, b: 5, bob: true, glow: true, svg: '<ellipse cx="32" cy="61" rx="12" ry="2.4" fill="#2B2140" opacity="0.1"/><path d="M14 52V28q0-18 18-18t18 18v24l-6-5-6 5-6-5-6 5-6-5z" fill="#F7F4FF"/><path d="M14 52V28q0-18 18-18q-12 6-12 22v18z" fill="#E4DDF8"/>'
+                + '<ellipse cx="25" cy="29" rx="3" ry="4.2" fill="#2B2140"/><ellipse cx="39" cy="29" rx="3" ry="4.2" fill="#2B2140"/><ellipse cx="32" cy="38" rx="3.4" ry="2.6" fill="#2B2140"/><circle cx="21" cy="34" r="2.4" fill="#FFB3CF" opacity="0.7"/><circle cx="43" cy="34" r="2.4" fill="#FFB3CF" opacity="0.7"/>' },
+            'decor-web': { w: 11, b: 4, svg: '<path d="M4 4L60 60M4 4l56 24M4 4l24 56M4 4l44 6M4 4l6 44" stroke="#E8E6F2" stroke-width="1.2" opacity="0.9"/>'
+                + [14, 26, 40].map(r => `<path d="M${4 + r} 4.5Q${4 + r * 0.92} ${4 + r * 0.42} ${4 + r * 0.88} ${4 + r * 0.38}Q${4 + r * 0.66} ${4 + r * 0.66} ${4 + r * 0.38} ${4 + r * 0.88}Q${4 + r * 0.42} ${4 + r * 0.92} 4.5 ${4 + r}" stroke="#E8E6F2" stroke-width="1.1" fill="none" opacity="0.85"/>`).join('')
+                + '<path d="M38 24v8" stroke="#2B2140" stroke-width="0.8"/><circle cx="38" cy="34" r="3.4" fill="#2B2140"/><path d="M35 33l-3-2M35 35l-3 1M41 33l3-2M41 35l3 1" stroke="#2B2140" stroke-width="0.9"/>' },
+            'decor-candle': { w: 6, b: 4, glow: true, svg: GD_SH(9) + '<rect x="24" y="30" width="16" height="30" rx="3" fill="#FF8A3D"/><path d="M24 34q3 6 6 0q3 8 6 0q2 4 4 0" fill="#FFB067"/><path d="M32 30v-5" stroke="#3B2A22" stroke-width="1.4"/>'
+                + '<path d="M32 12q7 7 0 13q-7-6 0-13z" fill="#FFC93C"/><path d="M32 17q3 3 0 6q-3-3 0-6z" fill="#FFF3B0"/>' },
+            'decor-khom': { w: 9, b: 7, bob: true, glow: true, svg: '<path d="M32 2v8" stroke="#B07A45" stroke-width="1.6"/><path d="M22 12h20l6 8v16l-6 8H22l-6-8V20z" fill="#FFF3E0"/><path d="M16 20h32M16 36h32" stroke="#E5484D" stroke-width="3"/><path d="M26 12v32M38 12v32" stroke="#F2C2A0" stroke-width="1"/>'
+                + '<rect x="21" y="9" width="22" height="4" rx="1.5" fill="#D9A520"/><rect x="21" y="43" width="22" height="4" rx="1.5" fill="#D9A520"/><path d="M24 47v10M32 47v13M40 47v10" stroke="#E5484D" stroke-width="1.6" stroke-linecap="round"/>' },
+            'decor-diya': { w: 7, b: 5, glow: true, svg: GD_SH(14) + '<path d="M10 46q22 22 44 0q-4 6-22 6q-18 0-22-6z" fill="#B55E33"/><path d="M10 46q22 8 44 0q-22-6-44 0z" fill="#D9774A"/><path d="M14 48q18 6 36 0" stroke="#FFC93C" stroke-width="1.6" fill="none"/>'
+                + '<path d="M44 42q8-8 0-18q-8 10 0 18z" fill="#FFC93C"/><path d="M44 38q3-4 0-8q-3 4 0 8z" fill="#FFF3B0"/>' },
+            'decor-boat': { w: 13, b: 6, svg: '<ellipse cx="32" cy="58" rx="28" ry="4" fill="#7CC7EF" opacity="0.8"/><path d="M8 58q10-2 18 0t18 0t14 0" stroke="#FFFFFF" stroke-width="1.2" fill="none" opacity="0.8"/>'
+                + '<path d="M4 42q28 22 56 0q-6 12-28 12T4 42z" fill="#B07A45"/><path d="M6 43q26 10 52 0" stroke="#8A5A3A" stroke-width="2" fill="none"/><path d="M32 46V22" stroke="#6B4A3A" stroke-width="2"/><path d="M33 22q12 6 0 18z" fill="#FFF3E0"/><circle cx="20" cy="44" r="2" fill="#FFC93C"/>' },
+            'decor-village': { w: 12, b: 8, svg: GD_SH(18) + '<path d="M18 61V30M46 61V30" stroke="#8A5A3A" stroke-width="3.4" stroke-linecap="round"/><rect x="8" y="16" width="48" height="22" rx="3" fill="#C68B52"/><rect x="10" y="18" width="44" height="18" rx="2" fill="#E8C08A"/>'
+                + '<path d="M16 32v-7l5-4 5 4v7zM28 32v-9l6-5 6 5v9zM42 32v-6l4-3 4 3v6z" fill="#E5484D"/><path d="M14 32h38" stroke="#8A5A3A" stroke-width="1.4"/><path d="M6 12l10 4-10 4zM58 12l-10 4 10 4z" fill="#FFC93C"/>' },
+            'decor-museum': { w: 13, b: 9, svg: GD_SH(24) + '<path d="M6 24L32 8l26 16z" fill="#E8E1D2"/><path d="M6 24L32 8l26 16" stroke="#C9BFAE" stroke-width="2" fill="none"/><rect x="8" y="24" width="48" height="5" fill="#D6CCB9"/>'
+                + [13, 25, 37, 49].map(x => `<rect x="${x - 2}" y="29" width="5" height="24" fill="#F3EEE4"/>`).join('') + '<rect x="6" y="53" width="52" height="6" rx="1" fill="#C9BFAE"/><circle cx="32" cy="18" r="3" fill="#FFC93C"/>' },
+            'decor-aquarium': { w: 11, b: 8, svg: GD_SH(20) + '<rect x="10" y="50" width="44" height="10" rx="2" fill="#8A5A3A"/><rect x="8" y="16" width="48" height="34" rx="4" fill="#CFEFFF" opacity="0.9"/><rect x="8" y="22" width="48" height="28" rx="2" fill="#7CC7EF"/>'
+                + '<path d="M16 50q-2-10 2-16M20 50q4-8 0-14M46 50q-4-10 0-14" stroke="#4E9F3D" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M26 34q6-6 12 0q-6 6-12 0zM38 34l4-3v6z" fill="#FF8A3D"/><circle cx="29" cy="33" r="0.9" fill="#1F1A24"/>'
+                + '<path d="M40 42q4-3 8 0q-4 3-8 0zM48 42l3-2v4z" fill="#FFC93C"/><circle cx="20" cy="28" r="1.4" fill="#FFFFFF" opacity="0.8"/><circle cx="22" cy="24" r="1" fill="#FFFFFF" opacity="0.8"/>' },
+            'decor-vase': { w: 7, b: 6, svg: GD_SH(11) + '<path d="M24 8h16v4q-2 2-2 6q12 8 12 22q0 14-10 20H24q-10-6-10-20q0-14 12-22q0-4-2-6z" fill="#C97A45"/><path d="M20 30h24M17 40h30M20 50h24" stroke="#2B2140" stroke-width="2.2"/>'
+                + '<path d="M22 34l4 3 4-3 4 3 4-3 4 3M20 44l4 3 4-3 4 3 4-3 4 3 4-3" stroke="#2B2140" stroke-width="1.4" fill="none"/>' },
+            'decor-pass': { w: 9, b: 8, bob: true, glow: true, svg: '<ellipse cx="32" cy="61" rx="10" ry="2.2" fill="#2B2140" opacity="0.12"/><path d="M32 4l7.6 15.4 17 2.4-12.3 12 2.9 16.9L32 42.8l-15.2 7.9 2.9-16.9-12.3-12 17-2.4z" fill="#FFD23F" stroke="#F2A900" stroke-width="2" stroke-linejoin="round"/>'
+                + '<path d="M32 12l4 9 9 1.4" stroke="#FFF3B0" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="27" cy="29" r="1.8" fill="#2B2140"/><circle cx="37" cy="29" r="1.8" fill="#2B2140"/><path d="M29 34q3 2.4 6 0" stroke="#2B2140" stroke-width="1.4" fill="none" stroke-linecap="round"/>' },
+            'trophy-gold': { w: 8, b: 8, svg: GD_SH(12) + '<rect x="18" y="52" width="28" height="8" rx="2" fill="#6B4A3A"/><rect x="26" y="40" width="12" height="12" fill="#F2A900"/><path d="M16 8h32v10q0 18-16 22q-16-4-16-22z" fill="#FFD23F"/>'
+                + '<path d="M16 12q-10 0-8 10q2 8 10 8M48 12q10 0 8 10q-2 8-10 8" stroke="#F2A900" stroke-width="3" fill="none"/><path d="M24 12v10q0 6 4 10" stroke="#FFF3B0" stroke-width="2.4" fill="none" stroke-linecap="round"/>' },
+            'trophy-silver': { w: 7, b: 6, svg: GD_SH(11) + '<rect x="18" y="52" width="28" height="8" rx="2" fill="#6B4A3A"/><path d="M26 6l6 18 6-18" stroke="#3B82F6" stroke-width="5"/><circle cx="32" cy="36" r="13" fill="#C9D3DE"/><circle cx="32" cy="36" r="9" fill="#E8EDF3"/><path d="M28 36l3 3 6-6" stroke="#8D99A8" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M32 49v3" stroke="#8D99A8" stroke-width="2"/>' },
+            'trophy-bronze': { w: 7, b: 5, svg: GD_SH(11) + '<rect x="18" y="52" width="28" height="8" rx="2" fill="#6B4A3A"/><path d="M26 6l6 18 6-18" stroke="#E5484D" stroke-width="5"/><circle cx="32" cy="36" r="13" fill="#C97A45"/><circle cx="32" cy="36" r="9" fill="#E09A6A"/><path d="M28 36l3 3 6-6" stroke="#A35A2A" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M32 49v3" stroke="#A35A2A" stroke-width="2"/>' },
+            // ---- ของแต่งใหม่ ----
+            'decor-fence': { w: 14, b: 3, multi: true, svg: GD_SH(28) + '<path d="M4 30h56M4 46h56" stroke="#D9B98A" stroke-width="4"/>' + [8, 20, 32, 44, 56].map(x => `<path d="M${x - 4} 60V22l4-6 4 6v38z" fill="#F3E3C7"/><path d="M${x + 4} 22v38" stroke="#D9B98A" stroke-width="1.4"/>`).join('') },
+            'decor-stones': { w: 12, b: 2, multi: true, svg: '<ellipse cx="16" cy="57" rx="11" ry="4.4" fill="#A3ADB8"/><ellipse cx="16" cy="56" rx="10" ry="3.4" fill="#C3CBD4"/><ellipse cx="42" cy="58" rx="12" ry="4.6" fill="#A3ADB8"/><ellipse cx="42" cy="57" rx="11" ry="3.6" fill="#C3CBD4"/><ellipse cx="30" cy="49" rx="8" ry="3.2" fill="#A3ADB8"/><ellipse cx="30" cy="48.2" rx="7" ry="2.5" fill="#C3CBD4"/><path d="M4 58l2-4 2 4M56 60l2-5 2 5" stroke="#6CC24A" stroke-width="1.6" fill="none"/>' },
+            'decor-flowerbed': { w: 13, b: 5, multi: true, svg: GD_SH(28) + '<path d="M4 50h56v8q0 3-3 3H7q-3 0-3-3z" fill="#B07A45"/><path d="M4 50h56" stroke="#8A5A3A" stroke-width="3"/><path d="M6 50q26-6 52 0" fill="#7A4A2A"/>'
+                + [['#E5484D', 10], ['#FFC93C', 18], ['#FF8FB8', 26], ['#A78BFA', 34], ['#E5484D', 42], ['#FFC93C', 50], ['#FF8FB8', 56]].map(([c, x], i) => gdTulip(x, 49 - (i % 2) * 3, c)).join('') },
+            'decor-bush': { w: 10, b: 3, multi: true, svg: GD_SH(22) + '<circle cx="20" cy="46" r="14" fill="#4E9F3D"/><circle cx="44" cy="46" r="14" fill="#4E9F3D"/><circle cx="32" cy="38" r="16" fill="#58B03C"/><circle cx="24" cy="34" r="8" fill="#6CC24A"/><path d="M8 60h48" stroke="#4E9F3D" stroke-width="4" stroke-linecap="round"/>'
+                + gdFlower(20, 40, '#FFFFFF', 2.4) + gdFlower(40, 32, '#FFFFFF', 2.4) + gdFlower(46, 48, '#FFFFFF', 2.4) },
+            'decor-lights': { w: 16, b: 5, multi: true, glow: true, set: 'fairy', svg: GD_SH(28) + '<path d="M6 60V14M58 60V14" stroke="#8A5A3A" stroke-width="3" stroke-linecap="round"/><path d="M6 16q26 22 52 0" stroke="#3B2A22" stroke-width="1.2" fill="none"/>'
+                + [[12, 21.5, '#FFD23F'], [19, 26, '#FF8FB8'], [26, 28.6, '#7CC7EF'], [33, 29.4, '#FFD23F'], [40, 28, '#A7F3A0'], [47, 25, '#FF8FB8'], [53, 20.5, '#7CC7EF']].map(([x, y, c]) => gdBulb(x, y + 3, c)).join('') },
+            'decor-birdbath': { w: 9, b: 6, svg: GD_SH(14) + '<path d="M22 60q0-6 10-8q10 2 10 8z" fill="#B8C4D2"/><path d="M28 52V34h8v18z" fill="#C9D3DE"/><path d="M8 30q24 14 48 0z" fill="#DCE5EE"/><ellipse cx="32" cy="30" rx="24" ry="5" fill="#C9D3DE"/><ellipse cx="32" cy="30" rx="20" ry="3" fill="#7CC7EF"/>'
+                + '<path d="M40 26q4-10 12-8q2 4-2 6l4 1-5 2q-4 3-9-1z" fill="#7CA6E8"/><circle cx="49" cy="20" r="1" fill="#1F1A24"/><path d="M53 20l3 1-3 1z" fill="#FFB31F"/>' },
+            'decor-swing': { w: 15, b: 7, set: 'fairy', svg: GD_SH(28) + '<path d="M6 60L16 6M26 60L16 6M58 60L48 6M38 60L48 6" stroke="#B07A45" stroke-width="3.4" stroke-linecap="round"/><path d="M14 8h36" stroke="#8A5A3A" stroke-width="4" stroke-linecap="round"/>'
+                + '<path d="M24 8v34M40 8v34" stroke="#6B4A3A" stroke-width="1.4"/><rect x="21" y="41" width="22" height="4" rx="1.6" fill="#E5484D"/>' + gdFlower(24, 12, '#FF8FB8', 2.4) + gdFlower(40, 12, '#FFFFFF', 2.4) },
+            'decor-pond': { w: 20, b: 9, svg: '<ellipse cx="32" cy="52" rx="30" ry="10" fill="#9AA5B1"/><ellipse cx="32" cy="51" rx="27" ry="8" fill="#5DB7E8"/><ellipse cx="28" cy="49" rx="20" ry="4.4" fill="#86CDF2"/>'
+                + '<path d="M16 53q4-4 9 0q-4 2-9 0z" fill="#4E9F3D"/><circle cx="40" cy="52" r="3.6" fill="#58B03C"/><path d="M40 52l3.6-1" stroke="#5DB7E8" stroke-width="1.2"/>' + gdFlower(40, 50, '#FF8FB8', 2) + '<path d="M28 49q3 2 6 0" stroke="#FF8A3D" stroke-width="2" fill="none"/>' },
+            'decor-chime': { w: 7, b: 4, bob: true, svg: '<path d="M32 2v8" stroke="#6B4A3A" stroke-width="1.6"/><path d="M18 12q14-6 28 0" stroke="#B07A45" stroke-width="3" fill="none" stroke-linecap="round"/>'
+                + [[20, 30, '#7CC7EF'], [26, 38, '#A78BFA'], [32, 34, '#FF8FB8'], [38, 40, '#7CC7EF'], [44, 30, '#FFD23F']].map(([x, h, c]) => `<path d="M${x} 12v${h - 20}" stroke="#9AA5B1" stroke-width="0.8"/><rect x="${x - 1.6}" y="${h - 8}" width="3.2" height="12" rx="1.6" fill="${c}"/>`).join('')
+                + '<path d="M32 12v34" stroke="#9AA5B1" stroke-width="0.8"/><path d="M28 46h8l-2 10h-4z" fill="#FFF3E0"/>' },
+            'decor-sign': { w: 10, b: 4, svg: GD_SH(12) + '<path d="M32 61V26" stroke="#8A5A3A" stroke-width="4" stroke-linecap="round"/><path d="M8 12h44l6 8-6 8H8z" fill="#C68B52"/><path d="M8 12h44l6 8-6 8H8z" stroke="#8A5A3A" stroke-width="1.6" fill="none"/>'
+                + '<path d="M20 20q4-6 8 0q4-6 8 0q0 5-8 8q-8-3-8-8z" fill="#E5484D"/><path d="M42 16v8M38 20h8" stroke="#4E9F3D" stroke-width="2.4" stroke-linecap="round"/>' },
+            'decor-lamppost': { w: 7, b: 5, glow: true, svg: GD_SH(9) + '<path d="M26 61h12l-2-4h-8z" fill="#2F343D"/><rect x="30" y="22" width="4" height="36" fill="#3B4250"/><path d="M24 22h16l-3-13H27z" fill="#FFE59A"/><path d="M32 9v13M25 15h14" stroke="#E0B84A" stroke-width="1"/>'
+                + '<path d="M22 22h20" stroke="#2F343D" stroke-width="2.6" stroke-linecap="round"/><path d="M26 9h12l-6-6z" fill="#2F343D"/><circle cx="32" cy="2.6" r="1.6" fill="#2F343D"/>' },
+            'decor-birdhouse': { w: 8, b: 5, svg: GD_SH(8) + '<rect x="30" y="34" width="4" height="27" fill="#8A5A3A"/><rect x="18" y="16" width="28" height="20" rx="2" fill="#7CC7EF"/><path d="M14 18L32 4l18 14z" fill="#E5484D"/><circle cx="32" cy="25" r="4" fill="#2B2140"/><path d="M30 31h4" stroke="#8A5A3A" stroke-width="2.4" stroke-linecap="round"/>'
+                + '<path d="M44 12q4-8 10-6q2 3-2 5l3 1-4 2q-3 2-7-2z" fill="#FFC93C"/><circle cx="51" cy="7" r="0.9" fill="#1F1A24"/>' },
+            'decor-gnome': { w: 7, b: 5, svg: GD_SH(12) + '<path d="M18 60q0-18 14-18t14 18z" fill="#3B82F6"/><path d="M19 53h26" stroke="#2B2140" stroke-width="2.4"/><circle cx="32" cy="33" r="7.5" fill="#FFD3B5"/>'
+                + '<path d="M23 35q9 24 18 0q1 13-9 17q-10-4-9-17z" fill="#F3F4F6"/><circle cx="32" cy="36" r="2.2" fill="#FF9F88"/><circle cx="29" cy="32" r="1" fill="#2B2140"/><circle cx="35" cy="32" r="1" fill="#2B2140"/>'
+                + '<path d="M22 30Q25 9 41 3q-5 12 1 27z" fill="#E5484D"/><path d="M21 30h22" stroke="#B8323A" stroke-width="3" stroke-linecap="round"/>' },
+            'decor-torii': { w: 18, b: 10, set: 'japan', svg: GD_SH(28) + '<path d="M4 10q28 6 56 0l-2 6q-26 4-52 0z" fill="#C8302C"/><path d="M8 22h48" stroke="#C8302C" stroke-width="4"/><path d="M4 10q28 6 56 0" stroke="#2B2140" stroke-width="2.4" fill="none"/>'
+                + '<rect x="14" y="14" width="6" height="47" fill="#E5484D"/><rect x="44" y="14" width="6" height="47" fill="#E5484D"/><rect x="29" y="16" width="6" height="7" fill="#2B2140"/><rect x="12" y="56" width="10" height="5" fill="#2B2140"/><rect x="42" y="56" width="10" height="5" fill="#2B2140"/>' },
+            'decor-stonelantern': { w: 8, b: 7, glow: true, set: 'japan', svg: GD_SH(14) + '<rect x="20" y="54" width="24" height="6" rx="1" fill="#9AA5B1"/><rect x="28" y="38" width="8" height="16" fill="#B8C4D2"/><rect x="20" y="34" width="24" height="5" rx="1" fill="#9AA5B1"/>'
+                + '<rect x="22" y="22" width="20" height="12" fill="#C9D3DE"/><rect x="27" y="25" width="10" height="7" fill="#FFE59A"/><path d="M14 22L32 10l18 12z" fill="#8D99A8"/><circle cx="32" cy="8" r="2.6" fill="#8D99A8"/>' },
+            'decor-redbridge': { w: 22, b: 9, set: 'japan', svg: '<ellipse cx="32" cy="58" rx="30" ry="4" fill="#5DB7E8" opacity="0.7"/><path d="M2 54q30-34 60 0" stroke="#C8302C" stroke-width="5" fill="none"/><path d="M2 46q30-32 60 0" stroke="#E5484D" stroke-width="3" fill="none"/>'
+                + [10, 18, 26, 34, 42, 50].map(x => `<path d="M${x} ${54 - Math.round(32 * Math.sin(Math.PI * (x - 2) / 60) * 0.95)}v${Math.round(12 + 6 * (1 - Math.sin(Math.PI * (x - 2) / 60)))}" stroke="#C8302C" stroke-width="2.4"/>`).join('') },
+            'decor-bamboo': { w: 9, b: 5, set: 'japan', svg: GD_SH(16) + [[20, 6, '#6CC24A'], [32, 2, '#58B03C'], [43, 10, '#7FCB5B']].map(([x, t, c]) => `<rect x="${x - 3}" y="${t}" width="6" height="${61 - t}" rx="2" fill="${c}"/>` + [t + 14, t + 30, t + 46].filter(y => y < 58).map(y => `<path d="M${x - 3} ${y}h6" stroke="#3E8E37" stroke-width="1.6"/>`).join('')).join('')
+                + '<path d="M23 14q8-4 12-12q-10 2-12 12zM35 24q10-2 14-10q-10 0-14 10zM17 30q-8-2-12-10q10 0 12 10z" fill="#4E9F3D"/>' },
+            'decor-sala': { w: 20, b: 12, set: 'thai', svg: GD_SH(28) + '<rect x="6" y="54" width="52" height="6" rx="1" fill="#E8E1D2"/>' + [12, 26, 38, 52].map(x => `<rect x="${x - 2}" y="28" width="4" height="26" fill="#C68B52"/>`).join('')
+                + '<path d="M2 30L16 16h32l14 14z" fill="#C8302C"/><path d="M10 18L22 6h20l12 12z" fill="#E5484D"/><path d="M2 30L16 16h32l14 14M10 18L22 6h20l12 12" stroke="#D9A520" stroke-width="1.8" fill="none"/>'
+                + '<path d="M2 30q-2-6 2-8M62 30q2-6-2-8M10 18q-2-6 2-8M54 18q2-6-2-8M32 6V0" stroke="#D9A520" stroke-width="1.8" fill="none" stroke-linecap="round"/>' },
+            'decor-jar': { w: 9, b: 6, set: 'thai', svg: GD_SH(16) + '<path d="M22 10h20v4q16 8 16 26t-16 20H22Q6 58 6 40t16-26z" fill="#7A4A2A"/><path d="M22 10h20v4H22z" fill="#5E3A1E"/><path d="M12 40q6-10 14-4t14 0t12 2" stroke="#FFC93C" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
+                + '<circle cx="26" cy="34" r="1.6" fill="#FFC93C"/><path d="M16 28q4-6 10-8" stroke="#A8743F" stroke-width="2" fill="none" stroke-linecap="round"/>' },
+            'decor-coconut': { w: 15, b: 8, set: 'thai', svg: GD_SH(14) + '<path d="M30 61q-2-24 6-46h4q-6 22-4 46z" fill="#A8743F"/>' + [22, 30, 38, 46].map(y => `<path d="M${30 + (61 - y) * 0.2} ${y}h6" stroke="#8A5A3A" stroke-width="1.4"/>`).join('')
+                + '<path d="M38 14q-18-6-30 6q14-4 30-4zM38 14q18-8 24 8q-10-8-24-6zM38 14q-6-12 6-14q-6 6-6 14zM38 14q-14 4-18 18q8-10 18-16zM38 14q14 4 16 18q-6-10-16-16z" fill="#4E9F3D"/>'
+                + '<circle cx="35" cy="18" r="3.4" fill="#6B4A3A"/><circle cx="41" cy="18" r="3.4" fill="#7A5232"/><circle cx="38" cy="21" r="3.2" fill="#6B4A3A"/>' },
+            'decor-elephant': { w: 12, b: 10, set: 'thai', svg: GD_SH(24) + '<rect x="8" y="50" width="48" height="10" rx="2" fill="#D9A520"/><rect x="10" y="52" width="44" height="2" fill="#FFE59A"/>'
+                + '<rect x="15" y="38" width="6" height="12" rx="2" fill="#B8C4D2"/><rect x="23" y="39" width="6" height="11" rx="2" fill="#C9D3DE"/><rect x="36" y="38" width="6" height="12" rx="2" fill="#B8C4D2"/><rect x="43" y="39" width="6" height="11" rx="2" fill="#C9D3DE"/>'
+                + '<path d="M12 34q-4 4-2 8" stroke="#B8C4D2" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="30" cy="34" rx="18" ry="11" fill="#D6DEE7"/><circle cx="47" cy="28" r="10" fill="#D6DEE7"/>'
+                + '<path d="M53 31q8 4 6 15q-1 4-4 2q1-8-5-12z" fill="#D6DEE7"/><ellipse cx="42" cy="29" rx="6" ry="8" fill="#B8C4D2"/><circle cx="50" cy="25" r="1.5" fill="#2B2140"/><path d="M51 36q4 2 6-1" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
+                + '<path d="M20 24h16v9q-8 4-16 0z" fill="#E5484D"/><path d="M20 33q8 4 16 0M20 24h16" stroke="#D9A520" stroke-width="1.8" fill="none"/>' },
+            'decor-umbrellatable': { w: 18, b: 8, set: 'cafe', svg: GD_SH(28) + '<path d="M32 60V16" stroke="#6B4A3A" stroke-width="2.4"/><path d="M6 20Q32-4 58 20z" fill="#FFFFFF"/>' + [0, 1, 2, 3].map(i => `<path d="M${6 + i * 13} 20Q${12 + i * 13} 8 32 4Q${16 + i * 13} 10 ${12.5 + i * 13} 20z" fill="#E5484D"/>`).join('')
+                + '<ellipse cx="32" cy="40" rx="16" ry="4" fill="#F3E3C7"/><path d="M26 44l-2 16M38 44l2 16" stroke="#8A5A3A" stroke-width="2.4"/><path d="M6 60V42h8v-6M58 60V42h-8v-6" stroke="#4B4F5C" stroke-width="2.4" fill="none" stroke-linejoin="round"/><path d="M4 42h12M48 42h12" stroke="#4B4F5C" stroke-width="3"/>'
+                + '<path d="M28 34h6v4h-6zM34 35q2 0 2 2t-2 1" fill="#FFFFFF" stroke="#6B4A3A" stroke-width="1"/>' },
+            'decor-bicycle': { w: 16, b: 7, set: 'cafe', svg: GD_SH(28) + '<circle cx="14" cy="48" r="11" fill="none" stroke="#2F343D" stroke-width="3"/><circle cx="50" cy="48" r="11" fill="none" stroke="#2F343D" stroke-width="3"/>'
+                + '<path d="M14 48l10-18h18l8 18M24 30l8 18 10-18M32 48h-4M42 30l-2-8h-6M24 30l-2-6h-6" stroke="#2EAF9A" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>'
+                + '<path d="M44 18h14l-2 10H46z" fill="#C68B52"/>' + gdFlower(48, 16, '#FF8FB8', 2.6) + gdFlower(54, 15, '#FFD23F', 2.4) },
+            'decor-cafesign': { w: 9, b: 5, set: 'cafe', svg: GD_SH(14) + '<path d="M14 60L24 6h16l10 54M16 50h32" stroke="#8A5A3A" stroke-width="3" fill="none" stroke-linejoin="round"/><path d="M17 46L26 10h12l9 36z" fill="#2F3B35"/>'
+                + '<path d="M26 26h12v8q0 4-4 4h-4q-4 0-4-4z" fill="#FFFFFF"/><path d="M38 28q4 0 4 3t-4 3" stroke="#FFFFFF" stroke-width="1.6" fill="none"/><path d="M29 22q-1-3 1-5M33 22q-1-3 1-5" stroke="#FFFFFF" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M24 42h16" stroke="#FFC93C" stroke-width="1.6" stroke-dasharray="2 2"/>' },
+            'decor-flowercart': { w: 16, b: 8, set: 'cafe', svg: GD_SH(28) + '<path d="M8 30h44l-4 18H12z" fill="#C68B52"/><path d="M8 30h44M10 38h40" stroke="#8A5A3A" stroke-width="1.6"/><path d="M52 32l8-10" stroke="#8A5A3A" stroke-width="3" stroke-linecap="round"/>'
+                + '<circle cx="18" cy="52" r="7" fill="#6B4A3A"/><circle cx="18" cy="52" r="2.4" fill="#D9A520"/><circle cx="44" cy="52" r="7" fill="#6B4A3A"/><circle cx="44" cy="52" r="2.4" fill="#D9A520"/>'
+                + [[14, '#E5484D'], [22, '#FFD23F'], [30, '#FF8FB8'], [38, '#A78BFA'], [46, '#FFFFFF']].map(([x, c], i) => `<path d="M${x} 30v-6" stroke="#4E9F3D" stroke-width="1.4"/>` + gdFlower(x, 20 - (i % 2) * 3, c, 3)).join('') },
+            'decor-beachchair': { w: 13, b: 6, set: 'beach', svg: GD_SH(26) + '<path d="M10 60L30 22M24 60l20-30M44 60L22 40" stroke="#B07A45" stroke-width="3" stroke-linecap="round"/>'
+                + '<path d="M30 22l14 8-14 22-12-8z" fill="#3B82F6"/><path d="M33 24l-12 20M38 27l-12 21" stroke="#FFFFFF" stroke-width="3"/>' },
+            'decor-sandcastle': { w: 11, b: 6, set: 'beach', svg: GD_SH(26) + '<path d="M4 61q28-6 56 0z" fill="#E8C98A"/><rect x="8" y="28" width="14" height="30" fill="#EED39A"/><rect x="42" y="28" width="14" height="30" fill="#EED39A"/><rect x="20" y="38" width="24" height="20" fill="#F3DDA6"/><rect x="26" y="20" width="12" height="18" fill="#F3DDA6"/>'
+                + [8, 13, 18, 42, 47, 52].map(x => `<rect x="${x}" y="24" width="4" height="5" fill="#EED39A"/>`).join('') + [26, 30.5, 35].map(x => `<rect x="${x}" y="16" width="3" height="5" fill="#F3DDA6"/>`).join('')
+                + '<path d="M28 58v-9a4 4 0 0 1 8 0v9z" fill="#C9A86A"/><path d="M32 16V4" stroke="#8A5A3A" stroke-width="1.4"/><path d="M32 4l9 3-9 3z" fill="#E5484D"/><path d="M11 40h8M45 40h8" stroke="#D6B87A" stroke-width="2"/>' },
+            'decor-swimring': { w: 9, b: 4, set: 'beach', svg: GD_SH(18) + '<ellipse cx="32" cy="40" rx="20" ry="20" fill="#FFFFFF"/>' + [0, 90, 180, 270].map(a => `<path d="M32 20a20 20 0 0 1 14.1 5.9L39 33a10 10 0 0 0-7-3z" fill="#E5484D" transform="rotate(${a} 32 40)"/>`).join('') + '<circle cx="32" cy="40" r="9" fill="none"/><circle cx="32" cy="40" r="9.5" fill="#F3DDA6"/><path d="M18 30q4-6 10-8" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0.7"/>' },
+            'decor-beachumbrella': { w: 16, b: 7, set: 'beach', svg: GD_SH(20) + '<path d="M30 61L36 18" stroke="#8A5A3A" stroke-width="2.6"/><path d="M4 26Q30 2 60 18z" fill="#FFFFFF"/>' + [0, 2].map(i => `<path d="M${4 + i * 18} 26Q${14 + i * 18} 10 32 7Q${22 + i * 16} 14 ${19 + i * 18} 23.6z" fill="#FFC93C"/>`).join('')
+                + '<path d="M44 21Q46 12 32 7Q50 8 60 18z" fill="#2EAF9A"/><path d="M8 61q24-5 48 0z" fill="#F3DDA6"/>' },
+            'decor-mushroomhouse': { w: 14, b: 10, glow: true, set: 'fairy', svg: GD_SH(24) + '<path d="M16 60V34h32v26z" fill="#FFF4E0"/><path d="M4 36Q6 4 32 4t28 32q-28 8-56 0z" fill="#E5484D"/>'
+                + '<circle cx="18" cy="24" r="4" fill="#FFFFFF"/><circle cx="34" cy="14" r="5" fill="#FFFFFF"/><circle cx="48" cy="26" r="3.4" fill="#FFFFFF"/><path d="M26 60V48a6 6 0 0 1 12 0v12z" fill="#B07A45"/><circle cx="35" cy="54" r="1" fill="#6B4A3A"/>'
+                + '<circle cx="21" cy="44" r="4" fill="#FFE59A"/><path d="M17 44h8M21 40v8" stroke="#B07A45" stroke-width="1"/><circle cx="43" cy="44" r="4" fill="#FFE59A"/><path d="M39 44h8M43 40v8" stroke="#B07A45" stroke-width="1"/>' },
+            'decor-flowerarch': { w: 18, b: 9, set: 'fairy', svg: GD_SH(28) + '<path d="M10 61V30Q10 6 32 6t22 24v31" stroke="#FFFFFF" stroke-width="4" fill="none"/><path d="M10 61V30Q10 6 32 6t22 24v31" stroke="#58B03C" stroke-width="7" fill="none" stroke-dasharray="3 5" opacity="0.9"/>'
+                + [[10, 50, '#FF8FB8'], [10, 36, '#FFFFFF'], [13, 22, '#FFD23F'], [21, 11, '#FF8FB8'], [32, 7, '#E5484D'], [43, 11, '#FFFFFF'], [51, 22, '#FF8FB8'], [54, 36, '#FFD23F'], [54, 50, '#FFFFFF']].map(([x, y, c]) => gdFlower(x, y, c, 3.2)).join('') }
+        };
+        // ชุดธีม: วางครบทุกชิ้นได้โบนัสเล็กๆ
+        const GD_SETS = {
+            japan: { e: '⛩️', name: 'สวนญี่ปุ่น', items: ['decor-torii', 'decor-stonelantern', 'decor-redbridge', 'decor-bamboo'], perk: 'XP จากทุกอย่าง +5%' },
+            thai: { e: '🛕', name: 'สวนไทย', items: ['decor-sala', 'decor-jar', 'decor-coconut', 'decor-elephant'], perk: 'แขกพิเศษแวะมาบ่อยขึ้น 30%' },
+            cafe: { e: '☕', name: 'สวนคาเฟ่', items: ['decor-umbrellatable', 'decor-bicycle', 'decor-cafesign', 'decor-flowercart'], perk: 'ลูกค้าแผงขายมาเร็วขึ้น 1 นาที' },
+            beach: { e: '🏖️', name: 'ชายหาด', items: ['decor-beachchair', 'decor-sandcastle', 'decor-swimring', 'decor-beachumbrella'], perk: 'ลุ้นปลาหายากเพิ่มขึ้น 10%' },
+            fairy: { e: '🧚', name: 'สวนเทพนิยาย', items: ['decor-mushroomhouse', 'decor-flowerarch', 'decor-swing', 'decor-lights'], perk: 'ลุ้นผลดก +3%' }
+        };
+        // บ้านไร่ 5 ระดับ (วาดใหม่แทนอิโมจิ)
+        const GD_HOUSES = [
+            GD_SH(24) + '<path d="M10 60V34h44v26z" fill="#C9A06A"/><path d="M4 36L32 8l28 28z" fill="#B07A45"/><path d="M8 34L32 12l24 22" stroke="#8A5A3A" stroke-width="1.6" fill="none"/><path d="M12 30l-4 6M20 24l-4 8M44 24l4 8M52 30l4 6" stroke="#8A5A3A" stroke-width="1.4"/><path d="M26 60V44h12v16z" fill="#6B4A3A"/>',
+            GD_SH(26) + '<rect x="10" y="30" width="44" height="30" fill="#E8C08A"/><path d="M10 38h44M10 46h44M10 54h44" stroke="#C99A60" stroke-width="1.2"/><path d="M4 32L32 8l28 24z" fill="#E5484D"/><path d="M4 32L32 8l28 24" stroke="#B8323A" stroke-width="2" fill="none"/><path d="M27 60V44h10v16z" fill="#8A5A3A"/><rect x="14" y="38" width="9" height="8" fill="#BFE6FF" stroke="#8A5A3A" stroke-width="1.4"/><rect x="41" y="38" width="9" height="8" fill="#BFE6FF" stroke="#8A5A3A" stroke-width="1.4"/>',
+            GD_SH(28) + '<rect x="8" y="28" width="48" height="26" fill="#FFF4E0"/><path d="M2 30L32 6l30 24z" fill="#3B82F6"/><path d="M2 30L32 6l30 24" stroke="#2563EB" stroke-width="2" fill="none"/><rect x="6" y="52" width="52" height="8" fill="#C68B52"/><path d="M8 52v-6M16 52v-6M48 52v-6M56 52v-6M6 46h14M44 46h14" stroke="#8A5A3A" stroke-width="1.6"/><path d="M27 54V38h10v16z" fill="#8A5A3A"/><rect x="12" y="34" width="10" height="8" fill="#BFE6FF" stroke="#8A5A3A" stroke-width="1.4"/><rect x="42" y="34" width="10" height="8" fill="#BFE6FF" stroke="#8A5A3A" stroke-width="1.4"/>' + gdFlower(10, 44, '#FF8FB8', 2.4) + gdFlower(54, 44, '#FFD23F', 2.4),
+            GD_SH(30) + '<rect x="4" y="34" width="28" height="26" fill="#E8C08A"/><path d="M0 36L18 18l18 18z" fill="#E5484D"/><rect x="30" y="26" width="30" height="34" fill="#FFF4E0"/><path d="M26 28L45 8l19 20z" fill="#2EAF9A"/><path d="M14 60V48h8v12zM41 60V44h8v16z" fill="#8A5A3A"/><rect x="8" y="40" width="6" height="6" fill="#BFE6FF"/><rect x="34" y="32" width="8" height="7" fill="#BFE6FF"/><rect x="50" y="32" width="8" height="7" fill="#BFE6FF"/>',
+            GD_SH(30) + '<rect x="12" y="26" width="40" height="34" fill="#F3EEE4"/><rect x="2" y="18" width="12" height="42" fill="#E8E1D2"/><rect x="50" y="18" width="12" height="42" fill="#E8E1D2"/><path d="M0 20L8 6l8 14zM48 20l8-14 8 14z" fill="#7C5CDB"/><path d="M10 28L32 10l22 18z" fill="#8B6CF6"/>'
+                + '<path d="M8 6V0M56 6V0" stroke="#6B4A3A" stroke-width="1.2"/><path d="M8 0l6 2-6 2zM56 0l6 2-6 2z" fill="#E5484D"/><path d="M26 60V44a6 6 0 0 1 12 0v16z" fill="#8A5A3A"/><rect x="18" y="34" width="7" height="8" rx="3" fill="#BFE6FF"/><rect x="39" y="34" width="7" height="8" rx="3" fill="#BFE6FF"/><rect x="5" y="30" width="6" height="7" rx="3" fill="#BFE6FF"/><rect x="53" y="30" width="6" height="7" rx="3" fill="#BFE6FF"/><circle cx="32" cy="22" r="3" fill="#FFD23F"/>'
+        ];
+        // ---- 🌄 ฉากหลัง ----
+        const GD_SKIES = { dawn: ['#FFC9A8', '#FFE4CF', '#F8E6F2'], day: ['#7CC8F8', '#B9E3FF', '#E6F6FF'], dusk: ['#FF8F70', '#FFB98F', '#FFE0BC'], night: ['#0B1636', '#182A58', '#2A3E74'] };
+        function gdSlot(d = new Date()) {
+            const h = new Date(d.getTime() + d.getTimezoneOffset() * 60000 + 7 * 3600000).getHours(); // เวลาไทย
+            return h >= 5 && h < 7 ? 'dawn' : h >= 7 && h < 17 ? 'day' : h >= 17 && h < 19 ? 'dusk' : 'night';
+        }
+        function gdSky(t, wet) {
+            const c = GD_SKIES[t];
+            let s = `<defs><linearGradient id="gd-sky-${t}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c[0]}"/><stop offset="0.6" stop-color="${c[1]}"/><stop offset="1" stop-color="${c[2]}"/></linearGradient></defs><rect width="320" height="200" fill="url(#gd-sky-${t})"/>`; // id ตามช่วงเวลา หลายภาพในหน้าเดียวกันสีไม่ปนกัน
+            if (t === 'night') s += gdRing(22, (a, i) => `<circle cx="${(i * 97 + 13) % 320}" cy="${(i * 53 + 7) % 92}" r="${i % 3 ? 0.9 : 1.5}" fill="#FFFFFF" opacity="${0.6 + (i % 4) * 0.1}"/>`);
+            else if (!wet) {
+                const sun = t === 'day' ? [262, 34, '#FFE066'] : t === 'dawn' ? [56, 92, '#FFB36B'] : [262, 92, '#FF8A5B'];
+                s += `<circle cx="${sun[0]}" cy="${sun[1]}" r="26" fill="${sun[2]}" opacity="0.25"/><circle cx="${sun[0]}" cy="${sun[1]}" r="15" fill="${sun[2]}"/>`;
+                s += [[60, 30, 1], [170, 18, 0.8], [220, 52, 0.6]].map(([x, y, k]) => `<g opacity="${t === 'day' ? 0.95 : 0.75}" transform="translate(${x} ${y}) scale(${k})"><ellipse cx="0" cy="0" rx="22" ry="8" fill="#FFFFFF"/><ellipse cx="-10" cy="-5" rx="11" ry="8" fill="#FFFFFF"/><ellipse cx="8" cy="-7" rx="12" ry="9" fill="#FFFFFF"/></g>`).join('');
+            }
+            return s;
+        }
+        // วาดทับหลังสุด: ย้อมสีตามเวลา · ฝนทำให้ครึ้ม · พระจันทร์
+        function gdSkyTop(t, wet) {
+            let s = t === 'night' ? '<rect width="320" height="200" fill="#0B1430" opacity="0.36"/>' : t === 'dusk' ? '<rect width="320" height="200" fill="#FF7A45" opacity="0.12"/>' : t === 'dawn' ? '<rect width="320" height="200" fill="#FF9FC4" opacity="0.08"/>' : '';
+            if (wet) s += '<rect width="320" height="200" fill="#4F5D78" opacity="0.26"/>' + [[70, 26], [190, 16], [270, 40]].map(([x, y]) => `<g transform="translate(${x} ${y})" opacity="0.92"><ellipse rx="30" ry="10" fill="#A9B4C6"/><ellipse cx="-14" cy="-6" rx="15" ry="10" fill="#A9B4C6"/><ellipse cx="10" cy="-8" rx="16" ry="11" fill="#B9C3D3"/></g>`).join('');
+            if (t === 'night' && !wet) s += '<path d="M262 17a13 13 0 1 0 12.4 17.1a11 11 0 0 1-12.4-17.1z" fill="#FFF6D6"/>'; // จันทร์เสี้ยว
+            return s;
+        }
+        const gdHills = (y, c, amp = 14, seed = 0) => `<path d="M0 ${y}${Array.from({ length: 9 }, (_, i) => `Q${i * 40 + 20} ${y - amp * (0.5 + ((i + seed) % 3) / 3)} ${i * 40 + 40} ${y}`).join('')}V200H0z" fill="${c}"/>`;
+        const gdPine = (x, y, h, c) => `<path d="M${x} ${y - h}l${h * 0.32} ${h * 0.55}h-${h * 0.12}l${h * 0.2} ${h * 0.45}H${x - h * 0.4}l${h * 0.2}-${h * 0.45}h-${h * 0.12}z" fill="${c}"/>`;
+        const gdTuft = (x, y, c = '#4E9F3D') => `<path d="M${x - 3} ${y}l1-5 2 5 1-6 2 6 1-4 1 4" stroke="${c}" stroke-width="1.2" fill="none" stroke-linejoin="round"/>`;
+        const GD_BACKDROPS = {
+            meadow: { name: 'ทุ่งหญ้า', price: 0, b: 0, ground: '#7CCB5E', draw: () => gdHills(118, '#A8DB86', 18, 1) + gdHills(126, '#8ED16C', 12, 2)
+                + [[40, 112], [78, 116], [250, 110], [292, 114]].map(([x, y]) => `<circle cx="${x}" cy="${y - 7}" r="7" fill="#5DB54E"/><rect x="${x - 1}" y="${y - 2}" width="2" height="5" fill="#8A5A3A"/>`).join('')
+                + gdHills(136, '#7CCB5E', 6, 0) + [[20, 168], [64, 186], [118, 176], [210, 182], [262, 170], [300, 190], [150, 194]].map(([x, y]) => gdTuft(x, y)).join('')
+                + [[36, 160, '#FFFFFF'], [92, 178, '#FFD23F'], [240, 160, '#FF8FB8'], [288, 178, '#FFFFFF'], [180, 168, '#FFD23F']].map(([x, y, c]) => gdFlower(x, y, c, 2.2)).join('') },
+            flowers: { name: 'ทุ่งดอกไม้', price: 40, b: 8, ground: '#86CF63', draw: () => gdHills(116, '#B8E39A', 16, 2)
+                + '<path d="M238 112v-26l6-6 6 6v26z" fill="#F3EEE4"/><path d="M244 80m0 0l-14-14M244 80l14-14M244 80l-14 14M244 80l14 14" stroke="#C68B52" stroke-width="3" stroke-linecap="round"/><circle cx="244" cy="80" r="3" fill="#8A5A3A"/>'
+                + ['#FF8FB8', '#FFD23F', '#E5484D', '#A78BFA', '#FF8FB8'].map((c, i) => `<path d="M0 ${126 + i * 7}Q160 ${118 + i * 7} 320 ${126 + i * 7}V${132 + i * 7}Q160 ${124 + i * 7} 0 ${132 + i * 7}z" fill="${c}" opacity="0.85"/><path d="M0 ${132 + i * 7}Q160 ${124 + i * 7} 320 ${132 + i * 7}V${133 + i * 7}Q160 ${125 + i * 7} 0 ${133 + i * 7}z" fill="#6CC24A"/>`).join('')
+                + gdHills(166, '#86CF63', 4, 1) + [[30, 182, '#FF8FB8'], [80, 192, '#FFD23F'], [150, 186, '#E5484D'], [230, 190, '#A78BFA'], [290, 180, '#FF8FB8']].map(([x, y, c]) => gdTulip(x, y, c)).join('') },
+            pine: { name: 'ป่าสน', price: 60, b: 10, ground: '#5E9E52', draw: () => '<path d="M0 110L50 60l40 34 50-50 60 52 40-30 80 48V200H0z" fill="#9DB4C8"/><path d="M140 44l14 12-8 2zM50 60l10 9-6 1z" fill="#FFFFFF"/>'
+                + Array.from({ length: 14 }, (_, i) => gdPine(i * 24 + 6, 124 - (i % 3) * 3, 34 + (i % 4) * 5, '#3E7A56')).join('') + gdHills(130, '#5E9E52', 6, 1)
+                + Array.from({ length: 6 }, (_, i) => gdPine([8, 300, 40, 270, 18, 312][i], [150, 156, 176, 182, 196, 196][i], 26 + (i % 3) * 6, '#2E6E45')).join('') },
+            beach: { name: 'ชายทะเล', price: 80, b: 12, ground: '#F3DDA6', draw: () => '<rect y="100" width="320" height="40" fill="#4FB3E8"/><rect y="100" width="320" height="6" fill="#7CC7EF"/><path d="M220 100q16-14 34 0z" fill="#5DB54E"/>'
+                + Array.from({ length: 6 }, (_, i) => `<path d="M${i * 56 + 10} ${112 + (i % 2) * 10}q8-4 16 0" stroke="#FFFFFF" stroke-width="1.6" fill="none" opacity="0.8"/>`).join('')
+                + '<path d="M0 134Q80 126 160 132T320 130V200H0z" fill="#F3DDA6"/><path d="M0 134Q80 126 160 132T320 130" stroke="#FFFFFF" stroke-width="3" fill="none" opacity="0.9"/>'
+                + '<path d="M290 176q-4-30 6-56" stroke="#A8743F" stroke-width="5" fill="none"/><path d="M296 120q-20-4-30 8q14-4 30-4zM296 120q20-6 28 8q-12-6-28-6zM296 120q-8-12 6-16q-6 6-6 16z" fill="#4E9F3D"/>'
+                + [[40, 178], [130, 190], [200, 172]].map(([x, y]) => `<path d="M${x} ${y}q4-6 8 0z" fill="#FF8FB8"/>`).join('') },
+            japan: { name: 'สวนญี่ปุ่น', price: 100, b: 14, ground: '#E8E1D2', draw: () => '<path d="M70 118L150 46l80 72z" fill="#8FA7C7"/><path d="M150 46l-20 18 10-2 10 6 8-6 12 2z" fill="#FFFFFF"/>'
+                + gdHills(124, '#7FB86A', 10, 2) + '<path d="M0 134Q160 124 320 134V200H0z" fill="#E8E1D2"/>'
+                + Array.from({ length: 5 }, (_, i) => `<path d="M0 ${146 + i * 11}Q160 ${138 + i * 11} 320 ${146 + i * 11}" stroke="#D3C9B5" stroke-width="1.4" fill="none"/>`).join('')
+                + [[22, 118], [300, 114]].map(([x, y]) => `<path d="M${x} ${y + 20}v-20" stroke="#6B4A3A" stroke-width="4"/><circle cx="${x}" cy="${y - 8}" r="16" fill="#FFB3CF"/><circle cx="${x - 12}" cy="${y}" r="11" fill="#FF9FC4"/><circle cx="${x + 12}" cy="${y - 2}" r="11" fill="#FFD6E5"/>`).join('') },
+            thai: { name: 'สวนไทย', price: 100, b: 14, ground: '#86CF63', draw: () => '<path d="M150 112V82l10-12 10 12v30zM160 70V48M146 84h28" stroke="#D9A520" stroke-width="2" fill="#F3C44D"/><path d="M160 36l4 12h-8z" fill="#D9A520"/><path d="M120 112l8-18h64l8 18z" fill="#C8302C"/><path d="M128 94l10-12h44l10 12z" fill="#E5484D"/>'
+                + gdHills(120, '#9AD47E', 8, 1) + '<path d="M0 130h320v14H0z" fill="#5DB7E8"/><path d="M0 130h320" stroke="#86CDF2" stroke-width="2"/>'
+                + [[40, 136], [100, 138], [220, 136], [280, 138]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="6" ry="2" fill="#4E9F3D"/>` + gdFlower(x + 4, y - 3, '#FF8FB8', 2.4)).join('') + '<path d="M0 144Q160 138 320 144V200H0z" fill="#86CF63"/>'
+                + [[20, 140], [306, 142]].map(([x, y]) => `<path d="M${x} ${y}q-2-30 4-50" stroke="#A8743F" stroke-width="4" fill="none"/><path d="M${x + 4} ${y - 50}q-16-4-24 6q12-4 24-3zM${x + 4} ${y - 50}q16-6 22 6q-10-6-22-5zM${x + 4} ${y - 50}q-4-10 6-12q-6 4-6 12z" fill="#4E9F3D"/>`).join('') },
+            snow: { name: 'หิมะ', price: 120, b: 16, ground: '#F4F8FC', draw: () => '<path d="M0 112L60 58l50 40 60-54 70 58 40-24 40 36V200H0z" fill="#C9D8EA"/><path d="M60 58l14 12-8 1-6 6-6-6-8 0zM170 44l18 16-10 0-8 8-8-8-10 0z" fill="#FFFFFF"/>'
+                + Array.from({ length: 11 }, (_, i) => gdPine(i * 30 + 10, 126 - (i % 2) * 4, 30 + (i % 3) * 6, '#3E7A56') + `<path d="M${i * 30 + 10} ${126 - (i % 2) * 4 - 30 - (i % 3) * 6}l6 10h-12z" fill="#FFFFFF"/>`).join('')
+                + '<path d="M0 132Q160 120 320 132V200H0z" fill="#F4F8FC"/><path d="M40 160q30-8 60 0M200 176q30-8 70 0" stroke="#DCE7F3" stroke-width="3" fill="none"/>' }
+        };
+        // วาดฉากหลังทั้งชุด: ท้องฟ้าตามเวลาไทย · ฝน/พายุทำให้ฟ้าครึ้ม · กลางคืน/เย็น/เช้าย้อมสีทั้งภาพ
+        function gdBackdropSVG(bg, t, wet) {
+            const B = GD_BACKDROPS[bg] || GD_BACKDROPS.meadow;
+            return gdSky(t, wet) + B.draw() + gdSkyTop(t, wet);
+        }
+        // ---- 🌳 ต้นไม้พักใจ: 7 พันธุ์ × 5 ระยะ (ตามจำนวนวันที่พักดีติดกัน) ----
+        const GD_TREES = {
+            classic: { name: 'ต้นพักใจ', price: 0, b: 0, leaf: ['#4E9F3D', '#6CC24A', '#93D66F'], trunk: '#8A5A3A', flower: '#FF8FB8' },
+            sakura: { name: 'ซากุระ', price: 60, b: 8, leaf: ['#F28DB2', '#FFB3CF', '#FFD6E5'], trunk: '#6B4A3A', bloom: true },
+            ratchaphruek: { name: 'ราชพฤกษ์', price: 60, b: 8, leaf: ['#4E9F3D', '#6CC24A', '#8FD36A'], trunk: '#7A5232', chains: '#FFD23F' },
+            mango: { name: 'มะม่วง', price: 60, b: 7, leaf: ['#2F7F2E', '#3F9A3A', '#5DB54E'], trunk: '#7A5232', fruit: '#F9C846' },
+            maple: { name: 'เมเปิล', price: 80, b: 9, leaf: ['#D9442A', '#F2652D', '#FFA44A'], trunk: '#6B4A3A' },
+            pine: { name: 'สนคริสต์มาส', price: 80, b: 9, leaf: ['#2E6E45', '#3A8A57', '#4FA36A'], trunk: '#6B4A3A', cone: true },
+            bonsai: { name: 'บอนไซ', price: 100, b: 12, leaf: ['#3E8E4E', '#58A85E', '#7CC27A'], trunk: '#6B4A3A', small: true, flower: '#FFB3CF' }
+        };
+        const GD_POTS = {
+            clay: { name: 'กระถางดินเผา', price: 0, b: 0, svg: '<path d="M82 145L138 145L130 168L90 168Z" fill="#C9774A"/><rect x="78" y="139" width="64" height="9" rx="4" fill="#E08D5C"/><path d="M86 156h48" stroke="#B5663D" stroke-width="2" opacity="0.6"/>' },
+            celadon: { name: 'กระถางลายคราม', price: 30, b: 5, svg: '<path d="M82 145L138 145L131 168L89 168Z" fill="#F4F7FB"/><rect x="78" y="139" width="64" height="9" rx="4" fill="#3B6FB6"/><path d="M86 152q6-4 12 0t12 0t12 0t12 0M88 162q5-3 11 0t11 0t11 0t9 0" stroke="#3B6FB6" stroke-width="1.8" fill="none"/>' },
+            wood: { name: 'กระบะไม้', price: 30, b: 4, svg: '<rect x="80" y="140" width="60" height="28" rx="2" fill="#B07A45"/><path d="M80 149h60M80 158h60" stroke="#8A5A2E" stroke-width="1.6"/><path d="M96 140v28M124 140v28" stroke="#8A5A2E" stroke-width="1.2" opacity="0.6"/><rect x="78" y="138" width="64" height="5" rx="2" fill="#C68B52"/>' },
+            stone: { name: 'กระถางหิน', price: 40, b: 5, svg: '<path d="M80 143h60q-2 25-30 25t-30-25z" fill="#9AA5B1"/><ellipse cx="110" cy="143" rx="31" ry="5" fill="#B8C4D2"/><ellipse cx="110" cy="143" rx="26" ry="3" fill="#6B4A3A"/><path d="M90 154q20 8 40 0" stroke="#C3CBD4" stroke-width="2" fill="none"/>' },
+            ground: { name: 'ปลูกลงดิน', price: 20, b: 3, svg: '<path d="M54 168Q110 130 166 168Z" fill="#8A5A3A"/><path d="M64 166Q110 136 156 166" stroke="#A8743F" stroke-width="2" fill="none"/>' + [[70, 162], [96, 146], [126, 146], [150, 160]].map(([x, y]) => `<path d="M${x - 3} ${y}l1-6 2 6 1-7 2 7 1-5" stroke="#4E9F3D" stroke-width="1.6" fill="none"/>`).join('') }
+        };
+        const gdStage = streak => streak >= 14 ? 4 : streak >= 7 ? 3 : streak >= 3 ? 2 : streak >= 1 ? 1 : 0;
+        // คืนค่า { svg ของต้นไม้ (ยังไม่รวมกระถาง), top = ยอดต้น (ใช้วางของเทศกาล) }
+        function gdTreeSVG(kind, stage, opts = {}) {
+            const T = GD_TREES[kind] || GD_TREES.classic, wilt = !!opts.wilted;
+            const L = wilt ? ['#9C8A55', '#B5A16C', '#CDBB86'] : T.leaf, base = 142;
+            const H = [16, 34, 56, 80, 102][stage] * (T.small ? 0.62 : 1), top = base - H;
+            if (stage === 0) return { top, svg: `<path d="M110 ${base}V${top + 4}" stroke="${wilt ? '#A78355' : '#4E9F3D'}" stroke-width="3" stroke-linecap="round"/><path d="M110 ${top + 6}q-12-2-14-10q11 0 14 8zM110 ${top + 6}q12-2 14-10q-11 0-14 8z" fill="${wilt ? L[1] : '#6CC24A'}"/>` };
+            if (stage === 1) {
+                const leaves = [0, 1, 2, 3].map(i => { const y = base - 10 - i * 7, s = i % 2 ? 1 : -1; return `<ellipse cx="${110 + s * 9}" cy="${y}" rx="9" ry="4.2" fill="${kind === 'sakura' || kind === 'maple' ? L[i % 2 ? 1 : 0] : '#6CC24A'}" transform="rotate(${s * -20} ${110 + s * 9} ${y})"/>`; }).join('');
+                return { top, svg: `<path d="M110 ${base}Q107 ${base - H / 2} 110 ${top}" stroke="${T.trunk}" stroke-width="4" fill="none" stroke-linecap="round"/>${leaves}<circle cx="110" cy="${top}" r="5" fill="${L[2]}"/>` };
+            }
+            const R = [0, 0, 22, 30, 40][stage] * (T.small ? 0.9 : 1), cx = 110, cy = top + R * 0.35;
+            let s = '';
+            // ลำต้น + กิ่ง
+            if (T.small) s += `<path d="M104 ${base}Q96 ${base - H * 0.5} 112 ${base - H * 0.62}Q124 ${base - H * 0.8} 110 ${top + 4}" stroke="${T.trunk}" stroke-width="${6 + stage}" fill="none" stroke-linecap="round"/>`;
+            else if (T.cone) s += `<rect x="107" y="${base - 18}" width="6" height="18" fill="${T.trunk}"/>`;
+            else s += `<path d="M${106 - stage} ${base}L${108} ${cy + 4}h4L${114 + stage} ${base}z" fill="${T.trunk}"/><path d="M110 ${cy + R * 0.5}l-${R * 0.45}-${R * 0.4}M110 ${cy + R * 0.3}l${R * 0.5}-${R * 0.45}" stroke="${T.trunk}" stroke-width="${2 + stage * 0.6}" stroke-linecap="round"/>`;
+            if (T.cone) { // สน: ซ้อนสามเหลี่ยม
+                const h = H - 14;
+                [0, 1, 2].forEach(i => { const w = (R + 6) * (1 - i * 0.24), y0 = base - 14 - i * h * 0.3; s += `<path d="M${cx - w} ${y0}L${cx} ${y0 - h * 0.48}L${cx + w} ${y0}z" fill="${L[i % 3]}"/>`; });
+                if (stage >= 4 && !wilt) s += [[-16, -26, '#FFD23F'], [14, -34, '#E5484D'], [-6, -50, '#7CC7EF'], [10, -14, '#FF8FB8'], [-20, -10, '#FFFFFF']].map(([dx, dy, c]) => gdBulb(cx + dx, base + dy - 6, c)).join('')
+                    + `<path d="M${cx} ${top - 8}l2.4 5 5.4.6-4 3.8 1 5.4-4.8-2.6-4.8 2.6 1-5.4-4-3.8 5.4-.6z" fill="#FFD23F"/>`;
+                return { top: top - 6, svg: s };
+            }
+            if (T.small) { // บอนไซ: ใบเป็นแพแบนๆ
+                [[-14, 0.1, 0.62], [16, -0.25, 0.55], [0, -0.75, 0.5]].forEach(([dx, dy, k]) => { s += `<ellipse cx="${cx + dx}" cy="${cy + R * dy}" rx="${R * k * 1.3}" ry="${R * k * 0.55}" fill="${L[1]}"/><ellipse cx="${cx + dx - 3}" cy="${cy + R * dy - 3}" rx="${R * k}" ry="${R * k * 0.35}" fill="${L[2]}"/>`; });
+            } else {
+                [[0, 0, 1, 1], [-0.62, 0.22, 0.68, 0], [0.62, 0.18, 0.7, 0], [-0.32, -0.46, 0.66, 2], [0.36, -0.42, 0.62, 2], [0, 0.42, 0.6, 0]].forEach(([dx, dy, k, c]) => {
+                    s += `<circle cx="${(cx + dx * R).toFixed(1)}" cy="${(cy + dy * R).toFixed(1)}" r="${(R * k).toFixed(1)}" fill="${L[c]}"/>`;
+                });
+            }
+            if (!wilt) {
+                const dots = (n, f) => Array.from({ length: n }, (_, i) => f(Math.cos(i * 2.4) * R * (0.25 + (i % 3) * 0.22), Math.sin(i * 2.4) * R * (0.2 + (i % 3) * 0.2), i)).join('');
+                if (T.flower && opts.flower) s += dots(stage + 3, (dx, dy) => gdFlower(cx + dx, cy + dy, T.flower, 2.4 + stage * 0.2));
+                if (T.bloom && opts.big) s += dots(6, (dx, dy) => `<circle cx="${cx + dx}" cy="${cy + dy}" r="2" fill="#FFFFFF" opacity="0.9"/>`);
+                if (T.chains && opts.flower) s += dots(stage + 3, (dx, dy) => { const x = cx + dx * 1.2, y = cy + R * 0.3 + Math.abs(dy) * 0.4; return `<path d="M${x} ${y}v${8 + stage * 2}" stroke="#4E9F3D" stroke-width="0.8"/>` + Array.from({ length: 3 + stage }, (_, k) => `<circle cx="${x + (k % 2 ? 1.2 : -1.2)}" cy="${y + 3 + k * 2.6}" r="${1.9 - k * 0.12}" fill="${T.chains}"/>`).join(''); });
+                if (T.fruit && stage >= 3) s += dots(stage + 1, (dx, dy) => `<ellipse cx="${cx + dx}" cy="${cy + dy + R * 0.25}" rx="3.2" ry="4.4" fill="${T.fruit}"/><path d="M${cx + dx} ${cy + dy + R * 0.25 - 4}v-2" stroke="#4E9F3D" stroke-width="1"/>`);
+            } else s += `<ellipse cx="${cx - R * 0.8}" cy="${base + 4}" rx="4" ry="1.6" fill="${L[1]}"/><ellipse cx="${cx + R * 0.7}" cy="${base + 6}" rx="4" ry="1.6" fill="${L[0]}"/>`;
+            return { top: top - (T.small ? 0 : 4), svg: s };
+        }
+
+        // --- 🖌️ สวนพักโฉมใหม่: ข้อมูลการจัดสวน (เก็บใน shop.gd) ---
+        // ของแต่งแต่ละชิ้นเป็นชิ้นจริง (ของ multi ซื้อได้หลายชิ้น) วางในสวนหรือเก็บในกล่อง · x,y = จุดฐานของชิ้น เป็น % ของฉาก
+        const GD_SIZES = [0.75, 1, 1.35], GD_SIZE_NAMES = ['เล็ก', 'กลาง', 'ใหญ่'], GD_MULTI_MAX = 12, GD_SLOTS = 3, GD_HOUSE_POS = { x: 84, y: 60 };
+        const GD_TIERS = [[0, 'สวนเรียบง่าย'], [40, 'สวนน่ารัก'], [100, 'สวนสวย'], [180, 'สวนในฝัน'], [280, 'สวนระดับตำนาน']];
+        const GD_SHOP_NEW = {
+            'decor-fence': ['รั้วไม้ขาว', 6, '🪵'], 'decor-stones': ['ทางเดินหิน', 5, '🪨'], 'decor-flowerbed': ['แปลงทิวลิป', 10, '🌷'], 'decor-bush': ['พุ่มไม้ดอกขาว', 6, '🌳'],
+            'decor-lights': ['ไฟประดับ', 12, '💡'], 'decor-birdbath': ['อ่างน้ำนก', 14, '🐦'], 'decor-swing': ['ชิงช้าดอกไม้', 18, '🎠'], 'decor-pond': ['บ่อบัว', 22, '🪷'],
+            'decor-chime': ['กระดิ่งลม', 9, '🎐'], 'decor-sign': ['ป้ายสวนของฉัน', 8, '🪧'], 'decor-lamppost': ['โคมไฟสนาม', 12, '🏮'], 'decor-birdhouse': ['บ้านนก', 10, '🐦'],
+            'decor-gnome': ['คนแคระเฝ้าสวน', 10, '🧙'], 'decor-torii': ['เสาโทริอิ', 30, '⛩️'], 'decor-stonelantern': ['โคมหิน', 18, '🏮'], 'decor-redbridge': ['สะพานแดง', 28, '🌉'],
+            'decor-bamboo': ['กอไผ่', 12, '🎋'], 'decor-sala': ['ศาลาไทย', 35, '🛕'], 'decor-jar': ['โอ่งมังกร', 14, '🏺'], 'decor-coconut': ['ต้นมะพร้าว', 18, '🌴'],
+            'decor-elephant': ['ช้างปูนปั้น', 30, '🐘'], 'decor-umbrellatable': ['โต๊ะร่มคาเฟ่', 24, '☕'], 'decor-bicycle': ['จักรยานตะกร้าดอกไม้', 20, '🚲'], 'decor-cafesign': ['ป้ายเมนูคาเฟ่', 10, '🪧'],
+            'decor-flowercart': ['รถเข็นดอกไม้', 22, '💐'], 'decor-beachchair': ['เก้าอี้ชายหาด', 14, '🏖️'], 'decor-sandcastle': ['ปราสาททราย', 12, '🏰'], 'decor-swimring': ['ห่วงยาง', 8, '🛟'],
+            'decor-beachumbrella': ['ร่มชายหาด', 16, '⛱️'], 'decor-mushroomhouse': ['บ้านเห็ด', 30, '🍄'], 'decor-flowerarch': ['ซุ้มประตูดอกไม้', 26, '💐']
+        };
+        const gdNum = (n, lo, hi, d) => Number.isFinite(+n) ? Math.min(hi, Math.max(lo, +n)) : d;
+        // ตำแหน่งเริ่มต้นแบบเดิม (left/right/top/bottom เป็น %) → จุดฐานของชิ้น
+        function gdPosFrom(pos) {
+            const g = k => { const m = new RegExp(k + ':\\s*(-?[\\d.]+)%').exec(pos || ''); return m ? +m[1] : null; };
+            const l = g('left'), r = g('right'), t = g('top'), b = g('bottom');
+            return { x: l !== null ? l + 4 : r !== null ? 96 - r : 50, y: b !== null ? 100 - b : t !== null ? t + 14 : 80 };
+        }
+        function gdLoad(v, owned, placed, pos) {
+            v = v && typeof v === 'object' && !Array.isArray(v) ? v : null;
+            const have0 = v && v.have && typeof v.have === 'object' ? v.have : {};
+            const list = (a, all, free) => [...new Set([free, ...(Array.isArray(a) ? a : []).filter(k => hasOwn(all, k))])];
+            const have = { bg: list(have0.bg, GD_BACKDROPS, 'meadow'), tree: list(have0.tree, GD_TREES, 'classic'), pot: list(have0.pot, GD_POTS, 'clay') };
+            const g = { bg: v && have.bg.includes(v.bg) ? v.bg : 'meadow', tree: v && have.tree.includes(v.tree) ? v.tree : 'classic', pot: v && have.pot.includes(v.pot) ? v.pot : 'clay',
+                have, extra: {}, items: [], slots: [], seq: 0 };
+            const mine = owned.filter(id => GD_ART[id]);
+            if (v && v.extra && typeof v.extra === 'object') mine.forEach(id => { const n = Math.floor(+v.extra[id] || 0); if (GD_ART[id].multi && n > 0) g.extra[id] = Math.min(GD_MULTI_MAX - 1, n); });
+            const clean = it => it && typeof it === 'object' && mine.includes(it.id)
+                ? { u: 0, id: it.id, x: gdNum(it.x, 2, 98, 50), y: gdNum(it.y, 6, 99, 80), s: [0, 1, 2].includes(it.s) ? it.s : 1, f: !!it.f, st: !!it.st } : null;
+            if (v && Array.isArray(v.items)) v.items.slice(0, 300).map(clean).filter(Boolean).forEach(it => { if (g.items.filter(x => x.id === it.id).length < 1 + (g.extra[it.id] || 0)) g.items.push(it); });
+            else mine.forEach(id => { // ย้ายจากระบบเดิม: ของที่วางอยู่ใช้ตำแหน่งที่ลากไว้ (ของที่ตั้งบนพื้นย้ายลงมาบนพื้นหญ้า) ของที่ไม่ได้วางเก็บเข้ากล่อง
+                const p = pos[id] ? { x: pos[id].x, y: pos[id].y + 8 } : gdPosFrom((SHOP_ITEMS[id] || {}).pos);
+                if (!GD_ART[id].bob) p.y = Math.max(p.y, 64);
+                g.items.push({ u: 0, id, x: gdNum(p.x, 2, 98, 50), y: gdNum(p.y, 6, 99, 80), s: 1, f: false, st: !placed.includes(id) });
+            });
+            g.items.forEach(it => { it.u = ++g.seq; });
+            g.slots = Array.from({ length: GD_SLOTS }, (_, i) => {
+                const s = v && Array.isArray(v.slots) ? v.slots[i] : null;
+                return s && typeof s === 'object' && Array.isArray(s.items) ? { at: Math.max(0, +s.at || 0), bg: hasOwn(GD_BACKDROPS, s.bg) ? s.bg : 'meadow', tree: hasOwn(GD_TREES, s.tree) ? s.tree : 'classic',
+                    pot: hasOwn(GD_POTS, s.pot) ? s.pot : 'clay', items: s.items.slice(0, 300).map(it => it && GD_ART[it.id] ? { id: it.id, x: gdNum(it.x, 2, 98, 50), y: gdNum(it.y, 6, 99, 80), s: [0, 1, 2].includes(it.s) ? it.s : 1, f: !!it.f } : null).filter(Boolean) } : null;
+            });
+            return g;
+        }
+        // ให้จำนวนชิ้นตรงกับที่มี (ได้ของแต่งจากรางวัล/เควสต์ = วางให้เลย) และให้ shop.decor = ของที่วางอยู่ (โค้ดส่วนอื่นยังใช้ได้เหมือนเดิม)
+        function gdSync(st = shop) {
+            const g = st.gd;
+            g.items = g.items.filter(it => st.owned.includes(it.id) && GD_ART[it.id]);
+            st.owned.filter(id => GD_ART[id]).forEach(id => {
+                let n = g.items.filter(it => it.id === id).length;
+                while (n < 1 + (g.extra[id] || 0)) { const p = gdSpot(id, g); g.items.push({ u: ++g.seq, id, x: p.x, y: p.y, s: 1, f: false, st: !st.decor.includes(id) }); n++; }
+            });
+            st.decor = [...new Set(g.items.filter(it => !it.st).map(it => it.id))];
+        }
+        // หาที่ว่างบนพื้นสำหรับวางของใหม่ (เว้นที่ให้ต้นไม้ตรงกลาง) ของที่ลอยได้วางกลางอากาศ
+        function gdSpot(id, g = shop.gd) {
+            const A = GD_ART[id] || {}, placed = g.items.filter(it => !it.st);
+            let best = { x: 20, y: 86 }, bestD = -1;
+            for (let k = 0; k < 40; k++) {
+                const x = 6 + Math.random() * 88, y = A.bob ? 24 + Math.random() * 28 : 68 + Math.random() * 30;
+                if (!A.bob && Math.abs(x - 50) < 15 && y > 62) continue;
+                const d = placed.reduce((m, it) => Math.min(m, Math.hypot(it.x - x, (it.y - y) * 1.4)), 99);
+                if (d > bestD) { bestD = d; best = { x: Math.round(x * 2) / 2, y: Math.round(y * 2) / 2 }; }
+            }
+            return best;
+        }
+        const gdCount = id => shop.gd.items.filter(it => it.id === id).length;
+        function gdSetOn(k, g) {
+            try { g = g || shop.gd; return GD_SETS[k].items.every(id => g.items.some(it => it.id === id && !it.st)); } catch (e) { return false; }
+        }
+        // 💖 คะแนนความสวย: ของที่วาง (ชิ้นซ้ำนับไม่เกิน 6) + ฉาก ต้นไม้ กระถาง บ้าน + ชุดครบ
+        function gdBeauty(g = shop.gd) {
+            const per = {};
+            let b = (GD_BACKDROPS[g.bg].b || 0) + (GD_TREES[g.tree].b || 0) + (GD_POTS[g.pot].b || 0) + (Math.max(1, veg.house) - 1) * 4;
+            g.items.forEach(it => { if (it.st || !GD_ART[it.id]) return; per[it.id] = (per[it.id] || 0) + 1; if (per[it.id] <= 6) b += GD_ART[it.id].b; });
+            Object.keys(GD_SETS).forEach(k => { if (gdSetOn(k, g)) b += 15; });
+            return b;
+        }
+        const gdTier = b => GD_TIERS.reduce((t, x, i) => b >= x[0] ? i : t, 0);
+        function renderGdBeauty() {
+            const el = document.getElementById('gd-beauty');
+            if (!el) return;
+            const b = gdBeauty();
+            el.textContent = `💖 ${b}`;
+            el.title = `ความสวยของสวน: ${GD_TIERS[gdTier(b)][1]}`;
+        }
+        // ฉากหลัง + บรรยากาศ: วาดใหม่เฉพาะตอนเปลี่ยนฉาก เปลี่ยนช่วงเวลา หรือฝนตก
+        function renderGardenScene() {
+            const bgEl = document.getElementById('garden-bg'), wrap = document.getElementById('garden-scene-wrap');
+            if (!bgEl || !wrap || !shop) return;
+            const t = gdSlot();
+            let w = '';
+            try { w = todayWeather(); } catch (e) {}
+            const wet = w === 'rain' || w === 'storm', key = `${shop.gd.bg}:${t}:${wet}`;
+            if (bgEl.dataset.k !== key) { bgEl.dataset.k = key; bgEl.innerHTML = gdBackdropSVG(shop.gd.bg, t, wet); }
+            if (wrap.dataset.slot !== t) { wrap.dataset.slot = t; renderGardenDecor(); return; } // เข้าช่วงกลางคืน ของเรืองแสงต้องวาดใหม่
+            renderGardenAmb(t);
+        }
+        function renderGardenAmb(t) {
+            const amb = document.getElementById('garden-amb');
+            if (!amb) return;
+            const g = shop.gd, kinds = [t === 'night' ? 'ff' : '', g.tree === 'sakura' || g.bg === 'japan' ? 'petal' : '', g.tree === 'maple' ? 'leaf' : '', g.bg === 'snow' ? 'snow' : ''].filter(Boolean);
+            const key = kinds.join(',');
+            if (amb.dataset.k === key) return;
+            amb.dataset.k = key;
+            const r = (a, b) => (a + Math.random() * (b - a)).toFixed(1);
+            const make = (cls, n, low) => Array.from({ length: n }, () => `<i class="${cls}" style="left:${r(4, 96)}%; top:${low ? r(40, 92) : r(-12, -4)}%; animation-delay:-${r(0, 9)}s; animation-duration:${r(6, 11)}s"></i>`).join('');
+            amb.innerHTML = (kinds.includes('ff') ? make('gd-ff', 7, true) : '') + (kinds.includes('petal') ? make('gd-petal', 7) : '') + (kinds.includes('leaf') ? make('gd-leaf', 5) : '') + (kinds.includes('snow') ? make('gd-snow', 12) : '');
+        }
+        let gdSel = 0, gdTab = 'items', gdGrid = true;
+        function gdItemHTML(it, night) {
+            const A = GD_ART[it.id];
+            if (!A) return '';
+            return `<span class="garden-decor-item${A.bob ? ' is-bob' : ''}${A.glow && night ? ' is-glow' : ''}${it.f ? ' is-flip' : ''}${gardenEditing && gdSel === it.u ? ' is-sel' : ''}" data-id="${it.id}" data-u="${it.u}"`
+                + ` style="left:${it.x}%; top:${it.y}%; --w:${(A.w * GD_SIZES[it.s]).toFixed(2)}; z-index:${10 + Math.round(it.y)}"><svg viewBox="0 0 64 64" aria-hidden="true">${A.svg}</svg></span>`;
+        }
+        function renderGardenDecor() {
+            const wrap = document.getElementById('garden-scene-wrap');
+            if (!wrap) return;
+            let box = document.getElementById('garden-decor');
+            if (!box) { box = document.createElement('div'); box.id = 'garden-decor'; box.className = 'garden-decor'; box.setAttribute('aria-hidden', 'true'); wrap.appendChild(box); }
+            gdSync();
+            const night = gdSlot() === 'night';
+            box.innerHTML = shop.gd.items.filter(it => !it.st).map(it => gdItemHTML(it, night)).join('');
+            renderGardenHouse(); renderGardenScene(); renderGdBeauty();
+            if (gardenEditing) renderGdPanel();
+        }
+        function renderGardenHouse() {
+            const wrap = document.getElementById('garden-scene-wrap');
+            if (!wrap) return;
+            let el = document.getElementById('garden-house');
+            if (!el) { el = document.createElement('span'); el.id = 'garden-house'; el.className = 'garden-decor-item garden-house'; el.dataset.id = 'house'; el.setAttribute('aria-hidden', 'true'); wrap.appendChild(el); }
+            const i = Math.max(0, Math.min(GD_HOUSES.length - 1, veg.house - 1)), p = shop.decorPos.house || GD_HOUSE_POS;
+            if (el.dataset.e !== HOUSE_LEVELS[i].e) { el.innerHTML = `<svg viewBox="0 0 64 64" aria-hidden="true">${GD_HOUSES[i]}</svg>`; el.dataset.e = HOUSE_LEVELS[i].e; }
+            el.title = HOUSE_LEVELS[i].name;
+            el.style.cssText = `left:${p.x}%; top:${p.y}%; --w:17; z-index:${10 + Math.round(p.y)}`;
+            el.classList.toggle('has-pos', !!shop.decorPos.house);
+        }
+        // 🎨 โหมดแต่งสวน: ลากย้าย · แตะเลือกชิ้นเพื่อปรับขนาด/กลับด้าน/เก็บ · แผงด้านล่างเลือกฉาก ต้นไม้ กระถาง ซื้อของ ชุดธีม และแบบจัดสวน
+        let gardenEditing = false;
+        function startGardenEdit(tab) {
+            const wrap = document.getElementById('garden-scene-wrap');
+            if (!wrap) return;
+            if (typeof tab === 'string') gdTab = tab;
+            if (!gardenEditing) {
+                gardenEditing = true;
+                wrap.classList.add('is-editing');
+                wrap.classList.toggle('show-grid', gdGrid);
+                wrap.scrollIntoView({ block: 'start', behavior: motionReduced() ? 'auto' : 'smooth' });
+                showToast('🎨 แต่งสวน: ลากของไปวางได้เลย แตะของเพื่อปรับขนาด กลับด้าน หรือเก็บ · เลือกฉาก ต้นไม้ และซื้อของแต่งได้ด้านล่าง', 'info', { duration: 5000 });
+            }
+            renderGardenDecor();
+        }
+        function stopGardenEdit() {
+            const wrap = document.getElementById('garden-scene-wrap');
+            gardenEditing = false; gdSel = 0;
+            if (wrap) wrap.classList.remove('is-editing', 'show-grid');
+            const bar = document.getElementById('garden-edit-bar');
+            if (bar) bar.remove();
+            saveShop(); renderGardenDecor();
+        }
+        // จัดวางใหม่ให้อัตโนมัติ (บ้านกลับที่เดิม ของทุกชิ้นกระจายบนพื้น)
+        function resetGardenLayout() {
+            shop.decorPos = {};
+            const g = shop.gd, done = [];
+            g.items.forEach(it => { if (it.st) return; const p = gdSpot(it.id, { items: done }); it.x = p.x; it.y = p.y; done.push(it); });
+            saveShop(); renderGardenDecor();
+        }
+        (function setupGardenDrag() {
+            let drag = null;
+            const pct = e => { const r = document.getElementById('garden-scene-wrap').getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * 100, y: (e.clientY - r.top) / r.height * 100 }; };
+            document.addEventListener('pointerdown', (e) => {
+                if (!gardenEditing) return;
+                const item = e.target.closest('#garden-scene-wrap .garden-decor-item');
+                if (!item || !item.dataset.id) return;
+                e.preventDefault();
+                const u = +item.dataset.u || 0, it = u ? shop.gd.items.find(x => x.u === u) : null, cur = it || shop.decorPos.house || GD_HOUSE_POS, p = pct(e);
+                drag = { item, u, it, pid: e.pointerId, dx: cur.x - p.x, dy: cur.y - p.y, moved: false, sx: e.clientX, sy: e.clientY };
+                try { item.setPointerCapture(e.pointerId); } catch (err) {}
+            });
+            document.addEventListener('pointermove', (e) => {
+                if (!drag || e.pointerId !== drag.pid) return;
+                if (!drag.moved && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 4) return;
+                drag.moved = true;
+                drag.item.classList.add('is-dragging');
+                const p = pct(e), step = gdGrid ? 2.5 : 0.5;
+                const x = Math.min(98, Math.max(2, Math.round((p.x + drag.dx) / step) * step)), y = Math.min(99, Math.max(6, Math.round((p.y + drag.dy) / step) * step));
+                if (drag.it) { drag.it.x = x; drag.it.y = y; } else shop.decorPos.house = { x, y };
+                drag.item.style.left = x + '%'; drag.item.style.top = y + '%'; drag.item.style.zIndex = 10 + Math.round(y);
+            });
+            const end = (e) => {
+                if (!drag || e.pointerId !== drag.pid) return;
+                const d = drag;
+                drag = null;
+                d.item.classList.remove('is-dragging');
+                if (!d.moved) { if (d.u) { gdSel = gdSel === d.u ? 0 : d.u; renderGardenDecor(); } return; }
+                saveShop();
+            };
+            document.addEventListener('pointerup', end);
+            document.addEventListener('pointercancel', end);
+        })();
+        const gdSelItem = () => shop.gd.items.find(it => it.u === gdSel && !it.st);
+        function gdSize(d) { const it = gdSelItem(); if (!it) return; it.s = Math.max(0, Math.min(2, it.s + d)); saveShop(); renderGardenDecor(); }
+        function gdFlip() { const it = gdSelItem(); if (!it) return; it.f = !it.f; saveShop(); renderGardenDecor(); }
+        function gdStore() { const it = gdSelItem(); if (!it) return; it.st = true; gdSel = 0; saveShop(); renderGardenDecor(); playSound('pop'); }
+        function gdPlace(id) {
+            const it = shop.gd.items.find(x => x.id === id && x.st);
+            if (!it) return;
+            const p = gdSpot(id);
+            Object.assign(it, { st: false, x: p.x, y: p.y });
+            if (gardenEditing) gdSel = it.u;
+            saveShop(); renderGardenDecor(); playSound('pop');
+        }
+        function gdSetTab(t) { gdTab = t; renderGdPanel(); }
+        function gdToggleGrid() {
+            gdGrid = !gdGrid;
+            const wrap = document.getElementById('garden-scene-wrap');
+            if (wrap) wrap.classList.toggle('show-grid', gdGrid && gardenEditing);
+            renderGdPanel();
+        }
+        // ซื้อของแต่ง (ชิ้นแรก หรือชิ้นเพิ่มของที่ซื้อซ้ำได้) แล้ววางในสวนให้เลย
+        function gdBuy(id) {
+            const it = SHOP_ITEMS[id], A = GD_ART[id];
+            if (!it || !A || it.special) return;
+            const owned = shop.owned.includes(id);
+            if (owned && (!A.multi || gdCount(id) >= GD_MULTI_MAX)) return;
+            if (shop.coins < it.price) { showToast(`เหรียญยังไม่พอ ต้องใช้ 🪙${it.price}`, 'warning'); return; }
+            shop.coins -= it.price;
+            if (owned) shop.gd.extra[id] = (shop.gd.extra[id] || 0) + 1; else shop.owned.push(id);
+            const p = gdSpot(id), n = { u: ++shop.gd.seq, id, x: p.x, y: p.y, s: 1, f: false, st: false };
+            shop.gd.items.push(n);
+            if (gardenEditing) gdSel = n.u;
+            saveShop(); updateCoinUI(); renderGardenDecor(); playSound('welcome');
+            showToast(`🛍️ ได้${it.name}แล้ว! วางในสวนให้แล้ว${gardenEditing ? ' ลากไปจัดได้เลย' : ''}`, 'success');
+        }
+        // เลือก/ซื้อ ฉากหลัง ต้นไม้ หรือกระถาง
+        function gdUse(kind, k) {
+            const D = ({ bg: GD_BACKDROPS, tree: GD_TREES, pot: GD_POTS })[kind][k], g = shop.gd;
+            if (!D) return;
+            if (!g.have[kind].includes(k)) {
+                if (shop.coins < D.price) { showToast(`เหรียญยังไม่พอ ต้องใช้ 🪙${D.price}`, 'warning'); return; }
+                shop.coins -= D.price; g.have[kind].push(k); updateCoinUI();
+                showToast(`🛍️ ได้${D.name}แล้ว!`, 'success'); playSound('welcome');
+            }
+            g[kind] = k;
+            saveShop();
+            if (lastGardenArgs) renderGarden(...lastGardenArgs);
+            renderGardenDecor();
+        }
+        function gdSaveSlot(i) {
+            const g = shop.gd;
+            g.slots[i] = { at: Date.now(), bg: g.bg, tree: g.tree, pot: g.pot, items: g.items.filter(it => !it.st).map(({ id, x, y, s, f }) => ({ id, x, y, s, f })) };
+            saveShop(); renderGdPanel();
+            showToast(`💾 บันทึกแบบจัดสวนที่ ${i + 1} แล้ว`, 'success');
+        }
+        function gdLoadSlot(i) {
+            const g = shop.gd, sl = g.slots[i];
+            if (!sl) return;
+            const used = new Set();
+            let missing = 0;
+            g.items.forEach(it => { it.st = true; });
+            sl.items.forEach(x => {
+                const it = g.items.find(y => y.id === x.id && !used.has(y.u));
+                if (!it) { missing++; return; }
+                used.add(it.u);
+                Object.assign(it, { x: x.x, y: x.y, s: x.s, f: x.f, st: false });
+            });
+            ['bg', 'tree', 'pot'].forEach(k => { if (g.have[k].includes(sl[k])) g[k] = sl[k]; });
+            gdSel = 0;
+            saveShop();
+            if (lastGardenArgs) renderGarden(...lastGardenArgs);
+            renderGardenDecor();
+            showToast(`🖼️ ใช้แบบจัดสวนที่ ${i + 1} แล้ว${missing ? ` (ขาดของ ${missing} ชิ้นที่ไม่มีแล้ว)` : ''}`, 'success');
+        }
+        function gdSpecialText(it) {
+            return it.special === 'contest' ? '🏆 ได้จากงานประกวดผักยักษ์' : it.special === 'event' ? `${FARM_EVENTS[it.ev].cur.e} แลกช่วง${FARM_EVENTS[it.ev].short}` : it.special === 'quest' ? '📜 ได้จากเควสต์ชาวบ้าน'
+                : it.special === 'museum' ? '🏛️ ได้จากพิพิธภัณฑ์' : it.special === 'pass' ? '🎫 ได้จากบัตรสะสมแต้ม' : '🎁 ได้จากออเดอร์พิเศษ';
+        }
+        function gdTabHTML() {
+            const g = shop.gd, t = gdSlot();
+            const price = (p, fn) => `<button type="button" class="shop-buy" ${shop.coins < p ? 'disabled' : ''} onclick="${fn}">🪙 ${p}</button>`;
+            if (gdTab === 'bg' || gdTab === 'tree') {
+                const sec = (kind, all, prev) => Object.entries(all).map(([k, D]) => {
+                    const own = g.have[kind].includes(k), on = g[kind] === k;
+                    return `<div class="gd-card${on ? ' is-on' : ''}${own ? '' : ' is-locked'}"><span class="gd-prev${kind === 'bg' ? ' is-wide' : ''}">${prev(k)}</span><span class="gd-name">${D.name}</span><span class="gd-meta">💖${D.b}</span>`
+                        + (on ? '<span class="gd-ok">ใช้อยู่ ✓</span>' : own ? `<button type="button" class="shop-buy is-owned" onclick="gdUse('${kind}', '${k}')">ใช้</button>` : price(D.price, `gdUse('${kind}', '${k}')`)) + '</div>';
+                }).join('');
+                if (gdTab === 'bg') return sec('bg', GD_BACKDROPS, k => `<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${gdBackdropSVG(k, t, false)}</svg>`);
+                return '<p class="gd-sec">🌳 พันธุ์ต้นไม้พักใจ (โตตามจำนวนวันที่พักดีติดกัน)</p>' + sec('tree', GD_TREES, k => `<svg viewBox="0 30 220 140" aria-hidden="true">${gdTreeSVG(k, 4, { flower: true, big: true }).svg}${GD_POTS[g.pot].svg}</svg>`)
+                    + '<p class="gd-sec">🏺 กระถาง</p>' + sec('pot', GD_POTS, k => `<svg viewBox="40 90 140 80" aria-hidden="true">${gdTreeSVG(g.tree, 1, {}).svg}${GD_POTS[k].svg}</svg>`);
+            }
+            if (gdTab === 'sets') return Object.entries(GD_SETS).map(([k, S]) => {
+                const n = S.items.filter(id => g.items.some(it => it.id === id && !it.st)).length, on = n === S.items.length;
+                return `<div class="gd-set${on ? ' is-on' : ''}"><div class="gd-set-head"><b>${S.e} ชุด${S.name}</b><span class="gd-meta">${on ? 'ได้โบนัสแล้ว ✓' : `วางแล้ว ${n}/${S.items.length}`}</span></div>`
+                    + `<div class="gd-set-items">${S.items.map(id => { const placed = g.items.some(it => it.id === id && !it.st); return `<span class="gd-mini${placed ? ' is-on' : ''}" title="${SHOP_ITEMS[id].name}"><svg viewBox="0 0 64 64" aria-hidden="true">${GD_ART[id].svg}</svg></span>`; }).join('')}</div>`
+                    + `<span class="gd-perk">🎁 ${S.perk} · 💖+15</span></div>`;
+            }).join('') + '<p class="gd-sec gd-note">วางของในชุดให้ครบทุกชิ้นในสวน (ไม่ใช่แค่มีในกล่อง) ถึงจะได้โบนัส</p>';
+            if (gdTab === 'slots') return g.slots.map((sl, i) => `<div class="gd-slot"><div><b>แบบที่ ${i + 1}</b><span class="gd-meta">${sl ? `${sl.items.length} ชิ้น · ${GD_BACKDROPS[sl.bg].name} · ${GD_TREES[sl.tree].name} · ${thaiAgo(sl.at)}` : 'ยังว่างอยู่'}</span></div>`
+                + `<span class="gd-slot-btns">${sl ? `<button type="button" class="chip-btn" onclick="gdLoadSlot(${i})">🖼️ ใช้แบบนี้</button>` : ''}<button type="button" class="chip-btn" onclick="gdSaveSlot(${i})">💾 ${sl ? 'บันทึกทับ' : 'บันทึกแบบนี้'}</button></span></div>`).join('')
+                + '<p class="gd-sec gd-note">บันทึกการจัดสวนไว้ได้ 3 แบบ สลับไปมาตามอารมณ์ เช่น แบบปกติ แบบเทศกาล</p>';
+            // ของแต่ง: ของฉัน (มีในกล่อง/วางอยู่) → ร้านค้า → ของพิเศษ
+            const ids = Object.keys(GD_ART).filter(id => SHOP_ITEMS[id]);
+            const card = id => {
+                const it = SHOP_ITEMS[id], A = GD_ART[id], owned = shop.owned.includes(id), all = g.items.filter(x => x.id === id), placed = all.filter(x => !x.st).length, stored = all.length - placed;
+                let btn = '';
+                if (owned && stored) btn += `<button type="button" class="shop-buy" onclick="gdPlace('${id}')">วาง${stored > 1 ? ` (${stored})` : ''}</button>`;
+                if (owned && A.multi && all.length < GD_MULTI_MAX) btn += `<button type="button" class="shop-buy is-owned" ${shop.coins < it.price ? 'disabled' : ''} onclick="gdBuy('${id}')">+ ซื้ออีก 🪙${it.price}</button>`;
+                if (!owned) btn = it.special ? `<span class="gd-src">${gdSpecialText(it)}</span>` : price(it.price, `gdBuy('${id}')`);
+                if (!btn) btn = '<span class="gd-ok">วางแล้ว ✓</span>';
+                return `<div class="gd-card${owned ? '' : ' is-locked'}"><span class="gd-prev"><svg viewBox="0 0 64 64" aria-hidden="true">${A.svg}</svg></span><span class="gd-name">${it.name}</span>`
+                    + `<span class="gd-meta">💖${A.b}${A.set ? ' · ' + GD_SETS[A.set].e : ''}${A.multi ? ' · ซื้อซ้ำได้' : ''}${owned ? ` · วาง ${placed}${stored ? ` · กล่อง ${stored}` : ''}` : ''}</span>${btn}</div>`;
+            };
+            const mine = ids.filter(id => shop.owned.includes(id)), buy = ids.filter(id => !shop.owned.includes(id) && !SHOP_ITEMS[id].special), special = ids.filter(id => !shop.owned.includes(id) && SHOP_ITEMS[id].special);
+            return (mine.length ? `<p class="gd-sec">📦 ของฉัน (${mine.length})</p>` + mine.map(card).join('') : '') + `<p class="gd-sec">🛍️ ร้านของแต่ง · มี 🪙${shop.coins}</p>` + buy.map(card).join('')
+                + (special.length ? '<p class="gd-sec">🌟 ของพิเศษ (ได้จากกิจกรรม)</p>' + special.map(card).join('') : '');
+        }
+        function renderGdPanel() {
+            const wrap = document.getElementById('garden-scene-wrap');
+            if (!wrap || !gardenEditing) return;
+            let bar = document.getElementById('garden-edit-bar');
+            if (!bar) { bar = document.createElement('div'); bar.id = 'garden-edit-bar'; bar.className = 'garden-edit-bar gd-panel'; wrap.after(bar); }
+            const b = gdBeauty(), sel = gdSelItem(), list = bar.querySelector('.gd-list'), keep = list ? list.scrollTop : 0;
+            const tabs = [['items', '🧺', 'ของแต่ง'], ['bg', '🏞️', 'ฉาก'], ['tree', '🌳', 'ต้นไม้'], ['sets', '🎎', 'ชุดธีม'], ['slots', '💾', 'แบบจัดสวน']];
+            bar.innerHTML = `<div class="gd-top"><span class="gd-score">💖 ความสวย <b>${b}</b> · ${GD_TIERS[gdTier(b)][1]}</span>`
+                + `<button type="button" class="chip-btn" onclick="gdPhoto()">📸 ถ่ายรูป</button><button type="button" class="chip-btn is-active" onclick="stopGardenEdit()">✓ เสร็จแล้ว</button></div>`
+                + (sel ? `<div class="gd-sel"><b>${escHtml(SHOP_ITEMS[sel.id].name)}</b><span class="gd-sel-btns">`
+                    + `<button type="button" class="chip-btn" ${sel.s === 0 ? 'disabled' : ''} onclick="gdSize(-1)" aria-label="ย่อ">➖</button><span class="gd-size">${GD_SIZE_NAMES[sel.s]}</span>`
+                    + `<button type="button" class="chip-btn" ${sel.s === 2 ? 'disabled' : ''} onclick="gdSize(1)" aria-label="ขยาย">➕</button>`
+                    + `<button type="button" class="chip-btn" onclick="gdFlip()">↔️ กลับด้าน</button><button type="button" class="chip-btn" onclick="gdStore()">📦 เก็บ</button></span></div>`
+                    : '<p class="gd-hint">ลากของในสวนไปวางตรงไหนก็ได้ · แตะของเพื่อปรับขนาด กลับด้าน หรือเก็บเข้ากล่อง · ของที่อยู่ต่ำกว่าจะบังของที่อยู่สูงกว่าเอง</p>')
+                + `<div class="gd-tools"><button type="button" class="chip-btn${gdGrid ? ' is-active' : ''}" aria-pressed="${gdGrid}" onclick="gdToggleGrid()">📐 เส้นช่วยจัด</button><button type="button" class="chip-btn" onclick="resetGardenLayout()">↺ จัดวางให้ใหม่</button></div>`
+                + `<div class="kitchen-filter gd-tabs" role="tablist" aria-label="แต่งสวน">${tabs.map(([k, e, l]) => `<button type="button" class="chip-btn${gdTab === k ? ' is-active' : ''}" role="tab" aria-selected="${gdTab === k}" onclick="gdSetTab('${k}')">${e} ${l}</button>`).join('')}</div>`
+                + `<div class="gd-list">${gdTabHTML()}</div>`;
+            const nl = bar.querySelector('.gd-list');
+            if (nl && list) nl.scrollTop = keep;
+        }
+        // 📸 ถ่ายรูปสวน: รวมฉาก ต้นไม้ ของแต่ง บ้าน และสัตว์เลี้ยงเป็นรูปเดียว แล้วแชร์หรือบันทึกลงเครื่อง
+        async function gdPhoto() {
+            const wrap = document.getElementById('garden-scene-wrap');
+            if (!wrap) return;
+            const r = wrap.getBoundingClientRect(), W = 1200, H = Math.round(W * r.height / r.width), k = W / r.width;
+            const parts = [`<svg x="0" y="0" width="${W}" height="${H}" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice">${document.getElementById('garden-bg').innerHTML}</svg>`];
+            const els = [...wrap.querySelectorAll('.garden-svg, .garden-decor-item, .garden-pet, .garden-visitor')].map(el => ({ el, z: +getComputedStyle(el).zIndex || 0 })).sort((a, b) => a.z - b.z);
+            els.forEach(({ el }) => {
+                const b = el.getBoundingClientRect(), x = (b.left - r.left) * k, y = (b.top - r.top) * k, w = b.width * k, h = b.height * k;
+                if (el.classList.contains('garden-svg')) {
+                    const c = el.cloneNode(true);
+                    c.querySelectorAll('.garden-water').forEach(n => n.remove());
+                    parts.push(`<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 220 170" overflow="visible">${c.innerHTML}</svg>`);
+                    return;
+                }
+                const sv = el.querySelector('svg');
+                if (!sv) { parts.push(`<text x="${x + w / 2}" y="${y + h * 0.85}" font-size="${(h * 0.8).toFixed(1)}" text-anchor="middle">${escHtml(el.textContent.trim())}</text>`); return; }
+                const inner = `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 64 64" overflow="visible">${sv.innerHTML}</svg>`;
+                parts.push(el.classList.contains('is-flip') ? `<g transform="translate(${2 * x + w} 0) scale(-1 1)">${inner}</g>` : inner);
+            });
+            const b = gdBeauty();
+            parts.push(`<rect y="${H - 56}" width="${W}" height="56" fill="#000000" opacity="0.28"/><text x="24" y="${H - 20}" font-size="26" font-family="sans-serif" fill="#FFFFFF">🌱 สวนพักใจของฉัน · 💖 ${b} ${GD_TIERS[gdTier(b)][1]}</text>`);
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${parts.join('')}</svg>`;
+            try {
+                const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' })), img = new Image();
+                img.src = url;
+                await img.decode();
+                const cv = document.createElement('canvas');
+                cv.width = W; cv.height = H;
+                cv.getContext('2d').drawImage(img, 0, 0, W, H);
+                URL.revokeObjectURL(url);
+                const blob = await new Promise(res => cv.toBlob(res, 'image/png'));
+                window.__gdPhoto = blob; // ให้เทสต์ตรวจรูปได้
+                const file = new File([blob], 'my-garden.png', { type: 'image/png' });
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] }) && matchMedia('(pointer: coarse)').matches) {
+                    try { await navigator.share({ files: [file], title: 'สวนพักใจของฉัน' }); return; } catch (e) {}
+                }
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob); a.download = 'my-garden.png'; a.click();
+                setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+                showToast('📸 บันทึกรูปสวนแล้ว', 'success');
+            } catch (e) { showToast('ถ่ายรูปสวนไม่สำเร็จ ลองใหม่อีกครั้งนะ', 'warning'); }
+        }
+
         const SHOP_TABS = [['sticker', '🎀', 'สติกเกอร์'], ['hat', '👑', 'หมวก'], ['decor', '🌻', 'แต่งสวน'], ['seed', '💎', 'เมล็ด'], ['tool', '🔧', 'อุปกรณ์']];
         const canSVG = (body, rim) => `<svg viewBox="0 0 52 40" width="52" height="40" aria-hidden="true"><path d="M31 25L46 11" stroke="${rim}" stroke-width="4" stroke-linecap="round"/>`
             + `<ellipse cx="47.5" cy="9.5" rx="3.2" ry="4.6" fill="${rim}" transform="rotate(45 47.5 9.5)"/><path d="M12 15Q19 2 27 15" stroke="${rim}" stroke-width="3.4" fill="none"/>`
@@ -10734,6 +11412,7 @@
             'beehive':     { cat: 'tool', name: 'บ้านผึ้ง', price: 35, emoji: '🐝', desc: 'ผึ้งเก็บน้ำหวานจากดอกไม้ที่บาน ได้น้ำผึ้งทุกวัน', level: 4 },
             'greenhouse':  { cat: 'tool', name: 'เรือนกระจก', price: 80, svg: '<svg viewBox="0 0 52 40" width="52" height="40" aria-hidden="true"><path d="M4 18L26 4l22 14v19H4z" fill="#BFE8F5" stroke="#5BA3C7" stroke-width="2" stroke-linejoin="round"/><path d="M26 4v33M4 18h44M15 11v26M37 11v26" stroke="#5BA3C7" stroke-width="1.6"/><path d="M8 37c3-6 6-6 9 0M30 37c3-6 6-6 9 0" fill="#6BCB5B"/></svg>', desc: 'กันหนอนทุกวัน และกันพายุ/อากาศร้อนจัด', level: 6 }
         };
+        Object.entries(GD_SHOP_NEW).forEach(([id, [name, price, emoji]]) => { SHOP_ITEMS[id] = { cat: 'decor', name, price, emoji, pos: '' }; });
         function loadShop() {
             let v = null;
             try { v = JSON.parse(localStorage.getItem('shop_state') || 'null'); } catch (e) {}
@@ -10747,8 +11426,13 @@
                 // ตำแหน่งที่ลากวางเองในโหมดจัดสวน (เปอร์เซ็นต์ของฉาก)
                 decorPos: Object.fromEntries(Object.entries(v.decorPos && typeof v.decorPos === 'object' ? v.decorPos : {})
                     .filter(([id, q]) => (id === 'house' || owned.includes(id)) && q && Number.isFinite(+q.x) && Number.isFinite(+q.y))
-                    .map(([id, q]) => [id, { x: Math.min(96, Math.max(4, +q.x)), y: Math.min(94, Math.max(6, +q.y)) }]))
+                    .map(([id, q]) => [id, { x: Math.min(98, Math.max(2, +q.x)), y: Math.min(99, Math.max(6, +q.y)) }]))
             };
+            // 🎨 การจัดสวนแบบใหม่ (เซฟเก่าย้ายตำแหน่งของที่วางไว้มาให้) · decorPos เหลือแค่บ้าน
+            st.gd = gdLoad(v.gd, owned, st.decor, st.decorPos);
+            if (!v.gd && st.decorPos.house) st.decorPos.house.y = Math.min(99, Math.max(60, st.decorPos.house.y + 8)); // บ้านตั้งบนพื้น
+            st.decorPos = st.decorPos.house ? { house: st.decorPos.house } : {};
+            gdSync(st);
             // เปิดร้านครั้งแรก: ให้เหรียญย้อนหลังจากผักที่เคยเก็บไว้ก่อนมีร้าน (ผักทองได้เพิ่มอีก 4)
             if (fresh) st.coins = Object.values(veg.harvest).reduce((a, b) => a + b, 0) + 4 * veg.golden;
             return { st, fresh };
@@ -10785,7 +11469,8 @@
             const lvl = farmLevel();
             document.getElementById('shop-grid').innerHTML = Object.entries(SHOP_ITEMS).filter(([, it]) => it.cat === shopTab).map(([id, it]) => {
                 const owned = shop.owned.includes(id), price = shopPrice(id), needLvl = shopLevel(id);
-                const preview = it.svg || (it.cat === 'sticker' ? it.emojis.slice(0, 3).join('') : it.tree ? TREES[it.tree].e : it.cat === 'seed' ? VEGGIES[it.veg].e : it.emoji);
+                const preview = it.cat === 'decor' && GD_ART[id] ? `<svg viewBox="0 0 64 64" width="46" height="46" aria-hidden="true">${GD_ART[id].svg}</svg>`
+                    : it.svg || (it.cat === 'sticker' ? it.emojis.slice(0, 3).join('') : it.tree ? TREES[it.tree].e : it.cat === 'seed' ? VEGGIES[it.veg].e : it.emoji);
                 let action, desc = it.desc || '';
                 if (it.consumable) desc += ` · มีอยู่ ${consumableCount(it)}`;
                 if (id === 'land') desc += ` · ซื้อแล้ว ${veg.land}/6`;
@@ -10801,8 +11486,9 @@
                     action = shop.hat === id ? `<button type="button" class="shop-buy is-on" onclick="toggleShopItem('${id}')">ใส่อยู่ · ถอด</button>`
                         : `<button type="button" class="shop-buy is-owned" onclick="toggleShopItem('${id}')">ใส่ให้มาสคอต</button>`;
                 } else if (it.cat === 'decor') {
-                    action = shop.decor.includes(id) ? `<button type="button" class="shop-buy is-on" onclick="toggleShopItem('${id}')">วางอยู่ · เก็บ</button>`
-                        : `<button type="button" class="shop-buy is-owned" onclick="toggleShopItem('${id}')">วางในสวน</button>`;
+                    action = (shop.decor.includes(id) ? `<button type="button" class="shop-buy is-on" onclick="toggleShopItem('${id}')">วางอยู่ · เก็บ</button>`
+                        : `<button type="button" class="shop-buy is-owned" onclick="toggleShopItem('${id}')">วางในสวน</button>`)
+                        + (GD_ART[id] && GD_ART[id].multi && gdCount(id) < GD_MULTI_MAX ? `<button type="button" class="shop-buy is-owned" ${shop.coins < price ? 'disabled' : ''} onclick="buyShopItem('${id}')">+ ซื้ออีก 🪙${price} (มี ${gdCount(id)})</button>` : '');
                 } else action = `<span class="shop-owned">${{ seed: 'ปลูกได้แล้ว ✓', sticker: 'อยู่ในถาดสติกเกอร์ ✓', tool: id.startsWith('animal-') ? 'อยู่ในฟาร์มแล้ว ✓' : 'ใช้อยู่ ✓' }[it.cat]}</span>`;
                 return `<div class="shop-item${owned && !it.consumable ? ' owned' : ''}"><span class="shop-preview${it.cat === 'sticker' ? ' is-pack' : ''}">${preview}</span><span class="shop-name">${it.name}</span>${desc ? `<span class="shop-desc">${desc}</span>` : ''}${action}</div>`;
             }).join('');
@@ -10813,6 +11499,7 @@
             if (!it) return;
             const price = shopPrice(id), needLvl = shopLevel(id);
             if (it.special || shop.coins < price || (needLvl && farmLevel() < needLvl) || (it.needs && !shop.owned.includes(it.needs))) return;
+            if (it.cat === 'decor' && GD_ART[id]) { gdBuy(id); renderShop(); return; }
             if (id === 'land') {
                 if (veg.land >= 6) return;
                 shop.coins -= price; veg.land += 1;
@@ -10847,7 +11534,11 @@
             const it = SHOP_ITEMS[id];
             if (!it || !shop.owned.includes(id)) return;
             if (it.cat === 'hat') shop.hat = shop.hat === id ? null : id;
-            if (it.cat === 'decor') shop.decor = shop.decor.includes(id) ? shop.decor.filter(x => x !== id) : [...shop.decor, id];
+            if (it.cat === 'decor') {
+                const placed = shop.gd.items.filter(x => x.id === id && !x.st);
+                if (placed.length) { placed.forEach(x => { x.st = true; }); saveShop(); applyShopItems(); renderShop(); playSound('pop'); return; }
+                gdPlace(id); renderShop(); return;
+            }
             saveShop(); applyShopItems(); renderShop(); playSound('pop');
         }
         function renderMascotHat() {
@@ -10857,13 +11548,6 @@
             if (!shop.hat) { if (hat) hat.remove(); return; }
             if (!hat) { hat = document.createElement('span'); hat.id = 'mascot-hat'; hat.className = 'mascot-hat'; hat.setAttribute('aria-hidden', 'true'); body.appendChild(hat); }
             hat.textContent = SHOP_ITEMS[shop.hat].emoji;
-        }
-        function renderGardenDecor() {
-            const wrap = document.getElementById('garden-scene-wrap');
-            if (!wrap) return;
-            let box = document.getElementById('garden-decor');
-            if (!box) { box = document.createElement('div'); box.id = 'garden-decor'; box.className = 'garden-decor'; box.setAttribute('aria-hidden', 'true'); wrap.appendChild(box); }
-            box.innerHTML = shop.decor.map(id => `<span class="garden-decor-item${shop.decorPos[id] ? ' has-pos' : ''}" data-id="${id}" style="${placedStyle(id, SHOP_ITEMS[id].pos)}">${SHOP_ITEMS[id].emoji}</span>`).join('');
         }
         function applyShopItems() {
             renderMascotHat(); renderGardenDecor(); updateCoinUI();
@@ -13339,60 +14023,28 @@
 
             hint.textContent = `${streak} วัน`;
 
-            const maxPairs = 6;
-            const leafPairs = Math.min(streak, maxPairs); // ใบงอกเพิ่มทุกวัน
-            const stemBaseY = 145, stemTopY = stemBaseY - 26 - leafPairs * 14;
-            const hasFlower = streak >= 3;
-            const bigFlower = streak >= 10;
-            const flowerScale = bigFlower ? 1.35 : 1;
-
-            let leavesSvg = '';
-            for (let i = 0; i < leafPairs; i++) {
-                const y = stemBaseY - 22 - i * 14;
-                const delay = (i * 0.18).toFixed(2);
-                leavesSvg += `
-                    <ellipse class="garden-leaf" cx="122" cy="${y}" rx="15" ry="7" transform="rotate(-24 122 ${y})" style="animation-delay:${delay}s"></ellipse>
-                    <ellipse class="garden-leaf" cx="98" cy="${y - 5}" rx="15" ry="7" transform="rotate(24 98 ${y - 5})" style="animation-delay:${(i * 0.18 + 0.09).toFixed(2)}s"></ellipse>`;
-            }
-
-            let flowerSvg = '';
-            if (hasFlower) {
-                const petalAngles = [0, 72, 144, 216, 288];
-                const petals = petalAngles.map((deg, idx) =>
-                    `<ellipse class="garden-petal" cx="110" cy="${stemTopY - 12}" rx="6" ry="10" transform="rotate(${deg} 110 ${stemTopY - 12})" style="animation-delay:${(idx * 0.06).toFixed(2)}s"></ellipse>`
-                ).join('');
-                flowerSvg = `
-                    <g class="garden-flower-group" transform="translate(110 ${stemTopY - 12}) scale(${flowerScale}) translate(-110 -${stemTopY - 12})">
-                        ${petals}
-                        <circle class="garden-flower-center" cx="110" cy="${stemTopY - 12}" r="5.5" style="animation-delay:0.3s"></circle>
-                    </g>`;
-            }
-            const sparklesSvg = bigFlower ? `
-                <circle class="garden-sparkle" cx="70" cy="${stemTopY - 20}" r="2.5" fill="var(--accent)" style="animation-delay:0.2s"></circle>
-                <circle class="garden-sparkle" cx="150" cy="${stemTopY - 5}" r="2" fill="var(--accent2)" style="animation-delay:0.7s"></circle>
-                <circle class="garden-sparkle" cx="130" cy="${stemTopY - 35}" r="2" fill="var(--accent)" style="animation-delay:1.1s"></circle>` : '';
-
-            // 🦋 ผีเสื้อบินมาเกาะ - โผล่มาตั้งแต่เริ่มมีสตรีค เพิ่มเป็น 2 ตัวตอนสตรีคยาวๆ และไม่บินตอนต้นไม้เหี่ยว
+            // 🌳 ต้นไม้พักใจ: พันธุ์และกระถางที่เลือก โตตามจำนวนวันที่พักดีติดกัน
+            const g = shop.gd, tree = gdTreeSVG(g.tree, gdStage(streak), { wilted: isOverQuotaToday, flower: streak >= 3, big: streak >= 10 });
+            const stemTopY = Math.max(16, tree.top), bigFlower = streak >= 10;
+            const sparklesSvg = bigFlower && !isOverQuotaToday ? [[70, stemTopY + 6, '#FFD23F', 0.2], [150, stemTopY + 18, '#FF8FB8', 0.7], [132, stemTopY - 6, '#FFD23F', 1.1]]
+                .map(([x, y, c, dl]) => `<circle class="garden-sparkle" cx="${x}" cy="${y}" r="2.4" fill="${c}" style="animation-delay:${dl}s"></circle>`).join('') : '';
+            // 🦋 ผีเสื้อ: มีสตรีคได้ 1 ตัว · สตรีค 7 วันหรือสวนสวยได้อีกตัว · ต้นไม้เหี่ยวไม่บิน
             let butterflySvg = '';
             if (!isOverQuotaToday && streak >= 1) {
-                butterflySvg += buildButterfly('', 'var(--accent)');
-                if (streak >= 7) butterflySvg += buildButterfly('b2', 'var(--accent2)');
+                butterflySvg += buildButterfly('', '#FF8FB8');
+                if (streak >= 7 || gdTier(gdBeauty()) >= 2) butterflySvg += buildButterfly('b2', '#8C7BFF');
             }
-
             svg.innerHTML = `
-                <ellipse class="garden-ground" cx="110" cy="158" rx="85" ry="9"></ellipse>
-                <path class="garden-pot" d="M80 145 L140 145 L131 168 L89 168 Z"></path>
-                <rect class="garden-pot-rim" x="76" y="140" width="68" height="9" rx="4"></rect>
-                <g class="garden-stem-group ${isOverQuotaToday ? 'wilted' : ''}">
-                    <path class="garden-stem" d="M110 145 Q ${isOverQuotaToday ? 128 : 104} ${(145 + stemTopY) / 2} ${isOverQuotaToday ? 122 : 110} ${stemTopY}"></path>
-                    ${leavesSvg}
-                    ${flowerSvg}
-                </g>
+                <ellipse cx="110" cy="167" rx="48" ry="4" fill="#2B2140" opacity="0.16"></ellipse>
+                <g class="garden-stem-group ${isOverQuotaToday ? 'wilted' : ''}">${tree.svg}</g>
+                ${(GD_POTS[g.pot] || GD_POTS.clay).svg}
                 ${sparklesSvg}
                 ${gardenFestivalDecor(stemTopY)}
                 ${butterflySvg}
                 ${GARDEN_WATERING}
             `;
+            renderGardenScene();
+            const hasFlower = streak >= 3;
 
             if (caption) {
                 if (isOverQuotaToday) caption.textContent = 'วันนี้พักเกินโควตาไปหน่อย ต้นไม้เหี่ยวนิดนึง 🥀 พรุ่งนี้เริ่มใหม่ได้นะ';
@@ -14291,7 +14943,7 @@
                 stem.classList.add('interacting');
                 const rect = scene.getBoundingClientRect();
                 const relX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-                const angle = (relX - 0.5) * 34;
+                const angle = gardenEditing ? 0 : (relX - 0.5) * 12;
                 stem.style.transform = `rotate(${angle}deg)`;
             });
             const resetStem = () => {
