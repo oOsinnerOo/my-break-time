@@ -1100,19 +1100,22 @@
         /* 📱 นับเวลาต่อบนมือถือ: ปุ่มและ QR บนหน้าจอพัก */
         .break-phone { display: none; }
         .action-card.expanded .break-phone { display: flex; z-index: 2; flex-wrap: wrap; justify-content: center; gap: 8px; }
-        /* 🌱 ดูแลสวนระหว่างพัก: ซ่อนหน้าจอพักไว้ก่อน เหลือแถบเวลาเล็กๆ ด้านบน (เวลาพักยังเดินต่อ) */
-        body.break-garden .action-card.expanded, body.break-garden .break-buddies { display: none; }
-        .break-pill { display: none; position: fixed; top: max(10px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 9998;
-            align-items: center; gap: 6px; max-width: calc(100vw - 24px); padding: 5px 5px 5px 14px; border-radius: 999px;
-            background: var(--surface-solid); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.5); font-size: 14px; font-weight: 700; }
-        body.break-garden .break-pill { display: flex; }
-        body.break-garden .veg-section { scroll-margin-top: 64px; }
-        .break-pill-time { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
-        .break-pill.is-over { border-color: var(--danger); }
-        .break-pill.is-over .break-pill-time { color: var(--danger); }
-        .break-pill button { flex: none; border: none; cursor: pointer; font: inherit; font-size: 13px; font-weight: 800; padding: 7px 11px; border-radius: 999px; background: var(--surface-2); color: var(--ink); white-space: nowrap; }
-        .break-pill .bpill-done { background: var(--accent); color: #fff; }
-        @media (max-width: 420px) { .break-pill { font-size: 12.5px; padding-left: 10px; } .break-pill button { padding: 7px 9px; font-size: 12px; } }
+        /* 🌱 ดูแลสวนระหว่างพัก: ป๊อปอัปสวนทับหน้าพัก (ย้ายการ์ดสวนตัวจริงมาไว้ข้างใน เวลาพักยังเดินต่อ) */
+        .bg-box { max-width: 560px; padding: 16px 16px 14px; gap: 10px; max-height: 92vh; max-height: 92dvh; overflow: hidden; }
+        .bg-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .bg-head h3 { font-size: 18px; }
+        .bg-timer { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; padding: 9px 14px; border-radius: 16px;
+            background: rgba(var(--accent-rgb), 0.1); border: 1px solid rgba(var(--accent-rgb), 0.25); font-weight: 700; }
+        .bg-time { font-size: 15px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .bg-time b { font-size: 20px; font-variant-numeric: tabular-nums; margin-left: 4px; }
+        .bg-left { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+        .bg-timer.is-over { background: rgba(229, 72, 77, 0.1); border-color: rgba(229, 72, 77, 0.45); }
+        .bg-timer.is-over .bg-left { color: var(--danger); }
+        .bg-slot { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; margin: 0 -4px; padding: 0 4px; }
+        .bg-slot .garden-card { margin: 0; padding: 12px 12px 10px; box-shadow: none; background: transparent; border: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+        .bg-slot .garden-svg { max-width: 190px; }
+        .bg-foot { display: flex; gap: 8px; }
+        .bg-foot .modal-btn { flex: 1; }
         .break-phone-btn, .break-garden-btn {
             border: none; cursor: pointer; padding: 9px 16px; border-radius: 999px; font: inherit; font-size: 14px; font-weight: 700;
             background: rgba(255, 255, 255, 0.65); color: var(--key-ink); box-shadow: 0 6px 14px -10px rgba(0, 0, 0, 0.4); transition: transform 0.15s, background-color 0.2s;
@@ -3239,6 +3242,20 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="break-garden-modal" onclick="if(event.target===this) closeBreakGarden()">
+        <div class="modal-box bg-box" role="dialog" aria-modal="true" aria-labelledby="bg-title">
+            <div class="bg-head">
+                <h3 id="bg-title">🌱 ดูแลสวนระหว่างพัก</h3>
+                <button type="button" class="settings-close-btn" onclick="closeBreakGarden()" aria-label="กลับหน้าพัก">✕</button>
+            </div>
+            <div class="bg-timer" id="bg-timer"><span class="bg-time"></span><span class="bg-left"></span></div>
+            <div class="bg-slot" id="bg-slot"></div>
+            <div class="bg-foot">
+                <button type="button" class="modal-btn btn-secondary" onclick="closeBreakGarden()">⏱️ กลับหน้าพัก</button>
+                <button type="button" class="modal-btn btn-primary" onclick="breakGardenDone()">🏠 กลับมาแล้ว</button>
+            </div>
+        </div>
+    </div>
     <div class="modal-overlay" id="veg-book" onclick="if(event.target===this) closeVegBook()">
         <div class="modal-box shop-box dex-box" role="dialog" aria-modal="true" aria-labelledby="dex-title">
             <div class="settings-modal-header">
@@ -3396,7 +3413,6 @@
 
     <div class="toast-container" id="toast-container"></div>
 
-    <div class="break-pill" id="break-pill" role="group" aria-label="กำลังพักอยู่"><span class="break-pill-time"></span><button type="button" onclick="closeBreakGarden()">⏱️ หน้าพัก</button><button type="button" class="bpill-done" onclick="breakPillDone()">🏠 กลับมาแล้ว</button></div>
     <div class="break-buddies" id="break-buddies" aria-hidden="true"></div>
     <div class="tap-layer" id="tap-layer" aria-hidden="true"></div>
     <div class="sticker-layer" id="sticker-layer" aria-hidden="true"></div>
@@ -10806,7 +10822,7 @@
                     sendNotification('⏰ ถึงเวลาที่ตั้งไว้แล้ว', `${activeBreak.action} เกินลิมิต ${activeBreak.limit} นาทีแล้ว กลับมาได้เลย`);
                 }
             }
-            renderBreakPill();
+            renderBreakGardenTimer();
         }
         function startBreakTicker(cardElement) {
             renderBreakBuddies();
@@ -10818,31 +10834,55 @@
             togglePhoneQR(cardElement, null, localStorage.getItem('phone_qr_open') === 'true' && window.matchMedia('(min-width: 641px)').matches);
         }
 
-        // 🌱 ดูแลสวนระหว่างพัก: ย่อหน้าจอพักเป็นแถบเวลาด้านบน แล้วเลื่อนไปที่สวน (เวลาพักยังเดินต่อ)
-        let breakGardenCard = null;
+        // 🌱 ดูแลสวนระหว่างพัก: ย้ายการ์ดสวนตัวจริงมาไว้ในป๊อปอัปทับหน้าพัก (ปุ่มและแปลงผักใช้ได้ครบ) ปิดแล้วย้ายกลับที่เดิม
+        let breakGardenCard = null, bgHome = null;
+        const breakGardenOpen = () => document.getElementById('break-garden-modal').style.display === 'flex';
         function openBreakGarden(card, event) {
             if (event) event.stopPropagation();
             if (!activeBreak || !card) return;
             if (!isGardenEnabled()) { showToast('เปิด "สวนผักและต้นไม้" ในหน้าตั้งค่าก่อนนะ', 'info'); return; }
+            const g = document.getElementById('garden-card'), slot = document.getElementById('bg-slot');
+            if (!g || !slot) return;
             breakGardenCard = card;
+            if (g.parentElement !== slot) { bgHome = { parent: g.parentElement, next: g.nextSibling }; slot.appendChild(g); }
             document.body.classList.add('break-garden');
-            renderBreakPill();
-            growVeggies('time'); renderFarmStatus();
-            const farm = document.querySelector('.veg-section') || document.getElementById('garden-scene-wrap');
-            if (farm) farm.scrollIntoView({ block: 'start', behavior: motionReduced() ? 'auto' : 'smooth' });
+            document.getElementById('break-garden-modal').style.display = 'flex';
+            renderBreakGardenTimer();
+            growVeggies('time'); renderVeggies(); renderFarmStatus();
+            const plots = g.querySelector('.veg-section');
+            slot.scrollTop = 0;
+            if (plots) slot.scrollTop = Math.max(0, plots.getBoundingClientRect().top - slot.getBoundingClientRect().top - 6); // เปิดมาเห็นแปลงผักกับเครื่องมือเลย
         }
         function closeBreakGarden() {
+            const m = document.getElementById('break-garden-modal');
+            if (m) m.style.display = 'none';
             document.body.classList.remove('break-garden');
+            const g = document.getElementById('garden-card');
+            if (g && bgHome) bgHome.parent.insertBefore(g, bgHome.next && bgHome.next.parentNode === bgHome.parent ? bgHome.next : null);
+            bgHome = null;
             if (activeBreak && breakGardenCard) updateBreakDisplay(breakGardenCard);
         }
-        function breakPillDone() { if (activeBreak && breakGardenCard) endBreak(activeBreak.index, breakGardenCard); else closeBreakGarden(); }
-        function renderBreakPill() {
-            const pill = document.getElementById('break-pill');
-            if (!pill || !activeBreak || !document.body.classList.contains('break-garden')) return;
-            const secs = Math.floor((Date.now() - activeBreak.startTime) / 1000), target = getBreakTargetSecs(activeBreak), remain = target - secs;
-            pill.classList.toggle('is-over', target > 0 && remain < 0);
-            pill.querySelector('.break-pill-time').textContent = `☕ ${activeBreak.action} ${formatMMSS(secs)}${target > 0 ? (remain >= 0 ? ` · เหลือ ${formatMMSS(remain)}` : ` · เกิน ${formatMMSS(-remain)}`) : ''}`;
+        function breakGardenDone() {
+            const card = breakGardenCard;
+            closeBreakGarden();
+            if (activeBreak && card) endBreak(activeBreak.index, card);
         }
+        function renderBreakGardenTimer() {
+            const box = document.getElementById('bg-timer');
+            if (!box || !activeBreak || !breakGardenOpen()) return;
+            const secs = Math.floor((Date.now() - activeBreak.startTime) / 1000), target = getBreakTargetSecs(activeBreak), remain = target - secs;
+            box.classList.toggle('is-over', target > 0 && remain < 0);
+            box.querySelector('.bg-time').innerHTML = `☕ ${escHtml(activeBreak.action)} <b>${formatMMSS(secs)}</b>`;
+            box.querySelector('.bg-left').textContent = target <= 0 ? 'เวลาพักยังเดินต่อ' : activeBreak.limit > 0
+                ? (remain >= 0 ? `เหลืออีก ${formatMMSS(remain)}` : `เกินลิมิตมาแล้ว ${formatMMSS(-remain)}`)
+                : (remain >= 0 ? `เวลาฟรีเหลือ ${formatMMSS(remain)}` : `เกินเวลาฟรี ${formatMMSS(-remain)}`);
+        }
+        // Esc ปิดป๊อปอัปสวน เฉพาะตอนไม่มีหน้าต่างอื่น (ฟาร์ม ร้านค้า ฯลฯ) เปิดซ้อนอยู่ข้างบน
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Escape' || !breakGardenOpen()) return;
+            const above = [...document.querySelectorAll('.modal-overlay')].some(m => m.id !== 'break-garden-modal' && m.style.display === 'flex');
+            if (!above) closeBreakGarden();
+        }, true);
 
         function startBreak(index, cardElement) {
             if (cardElement.classList.contains('expanded')) return;
@@ -10866,6 +10906,7 @@
         function endBreak(index, cardElement, event) {
             if (event) event.stopPropagation();
             if (!activeBreak) return; // กันกดซ้ำเร็วๆ ก่อนหน้าจอจะอัปเดต ไม่ให้ยิงเสียง/คอนเฟตตี้ซ้ำ
+            if (breakGardenOpen()) closeBreakGarden();
             playSound('welcome'); fireConfetti(); // 🎊 จุดพลุ!
             if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
 
