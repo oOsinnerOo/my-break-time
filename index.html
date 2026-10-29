@@ -674,6 +674,44 @@
         }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
+        /* 📱 ฟาร์มแบบแอปแยก (?farm): เปิดเฉพาะฟาร์ม ตัดพื้นหลังเคลื่อนไหว ขบวนตัวการ์ตูน สติกเกอร์ และเอฟเฟกต์เบลอ ให้ลื่นบนมือถือ */
+        .farm-app-bar, .fab-break, .farm-app-link { display: none; }
+        body.farm-app .bg-sky, body.farm-app .bg-aurora, body.farm-app .bg-bubbles, body.farm-app .bg-sparkles, body.farm-app .bg-season, body.farm-app .fg-season,
+        body.farm-app .parade, body.farm-app .break-buddies, body.farm-app .tap-layer, body.farm-app .sticker-layer, body.farm-app .sticker-tray,
+        body.farm-app .container > .header-row, body.farm-app .col-main, body.farm-app .col-side > :not(#garden-card):not(.challenge-card) { display: none !important; }
+        body.farm-app *, body.farm-app *::before, body.farm-app *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+        body.farm-app .glass-panel { background: var(--surface-solid); }
+        body.farm-app { padding: 0 0 calc(28px + env(safe-area-inset-bottom)); }
+        body.farm-app .container { display: flex; flex-direction: column; gap: 12px; max-width: 640px; padding: 0 10px; }
+        body.farm-app .col-side { display: contents; }
+        body.farm-app .garden-card { order: 1; }
+        body.farm-app .challenge-card { order: 2; }
+        body.farm-app .garden-svg { max-width: 200px; } /* ต้นไม้พักใจย่อลง เปิดมาเห็นแปลงผักเลย */
+        body.farm-app .farm-app-bar {
+            display: flex; order: -2; position: sticky; top: 0; z-index: 60; align-items: center; gap: 8px; margin: 0 -10px;
+            padding: calc(8px + env(safe-area-inset-top)) 12px 8px; background: var(--surface-solid); border-bottom: 1px solid var(--line);
+            box-shadow: 0 6px 16px -14px rgba(var(--shadow-rgb), 0.6);
+        }
+        .fab-brand { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--ink); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .fab-coins { flex-shrink: 0; font-weight: 700; font-size: 13.5px; padding: 4px 10px; border-radius: 999px; background: rgba(var(--accent-rgb), 0.1); color: var(--accent-ink); white-space: nowrap; }
+        .fab-actions { margin-left: auto; display: flex; gap: 6px; flex-shrink: 0; }
+        .fab-actions .theme-toggle { width: 38px; height: 38px; padding: 0; justify-content: center; font-size: 16px; text-decoration: none; }
+        .fab-actions .theme-toggle[hidden] { display: none; }
+        body.farm-app .fab-break:not([hidden]) {
+            display: flex; order: -1; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 8px 8px 14px; border-radius: 16px;
+            font-weight: 700; font-size: 14px; background: rgba(var(--accent-rgb), 0.1); border: 1px solid rgba(var(--accent-rgb), 0.3); color: var(--ink);
+        }
+        .fab-break.is-over { background: rgba(229, 72, 77, 0.1); border-color: rgba(229, 72, 77, 0.45); color: var(--danger); }
+        .fab-break-text { min-width: 0; font-variant-numeric: tabular-nums; }
+        .fab-break .chip-btn { flex-shrink: 0; }
+        @media (max-width: 380px) { .fab-coins { display: none; } }
+        .farm-app-link {
+            align-items: center; justify-content: center; gap: 2px 8px; flex-wrap: wrap; margin-top: 12px; padding: 11px 14px; border-radius: 16px; text-decoration: none;
+            font-weight: 700; color: #FFFFFF; background: linear-gradient(120deg, #5BAA47, #3E8E37); box-shadow: 0 10px 20px -14px rgba(62, 142, 55, 0.9);
+        }
+        .farm-app-link small { font-weight: 600; opacity: 0.92; }
+        @media (max-width: 640px) { body:not(.farm-app) .farm-app-link { display: flex; } }
+
         /* 💎 พาเนลกระจกฝ้า */
         .glass-panel {
             background: var(--surface);
@@ -2888,6 +2926,18 @@
     </style>
 </head>
 <body>
+    <script>
+        // 📱 ฟาร์มแบบแอปแยก: ใส่คลาสก่อนวาดหน้าแรก (ไม่เห็นหน้าบันทึกพักแวบขึ้นมา) และใช้ชื่อ/ไอคอนของฟาร์ม จะได้ติดตั้งเป็นแอปแยกบนหน้าจอได้
+        if (/[?&]farm(=|&|$)/.test(location.search)) {
+            document.body.classList.add('farm-app');
+            document.title = 'ฟาร์มน้อยพักใจ';
+            const set = (sel, attr, v) => { const el = document.querySelector(sel); if (el) el.setAttribute(attr, v); };
+            set('link[rel=manifest]', 'href', 'farm.webmanifest');
+            set('link[rel=apple-touch-icon]', 'href', 'farm-180.png');
+            set('link[rel=icon]', 'href', 'farm-icon.svg');
+            const m = document.createElement('meta'); m.name = 'apple-mobile-web-app-title'; m.content = 'ฟาร์มน้อย'; document.head.appendChild(m);
+        }
+    </script>
 
     <div class="theme-bg-layer" id="theme-bg-a"></div>
     <div class="theme-bg-layer" id="theme-bg-b"></div>
@@ -2899,6 +2949,17 @@
     <div class="fg-season" id="fg-season" aria-hidden="true"></div>
 
     <div class="container">
+        <div class="farm-app-bar" id="farm-app-bar">
+            <span class="fab-brand"><span aria-hidden="true">🌾</span> ฟาร์มน้อยพักใจ</span>
+            <span class="fab-coins">🪙 <b data-coins>0</b></span>
+            <span class="fab-actions">
+                <button type="button" class="theme-toggle" id="fab-install" onclick="installApp()" aria-label="ติดตั้งฟาร์มเป็นแอป" title="ติดตั้งเป็นแอปแยก" hidden>📲</button>
+                <button type="button" class="theme-toggle" onclick="openAccount()" aria-label="บัญชีผู้ใช้">👤</button>
+                <button type="button" class="theme-toggle" onclick="openSettingsModal()" aria-label="ตั้งค่า">⚙️</button>
+                <a class="theme-toggle" href="./" aria-label="ไปหน้าบันทึกเวลาพัก" title="หน้าบันทึกเวลาพัก">⏱️</a>
+            </span>
+        </div>
+        <div class="fab-break" id="fab-break" hidden role="status"><span class="fab-break-text" id="fab-break-text"></span><button type="button" class="chip-btn" onclick="farmAppEndBreak()">🏠 กลับมาแล้ว</button></div>
         <header class="header-row">
             <div class="brand">
                 <span class="brand-mark"><span class="title-emoji" id="title-emoji">✨</span></span>
@@ -3062,6 +3123,7 @@
                         <button type="button" class="farm-act farm-friends-btn" onclick="openFarm('friends')"><span class="farm-act-icon">👥</span><span class="farm-friends-text" id="farm-friends-text">เล่นกับเพื่อน</span><b class="farm-dot" id="fa-friends" hidden></b></button>
                         <button type="button" class="farm-act farm-event-btn" id="fa-event-btn" onclick="openFarm('event')" hidden><span class="farm-act-icon">🎃</span><span id="fa-event-name">เทศกาล</span><b class="farm-dot" id="fa-event" hidden></b></button>
                     </div>
+                    <a class="farm-app-link" href="./?farm"><span>📱 เล่นฟาร์มแบบแอปแยก</span><small>ลื่นกว่าบนมือถือ · ข้อมูลชุดเดียวกัน</small></a>
                 </div>
             </section>
 
@@ -4098,6 +4160,7 @@
         }
 
         let activeBreak = null; let showAllLogs = false; let timerInterval = null;
+        const FARM_APP = document.body.classList.contains('farm-app'); // 📱 เปิดแบบฟาร์มแยก (?farm)
 
         // --- 💾 บันทึกสถานะ "กำลังพักอยู่" ไว้ กันหายถ้าโหลดหน้าใหม่/แท็บถูกปิดกลางคัน (พบบ่อยบนมือถือ) ---
         function persistActiveBreak() {
@@ -11663,6 +11726,24 @@
                 }
             }
             renderBreakGardenTimer();
+            renderFarmAppBreak();
+        }
+        // ฟาร์มแบบแอปแยก: ถ้ากำลังพักอยู่ แสดงเวลาพักไว้ด้านบน และกด "กลับมาแล้ว" ได้จากหน้านี้เลย
+        function renderFarmAppBreak() {
+            const box = document.getElementById('fab-break');
+            if (!box || !FARM_APP) return;
+            box.hidden = !activeBreak;
+            if (!activeBreak) return;
+            const secs = Math.floor((Date.now() - activeBreak.startTime) / 1000), target = getBreakTargetSecs(activeBreak), remain = target - secs;
+            box.classList.toggle('is-over', target > 0 && remain < 0);
+            document.getElementById('fab-break-text').textContent = `☕ ${activeBreak.action} ${formatMMSS(secs)}`
+                + (target <= 0 ? '' : remain >= 0 ? ` · เหลือ ${formatMMSS(remain)}` : ` · เกิน ${formatMMSS(-remain)}`);
+        }
+        function farmAppEndBreak() {
+            if (!activeBreak) return;
+            const card = document.getElementById('activities-container').children[activeBreak.index];
+            if (card) endBreak(activeBreak.index, card);
+            renderFarmAppBreak();
         }
         function startBreakTicker(cardElement) {
             renderBreakBuddies();
@@ -11922,6 +12003,7 @@
             activeBreak = null;
             document.body.classList.remove('on-break', 'break-over', 'break-garden');
             persistActiveBreak();
+            renderFarmAppBreak();
 
             cardElement.classList.remove('expanded', 'has-target', 'is-warn', 'is-over');
             setTimeout(() => { showSuccessOverlay(cardElement, 'ยินดีต้อนรับกลับมา! 🏠', textToCopy, 1500); }, 100);
@@ -14153,6 +14235,8 @@
             const status = document.getElementById('install-status'), btn = document.getElementById('install-btn');
             if (!status || !btn) return;
             btn.style.display = deferredInstallPrompt && !isStandalone() ? '' : 'none';
+            const fi = document.getElementById('fab-install');
+            if (fi) fi.hidden = !(FARM_APP && deferredInstallPrompt && !isStandalone());
             status.textContent = isStandalone() ? '✅ กำลังใช้งานแบบแอปอยู่ เปิดได้แม้ไม่มีเน็ต'
                 : deferredInstallPrompt ? 'มีไอคอนบนหน้าจอ เปิดเร็ว และใช้ได้แม้ไม่มีเน็ต'
                 : isIOS() ? 'บน iPhone/iPad: แตะปุ่มแชร์ใน Safari แล้วเลือก "เพิ่มไปยังหน้าจอโฮม"'
@@ -14275,7 +14359,17 @@
             renderChallenges();
             initReportPage();
             initDataSafety();
+            if (FARM_APP) initFarmApp();
         };
+        // ครั้งแรกที่เปิดฟาร์มแบบแยก: บอกวิธีเพิ่มเป็นไอคอนแยกบนหน้าจอ (ข้อมูลชุดเดียวกับหน้าบันทึกพัก)
+        function initFarmApp() {
+            updateInstallUI(); renderFarmAppBreak();
+            if (isStandalone() || localStorage.getItem('farm_app_tip')) return;
+            safeSetItem('farm_app_tip', '1');
+            setTimeout(() => showToast(isIOS() ? '📱 ฟาร์มแบบแยกพร้อมเล่น! บน iPhone แตะปุ่มแชร์ → "เพิ่มไปยังหน้าจอโฮม" จะได้ไอคอนฟาร์มแยกไว้กดเข้าเล่นเลย'
+                : '📱 ฟาร์มแบบแยกพร้อมเล่น! ใช้ข้อมูลชุดเดียวกับหน้าบันทึกพัก · เพิ่มลงหน้าจอเป็นไอคอนฟาร์มแยกได้', 'info',
+                deferredInstallPrompt ? { duration: 10000, actionLabel: 'ติดตั้ง', onAction: installApp } : { duration: 9000 }), 1500);
+        }
 
         // --- 🔄 ซิงก์ข้อมูลข้ามแท็บ กันข้อมูลเก่าจากแท็บที่ค้างอยู่ไปทับข้อมูลใหม่โดยไม่ตั้งใจ ---
         window.addEventListener('storage', (e) => {
@@ -14303,6 +14397,7 @@
                     if (cardElement) cardElement.classList.remove('expanded', 'has-target', 'is-warn', 'is-over');
                     document.body.classList.remove('on-break', 'break-over', 'break-garden');
                     activeBreak = null;
+                    renderFarmAppBreak();
                 }
             }
         });
