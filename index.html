@@ -2287,6 +2287,9 @@
         .contest-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); font-size: 13.5px; }
         .contest-row.is-me { border-color: rgba(var(--accent-rgb), 0.6); background: rgba(var(--accent-rgb), 0.1); font-weight: 700; }
         .contest-row b { font-family: var(--font-display); color: var(--accent-ink); }
+        .contest-row.is-friend { background: linear-gradient(90deg, rgba(46, 184, 114, 0.12), var(--surface-2) 70%); border-color: rgba(46, 184, 114, 0.4); }
+        .contest-tag { display: inline-block; margin-left: 4px; padding: 0 6px; border-radius: 999px; font-size: 10.5px; font-weight: 700; color: var(--ink-2); background: var(--surface-solid); border: 1px solid var(--line); }
+        .contest-invite { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
         .veg-plot.is-giant .veg-crop { font-size: 44px; top: -6%; }
         .veg-plot.is-giant::before { content: '🏆'; position: absolute; left: 6%; top: 4%; font-size: 13px; z-index: 2; }
         .pond { position: relative; height: 130px; border-radius: 50%; overflow: hidden; background: radial-gradient(ellipse at 50% 40%, #8FD3F4, #4BA3D9 70%, #3A86C2); box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.08), 0 0 0 8px #9BD38A; margin: 6px 10px 2px; }
@@ -5357,7 +5360,7 @@
                         log: (Array.isArray(st.log) ? st.log : []).filter(l => l && typeof l.t === 'string').slice(-6).map(l => ({ t: l.t.slice(0, 80) })) };
                 })(),
                 contest: v.contest && typeof v.contest === 'object' && typeof v.contest.week === 'string'
-                    ? { week: v.contest.week.slice(0, 10), planted: !!v.contest.planted, weight: Math.min(99, Math.max(0, +v.contest.weight || 0)), done: !!v.contest.done, rank: int(v.contest.rank, 4) } : null,
+                    ? { week: v.contest.week.slice(0, 10), planted: !!v.contest.planted, weight: Math.min(99, Math.max(0, +v.contest.weight || 0)), done: !!v.contest.done, rank: int(v.contest.rank, 4), roomChamp: !!v.contest.roomChamp } : null,
                 fish: { tickets: int((v.fish || {}).tickets, FISH_TICKET_MAX), freeDay: day((v.fish || {}).freeDay) }, fishCaught: counts(v.fishCaught, Object.keys(FISH)),
                 visitor: v.visitor && VISITORS[v.visitor.kind] && +v.visitor.until > Date.now() ? { kind: v.visitor.kind, until: Math.min(+v.visitor.until, Date.now() + 3 * 60 * 1000) } : null,
                 visitorLog: { day: day((v.visitorLog || {}).day), n: int((v.visitorLog || {}).n, 9) }, visitors: counts(v.visitors, Object.keys(VISITORS)),
@@ -6351,9 +6354,10 @@
             renderFarmPanel();
             if (farmTab === 'friends') mpOnOpen();
             if (farmTab === 'stall' && stallView === 'friends') mkOnOpen();
+            if (farmTab === 'contest') contestOnOpen();
         }
         function closeFarm() { cancelFishing(); document.getElementById('farm-modal').style.display = 'none'; }
-        function setFarmTab(tab) { if (tab !== 'pond') cancelFishing(); farmTab = tab; renderFarmPanel(); if (tab === 'friends') mpOnOpen(); if (tab === 'stall' && stallView === 'friends') mkOnOpen(); }
+        function setFarmTab(tab) { if (tab !== 'pond') cancelFishing(); farmTab = tab; renderFarmPanel(); if (tab === 'friends') mpOnOpen(); if (tab === 'stall' && stallView === 'friends') mkOnOpen(); if (tab === 'contest') contestOnOpen(); }
         const itemChip = (k, need) => {
             const it = itemInfo(k), have = countBase(k);
             return `<span class="farm-chip${need !== undefined && have < need ? ' is-short' : ''}">${it.e} ${it.name}${need !== undefined ? ` <b>${Math.min(have, need)}/${need}</b>` : ''}</span>`;
@@ -6580,6 +6584,7 @@
             veg.plots[i] = { ...emptyPlot(cur.soil), seed: crop, need: 5, giant: true, cared: todayWeather() === 'rain' || hasTool('sprinkler') };
             c.planted = true;
             saveVeg(); renderVeggies(); playSound('pop');
+            if (friends.room) setTimeout(mpRefresh, 300);
             showToast(`🏆 ปลูก${VEGGIES[crop].name}ยักษ์ที่แปลงที่ ${i + 1} แล้ว! ดินอุดม รดน้ำ และเก็บให้ตรงจังหวะ จะได้ลูกใหญ่`, 'success', { duration: 5500 });
             renderFarmPanel(); renderFarmStatus();
         }
@@ -6592,6 +6597,7 @@
             c.weight = Math.max(c.weight, w);
             veg.plots[i] = emptyPlot(Math.max(0, p.soil - 30));
             saveVeg(); addXP(15);
+            if (friends.room) setTimeout(mpRefresh, 300); // ส่งน้ำหนักให้เพื่อนในห้องเห็นเลย
             if (el) { el.classList.remove('is-timing'); vegFx(el, ['⚖️', VEGGIES[p.seed].e, '🏆']); }
             playSound('welcome'); fireConfetti();
             const rank = contestBoard().findIndex(r => r.me) + 1;
@@ -6599,6 +6605,13 @@
             setTimeout(renderVeggies, 650);
             renderFarmStatus();
         }
+        // เพื่อนในห้องที่ส่งผักประกวดสัปดาห์นี้ (รางวัลยังนับอันดับเทียบกับคู่แข่งในขบวน เพื่อนจึงไม่ทำให้รางวัลลดลง)
+        const ROOM_CHAMP_BONUS = 15;
+        function contestFriends() {
+            if (!friends.room || !mp.state) return [];
+            return mp.state.players.filter(p => p.id !== mp.state.me && p.farm.ct).map(p => ({ who: p.name, avatar: p.avatar, weight: p.farm.ct.kg, stage: p.farm.ct.stage }));
+        }
+        function contestOnOpen() { if (friends.room && Date.now() - mp.at > 15000) mpRefresh(); if (friends.room) mpSchedule(15000); }
         const CONTEST_PRIZES = [{ coins: 40, trophy: 'trophy-gold' }, { coins: 25, trophy: 'trophy-silver' }, { coins: 15, trophy: 'trophy-bronze' }, { coins: 5 }];
         function claimContest() {
             const c = contestState();
@@ -6608,6 +6621,9 @@
             c.done = true;
             const prize = CONTEST_PRIZES[c.rank - 1];
             let coins = prize.coins, trophy = '';
+            const rivals = contestFriends().filter(f => f.weight);
+            c.roomChamp = rivals.length > 0 && rivals.every(f => c.weight > f.weight);
+            if (c.roomChamp) coins += ROOM_CHAMP_BONUS;
             if (prize.trophy && !shop.owned.includes(prize.trophy)) {
                 shop.owned.push(prize.trophy); shop.decor.push(prize.trophy); saveShop(); applyShopItems();
                 trophy = ` + ${SHOP_ITEMS[prize.trophy].emoji} ${SHOP_ITEMS[prize.trophy].name} ตั้งในสวนแล้ว`;
@@ -6615,22 +6631,29 @@
             saveVeg(); addCoins(coins); addXP(10);
             if (c.rank === 1) fireConfetti();
             playSound('welcome');
-            showToast(`🏆 ได้อันดับ ${c.rank}! รับ 🪙${coins}${trophy}`, 'success', { duration: 6000 });
+            showToast(`🏆 ได้อันดับ ${c.rank}! รับ 🪙${coins}${trophy}${c.roomChamp ? ` · 👑 แชมป์ห้องเพื่อน (โบนัส 🪙${ROOM_CHAMP_BONUS})` : ''}`, 'success', { duration: 6000 });
             renderFarmPanel(); renderFarmStatus();
         }
         function renderContestTab() {
             const c = contestState(), crop = contestCrop(), v = VEGGIES[crop];
             const plot = veg.plots.findIndex(p => p.giant);
             const medals = ['🥇', '🥈', '🥉', '🎖️'];
-            const status = c.done ? `<span class="farm-done">ได้อันดับ ${c.rank} แล้ว · สัปดาห์หน้ามาประกวดใหม่</span>`
+            const fr = contestFriends(), weighed = fr.filter(f => f.weight), growing = fr.filter(f => !f.weight);
+            const board = [...contestBoard().map(r => ({ ...r })), ...weighed.map(f => ({ who: `${f.avatar} ${f.who}`, weight: f.weight, friend: true }))].sort((a, b) => b.weight - a.weight);
+            const roomRank = c.weight ? weighed.filter(f => f.weight >= c.weight).length + 1 : 0;
+            const friendNote = !friends.room ? `<div class="farm-news contest-invite">👥 อยากแข่งกับเพื่อน? เข้าห้องเดียวกันในแท็บเพื่อน แล้วน้ำหนักผักยักษ์ของเพื่อนจะขึ้นบนกระดานนี้ <button type="button" class="chip-btn" onclick="setFarmTab('friends')">ไปหน้าเพื่อน</button></div>`
+                : !mp.state ? '<p class="farm-card-sub">กำลังโหลดผลของเพื่อนในห้อง…</p>'
+                : `<p class="farm-card-sub contest-friends">${weighed.length ? `👥 เพื่อนส่งประกวดแล้ว ${weighed.length} คน${roomRank ? ` · คุณอยู่อันดับ ${roomRank}/${weighed.length + 1} ในห้อง` : ''}` : '👥 ยังไม่มีเพื่อนในห้องชั่งผักยักษ์สัปดาห์นี้'}${growing.length ? ` · 🌱 กำลังปลูก: ${growing.map(f => `${escHtml(f.avatar)} ${escHtml(f.who)} (โต ${f.stage}/5)`).join(', ')}` : ''}</p>`;
+            const status = c.done ? `<span class="farm-done">ได้อันดับ ${c.rank} แล้ว${c.roomChamp ? ' · 👑 แชมป์ห้อง' : ''} · สัปดาห์หน้ามาประกวดใหม่</span>`
                 : c.weight ? `<button type="button" class="shop-buy farm-action" onclick="claimContest()">รับรางวัล 🏆</button>`
                 : c.planted ? `<span class="farm-done">${plot >= 0 ? `กำลังปลูกที่แปลงที่ ${plot + 1} (โต ${veg.plots[plot].stage}/5)` : 'ปลูกแล้ว'}</span>`
                 : `<button type="button" class="shop-buy farm-action" onclick="plantGiant()">ปลูกเมล็ดยักษ์ 🌱</button>`;
             return `<div class="farm-card contest-head"><span class="barn-emoji contest-giant">${v.e}</span>
                     <div class="farm-card-main"><span class="farm-card-title">ประกวด${v.name}ยักษ์ สัปดาห์นี้</span>
                     <span class="farm-card-sub">ได้เมล็ดยักษ์ฟรีสัปดาห์ละ 1 เมล็ด (โต 5 ระยะ) · ดินอุดม 60+/90+ · รดน้ำ · เก็บตรงจังหวะ ยิ่งหนัก</span></div>${status}</div>
-                <div class="contest-board">${contestBoard().map((r, i) => `<div class="contest-row${r.me ? ' is-me' : ''}"><span>${medals[i]}</span><span class="contest-who">${escHtml(r.who)}</span><b>${r.weight} กก.</b></div>`).join('')}</div>
-                <p class="shop-note">รางวัล: อันดับ 1 🪙40 + 🏆 ถ้วยทอง · อันดับ 2 🪙25 + 🥈 · อันดับ 3 🪙15 + 🥉 · อันดับ 4 🪙5 (ถ้วยตั้งในสวนได้)</p>`;
+                <div class="contest-board">${board.map((r, i) => `<div class="contest-row${r.me ? ' is-me' : ''}${r.friend ? ' is-friend' : ''}"><span>${medals[i] || i + 1}</span><span class="contest-who">${escHtml(r.who)}${r.friend ? ' <small class="contest-tag">👥 เพื่อน</small>' : ''}</span><b>${r.weight} กก.</b></div>`).join('')}</div>
+                ${friendNote}
+                <p class="shop-note">${friends.room ? `ชนะเพื่อนทุกคนในห้องได้โบนัส 👑 แชมป์ห้อง 🪙${ROOM_CHAMP_BONUS} · รางวัลอันดับนับเทียบกับคู่แข่งในขบวน (มีเพื่อนแข่งด้วยรางวัลไม่ลดลง) · ` : ''}รางวัล: อันดับ 1 🪙40 + 🏆 ถ้วยทอง · อันดับ 2 🪙25 + 🥈 · อันดับ 3 🪙15 + 🥉 · อันดับ 4 🪙5 (ถ้วยตั้งในสวนได้)</p>`;
         }
 
         // 🎣 บ่อตกปลา: ได้ตั๋วฟรีวันละใบ + พักดี 1 ครั้ง = 1 ใบ (เก็บได้สูงสุด 5) · เหวี่ยงเบ็ด รอปลากิน แล้วกด "ดึง!" ให้ทัน
@@ -7556,7 +7579,8 @@
                 p: veg.plots.map(p => p.seed ? [p.type[0], p.seed, p.stage, p.need, p.pest ? 1 : 0, p.golden ? 1 : 0] : 0),
                 an: Object.keys(ANIMALS).filter(a => shop.owned.includes(ANIMALS[a].shopId)),
                 wk: weekStartKey(), wh: mpWeekSum('crops'), wc: mpWeekSum('coins'),
-                tot: sum(veg.harvest) + sum(veg.fruits), ach: Object.keys(veg.ach).length
+                tot: sum(veg.harvest) + sum(veg.fruits), ach: Object.keys(veg.ach).length,
+                ct: (() => { const c = veg.contest, gp = veg.plots.find(p => p.giant); return c && c.week === weekStartKey() && c.planted ? [1, c.weight || 0, gp ? gp.stage : 5] : 0; })()
             };
         }
         // ข้อมูลจากเพื่อนผ่านเน็ตมา ตรวจทุกช่องก่อนแสดง (ชนิดผักต้องมีจริง ตัวเลขต้องอยู่ในช่วง)
@@ -7574,7 +7598,8 @@
                 }),
                 animals: (Array.isArray(f.an) ? f.an : []).filter(a => mpOwn(ANIMALS, a)).slice(0, 5),
                 wk: typeof f.wk === 'string' ? f.wk.slice(0, 10) : '', wh: int(f.wh, 99999), wc: int(f.wc, 999999),
-                tot: int(f.tot, 1e7), ach: int(f.ach, 999)
+                tot: int(f.tot, 1e7), ach: int(f.ach, 999),
+                ct: Array.isArray(f.ct) && f.ct[0] === 1 && f.wk === weekStartKey() ? { kg: Math.min(99, Math.max(0, Math.round((+f.ct[1] || 0) * 10) / 10)), stage: int(f.ct[2], 5) } : null
             };
         }
         function mpCleanState(s) {
@@ -7601,6 +7626,8 @@
             if (key === mp.lastPush) return;
             const r = await mpCall('bt_update_farm', { ...mpAuth(), p_farm: snap, p_name: friends.name || null, p_avatar: friends.avatar });
             if (r.ok) mp.lastPush = key;
+            // เซิร์ฟเวอร์รับหน้าฟาร์มได้ทุก 8 วินาที ถ้าส่งถี่ไปให้ลองใหม่อีกรอบ เพื่อนจะเห็นของใหม่เร็วๆ
+            else if (r.wait && !mp.retry) mp.retry = setTimeout(() => { mp.retry = 0; mpRefresh(); }, 9000);
         }
         async function mpRefresh() {
             if (!friends.room || mp.loading) return;
@@ -7625,7 +7652,7 @@
         function mpSchedule(ms) { clearTimeout(mp.timer); mp.timer = friends.room ? setTimeout(mpTick, ms) : 0; }
         async function mpTick() {
             if (friends.room && !document.hidden) { await mpRefresh(); if (mkOpen()) await mkRefresh(); }
-            mpSchedule(mpTabOpen() || mkOpen() ? 15000 : 60000);
+            mpSchedule(mpTabOpen() || mkOpen() || contestOpen() ? 15000 : 60000);
         }
         // เพื่อนช่วยฟาร์มเรา: รดน้ำ (ผักโตไวขึ้น 20 นาที + ได้ดาว) จับหนอน ส่งของเข้ายุ้งฉาง ทักทาย
         function mpApplyInbox(events) {
@@ -7808,7 +7835,8 @@
         function mpToggleWave(id) { Object.assign(mp, { waveFor: mp.waveFor === id ? '' : id, giftFor: '' }); renderFarmPanel(); }
         function mpPickGift(k) { mp.giftItem = k; mp.giftQty = 1; renderFarmPanel(); }
         function mpGiftQty(d) { mp.giftQty = Math.min(Math.min(5, veg.inv[mp.giftItem] || 1), Math.max(1, mp.giftQty + d)); renderFarmPanel(); }
-        function mpRender() { if (mpTabOpen()) renderFarmPanel(); renderFriendsBtn(); }
+        function mpRender() { if (mpTabOpen() || contestOpen()) renderFarmPanel(); renderFriendsBtn(); }
+        const contestOpen = () => document.getElementById('farm-modal').style.display === 'flex' && farmTab === 'contest';
         function mpOnOpen() {
             mpMarkSeen(); renderFriendsBtn();
             if (!friends.room) return;
@@ -7892,7 +7920,7 @@
             const pests = f.plots.filter(pl => pl && pl.pest).length;
             const growing = f.plots.some(pl => pl && !pl.pest && (pl.stage < pl.need || pl.type === 't'));
             const left = k => MP_LIMITS[k] - mpDone(p.id, k);
-            const extras = [house.e, f.pet ? PETS[f.pet.kind].e : '', ...f.animals.map(a => ANIMALS[a].e)].filter(Boolean).join(' ');
+            const extras = [house.e, f.pet ? PETS[f.pet.kind].e : '', ...f.animals.map(a => ANIMALS[a].e), f.ct && f.ct.kg ? `🏆 ${f.ct.kg} กก.` : ''].filter(Boolean).join(' ');
             let acts = '';
             if (!isMe) {
                 const canWater = left('water') > 0 && growing, canPest = left('pest') > 0 && pests > 0;
