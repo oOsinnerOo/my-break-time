@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9F0A8"/><stop offset="1" stop-color="#7CCB5E"/></linearGradient>
+    <linearGradient id="soil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A86B3C"/><stop offset="1" stop-color="#7A4A26"/></linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#sky)"/>
+  <circle cx="392" cy="122" r="46" fill="#FFE27A"/>
+  <path d="M40 372Q256 300 472 372V420Q472 472 420 472H92Q40 472 40 420Z" fill="url(#soil)"/>
+  <g fill="#5E3A1E" opacity="0.35"><circle cx="128" cy="410" r="9"/><circle cx="210" cy="438" r="7"/><circle cx="330" cy="420" r="9"/><circle cx="398" cy="446" r="6"/></g>
+  <path d="M256 352V236" stroke="#3E8E37" stroke-width="22" stroke-linecap="round"/>
+  <path d="M256 262Q176 270 140 196Q218 166 256 248Z" fill="#59B84B"/>
+  <path d="M256 236Q300 140 396 150Q392 252 262 258Z" fill="#6FCF5A"/>
+  <path d="M256 250Q210 228 176 204" stroke="#3E8E37" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M262 244Q320 196 370 170" stroke="#3E8E37" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <g transform="translate(118 330) rotate(-28)"><path d="M0 0Q18 -6 36 0L22 66Q18 74 14 66Z" fill="#FF8A3D"/><path d="M8 -4Q4 -26 14 -34M18 -4Q20 -30 30 -36M26 -2Q34 -22 46 -24" stroke="#4FA34A" stroke-width="6" fill="none" stroke-linecap="round"/></g>
+</svg>

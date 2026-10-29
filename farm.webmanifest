@@ -1,0 +1,18 @@
+{
+  "id": "./?farm",
+  "name": "ฟาร์มน้อยพักใจ",
+  "short_name": "ฟาร์มน้อย",
+  "description": "เกมปลูกผักของ Break Recorder แบบแยก เปิดเฉพาะฟาร์ม ลื่นบนมือถือ ใช้ข้อมูลชุดเดียวกับหน้าบันทึกพัก",
+  "lang": "th",
+  "start_url": "./?farm",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F6FAEE",
+  "theme_color": "#5BAA47",
+  "icons": [
+    { "src": "farm-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "farm-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "farm-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "farm-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
