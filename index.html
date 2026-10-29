@@ -718,21 +718,30 @@
         .theme-toggle:hover { transform: translateY(-2px); color: var(--ink); }
         .theme-toggle:active { transform: scale(0.94); }
         @media (max-width: 480px) {
-            .header-actions { gap: 5px; }
-            .header-actions .theme-toggle { width: 40px; height: 40px; padding: 0; justify-content: center; font-size: 17px; }
+            .header-actions { gap: 4px; }
+            .header-actions .theme-toggle { width: 38px; height: 38px; padding: 0; justify-content: center; font-size: 16px; }
             .header-actions .settings-label { display: none; }
-            .brand { gap: 10px; }
-            .brand-mark { width: 42px; height: 42px; font-size: 21px; border-radius: 14px; }
-            .app-title { font-size: 20px; white-space: nowrap; }
+            .brand { gap: 8px; }
+            .brand-mark { width: 40px; height: 40px; font-size: 20px; border-radius: 13px; }
+            .app-title { font-size: 19px; white-space: nowrap; }
+        }
+        @media (max-width: 400px) {
+            .header-actions { gap: 3px; }
+            .header-actions .theme-toggle { width: 34px; height: 34px; font-size: 15px; }
+            .brand-mark { width: 36px; height: 36px; font-size: 18px; border-radius: 12px; }
+            .app-title { font-size: 18px; }
         }
         @media (max-width: 370px) {
-            .header-actions { gap: 4px; }
-            .header-actions .theme-toggle { width: 36px; height: 36px; font-size: 15px; }
-            .brand-mark { width: 38px; height: 38px; font-size: 19px; }
+            .header-actions .theme-toggle { width: 32px; height: 32px; font-size: 14px; }
+            .brand-mark { width: 32px; height: 32px; font-size: 16px; }
             .app-title { font-size: 16px; }
             .greeting-line { font-size: 12px; }
         }
         @media (max-width: 340px) { .brand-mark { display: none; } }
+        .acct-dot { position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 0 2px var(--surface-solid); }
+        .acct-dot[hidden] { display: none; }
+        #acct-btn { position: relative; }
+        #acct-btn .settings-label { max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .volume-slider { width: 110px; height: 28px; vertical-align: middle; accent-color: var(--accent); cursor: pointer; touch-action: none; }
 
         /* 📊 แดชบอร์ดโควตา */
@@ -1116,12 +1125,13 @@
         .bg-slot .garden-svg { max-width: 190px; }
         .bg-foot { display: flex; gap: 8px; }
         .bg-foot .modal-btn { flex: 1; }
-        .break-phone-btn, .break-garden-btn {
+        .break-phone-btn, .break-garden-btn, .break-screen2-btn {
             border: none; cursor: pointer; padding: 9px 16px; border-radius: 999px; font: inherit; font-size: 14px; font-weight: 700;
             background: rgba(255, 255, 255, 0.65); color: var(--key-ink); box-shadow: 0 6px 14px -10px rgba(0, 0, 0, 0.4); transition: transform 0.15s, background-color 0.2s;
         }
-        body.is-dark .break-phone-btn, body.is-dark .break-garden-btn { background: rgba(255, 255, 255, 0.12); color: #FFFFFF; }
-        .break-phone-btn:hover, .break-garden-btn:hover { transform: translateY(-2px); }
+        body.is-dark .break-phone-btn, body.is-dark .break-garden-btn, body.is-dark .break-screen2-btn { background: rgba(255, 255, 255, 0.12); color: #FFFFFF; }
+        .break-phone-btn:hover, .break-garden-btn:hover, .break-screen2-btn:hover { transform: translateY(-2px); }
+        @media (max-width: 640px), (hover: none) and (pointer: coarse) { .break-screen2-btn { display: none; } }
         .break-phone-btn.is-on { background: var(--key-edge); color: #FFFFFF; }
         .break-phone-card {
             position: fixed; right: 24px; bottom: 24px; z-index: 5; width: 300px; padding: 14px 14px 12px; border-radius: 24px; text-align: center; cursor: default;
@@ -1179,6 +1189,34 @@
         .phone-timer.ring .pt-box { animation: pt-shake 0.7s ease-in-out 3; }
         @keyframes pt-shake { 0%, 100% { transform: none; } 20% { transform: rotate(-3deg) scale(1.03); } 40% { transform: rotate(3deg) scale(1.03); } 60% { transform: rotate(-2deg); } 80% { transform: rotate(2deg); } }
         .phone-timer.is-stale .pt-ring-wrap { opacity: 0.4; }
+        /* 🖥️ หน้าพักบนจอที่ 2 (เปิดจากปุ่มบนหน้าพัก) */
+        body.s2-mode { overflow: hidden; }
+        body.s2-mode .break-buddies { z-index: 120001; }
+        .screen2 { position: fixed; inset: 0; z-index: 120000; display: flex; flex-direction: column; padding: max(16px, 2vh) clamp(16px, 3vw, 40px); background: var(--bg-gradient); color: var(--ink); }
+        .screen2[hidden] { display: none; }
+        .s2-top { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; }
+        .s2-clock { font-family: var(--font-display); font-weight: 600; font-size: clamp(24px, 3.4vw, 44px); line-height: 1; font-variant-numeric: tabular-nums; }
+        .s2-date { color: var(--ink-2); font-weight: 600; font-size: clamp(13px, 1.5vw, 18px); }
+        .s2-btns { margin-left: auto; display: flex; gap: 8px; }
+        .s2-main { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(8px, 1.8vh, 20px); text-align: center; padding-bottom: 96px; }
+        .s2-ring-wrap { position: relative; width: clamp(140px, 27vh, 320px); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+        .s2-ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; display: none; }
+        .screen2.has-target .s2-ring { display: block; }
+        .s2-track { fill: none; stroke: rgba(var(--accent-rgb), 0.16); stroke-width: 7; }
+        .s2-fill { fill: none; stroke: var(--s2-meter, var(--accent)); stroke-width: 7; stroke-linecap: round; stroke-dasharray: 339.3; stroke-dashoffset: 339.3; transition: stroke-dashoffset 1s linear, stroke 0.8s ease; }
+        .s2-icon, .s2-idle-e { font-size: clamp(64px, 13vh, 150px); line-height: 1; animation: emoji-float 3.2s ease-in-out infinite; }
+        .s2-icon .act-ic { width: 1.3em; height: 1.3em; vertical-align: middle; }
+        .s2-name { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: clamp(26px, 5vh, 60px); line-height: 1.2; overflow-wrap: anywhere; }
+        .s2-status { padding: 6px 20px; border-radius: 999px; font-size: clamp(15px, 2.4vh, 26px); font-weight: 700; color: var(--accent-ink); background: rgba(var(--accent-rgb), 0.12); transition: background-color 0.6s, color 0.6s; }
+        .s2-time { font-family: var(--font-display); font-weight: 600; font-size: clamp(72px, 21vh, 260px); line-height: 1; font-variant-numeric: tabular-nums; }
+        .s2-meta { margin: 0; color: var(--ink-2); font-weight: 600; font-size: clamp(13px, 1.9vh, 20px); line-height: 1.5; }
+        .s2-back { flex: none; width: min(100%, 360px); font-size: clamp(16px, 2.4vh, 22px); padding: 14px 20px; }
+        .screen2.is-warn { --s2-meter: #F59E0B; }
+        .screen2.is-warn .s2-status { background: #FEF3C7; color: #92400E; }
+        .screen2.is-over { --s2-meter: #EF4444; }
+        .screen2.is-over .s2-status { background: #FEE2E2; color: #B91C1C; animation: over-blink 1.4s ease-in-out infinite; }
+        .screen2.is-over .s2-time { color: #EF4444; }
+        .s2-welcome .s2-idle-e { animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both, emoji-float 3.2s ease-in-out 0.5s infinite; }
         .back-title { font-family: var(--font-display); font-size: min(5.5vh, 9vw, 44px); font-weight: 500; color: var(--accent-ink); }
 
         /* ✅ แผ่นยืนยันหลังกด (คัดลอกข้อความแล้ว) */
@@ -2301,6 +2339,15 @@
         .cloud-code { font-size: 22px; font-weight: 800; letter-spacing: 2px; font-variant-numeric: tabular-nums; }
         .cloud-claim { display: flex; gap: 8px; }
         .cloud-claim .quota-input { flex: 1; width: auto; min-width: 0; text-transform: uppercase; letter-spacing: 1px; }
+        /* 👤 บัญชีผู้ใช้ (ชื่อผู้ใช้ + รหัสผ่าน) */
+        .acct-box { display: flex; flex-direction: column; gap: 8px; padding-bottom: 10px; margin-bottom: 2px; border-bottom: 1px dashed var(--line); }
+        .acct-form { display: flex; flex-direction: column; gap: 6px; }
+        .acct-form .quota-input { width: 100%; min-width: 0; text-align: left; }
+        .acct-form .data-btn { width: 100%; justify-content: center; }
+        .acct-note { margin: 0; font-size: 11.5px; line-height: 1.45; color: var(--ink-3); font-weight: 600; }
+        .acct-note.is-warn { color: var(--danger); }
+        .acct-name { color: var(--accent-ink); }
+        .acct-box .data-btn.is-active { border-color: var(--accent); color: var(--accent-ink); background: rgba(var(--accent-rgb), 0.1); }
         @media (max-width: 400px) { .cloud-link { flex-direction: column; align-items: flex-start; } }
         /* 🏚️ คอกสัตว์ · 🏭 โรงแปรรูป */
         .herd { font-size: 13px; letter-spacing: -2px; margin-left: 4px; }
@@ -2620,6 +2667,18 @@
         @media (min-width: 560px) { .mp-join-grid { grid-template-columns: 1fr 1fr; } }
         .farm-card.mp-choice { flex-direction: column; align-items: stretch; }
         .mp-choice .farm-action { width: 100%; }
+        /* 🏘️ ห้องที่เปิดรับเพื่อนใหม่ */
+        .mp-open { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+        .mp-open-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .mp-open-head b { font-size: 15px; }
+        .mp-room-card { align-items: center; }
+        .mp-room-avs { display: flex; flex-shrink: 0; font-size: 20px; line-height: 1; }
+        .mp-room-avs span { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--surface-solid); border: 2px solid var(--surface-2); }
+        .mp-room-avs span + span { margin-left: -12px; }
+        .mp-room-card .farm-card-main { min-width: 0; }
+        .mp-room-card .farm-card-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .mp-room-on { color: #16A34A; font-weight: 700; }
+        .mp-open .rp-empty { margin: 4px 0; }
         .mp-code-input { text-transform: uppercase; letter-spacing: 4px; font-weight: 800; text-align: center; }
         .mp-msg { margin: 0; min-height: 1.2em; text-align: center; font-size: 12.5px; font-weight: 700; color: var(--danger); }
         .mp-room { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 18px; background: var(--surface-2); border: 1px solid var(--line); }
@@ -2851,6 +2910,7 @@
             <div class="header-actions">
                 <button type="button" class="theme-toggle" id="sticker-btn" onclick="toggleStickerTray()" aria-label="สติกเกอร์">🎀<span class="settings-label">สติกเกอร์</span></button>
                 <button type="button" class="theme-toggle" id="save-btn" onclick="saveBackupNow()" aria-label="บันทึกไฟล์สำรอง">💾<span class="settings-label">บันทึก</span><span class="save-dot" id="save-dot" hidden></span></button>
+                <button type="button" class="theme-toggle" id="acct-btn" onclick="openAccount()" aria-label="บัญชีผู้ใช้">👤<span class="settings-label" id="acct-label">เข้าสู่ระบบ</span><span class="acct-dot" id="acct-dot" hidden></span></button>
                 <button type="button" class="theme-toggle" id="settings-btn" onclick="openSettingsModal()" aria-label="ตั้งค่า">⚙️<span class="settings-label">ตั้งค่า</span></button>
             </div>
         </header>
@@ -3484,6 +3544,17 @@
             <p class="pt-note" id="pt-note"></p>
             <button type="button" class="modal-btn btn-secondary pt-close" onclick="closePhoneTimer()">เปิดหน้าเว็บปกติ</button>
         </div>
+    </div>
+
+    <div class="screen2" id="screen2" hidden>
+        <div class="s2-top">
+            <span class="s2-clock" id="s2-clock">--:--</span><span class="s2-date" id="s2-date"></span>
+            <div class="s2-btns">
+                <button type="button" class="chip-btn" id="s2-fs" onclick="s2Fullscreen()">⛶ เต็มจอ</button>
+                <button type="button" class="chip-btn" onclick="s2Close()">✕ ปิดจอนี้</button>
+            </div>
+        </div>
+        <div class="s2-main" id="s2-main" aria-live="polite"></div>
     </div>
 
     <div class="toast-container" id="toast-container"></div>
@@ -9015,7 +9086,7 @@
         let friends = loadFriends();
         function saveFriends() { safeSetItem('farm_friends', JSON.stringify(friends)); }
         const mp = { state: null, at: 0, skew: 0, error: '', loading: false, joining: false, sending: false, timer: 0, view: 'friends', board: 'harvest',
-            giftFor: '', giftItem: '', giftQty: 1, waveFor: '', pendingCode: '', leaveArmed: 0, lastPush: '', showQR: false };
+            giftFor: '', giftItem: '', giftQty: 1, waveFor: '', pendingCode: '', leaveArmed: 0, lastPush: '', showQR: false, rooms: null, roomsAt: 0, roomsLoading: false, hiding: false };
 
         async function mpCall(fn, args) {
             let res;
@@ -9086,7 +9157,7 @@
             const today = {};
             (Array.isArray(s.today) ? s.today : []).forEach(t => { if (t && MP_UUID_RE.test(t.to) && mpOwn(MP_LIMITS, t.kind)) today[t.to + ':' + t.kind] = int(t.n, 99); });
             const room = s.room && typeof s.room === 'object' ? s.room : {};
-            return { me: str(s.me, 36), roomName: mpCleanName(room.name, 30), players, feed, today, now: Date.parse(s.now) || Date.now() };
+            return { me: str(s.me, 36), roomName: mpCleanName(room.name, 30), hidden: room.hidden === true, players, feed, today, now: Date.parse(s.now) || Date.now() };
         }
 
         // 🔄 ซิงก์กับห้อง: ส่งหน้าฟาร์มล่าสุด ดึงสถานะห้อง และรับของ/ความช่วยเหลือที่เพื่อนส่งมา
@@ -9211,7 +9282,7 @@
         }
         function mpBusy(on, text) {
             mp.joining = on;
-            document.querySelectorAll('.mp-join-grid button').forEach(b => { b.disabled = on; });
+            document.querySelectorAll('.mp-join-grid button, .mp-open button').forEach(b => { b.disabled = on; });
             if (on) { mp.error = ''; const m = document.getElementById('mp-msg'); if (m) m.textContent = text; }
         }
         async function mpCreate() {
@@ -9232,6 +9303,62 @@
             mpBusy(true, 'กำลังเข้าห้อง… 🚪');
             try { mpEnter(await mpCall('bt_join_room', { p_code: code, p_name: name, p_avatar: friends.avatar })); }
             catch (e) { mpBusy(false); mp.error = mpErr(e); mpShowMsg(); }
+        }
+        // 🏘️ ห้องที่เปิดรับเพื่อนใหม่: คนที่ยังไม่มีห้องเห็นรายการ แล้วกดเข้าร่วมได้เลย (ห้องที่สมาชิกซ่อนไว้จะไม่ขึ้น)
+        async function mpLoadRooms(force) {
+            if (friends.room || mp.roomsLoading || (!force && mp.rooms && Date.now() - mp.roomsAt < 60000)) return;
+            mp.roomsLoading = true;
+            if (force) mpRenderRooms();
+            try {
+                const r = await mpCall('bt_room_list', {});
+                const int = (n, max) => Math.min(max, Math.max(0, Math.floor(+n) || 0));
+                mp.rooms = (Array.isArray(r) ? r : []).filter(x => x && MP_CODE_RE.test(x.code)).slice(0, 30).map(x => ({
+                    code: x.code, name: mpCleanName(x.name, 30), host: mpCleanName(x.host) || 'เพื่อน', members: int(x.members, 20), online: int(x.online, 20),
+                    level: int(x.level, 999) || 1, active: Date.parse(x.active) || 0,
+                    avatars: (Array.isArray(x.avatars) ? x.avatars : []).map(a => mpCleanName(a, 8)).filter(Boolean).slice(0, 5)
+                }));
+                mp.roomsErr = '';
+            } catch (e) { mp.roomsErr = mpErr(e); if (!mp.rooms) mp.rooms = []; }
+            mp.roomsAt = Date.now(); mp.roomsLoading = false;
+            mpRenderRooms();
+        }
+        function mpRenderRooms() {
+            const el = document.getElementById('mp-open');
+            if (el && !friends.room) el.outerHTML = mpOpenRoomsView();
+            else mpRender();
+        }
+        function mpOpenRoomsView() {
+            if (!mp.roomsLoading && (!mp.rooms || Date.now() - mp.roomsAt > 60000)) setTimeout(() => mpLoadRooms(false), 0);
+            const list = mp.rooms || [];
+            const rows = list.map(x => `<div class="farm-card mp-room-card"><span class="mp-room-avs" aria-hidden="true">${x.avatars.map(a => `<span>${escHtml(a)}</span>`).join('')}</span>
+                    <div class="farm-card-main"><span class="farm-card-title">${escHtml(x.name || 'ห้องของ ' + x.host)}</span>
+                        <span class="farm-card-sub">👥 ${x.members}/20 คน${x.online ? ` · <span class="mp-room-on">● ออนไลน์ ${x.online}</span>` : ''} · เลเวลเฉลี่ย ${x.level} · เล่นล่าสุด ${escHtml(thaiAgo(Math.min(Date.now(), x.active)))}</span></div>
+                    <button type="button" class="shop-buy farm-action" onclick="mpJoinListed('${x.code}')" ${mp.joining ? 'disabled' : ''}>เข้าร่วม</button></div>`).join('');
+            return `<div class="mp-open" id="mp-open"><div class="mp-open-head"><b>🏘️ ห้องที่เปิดรับเพื่อนใหม่</b>
+                    <button type="button" class="mp-link" onclick="mpLoadRooms(true)" ${mp.roomsLoading ? 'disabled' : ''}>${mp.roomsLoading ? 'กำลังโหลด…' : '🔄 รีเฟรช'}</button></div>
+                ${!mp.rooms ? '<p class="rp-empty">กำลังโหลดรายการห้อง… 🌱</p>' : rows || `<p class="rp-empty">${mp.roomsErr ? '⚠️ ' + escHtml(mp.roomsErr) : 'ยังไม่มีห้องที่เปิดอยู่ สร้างห้องแรกด้านล่างแล้วชวนเพื่อนได้เลย!'}</p>`}
+                </div>`;
+        }
+        async function mpJoinListed(code) {
+            if (mp.joining || !MP_CODE_RE.test(code)) return;
+            const name = mpReadName();
+            if (!name) { const el = document.getElementById('mp-name'); if (el) el.scrollIntoView({ block: 'center' }); return; }
+            mpBusy(true, 'กำลังเข้าห้อง… 🚪');
+            try { mpEnter(await mpCall('bt_join_room', { p_code: code, p_name: name, p_avatar: friends.avatar })); }
+            catch (e) { mpBusy(false); mp.error = mpErr(e); mpShowMsg(); if (e.message === 'room_full' || e.message === 'no_room') mpLoadRooms(true); }
+        }
+        // สมาชิกในห้องเลือกได้ว่าจะให้ห้องโชว์ในรายการหรือไม่
+        async function mpToggleHidden() {
+            if (!mp.state || mp.hiding) return;
+            mp.hiding = true;
+            const want = !mp.state.hidden;
+            try {
+                const r = await mpCall('bt_room_hide', { ...mpAuth(), p_hidden: want });
+                mp.state.hidden = r.hidden === true;
+                showToast(mp.state.hidden ? '🙈 ซ่อนห้องจากรายการแล้ว เข้าได้เฉพาะคนที่มีรหัสห้อง' : '🌐 ห้องนี้โชว์ในรายการแล้ว คนที่ยังไม่มีห้องกดเข้าร่วมได้เลย', 'info', { duration: 5000 });
+            } catch (e) { showToast(mpErr(e), 'warning'); }
+            mp.hiding = false;
+            mpRender();
         }
         function mpEnter(r) {
             if (!r || !MP_CODE_RE.test(r.code) || !MP_UUID_RE.test(r.player) || !/^[0-9a-f]{36}$/.test(r.secret)) throw new Error('busy');
@@ -9257,7 +9384,7 @@
         function mpForget(msg) {
             Object.assign(friends, { room: '', player: '', secret: '', roomName: '', seenFeed: 0 });
             saveFriends();
-            Object.assign(mp, { state: null, at: 0, error: '', giftFor: '', waveFor: '', showQR: false, leaveArmed: 0, lastPush: '' });
+            Object.assign(mp, { state: null, at: 0, error: '', giftFor: '', waveFor: '', showQR: false, leaveArmed: 0, lastPush: '', rooms: null, roomsAt: 0 });
             Object.assign(rm, { steal: null, offers: null, auction: null, daily: null, league: null, panel: '', panelFor: '', prog: {}, offerFor: 0, counterFor: 0 });
             clearTimeout(mp.timer);
             if (msg) showToast(msg, 'info');
@@ -9337,7 +9464,8 @@
                         <span class="farm-card-sub">${s ? `${s.players.length} คน · ออนไลน์ ${mpOnlineCount()} คน` : 'กำลังโหลด…'}</span></div>
                     <div class="mp-room-btns"><button type="button" class="chip-btn" onclick="mpShareInvite()">🔗 ชวนเพื่อน</button>
                         <button type="button" class="chip-btn${friends.noSteal ? ' is-active' : ''}" aria-pressed="${!!friends.noSteal}" onclick="toggleNoSteal()" title="ปิดแล้วไม่มีใครแอบเก็บผักคุณได้ และคุณก็แอบเก็บของใครไม่ได้">${friends.noSteal ? '🔒 ปิดโหมดขโมย' : '🥷 โหมดขโมย: เปิด'}</button>
-                        <button type="button" class="chip-btn${mp.showQR ? ' is-active' : ''}" onclick="mpToggleQR()">📱 QR</button></div></div>`
+                        <button type="button" class="chip-btn${mp.showQR ? ' is-active' : ''}" onclick="mpToggleQR()">📱 QR</button>
+                        ${s ? `<button type="button" class="chip-btn" onclick="mpToggleHidden()" ${mp.hiding ? 'disabled' : ''} title="ห้องที่เปิดอยู่จะโชว์ในรายการ ให้คนที่ยังไม่มีห้องกดเข้าร่วมได้">${s.hidden ? '🙈 ซ่อนจากรายการ' : '🌐 โชว์ในรายการ'}</button>` : ''}</div></div>`
                 + (mp.showQR ? `<div class="mp-qr">${qrSVG(mpInviteLink())}<span class="farm-card-sub">ให้เพื่อนสแกนเพื่อเข้าห้อง ${friends.room}</span></div>` : '')
                 + (mp.pendingCode && mp.pendingCode !== friends.room ? `<p class="farm-news">มีลิงก์ชวนเข้าห้อง ${escHtml(mp.pendingCode)} · ต้องออกจากห้องนี้ก่อนถึงจะเข้าห้องใหม่ได้</p>` : '');
             if (!s) return head + `<p class="rp-empty">${mp.error ? '⚠️ ' + escHtml(mp.error) : 'กำลังโหลดห้อง… 🌱'}</p>` + mpFooter();
@@ -9359,9 +9487,10 @@
                     <div class="mp-avatars" role="radiogroup" aria-label="รูปประจำตัว">${MP_AVATARS.map((a, i) =>
                         `<button type="button" class="mp-av${a === friends.avatar ? ' is-active' : ''}" role="radio" aria-checked="${a === friends.avatar}" aria-label="รูป ${a}" onclick="mpPickAvatar(${i})">${a}</button>`).join('')}</div>
                 </div>
+                ${mpOpenRoomsView()}
                 <div class="mp-join-grid">
                     <div class="farm-card mp-choice"><div class="farm-card-main"><span class="farm-card-title">✨ สร้างห้องใหม่</span>
-                        <span class="farm-card-sub">ได้รหัส 6 ตัวไว้ส่งให้เพื่อน (ห้องละไม่เกิน 20 คน)</span>
+                        <span class="farm-card-sub">ได้รหัส 6 ตัวไว้ส่งให้เพื่อน (ห้องละไม่เกิน 20 คน) · ห้องจะโชว์ในรายการด้านบน ซ่อนได้ทีหลัง</span>
                         <input type="text" id="mp-room-name" class="field" maxlength="30" placeholder="ตั้งชื่อห้อง (ไม่ใส่ก็ได้)"></div>
                         <button type="button" class="shop-buy farm-action" onclick="mpCreate()">สร้างห้อง</button></div>
                     <div class="farm-card mp-choice"><div class="farm-card-main"><span class="farm-card-title">🔑 มีรหัสห้องจากเพื่อน</span>
@@ -11366,6 +11495,7 @@
                     </div>
                     <div class="break-phone">
                         <button type="button" class="break-garden-btn" onclick="openBreakGarden(this.closest('.action-card'), event)">🌱 ดูแลสวนระหว่างพัก</button>
+                        <button type="button" class="break-screen2-btn" onclick="openScreen2(event)" title="เปิดหน้าพักในหน้าต่างแยก ย้ายไปไว้อีกจอแล้วเต็มจอได้">🖥️ แสดงอีกจอ</button>
                         <button type="button" class="break-phone-btn" aria-expanded="false" onclick="togglePhoneQR(this.closest('.action-card'), event)">📱 นับเวลาบนมือถือ</button>
                         <div class="break-phone-card" hidden>
                             <button type="button" class="break-phone-close" aria-label="ซ่อน QR" onclick="togglePhoneQR(this.closest('.action-card'), event)">✕</button>
@@ -11594,6 +11724,157 @@
             if (!above) closeBreakGarden();
         }, true);
 
+        // 🖥️ หน้าพักบนจอที่ 2: ปุ่มบนหน้าพักเปิดหน้าต่างแยก (#screen2) ที่นับเวลาตามหน้าหลักเอง ลากไปอีกจอแล้วกดเต็มจอได้
+        // หน้านั้นไม่โหลดฟาร์ม/ข้อมูลส่วนอื่น อ่านสถานะพักจากเครื่องอย่างเดียว · กด "กลับมาแล้ว" ที่จอนั้น หน้าหลักจะจบการพักให้
+        const S2_MODE = location.hash === '#screen2';
+        const S2_DAYS = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+        const s2 = { tick: 0, key: '', welcome: 0, ending: 0 };
+        async function openScreen2(event) {
+            if (event) event.stopPropagation();
+            let w = null;
+            try { w = window.open('', 'bt-screen2', 'popup=yes,width=980,height=660'); } catch (e) {}
+            if (!w) { showToast('🖥️ เบราว์เซอร์บล็อกหน้าต่างใหม่ไว้ กดอนุญาตป๊อปอัปของเว็บนี้ก่อน แล้วลองใหม่นะ', 'warning', { duration: 7000 }); return; }
+            let ready = false;
+            try { ready = w.location.pathname === location.pathname && w.location.hash === '#screen2'; } catch (e) {}
+            if (!ready) w.location.replace(location.origin + location.pathname + location.search + '#screen2');
+            try { w.focus(); } catch (e) {}
+            if (await s2MoveToOtherScreen(w)) return;
+            showToast('🖥️ เปิดหน้าพักในหน้าต่างใหม่แล้ว ลากไปไว้อีกจอ แล้วกด ⛶ เต็มจอ ที่หน้านั้นได้เลย', 'success', { duration: 7000 });
+        }
+        // ต่อหลายจอ + เบราว์เซอร์รองรับ (Chrome/Edge): ขออนุญาตครั้งแรก แล้วย้ายหน้าต่างไปอีกจอให้เอง
+        async function s2MoveToOtherScreen(w) {
+            if (!('getScreenDetails' in window) || window.screen.isExtended !== true) return false;
+            try {
+                const sd = await window.getScreenDetails();
+                const other = sd.screens.find(s => s !== sd.currentScreen);
+                if (!other) return false;
+                w.moveTo(other.availLeft, other.availTop);
+                w.resizeTo(other.availWidth, other.availHeight);
+                showToast('🖥️ ส่งหน้าพักไปอีกจอแล้ว กด ⛶ เต็มจอ ที่จอนั้นได้เลย', 'success', { duration: 6000 });
+                return true;
+            } catch (e) { return false; }
+        }
+        function openScreen2View() {
+            document.body.classList.add('s2-mode');
+            document.getElementById('screen2').hidden = false;
+            renderBreakBuddies();
+            s2Render();
+            s2.tick = setInterval(s2Render, 1000);
+            document.addEventListener('fullscreenchange', s2FsLabel);
+        }
+        function s2State() {
+            try { const s = JSON.parse(localStorage.getItem('active_break_state') || 'null'); return s && s.startTime > 0 && typeof s.action === 'string' ? s : null; }
+            catch (e) { return null; }
+        }
+        function s2Quota() {
+            const today = getWorkDayKey();
+            let logs = [];
+            try { logs = JSON.parse(localStorage.getItem('break_logs') || '[]').filter(l => (l.shiftKey || l.date) === today); } catch (e) {}
+            const quota = parseInt(localStorage.getItem('daily_quota') || '60') || 60, used = logs.reduce((s, l) => s + quotaMinutesForLog(l), 0);
+            return { quota, used, left: Math.max(0, quota - used), n: logs.length };
+        }
+        function s2Render() {
+            const d = new Date(), now = new Date(d.getTime() + d.getTimezoneOffset() * 60000 + 7 * 3600000), st = s2State(), el = document.getElementById('screen2'); // นาฬิกาเวลาไทย ตรงกับเวลาเริ่มพัก
+            document.getElementById('s2-clock').textContent = `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+            document.getElementById('s2-date').textContent = `วัน${S2_DAYS[now.getDay()]}ที่ ${now.getDate()} ${THAI_MONTHS[now.getMonth()]}`;
+            if (!st && s2.key.startsWith('b')) s2.welcome = Date.now() + 4000; // เพิ่งจบพัก โชว์ต้อนรับกลับสักครู่
+            const key = st ? 'b' + st.startTime : s2.welcome > Date.now() ? 'welcome' : 'idle';
+            if (key !== s2.key) { s2.key = key; s2.ending = 0; s2Build(st, key); }
+            if (st) s2Tick(st, el);
+            else {
+                el.classList.remove('has-target', 'is-warn', 'is-over');
+                document.body.classList.remove('on-break', 'break-over');
+                const q = document.getElementById('s2-quota');
+                if (q) { const x = s2Quota(); q.textContent = `${x.left}/${x.quota}`; document.getElementById('s2-count').textContent = x.n ? `วันนี้พักไปแล้ว ${x.n} ครั้ง · ใช้โควตาไป ${x.used} นาที` : 'วันนี้ยังไม่ได้พักเลย'; }
+            }
+        }
+        function s2Build(st, key) {
+            const main = document.getElementById('s2-main');
+            if (st) {
+                let icon = '';
+                try { icon = ((JSON.parse(localStorage.getItem('activities')) || defaultActivities)[st.index] || {}).emoji || ''; } catch (e) {}
+                const free = st.isToilet ? getToiletFreeMinutes() : 0;
+                main.innerHTML = `<div class="s2-ring-wrap"><svg class="s2-ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="s2-track" cx="60" cy="60" r="54"></circle><circle class="s2-fill" id="s2-fill" cx="60" cy="60" r="54"></circle></svg>`
+                    + `<span class="s2-icon">${actIconHTML(icon || '⏱️')}</span></div>`
+                    + `<h1 class="s2-name">${escHtml(st.action)}</h1><div class="s2-status" id="s2-status"></div><div class="s2-time" id="s2-time">00:00</div>`
+                    + `<p class="s2-meta">เริ่มพัก ${escHtml(st.startStr || getThaiTimeString(new Date(st.startTime)))}${st.limit > 0 ? ` · ลิมิต ${st.limit} นาที` : free > 0 ? ` · ห้องน้ำฟรี ${free} นาที` : ''}</p>`
+                    + `<button type="button" class="modal-btn btn-primary s2-back" id="s2-back" onclick="s2End()">🏠 กลับมาแล้ว</button>`;
+                document.body.classList.add('on-break');
+                document.title = `☕ ${st.action} · จอที่ 2`;
+            } else if (key === 'welcome') {
+                main.innerHTML = `<div class="s2-welcome"><div class="s2-idle-e">🏠</div></div><h1 class="s2-name">ยินดีต้อนรับกลับมา!</h1><div class="s2-status">บันทึกเวลาพักให้แล้ว</div>`;
+                document.title = 'กลับมาแล้ว · จอที่ 2';
+            } else {
+                main.innerHTML = `<div class="s2-idle-e">💻</div><h1 class="s2-name">ตั้งใจทำงานอยู่</h1>`
+                    + `<div class="s2-status">โควตาพักวันนี้เหลือ <b id="s2-quota"></b> นาที</div>`
+                    + `<p class="s2-meta"><span id="s2-count"></span><br>กดเริ่มพักที่หน้าหลักเมื่อไหร่ จอนี้จะเปลี่ยนเป็นนับเวลาให้เอง</p>`;
+                document.title = 'หน้าพัก · จอที่ 2';
+            }
+        }
+        function s2Tick(st, el) {
+            const secs = Math.max(0, Math.floor((Date.now() - st.startTime) / 1000)), target = getBreakTargetSecs(st);
+            let big = formatMMSS(secs), status = 'พักมาแล้ว', ratio = 0;
+            if (target > 0) {
+                const remain = target - secs;
+                ratio = secs / target;
+                big = remain >= 0 ? formatMMSS(remain) : '+' + formatMMSS(-remain);
+                status = st.limit > 0 ? (remain >= 0 ? 'เหลือเวลาอีก' : 'เกินลิมิตมาแล้ว') : (remain >= 0 ? 'เวลาฟรีเหลือ' : 'เกินเวลาฟรีมาแล้ว');
+                const fill = document.getElementById('s2-fill');
+                if (fill) fill.style.strokeDashoffset = BREAK_RING_CIRC * (1 - Math.min(ratio, 1));
+            }
+            el.classList.toggle('has-target', target > 0);
+            el.classList.toggle('is-warn', ratio >= 0.75 && ratio < 1);
+            el.classList.toggle('is-over', ratio >= 1);
+            document.body.classList.toggle('break-over', ratio >= 1);
+            const t = document.getElementById('s2-time'), s = document.getElementById('s2-status');
+            if (t) t.textContent = big;
+            if (s) s.textContent = status;
+            const b = document.getElementById('s2-back');
+            if (b) { b.disabled = s2.ending > Date.now(); b.textContent = b.disabled ? 'กำลังจบการพัก…' : '🏠 กลับมาแล้ว'; }
+        }
+        // จบพักจากจอที่ 2: คัดลอกข้อความ "กลับมาแล้ว" ที่จอนี้ (ปุ่มกดที่นี่) แล้วส่งคำสั่งให้หน้าหลักบันทึก
+        function s2End() {
+            const st = s2State();
+            if (!st || s2.ending > Date.now()) return;
+            performCopy(`กลับมาแล้ว ${(localStorage.getItem('gender') || 'male') === 'male' ? 'ครับ' : 'ค่ะ'}`);
+            s2.ending = Date.now() + 2500;
+            safeSetItem('s2_cmd', JSON.stringify({ type: 'end', start: st.startTime, at: Date.now() }));
+            s2Render();
+            setTimeout(() => {
+                const now = s2State();
+                if (now && now.startTime === st.startTime) {
+                    s2.ending = 0; s2Render();
+                    showToast('ไม่เจอหน้าหลักที่เปิดอยู่ เปิดเว็บหน้าหลักไว้ด้วย แล้วกดอีกครั้งนะ', 'warning', { duration: 6000 });
+                }
+            }, 2600);
+        }
+        // ฝั่งหน้าหลัก: ได้คำสั่งจากจอที่ 2 → จบพักให้ (ล็อกไว้ ถ้าเปิดหน้าหลักหลายแท็บจะบันทึกครั้งเดียว)
+        function s2Command(raw) {
+            let m = null;
+            try { m = JSON.parse(raw); } catch (e) {}
+            if (!m || m.type !== 'end' || !(Date.now() - m.at < 10000)) return;
+            const run = () => {
+                let st = null;
+                try { st = JSON.parse(localStorage.getItem('active_break_state') || 'null'); } catch (e) {}
+                if (!activeBreak || !st || st.startTime !== m.start || activeBreak.startTime !== m.start) return;
+                const card = document.getElementById('activities-container').children[activeBreak.index];
+                if (card) endBreak(activeBreak.index, card);
+            };
+            if (navigator.locks && navigator.locks.request) navigator.locks.request('bt-end-break', async () => { run(); await new Promise(r => setTimeout(r, 300)); }).catch(run);
+            else run();
+        }
+        function s2Fullscreen() {
+            if (document.fullscreenElement) { document.exitFullscreen().catch(() => {}); return; }
+            const el = document.documentElement;
+            if (!el.requestFullscreen) { showToast('เบราว์เซอร์นี้สั่งเต็มจอไม่ได้ ลองกด F11 แทนนะ', 'info'); return; }
+            el.requestFullscreen().catch(() => showToast('เบราว์เซอร์นี้สั่งเต็มจอไม่ได้ ลองกด F11 แทนนะ', 'info'));
+        }
+        function s2FsLabel() { const b = document.getElementById('s2-fs'); if (b) b.textContent = document.fullscreenElement ? '🗗 ออกจากเต็มจอ' : '⛶ เต็มจอ'; }
+        function s2Close() {
+            window.close();
+            setTimeout(() => location.replace(location.pathname + location.search), 200); // เปิดเองจากลิงก์ ปิดไม่ได้ ก็กลับหน้าหลักแทน
+        }
+
         function startBreak(index, cardElement) {
             if (cardElement.classList.contains('expanded')) return;
             if (activeBreak) return; // ป้องกันเริ่มพักซ้อนกันถ้ามีกิจกรรมที่กำลังพักอยู่แล้ว (กันแตะเร็วเกินไประหว่างเปลี่ยนหน้าจอ)
@@ -11626,7 +11907,8 @@
             let diffMins = Math.max(1, Math.round(diffMs / 60000));
             const withinLimit = !(activeBreak.limit > 0 && diffMins > activeBreak.limit);
             if (!withinLimit) {
-                setTimeout(() => showToast(`⏰ ${activeBreak.action} เกินลิมิต ${activeBreak.limit} นาที (ใช้ไป ${diffMins} นาที)`, 'warning', { duration: 5000 }), 300);
+                const { action: overName, limit: overLimit } = activeBreak;
+                setTimeout(() => showToast(`⏰ ${overName} เกินลิมิต ${overLimit} นาที (ใช้ไป ${diffMins} นาที)`, 'warning', { duration: 5000 }), 300);
             }
             if (activeBreak.isToilet) {
                 const freeMin = getToiletFreeMinutes();
@@ -13072,17 +13354,18 @@
 
         // --- 💾 บันทึกง่าย + กันข้อมูลหาย: ปุ่มบันทึกหน้าแรก · จุดกู้คืนอัตโนมัติ 7 วัน · บันทึกลงไฟล์อัตโนมัติ · เตือนสำรอง · ดูก่อนกู้คืน ---
         const SNAP_DAYS = 7, SNAP_SAFETY = 3, BACKUP_REMIND_DAYS = 7;
-        const SAFE_IGNORE_KEYS = ['active_break_state', 'phone_qr_open', 'phone_qr_mode', 'last_backup_at', 'backup_reminded_day', 'autosave_at', 'farm_friends', 'cloud_save'];
+        const SAFE_IGNORE_KEYS = ['active_break_state', 's2_cmd', 'phone_qr_open', 'phone_qr_mode', 'last_backup_at', 'backup_reminded_day', 'autosave_at', 'farm_friends', 'cloud_save'];
         // ☁️ เซฟบนเซิร์ฟเวอร์ (แยกจากห้องเพื่อน): เครื่องเก็บแค่ id + รหัสลับ · เซิร์ฟเวอร์เก็บสำเนาล่าสุดชุดเดียว พร้อมเลขรอบกันเครื่องเก่าเขียนทับเครื่องใหม่
         const CLOUD_GAP = 3 * 60 * 1000, CLOUD_WAIT = 30 * 1000, CLOUD_CODE_RE = /^[A-HJKMNP-Z2-9]{8}$/;
+        const ACCT_USER_RE = /^[a-z0-9_.]{3,20}$/;
         function loadCloud() {
             let v = null;
             try { v = JSON.parse(localStorage.getItem('cloud_save') || 'null'); } catch (e) {}
             const ok = v && typeof v === 'object' && MP_UUID_RE.test(v.id || '') && /^[0-9a-f]{36}$/.test(v.secret || '');
-            return ok ? { id: v.id, secret: v.secret, rev: Math.max(0, Math.floor(+v.rev) || 0), at: Math.max(0, +v.at || 0) } : null;
+            return ok ? { id: v.id, secret: v.secret, rev: Math.max(0, Math.floor(+v.rev) || 0), at: Math.max(0, +v.at || 0), user: ACCT_USER_RE.test(v.user || '') ? v.user : '' } : null;
         }
         let cloud = loadCloud();
-        const cloudRt = { state: 'idle', timer: 0, dirty: false, paused: false, link: null, conflict: null, busy: false, offline: false, claimOpen: false, offArmed: 0, checkedAt: 0 };
+        const cloudRt = { state: 'idle', timer: 0, dirty: false, paused: false, link: null, conflict: null, busy: false, offline: false, claimOpen: false, offArmed: 0, checkedAt: 0, acct: '', acctMsg: '' };
         const thaiAgo = (ms) => {
             if (!ms) return 'ยังไม่เคย';
             const d = new Date(ms), diff = Date.now() - ms, today = new Date(); today.setHours(0, 0, 0, 0);
@@ -13359,7 +13642,7 @@
             renderDataSafety();
         }
 
-        function saveCloud() { if (cloud) safeSetItem('cloud_save', JSON.stringify(cloud)); else localStorage.removeItem('cloud_save'); }
+        function saveCloud() { if (cloud) safeSetItem('cloud_save', JSON.stringify(cloud)); else localStorage.removeItem('cloud_save'); renderAcctBtn(); }
         function deviceLabel() {
             const ua = navigator.userAgent || '';
             const os = /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad' : /Android/.test(ua) ? 'Android' : /Mac/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : /Linux/.test(ua) ? 'Linux' : 'เครื่องอื่น';
@@ -13433,6 +13716,8 @@
                 const r = await mpCall('bt_save_get', { p_id: cloud.id, p_secret: cloud.secret, p_meta: true });
                 const rev = Math.floor(+r.rev) || 0;
                 cloudRt.offline = false;
+                const user = ACCT_USER_RE.test(r.user || '') ? r.user : '';
+                if (cloud && user !== cloud.user) { cloud.user = user; saveCloud(); } // สมัครบัญชีจากอีกเครื่องที่ใช้เซฟเดียวกัน
                 if (rev > cloud.rev && !cloudRt.conflict) { cloudRt.conflict = { rev, at: Date.parse(r.at) || 0, device: mpCleanName(r.device, 30) || 'อีกเครื่อง', newer: true }; cloudConflictToast(); }
             } catch (e) {
                 if (e.message === 'bad_save') cloudForget('☁️ ที่เก็บเซฟบนเซิร์ฟเวอร์ใช้ไม่ได้แล้ว เปิดใหม่ได้ในหน้าตั้งค่า');
@@ -13515,9 +13800,10 @@
                     : '☁️ เปิดจาก QR ย้ายเครื่อง: เชื่อมเซฟจากเครื่องเดิมมาที่เครื่องนี้ไหม (ดูข้อมูลก่อนโหลดได้)', 'info', cloud ? { duration: 8000 } : { duration: 15000, actionLabel: 'เชื่อมเลย', onAction: () => cloudClaim(code) });
             }
             if (cloud) { cloudCheck(); if (!cloud.at) cloudSchedule(); }
+            renderAcctBtn();
         }
         document.addEventListener('visibilitychange', () => {
-            if (!cloud) return;
+            if (!cloud || S2_MODE) return;
             if (document.visibilityState === 'hidden') { if (cloudRt.dirty && !cloudRt.conflict) cloudUpload(true); }
             else if (Date.now() - cloudRt.checkedAt > 2 * 60 * 1000) cloudCheck();
         });
@@ -13538,7 +13824,7 @@
                 const c = cloudRt.conflict;
                 if (c) html += `<div class="cloud-warn" role="alert"><span>⚠️ ${c.newer ? 'มีเซฟที่ใหม่กว่า' : 'อีกเครื่องเพิ่งบันทึกไป'}จาก <b>${escHtml(c.device)}</b> (${escHtml(thaiAgo(c.at))}) · เครื่องนี้หยุดบันทึกไว้ก่อน เลือกว่าจะใช้อันไหน</span>
                     <div class="data-actions">${btn("cloudResolve('pull')", '⬇️', 'โหลดเซฟนั้นมาเล่นต่อ')}${btn("cloudResolve('push')", '⬆️', 'ใช้ของเครื่องนี้ทับ', ' is-danger')}</div></div>`;
-                html += `<div class="data-actions">${btn('cloudUpload(true)', '⬆️', 'บันทึกตอนนี้')}${btn('cloudLink()', '📲', 'ย้ายไปเครื่องอื่น')}${btn('cloudPull()', '⬇️', 'โหลดจากเซิร์ฟเวอร์')}${btn('cloudOff()', '⏹️', cloudRt.offArmed > Date.now() ? 'แตะอีกครั้งเพื่อยืนยัน' : 'เลิกใช้ในเครื่องนี้', ' is-danger')}</div>`;
+                html += `<div class="data-actions">${btn('cloudUpload(true)', '⬆️', 'บันทึกตอนนี้')}${btn('cloudLink()', '📲', 'ย้ายไปเครื่องอื่น')}${btn('cloudPull()', '⬇️', 'โหลดจากเซิร์ฟเวอร์')}${cloud.user ? '' : btn('cloudOff()', '⏹️', cloudRt.offArmed > Date.now() ? 'แตะอีกครั้งเพื่อยืนยัน' : 'เลิกใช้ในเครื่องนี้', ' is-danger')}</div>`;
                 const l = cloudRt.link;
                 if (l && l.until > Date.now()) {
                     const exp = new Date(l.until);
@@ -13546,7 +13832,135 @@
                         <small>บนเครื่องใหม่: สแกน QR นี้ หรือเปิดเว็บนี้แล้วไปที่ ⚙️ ตั้งค่า → 💾 ข้อมูล → "มีรหัสจากเครื่องอื่น" · ใช้ได้ครั้งเดียว หมดอายุ ${exp.getHours()}:${pad2(exp.getMinutes())} น.</small></div></div>`;
                 }
             }
-            box.innerHTML = html;
+            // วาดใหม่ระหว่างพิมพ์ (บันทึกขึ้นเซิร์ฟเวอร์ตามรอบ/แจ้งผิด) สิ่งที่พิมพ์ค้างในฟอร์มบัญชีและเคอร์เซอร์ไม่หาย
+            const keep = {}, act = document.activeElement, focus = act && act.closest && act.closest('.acct-form') ? act.name : '';
+            box.querySelectorAll('.acct-form input').forEach(i => { keep[i.name] = i.value; });
+            box.innerHTML = acctHTML(btn) + html;
+            box.querySelectorAll('.acct-form input').forEach(i => { if (keep[i.name]) i.value = keep[i.name]; if (focus && i.name === focus) i.focus({ preventScroll: true }); });
+        }
+        // 👤 บัญชีผู้ใช้: ชื่อผู้ใช้ + รหัสผ่าน ผูกกับเซฟบนเซิร์ฟเวอร์ · เครื่องใหม่แค่ล็อกอินก็ได้ข้อมูลเดิม (เครื่องเดิมยังใช้ต่อได้)
+        const acctErr = code => ({ bad_user: 'ชื่อผู้ใช้ใช้ตัวอักษรอังกฤษพิมพ์เล็ก ตัวเลข _ หรือ . ยาว 3–20 ตัว', bad_pass: 'รหัสผ่านต้องยาว 6 ตัวขึ้นไป',
+            user_taken: 'ชื่อผู้ใช้นี้มีคนใช้แล้ว ลองชื่ออื่นนะ', has_account: 'เซฟนี้มีบัญชีอยู่แล้ว', bad_login: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
+            locked: 'ใส่รหัสผิดหลายครั้ง บัญชีถูกล็อกไว้ 15 นาที ลองใหม่ทีหลังนะ', bad_old: 'รหัสผ่านเดิมไม่ถูกต้อง', no_account: 'เซฟนี้ยังไม่มีบัญชี',
+            mismatch: 'รหัสผ่านสองช่องไม่ตรงกัน' }[code] || cloudErr({ message: code }));
+        function acctHTML(btn) {
+            const f = cloudRt.acct, msg = cloudRt.acctMsg ? `<p class="acct-note is-warn" role="alert">⚠️ ${escHtml(cloudRt.acctMsg)}</p>` : '';
+            const dis = cloudRt.busy ? 'disabled' : '';
+            const field = (name, type, ph, ac, extra = '') => `<input name="${name}" type="${type}" class="quota-input" placeholder="${ph}" aria-label="${ph}" autocomplete="${ac}" ${extra}>`;
+            const userField = field('user', 'text', 'ชื่อผู้ใช้ (อังกฤษ/ตัวเลข 3–20 ตัว)', 'username', 'maxlength="20" autocapitalize="none" spellcheck="false"');
+            if (cloud && cloud.user) {
+                let h = `<div class="acct-box" id="acct-box"><div class="cloud-head"><span class="cloud-ico" aria-hidden="true">👤</span><div class="cloud-text"><b>เข้าสู่ระบบเป็น <span class="acct-name">${escHtml(cloud.user)}</span></b>
+                    <small>ล็อกอินชื่อนี้บนมือถือหรือคอมเครื่องไหนก็ได้ จะได้ข้อมูลชุดเดียวกัน (ประวัติพัก ฟาร์ม ร้านค้า ห้องเพื่อน) ข้อมูลบันทึกขึ้นเซิร์ฟเวอร์เองเรื่อยๆ</small></div></div>
+                    <div class="data-actions">${btn("acctOpen('pass')", '🔑', 'เปลี่ยนรหัสผ่าน')}${btn('acctLogout()', '🚪', cloudRt.offArmed > Date.now() ? 'แตะอีกครั้งเพื่อออก' : 'ออกจากระบบ', ' is-danger')}</div>`;
+                if (f === 'pass') h += `<form class="acct-form" onsubmit="event.preventDefault(); acctPassword(this)">${field('old', 'password', 'รหัสผ่านเดิม', 'current-password')}${field('pass', 'password', 'รหัสผ่านใหม่ (6 ตัวขึ้นไป)', 'new-password', 'maxlength="64"')}${field('pass2', 'password', 'ใส่รหัสผ่านใหม่อีกครั้ง', 'new-password', 'maxlength="64"')}
+                    <button type="submit" class="data-btn" ${dis}>🔑 เปลี่ยนรหัสผ่าน</button></form>`;
+                return h + msg + '</div>';
+            }
+            let h = `<div class="acct-box" id="acct-box"><div class="cloud-head"><span class="cloud-ico" aria-hidden="true">👤</span><div class="cloud-text"><b>บัญชีผู้ใช้ · ยังไม่ได้เข้าสู่ระบบ</b>
+                <small>${cloud ? 'ตั้งชื่อผู้ใช้กับรหัสผ่านให้เซฟนี้ แล้วเข้าเล่นต่อจากเครื่องไหนก็ได้ ไม่ต้องใช้รหัสย้ายเครื่องอีก' : 'สมัครด้วยชื่อผู้ใช้ + รหัสผ่าน ข้อมูลทั้งหมดจะเก็บบนเซิร์ฟเวอร์ให้เอง ล้างเบราว์เซอร์หรือเปลี่ยนเครื่องก็แค่เข้าสู่ระบบ'}</small></div></div>
+                <div class="data-actions">${btn("acctOpen('signup')", '✨', cloud ? 'ตั้งชื่อผู้ใช้ให้เซฟนี้' : 'สมัครบัญชี', f === 'signup' ? ' is-active' : '')}${btn("acctOpen('login')", '🔓', 'เข้าสู่ระบบ', f === 'login' ? ' is-active' : '')}</div>`;
+            if (f === 'signup') h += `<form class="acct-form" onsubmit="event.preventDefault(); acctSignup(this)">${userField}${field('pass', 'password', 'รหัสผ่าน (6 ตัวขึ้นไป)', 'new-password', 'maxlength="64"')}${field('pass2', 'password', 'ใส่รหัสผ่านอีกครั้ง', 'new-password', 'maxlength="64"')}
+                <button type="submit" class="data-btn" ${dis}>${cloudRt.busy ? 'กำลังสมัคร…' : '✨ สมัครและเก็บข้อมูลบนเซิร์ฟเวอร์'}</button>
+                <p class="acct-note">จำรหัสผ่านไว้ให้ดี ไม่มีอีเมลกู้คืน (ถ้าลืม เปลี่ยนรหัสได้จากเครื่องที่ยังล็อกอินอยู่)</p></form>`;
+            if (f === 'login') h += `<form class="acct-form" onsubmit="event.preventDefault(); acctLogin(this)">${userField}${field('pass', 'password', 'รหัสผ่าน', 'current-password', 'maxlength="64"')}
+                <button type="submit" class="data-btn" ${dis}>${cloudRt.busy ? 'กำลังเข้าสู่ระบบ…' : '🔓 เข้าสู่ระบบ'}</button>
+                <p class="acct-note">ข้อมูลในเครื่องนี้จะถูกแทนด้วยข้อมูลของบัญชี (มีหน้าให้ดูก่อนโหลด)</p></form>`;
+            return h + msg + '</div>';
+        }
+        function acctOpen(mode) {
+            cloudRt.acct = cloudRt.acct === mode ? '' : mode; cloudRt.acctMsg = '';
+            renderCloudBox();
+            const i = document.querySelector('#acct-box .acct-form input');
+            if (i) i.focus();
+        }
+        function acctFail(code) { cloudRt.acctMsg = acctErr(code); cloudRt.busy = false; renderCloudBox(); }
+        async function acctSignup(form) {
+            const user = form.user.value.trim().toLowerCase(), pass = form.pass.value;
+            if (!ACCT_USER_RE.test(user)) return acctFail('bad_user');
+            if (pass.length < 6) return acctFail('bad_pass');
+            if (pass !== form.pass2.value) return acctFail('mismatch');
+            if (cloudRt.busy) return;
+            cloudRt.busy = true; cloudRt.acctMsg = ''; renderCloudBox();
+            try {
+                if (!cloud) {
+                    const r = await mpCall('bt_save_create', { p_device: deviceLabel() });
+                    if (!MP_UUID_RE.test(r.id || '') || !/^[0-9a-f]{36}$/.test(r.secret || '')) throw new Error('bad');
+                    cloud = { id: r.id, secret: r.secret, rev: 0, at: 0, user: '' }; saveCloud();
+                }
+                await mpCall('bt_account_register', { p_id: cloud.id, p_secret: cloud.secret, p_user: user, p_pass: pass });
+            } catch (e) {
+                if (e.message === 'has_account') cloudCheck();
+                return acctFail(e.message);
+            }
+            cloud.user = user; saveCloud();
+            Object.assign(cloudRt, { busy: false, acct: '', acctMsg: '', claimOpen: false });
+            const res = await cloudUpload(true);
+            showToast(`👤 สมัครแล้ว! ชื่อผู้ใช้ ${user}${res === 'ok' ? ' · บันทึกข้อมูลขึ้นเซิร์ฟเวอร์แล้ว' : ''} เครื่องอื่นเข้าสู่ระบบด้วยชื่อนี้ได้เลย`, 'success', { duration: 6000 });
+            renderCloudBox();
+        }
+        async function acctLogin(form) {
+            const user = form.user.value.trim().toLowerCase(), pass = form.pass.value;
+            if (!user || !pass) return acctFail('bad_login');
+            if (cloudRt.busy) return;
+            cloudRt.busy = true; cloudRt.acctMsg = ''; renderCloudBox();
+            let r;
+            try { r = await mpCall('bt_account_login', { p_user: user, p_pass: pass, p_device: deviceLabel() }); }
+            catch (e) { return acctFail(e.message); }
+            if (!r.ok) {
+                acctFail(r.error);
+                if (r.error === 'bad_login' && r.left > 0 && r.left < 4) { cloudRt.acctMsg += ` (ผิดได้อีก ${r.left} ครั้งก่อนล็อก)`; renderCloudBox(); }
+                return;
+            }
+            if (!MP_UUID_RE.test(r.id || '') || !/^[0-9a-f]{36}$/.test(r.secret || '') || !ACCT_USER_RE.test(r.user || '')) return acctFail('busy');
+            const same = cloud && cloud.id === r.id;
+            clearTimeout(cloudRt.timer);
+            cloud = same ? { ...cloud, secret: r.secret, user: r.user } : { id: r.id, secret: r.secret, rev: 0, at: 0, user: r.user };
+            saveCloud();
+            Object.assign(cloudRt, { busy: false, acct: '', acctMsg: '', claimOpen: false, link: null, timer: 0, ...(same ? {} : { conflict: null, dirty: false }) });
+            if (same) { showToast(`👤 เข้าสู่ระบบเป็น ${r.user} แล้ว เครื่องนี้ใช้ข้อมูลของบัญชีนี้อยู่แล้ว`, 'success'); renderCloudBox(); return; }
+            showToast(`👤 เข้าสู่ระบบเป็น ${r.user} แล้ว ดูข้อมูลก่อนโหลดมาเล่นต่อได้เลย`, 'success');
+            renderCloudBox();
+            await cloudPull();
+        }
+        async function acctPassword(form) {
+            const old = form.old.value, pass = form.pass.value;
+            if (pass.length < 6) return acctFail('bad_pass');
+            if (pass !== form.pass2.value) return acctFail('mismatch');
+            if (!cloud || cloudRt.busy) return;
+            cloudRt.busy = true; cloudRt.acctMsg = ''; renderCloudBox();
+            let r;
+            try { r = await mpCall('bt_account_password', { p_id: cloud.id, p_secret: cloud.secret, p_old: old, p_new: pass }); }
+            catch (e) { return acctFail(e.message); }
+            if (!r.ok) return acctFail(r.error);
+            Object.assign(cloudRt, { busy: false, acct: '', acctMsg: '' });
+            showToast('🔑 เปลี่ยนรหัสผ่านแล้ว ครั้งหน้าเข้าสู่ระบบด้วยรหัสใหม่นะ', 'success');
+            renderCloudBox();
+        }
+        // ออกจากระบบ: ส่งข้อมูลล่าสุดขึ้นไปก่อน แล้วยกเลิกกุญแจของเครื่องนี้ · ข้อมูลในเครื่องยังอยู่ครบ
+        async function acctLogout() {
+            if (!cloud || cloudRt.busy) return;
+            if (!(cloudRt.offArmed > Date.now())) { cloudRt.offArmed = Date.now() + 4000; renderCloudBox(); setTimeout(renderCloudBox, 4100); return; }
+            cloudRt.offArmed = 0; cloudRt.busy = true; renderCloudBox();
+            if (cloudRt.dirty && !cloudRt.conflict) await cloudUpload(true);
+            try { await mpCall('bt_account_logout', { p_id: cloud.id, p_secret: cloud.secret }); } catch (e) {}
+            cloudRt.busy = false;
+            cloudForget();
+            showToast('🚪 ออกจากระบบแล้ว ข้อมูลในเครื่องนี้ยังอยู่ครบ เข้าสู่ระบบใหม่เมื่อไหร่ก็ได้', 'info', { duration: 5000 });
+        }
+        function renderAcctBtn() {
+            const label = document.getElementById('acct-label'), dot = document.getElementById('acct-dot'), b = document.getElementById('acct-btn');
+            if (!label || !b) return;
+            const user = cloud && cloud.user;
+            label.textContent = user || 'เข้าสู่ระบบ';
+            if (dot) dot.hidden = !user;
+            b.setAttribute('aria-label', user ? `บัญชีผู้ใช้: ${user}` : 'เข้าสู่ระบบ / สมัครบัญชี');
+            b.title = user ? `เข้าสู่ระบบเป็น ${user}` : 'เข้าสู่ระบบหรือสมัครบัญชี เก็บข้อมูลไว้บนเซิร์ฟเวอร์ ไม่หาย';
+        }
+        function openAccount() {
+            if (!(cloud && cloud.user) && !cloudRt.acct) cloudRt.acct = cloud ? 'signup' : 'login';
+            openSettingsModal();
+            const box = document.getElementById('acct-box');
+            if (box) { box.scrollIntoView({ block: 'center' }); const i = box.querySelector('.acct-form input'); if (i) i.focus({ preventScroll: true }); }
         }
         // 👀 ดูตัวอย่างก่อนกู้คืน (ใช้ทั้งไฟล์สำรอง จุดกู้คืน และไฟล์ที่ลากมาวาง)
         let restoreResolve = null;
@@ -13676,6 +14090,7 @@
             setTimeout(maybeRemindBackup, 6000);
             setTimeout(cloudInit, 2500);
             renderSaveIndicator();
+            renderAcctBtn();
         }
 
         // ตรวจและทำความสะอาดข้อมูลจากไฟล์สำรอง: ไฟล์เสียหรือแปลกปลอมจะไม่ทำให้แอปพัง และไม่มีโค้ดแฝงหลุดเข้ามาได้
@@ -13831,6 +14246,7 @@
             // เปิดจากการสแกน QR บนหน้าจอพัก: แสดงเฉพาะหน้านับเวลา ไม่ต้องโหลดส่วนอื่น
             const phoneData = parsePhoneTimerHash();
             if (phoneData) { openPhoneTimer(phoneData); return; }
+            if (S2_MODE) { openScreen2View(); return; }
             const season = SEASONS.find(x => x.theme === seasonal);
             if (season) {
                 showToast(`${THEME_META[season.theme].emoji} ${season.label}มาแล้ว! เปลี่ยนเป็นธีม${season.label}ให้ชั่วคราว`, 'info', {
@@ -13864,6 +14280,8 @@
         // --- 🔄 ซิงก์ข้อมูลข้ามแท็บ กันข้อมูลเก่าจากแท็บที่ค้างอยู่ไปทับข้อมูลใหม่โดยไม่ตั้งใจ ---
         window.addEventListener('storage', (e) => {
             if (!e.key) return; // ข้าม event ตอน localStorage.clear()
+            if (S2_MODE) { if (['active_break_state', 'break_logs', 'daily_quota', 'activities'].includes(e.key)) s2Render(); return; }
+            if (e.key === 's2_cmd' && e.newValue) { s2Command(e.newValue); return; }
             const dataKeys = ['break_logs', 'activities', 'daily_quota', 'earned_badges', 'shift_mode', 'shift_boundary_time'];
             if (dataKeys.includes(e.key)) {
                 if (e.key === 'activities' && !activeBreak) renderActivities(); // ไม่รีเฟรชการ์ดถ้าแท็บนี้กำลังพักอยู่ กันหน้าจอเต็มจอหลุด
