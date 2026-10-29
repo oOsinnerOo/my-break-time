@@ -2552,6 +2552,47 @@
         .fish-fight-time { grid-column: 1 / -1; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
         .fish-fight-time i { display: block; height: 100%; background: var(--danger); animation: fish-time linear forwards; transform-origin: left; }
         @keyframes fish-time { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+        /* 📈 ตลาด · 🤝 ตลาดเพื่อน · 🔧 อัปเกรด */
+        .mk-seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); }
+        .mk-seg button { font: inherit; font-size: 12.5px; font-weight: 700; padding: 8px 6px; border-radius: 10px; border: 0; cursor: pointer; color: var(--ink-2); background: none; }
+        .mk-seg button.is-active { background: var(--surface-solid); color: var(--accent-ink); box-shadow: 0 2px 8px rgba(43, 33, 64, 0.08); }
+        .mk-seg b { display: inline-block; min-width: 18px; margin-left: 4px; padding: 0 5px; border-radius: 9px; font-size: 10.5px; line-height: 18px; color: var(--on-accent); background: var(--accent); }
+        .mk-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .mk-list { display: flex; flex-direction: column; gap: 5px; }
+        .mk-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto auto 54px; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border-radius: 14px; cursor: pointer;
+            font: inherit; text-align: left; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); }
+        .mk-row:hover, .mk-row.is-open { border-color: rgba(var(--accent-rgb), 0.45); }
+        .mk-row.rar-rare, .mk-row.rar-epic, .mk-row.rar-legendary { box-shadow: inset 3px 0 0 var(--rc); }
+        .mk-e { font-size: 22px; line-height: 1; text-align: center; }
+        .mk-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 700; }
+        .mk-name small { color: var(--ink-3); font-weight: 600; }
+        .mk-spark { display: block; color: var(--ink-3); }
+        .mk-spark circle { fill: var(--accent); }
+        .mk-price { font-size: 13.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .mk-ch { justify-self: end; font-size: 11.5px; font-weight: 800; color: var(--ink-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+        .mk-ch.is-up { color: #1F9D55; }
+        .mk-ch.is-down { color: var(--danger); }
+        body.is-dark .mk-ch.is-up { color: #5FD08F; }
+        .mk-detail { display: flex; flex-direction: column; gap: 8px; padding: 10px; margin: -2px 0 4px; border-radius: 14px; background: var(--surface-solid); border: 1px dashed var(--line); }
+        .mk-detail .barn-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+        @media (max-width: 400px) { .mk-row { grid-template-columns: 24px minmax(0, 1fr) auto 50px; } .mk-row .mk-spark { display: none; } }
+        .mk-cards { display: flex; flex-direction: column; gap: 6px; }
+        .mk-card.rar-rare, .mk-card.rar-epic, .mk-card.rar-legendary { border-color: rgba(var(--rc-rgb), 0.55); }
+        .mk-deal { display: inline-block; margin-left: 2px; padding: 0 6px; border-radius: 999px; font-size: 10.5px; font-weight: 700; color: var(--ink-2); background: var(--surface-solid); border: 1px solid var(--line); }
+        .mk-deal.is-good { color: #1F7A45; background: rgba(46, 184, 114, 0.14); border-color: rgba(46, 184, 114, 0.4); }
+        body.is-dark .mk-deal.is-good { color: #7FE0A8; }
+        .mk-form { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border-radius: 16px; background: var(--surface-solid); border: 1px dashed rgba(var(--accent-rgb), 0.45); }
+        .mk-form-row { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--ink-2); }
+        .mk-form-row span { min-width: 70px; }
+        .mk-form-row b { min-width: 52px; text-align: center; font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums; }
+        .mk-form .farm-action { align-self: stretch; }
+        .stall-slots.has-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .upg-card.is-ready { border-color: rgba(var(--accent-rgb), 0.6); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.12); }
+        .upg-card.is-max { background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), var(--surface-2) 60%); }
+        .upg-pips { display: flex; gap: 4px; }
+        .upg-pips i { width: 18px; height: 6px; border-radius: 3px; background: var(--line); }
+        .upg-pips i.is-on { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+        .upg-next { color: var(--accent-ink); }
     </style>
 </head>
 <body>
@@ -5045,21 +5086,24 @@
         const hasOwn = (o, k) => typeof k === 'string' && Object.prototype.hasOwnProperty.call(o, k);
         // 🟡 ผักตำนาน: เมล็ดได้จากกล่องเมล็ดปริศนาหรือแลกด้วยเศษเมล็ดตำนาน แต่ละชนิดมีพลังพิเศษ (ไม่กลายเป็นผักทอง ไม่ผสมพันธุ์)
         const LEGEND_VEGGIES = {
-            rainbowCorn: { e: '🌈', name: 'ข้าวโพดสายรุ้ง', stages: 5, value: 45, trait: 'เก็บแล้วได้เมล็ดแรร์หรือหายากแถม 1 เมล็ด',
+            rainbowCorn: { e: '🌈', name: 'ข้าวโพดสายรุ้ง', stages: 5, trait: 'เก็บแล้วได้เมล็ดแรร์หรือหายากแถม 1 เมล็ด',
                 desc: 'ฝักเดียวมีเมล็ดครบเจ็ดสี เล่ากันว่างอกขึ้นตรงที่ปลายสายรุ้งแตะพื้นดิน' },
-            starTomato: { e: '🌟', name: 'มะเขือเทศดาวตก', stages: 5, value: 45, trait: 'เก็บแล้วได้ XP 3 เท่า',
+            starTomato: { e: '🌟', name: 'มะเขือเทศดาวตก', stages: 5, trait: 'เก็บแล้วได้ XP 3 เท่า',
                 desc: 'เรืองแสงจางๆ ตอนกลางคืน กัดแล้วซ่าในปากเหมือนมีดาวดวงเล็กแตกกระจาย' },
-            dragonChili: { e: '🔥', name: 'พริกเพลิงมังกร', stages: 4, value: 40, trait: 'เก็บแล้วหนอนทั้งสวนหนีหมด',
+            dragonChili: { e: '🔥', name: 'พริกเพลิงมังกร', stages: 4, trait: 'เก็บแล้วหนอนทั้งสวนหนีหมด',
                 desc: 'เผ็ดจนมังกรยังต้องขอน้ำ หนอนแค่ได้กลิ่นก็รีบคลานหนีออกจากสวน' },
-            crystalBerry: { e: '💎', name: 'สตรอว์เบอร์รีคริสตัล', stages: 6, value: 60, trait: 'ได้ ★★★ ทุกครั้งที่เก็บ',
+            crystalBerry: { e: '💎', name: 'สตรอว์เบอร์รีคริสตัล', stages: 6, trait: 'ได้ ★★★ ทุกครั้งที่เก็บ',
                 desc: 'ใสเหมือนแก้ว ส่องแดดแล้วเป็นประกายรุ้ง พ่อค้าทั้งตลาดแย่งกันซื้อ' },
-            luckyClover: { e: '🍀', name: 'โคลเวอร์สี่แฉกนำโชค', stages: 4, value: 35, trait: 'ระหว่างที่ปลูกอยู่ ผักที่ปลูกใหม่มีลุ้นเป็นผักทองเพิ่ม 15%',
+            luckyClover: { e: '🍀', name: 'โคลเวอร์สี่แฉกนำโชค', stages: 4, trait: 'ระหว่างที่ปลูกอยู่ ผักที่ปลูกใหม่มีลุ้นเป็นผักทองเพิ่ม 15%',
                 desc: 'หมื่นต้นจะมีสี่แฉกสักต้น ใครปลูกได้ ผักทั้งสวนก็พลอยโชคดีไปด้วย' },
-            moonPumpkin: { e: '🌙', name: 'ฟักทองจันทร์เพ็ญ', stages: 6, value: 55, trait: 'เก็บแล้วดินทุกแปลงฟื้น +25',
+            moonPumpkin: { e: '🌙', name: 'ฟักทองจันทร์เพ็ญ', stages: 6, trait: 'เก็บแล้วดินทุกแปลงฟื้น +25',
                 desc: 'ผิวสีเงินเรียบเหมือนพระจันทร์เต็มดวง เนื้อในหอมหวานและบำรุงดินทั้งสวน' }
         };
         Object.entries(LEGEND_VEGGIES).forEach(([k, v]) => { VEGGIES[k] = { e: v.e, name: v.name }; CROP_STAGES[k] = v.stages; });
         const cropRarity = k => hasOwn(LEGEND_VEGGIES, k) ? 'legendary' : HYBRID_VEGGIES.includes(k) ? 'epic' : BASE_VEGGIES.includes(k) ? 'common' : 'rare';
+        // ราคาผักผลไม้ = ระยะที่ต้องโต × อัตราตามความหายาก (ยิ่งปลูกนาน ยิ่งหายาก ยิ่งแพง)
+        const RARITY_RATE = { common: 0.8, rare: 1.3, epic: 1.8, legendary: 10 };
+        const cropBaseValue = k => Math.max(2, Math.ceil(cropStages(k) * RARITY_RATE[cropRarity(k)]));
         // เกร็ดของผักผลไม้แต่ละชนิด (โชว์ในสมุดสะสม)
         const CROP_DESC = {
             carrot: 'หัวสีส้มกรอบหวาน กระต่ายในขบวนชอบที่สุด', tomato: 'ลูกแดงฉ่ำน้ำ ใส่ได้ทั้งสลัด ซุป และพิซซ่า',
@@ -5196,14 +5240,18 @@
             if (String(key).includes('~') && !/~[23]$/.test(String(key))) return null;
             let info = null;
             if (VEGGIES[k]) {
-                const tier = BASE_VEGGIES.includes(k) ? 2 : HYBRID_VEGGIES.includes(k) ? 5 : RARE_VEGGIES.includes(k) ? 4 : 3;
-                info = { e: VEGGIES[k].e, name: VEGGIES[k].name, kind: 'crop', value: hasOwn(LEGEND_VEGGIES, k) ? LEGEND_VEGGIES[k].value : Math.max(1, tier + cropStages(k) - 3) };
+                info = { e: VEGGIES[k].e, name: VEGGIES[k].name, kind: 'crop', value: cropBaseValue(k) };
             } else if (FARM_PRODUCTS[k]) info = { ...FARM_PRODUCTS[k], kind: 'product' };
             else if (RECIPES[k]) info = { e: RECIPES[k].e, name: RECIPES[k].name, value: RECIPES[k].value, kind: 'dish' };
             else if (FISH[k]) info = { e: FISH[k].e, name: FISH[k].name, value: FISH[k].value, kind: 'fish' };
             if (!info || (q > 1 && (info.kind === 'product' || info.kind === 'fish'))) return null; // ดาวมีเฉพาะผักผลไม้ที่ปลูกเองและอาหารที่ทำเอง
             return { ...info, base: k, q, value: Math.round(info.value * QUALITY_MULT[q]) };
         }
+        // ราคาอาหาร = ต้นทุนวัตถุดิบ ×1.6 + 2 (เมนูลับ ×2.2) อาหารจึงคุ้มกว่าขายวัตถุดิบดิบๆ เสมอ
+        Object.values(RECIPES).forEach(r => {
+            const cost = Object.entries(r.need).reduce((sum, [n, q]) => sum + itemInfo(n).value * q, 0);
+            r.value = Math.round(cost * (r.secret ? 2.2 : 1.6)) + 2;
+        });
         const VEG_GROW_MS = 60 * 60 * 1000, FARM_MAX_PLOTS = 12, HYBRID_SEED_MAX = 6, SOIL_START = 80, COMPOST_SOIL = 35, COMPOST_PTS = 10;
         const VEG_STAGE_NAMES = ['เมล็ด', 'ต้นอ่อน', 'กำลังโต'];
         const VEG_PEST = `<svg viewBox="0 0 40 20"><path d="M29 4.5l-1.5-3M33 4.5l1.5-3" stroke="#6BA84A" stroke-width="1.2" stroke-linecap="round"/>
@@ -5304,7 +5352,7 @@
                 honeyDay: typeof v.honeyDay === 'string' ? v.honeyDay.slice(0, 10) : '', pet,
                 stall: (() => {
                     const st = v.stall && typeof v.stall === 'object' ? v.stall : {}, sl = Array.isArray(st.slots) ? st.slots : [];
-                    return { slots: [0, 1, 2, 3].map(i => { const x = sl[i]; return x && itemInfo(x.key) && int(x.qty, 99) > 0 ? { key: x.key, qty: int(x.qty, 99), price: Math.max(1, int(x.price, 9999)) } : null; }),
+                    return { slots: [0, 1, 2, 3, 4, 5].map(i => { const x = sl[i]; return x && itemInfo(x.key) && int(x.qty, 99) > 0 ? { key: x.key, qty: int(x.qty, 99), price: Math.max(1, int(x.price, 9999)) } : null; }),
                         cash: int(st.cash, 99999), lastTick: Math.min(Date.now(), +st.lastTick || Date.now()),
                         log: (Array.isArray(st.log) ? st.log : []).filter(l => l && typeof l.t === 'string').slice(-6).map(l => ({ t: l.t.slice(0, 80) })) };
                 })(),
@@ -5319,7 +5367,7 @@
                     Object.entries(x.daily && typeof x.daily === 'object' ? x.daily : {}).filter(([k]) => /^\d{4}-\d{2}-\d{2}$/.test(k)).sort().slice(-14)
                         .forEach(([k, d]) => { daily[k] = { coins: int((d || {}).coins, 99999), crops: int((d || {}).crops, 9999) }; });
                     return { orders: int(x.orders, 1e6), q3: int(x.q3, 1e6), chef3: int(x.chef3, 1e6), honey: int(x.honey, 1e6), compost: int(x.compost, 1e6), worms: int(x.worms, 1e6),
-                        contestWins: int(x.contestWins, 1e4), stallSold: int(x.stallSold, 1e6), earned: int(x.earned, 1e9), checkin7: !!x.checkin7, daily };
+                        contestWins: int(x.contestWins, 1e4), stallSold: int(x.stallSold, 1e6), trades: int(x.trades, 1e6), earned: int(x.earned, 1e9), checkin7: !!x.checkin7, daily };
                 })(),
                 ach: Object.fromEntries(Object.keys(v.ach && typeof v.ach === 'object' ? v.ach : {}).filter(k => /^[a-zA-Z0-9]{1,24}$/.test(k)).map(k => [k, true])),
                 title: typeof v.title === 'string' ? v.title.slice(0, 24) : '',
@@ -5328,9 +5376,13 @@
                 frags: int(v.frags, 999), box: { n: int((v.box || {}).n, 1e6), pity: int((v.box || {}).pity, BOX_PITY_MAX) },
                 fishRecord: (() => { const o = {}; Object.keys(FISH).forEach(k => { const x = +((v.fishRecord || {})[k]); if (x > 0 && x < 1000) o[k] = Math.round(x * 10) / 10; }); return o; })(),
                 dexDay: Object.fromEntries(Object.entries(v.dexDay && typeof v.dexDay === 'object' ? v.dexDay : {}).filter(([k, d]) => (hasOwn(VEGGIES, k) || hasOwn(FISH, k)) && typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d))),
+                upg: Object.fromEntries(UPGRADE_KEYS.map(k => [k, int((v.upg || {})[k], 5)])),
+                market: { day: day((v.market || {}).day), sold: Object.fromEntries(Object.entries((v.market || {}).sold && typeof v.market.sold === 'object' ? v.market.sold : {}).filter(([k, n]) => itemInfo(k) && !String(k).includes('~') && int(n, 999)).map(([k, n]) => [k, int(n, 999)])) },
                 secrets: Object.fromEntries(Object.entries(v.secrets && typeof v.secrets === 'object' ? v.secrets : {}).filter(([k]) => SECRETS.some(x => x.id === k)).map(([k, d]) => [k, day(d) || '?']))
             };
         }
+        const UPGRADE_KEYS = ['rod', 'stall', 'basket', 'hoe', 'stove', 'compost'];
+        const upgLv = k => (veg && veg.upg && veg.upg[k]) || 0;
         const BOX_PITY_MAX = 14; // ต้องน้อยกว่า BOX_PITY ในสมุดสะสม
         const SHOP_ITEMS_SPECIAL = ['hat-straw', 'pack-farm', 'decor-tractor']; // ของรางวัลจากออเดอร์พิเศษ (ซื้อไม่ได้)
         let veg = loadVeg();
@@ -5523,7 +5575,7 @@
             }
             if (toolMode === 'compost') {
                 if (p.soil >= 100) { setVegProgress('ดินแปลงนี้อุดมเต็มที่แล้ว ลองแปลงอื่นนะ'); return; }
-                p.soil = Math.min(100, p.soil + COMPOST_SOIL); veg.tools.compost -= 1; toolMode = null; saveVeg();
+                p.soil = Math.min(100, p.soil + compostSoil()); veg.tools.compost -= 1; toolMode = null; saveVeg();
                 vegFx(el, ['🪱', '🌱']); playSound('pop');
                 setTimeout(renderVeggies, 300);
                 return;
@@ -5700,7 +5752,7 @@
             const p = veg.plots[i];
             if (!p || !p.seed || p.type !== 'veg' || !isReady(p)) return;
             if (p.giant) { weighGiant(i, el, grade); return; }
-            const key = p.seed, golden = p.golden, amount = grade === 'perfect' ? 2 : 1;
+            const key = p.seed, golden = p.golden, amount = (grade === 'perfect' ? 2 : 1) + (Math.random() < upgLv('basket') * 0.07 ? 1 : 0);
             // ดาว: ดินอุดม (60+) · ได้รดน้ำ/ใส่ปุ๋ย/ฝนตก/สปริงเกอร์ · เก็บตรงจังหวะ
             const cared = p.cared || hasTool('sprinkler') || todayWeather() === 'rain';
             const q = key === 'crystalBerry' ? 3 : Math.min(3, 1 + (p.soil >= 60 ? 1 : 0) + (cared ? 1 : 0) + (grade !== 'ok' ? 1 : 0));
@@ -5721,7 +5773,7 @@
                 veg.hybridSeeds.push(hybrid);
             }
             // ผักใช้ธาตุอาหารในดิน ผักโตช้ากินดินมากกว่า
-            veg.plots[i] = emptyPlot(Math.max(0, p.soil - (8 + 4 * p.need)));
+            veg.plots[i] = emptyPlot(Math.max(0, p.soil - Math.round((8 + 4 * p.need) * (1 - 0.12 * upgLv('hoe')))));
             const rx = rarityHarvest(key, q, golden, grade);
             saveVeg();
             const crop = el && el.querySelector('.veg-crop');
@@ -5977,7 +6029,7 @@
                 }
                 const worth = Object.entries(items).reduce((s, [k, n]) => s + itemInfo(k).value * n, 0);
                 const qty = Object.values(items).reduce((a, b) => a + b, 0);
-                return { who: who[Math.floor(rand() * who.length)], items, coins: Math.round(worth * 2.2), xp: 10 + qty * 5, bonus: null, done: false };
+                return { who: who[Math.floor(rand() * who.length)], items, coins: Math.round(worth * 1.8), xp: 10 + qty * 5, bonus: null, done: false };
             });
             const special = SHOP_ITEMS_SPECIAL.find(id => !shop.owned.includes(id));
             if (special) list[Math.floor(rand() * 3)].bonus = special;
@@ -6003,18 +6055,90 @@
             playSound('welcome'); if (bonus) fireConfetti();
             renderFarmPanel(); updateBasketFood(); renderFarmStatus();
         }
-        // ราคาตลาดวันนี้: แต่ละอย่างขึ้นลงต่างกันทุกวัน · ผักตามฤดูแพงขึ้น 25% · ดาวเยอะแพงขึ้น
-        const PRICE_STEPS = [0.5, 0.75, 1, 1, 1, 1.25, 1.5, 2];
-        const priceMult = (key, day = dayKeyLocal()) => PRICE_STEPS[hashStr('price:' + day + baseOf(key)) % PRICE_STEPS.length] * (inSeason(baseOf(key)) ? 1.25 : 1) * newsMult(baseOf(key));
-        const sellPrice = key => Math.max(1, Math.round(itemInfo(key).value * priceMult(key)));
+        // ราคาตลาด: แต่ละอย่างขึ้นลงต่างกันทุกวัน (ราว ±20%) · ผักตามฤดูแพงขึ้น 25% · ข่าวตลาดประจำสัปดาห์
+        // ขายของชนิดเดียวกันเยอะในวันเดียว ราคาชิ้นถัดไปลดลงทีละ 3% (ต่ำสุด 60%) แล้วกลับมาปกติวันรุ่งขึ้น
+        const PRICE_STEPS = [0.8, 0.9, 0.95, 1, 1, 1.05, 1.1, 1.25];
+        const PRESSURE_STEP = 0.03, PRESSURE_MIN = 0.6;
+        const dayDate = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+        const priceMult = (key, day = dayKeyLocal()) => PRICE_STEPS[hashStr('price:' + day + baseOf(key)) % PRICE_STEPS.length]
+            * (inSeason(baseOf(key)) ? 1.25 : 1) * newsMult(baseOf(key), weekStartKey(dayDate(day)));
+        const marketPrice = (key, day) => Math.max(1, Math.round(itemInfo(key).value * priceMult(key, day)));
+        function marketDay() { const d = dayKeyLocal(); if (veg.market.day !== d) veg.market = { day: d, sold: {} }; return veg.market; }
+        const soldToday = key => marketDay().sold[baseOf(key)] || 0;
+        const pressureMult = (key, extra = 0) => Math.max(PRESSURE_MIN, 1 - PRESSURE_STEP * (soldToday(key) + extra));
+        const sellPrice = key => Math.max(1, Math.round(marketPrice(key) * pressureMult(key)));
+        function sellQuote(key, n) {
+            let s = 0;
+            for (let i = 0; i < n; i++) s += Math.max(1, Math.round(marketPrice(key) * pressureMult(key, i)));
+            return s;
+        }
         function sellItem(key, all) {
             const n = all ? (veg.inv[key] || 0) : Math.min(1, veg.inv[key] || 0);
             if (!n) return;
-            const coins = sellPrice(key) * n;
+            const coins = sellQuote(key, n), m = marketDay(), b = baseOf(key);
+            m.sold[b] = Math.min(999, (m.sold[b] || 0) + n);
             takeExact(key, n); saveVeg(); addCoins(coins);
             playSound('pop');
-            showToast(`💰 ขาย${itemInfo(key).name}${starText(qualOf(key))} ${n} ชิ้น ได้ 🪙${coins}`, 'success');
+            const drop = Math.round((1 - pressureMult(key)) * 100);
+            showToast(`💰 ขาย${itemInfo(key).name}${starText(qualOf(key))} ${n} ชิ้น ได้ 🪙${coins}${drop ? ` · วันนี้${itemInfo(key).name}ราคาลด ${drop}% เพราะขายไปเยอะแล้ว` : ''}`, 'success');
             renderFarmPanel(); updateBasketFood(); renderFarmStatus();
+        }
+        const pressureNote = k => { const n = soldToday(k), d = Math.round((1 - pressureMult(k)) * 100); return n ? `ขายวันนี้แล้ว ${n} ชิ้น · ราคาลด ${d}%` : ''; };
+
+        // 📈 กระดานราคาตลาด: ราคาวันนี้ เทียบเมื่อวาน แนวโน้ม 7 วัน และของในยุ้งฉางที่ขายได้ราคาดีที่สุด
+        let marketFilter = 'barn', marketSel = '';
+        const pastDays = n => Array.from({ length: n }, (_, k) => { const d = new Date(); d.setDate(d.getDate() - (n - 1 - k)); return d; });
+        function priceHistory(key) {
+            return pastDays(7).map(d => { const k = dayKeyLocal(d); return { key: k, label: ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'][d.getDay()], date: `${d.getDate()} ${THAI_MONTHS[d.getMonth()]}`, price: marketPrice(key, k) }; });
+        }
+        // เส้นแนวโน้มเล็กๆ สีจาง จุดวันนี้สีเด่น (ตัวเลขราคาอยู่ข้างๆ เป็นข้อความเสมอ)
+        function sparkline(vals) {
+            const w = 64, h = 20, min = Math.min(...vals), span = Math.max(...vals) - min || 1;
+            const pts = vals.map((v, i) => [2 + i / (vals.length - 1) * (w - 4), h - 3 - (v - min) / span * (h - 6)]);
+            const [lx, ly] = pts[pts.length - 1];
+            return `<svg class="mk-spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline points="${pts.map(p => p.map(x => x.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="2.8"/></svg>`;
+        }
+        function marketKeys() {
+            if (marketFilter === 'barn') return barnKeys();
+            const seen = new Set([...NEWS_POOL, ...Object.keys(veg.inv).map(baseOf), ...Object.keys(veg.harvest), ...Object.keys(veg.fruits), ...Object.keys(veg.cooked), ...Object.keys(veg.fishCaught)]);
+            return [...seen].filter(k => itemInfo(k)).sort((a, b) => priceMult(b) - priceMult(a) || itemInfo(a).name.localeCompare(itemInfo(b).name, 'th'));
+        }
+        function setMarketFilter(f) { marketFilter = f; marketSel = ''; renderFarmPanel(); }
+        function setMarketSel(k) { marketSel = marketSel === k ? '' : k; renderFarmPanel(); }
+        function renderMarketTab() {
+            const keys = marketKeys(), today = dayKeyLocal(), y = new Date(); y.setDate(y.getDate() - 1);
+            const yday = dayKeyLocal(y), barn = barnKeys();
+            const worth = barn.reduce((s, k) => s + sellQuote(k, veg.inv[k]), 0);
+            const best = barn.slice().sort((a, b) => priceMult(b) - priceMult(a))[0];
+            const room = mk.data && mk.data.avg;
+            const rows = keys.map(k => {
+                const it = itemInfo(k), now = marketPrice(k, today), was = marketPrice(k, yday), ch = Math.round((now / was - 1) * 100);
+                const hist = priceHistory(k), sel = marketSel === k;
+                const row = `<button type="button" class="mk-row${sel ? ' is-open' : ''}${rarClass(k)}" aria-expanded="${sel}" onclick="setMarketSel('${k}')">
+                    <span class="mk-e">${it.e}</span><span class="mk-name">${it.name}${starText(it.q)}${marketFilter === 'barn' ? ` <small>×${veg.inv[k]}</small>` : ''}</span>
+                    ${sparkline(hist.map(h => h.price))}<b class="mk-price">🪙${sellPrice(k)}</b>
+                    <span class="mk-ch ${ch > 0 ? 'is-up' : ch < 0 ? 'is-down' : ''}">${ch > 0 ? '▲' : ch < 0 ? '▼' : '–'} ${Math.abs(ch)}%</span></button>`;
+                if (!sel) return row;
+                const avg = room && room[k];
+                return row + `<div class="mk-detail">${columnChart(`📈 ราคา${it.name}${starText(it.q)} 7 วันล่าสุด`, 'เหรียญ', hist, 'price')}
+                    <div class="dex-stats">
+                        <div><span>🪙 ราคาวันนี้</span><b>${now}${soldToday(k) ? ` → ตอนนี้ ${sellPrice(k)}` : ''}</b></div>
+                        <div><span>⭐ ตามคุณภาพ</span><b>${marketPrice(baseOf(k))} · ★★ ${marketPrice(qKey(baseOf(k), 2))} · ★★★ ${marketPrice(qKey(baseOf(k), 3))}</b></div>
+                        <div><span>🏪 วางแผงหน้าฟาร์ม</span><b>🪙${stallPrice(k)}/ชิ้น</b></div>
+                        <div><span>🤝 เพื่อนในห้องซื้อขาย</span><b>${avg ? `เฉลี่ย 🪙${avg[0]} (${avg[1]} ครั้ง)` : 'ยังไม่มีข้อมูล'}</b></div>
+                    </div>
+                    ${pressureNote(k) ? `<p class="farm-card-sub">📉 ${pressureNote(k)} (พรุ่งนี้กลับมาปกติ)</p>` : ''}
+                    ${veg.inv[k] ? `<div class="barn-btns"><button type="button" class="chip-btn" onclick="sellItem('${k}')">ขาย 1 · 🪙${sellPrice(k)}</button><button type="button" class="chip-btn" onclick="sellItem('${k}', true)">ขายหมด ${veg.inv[k]} ชิ้น · 🪙${sellQuote(k, veg.inv[k])}</button></div>` : ''}</div>`;
+            }).join('');
+            return `<p class="farm-news">${escHtml(newsLine())}</p>
+                <div class="st-tiles mk-tiles">
+                    <div class="st-tile"><span class="st-label">💰 ของในยุ้งฉางขายได้วันนี้</span><b>🪙${worth.toLocaleString('th-TH')}</b></div>
+                    <div class="st-tile"><span class="st-label">🔥 ราคาดีสุดในยุ้งฉาง</span><b>${best ? `${itemInfo(best).e} 🪙${sellPrice(best)}` : '-'}</b></div>
+                </div>
+                <div class="kitchen-filter"><button type="button" class="chip-btn${marketFilter === 'barn' ? ' is-active' : ''}" onclick="setMarketFilter('barn')">ของในยุ้งฉาง (${barn.length})</button>
+                    <button type="button" class="chip-btn${marketFilter === 'all' ? ' is-active' : ''}" onclick="setMarketFilter('all')">ทุกอย่างที่รู้จัก</button></div>
+                ${rows ? `<div class="mk-list">${rows}</div>` : `<p class="rp-empty">${marketFilter === 'barn' ? 'ยุ้งฉางยังว่างอยู่ เก็บผักก่อนนะ 🌱' : 'ยังไม่มีข้อมูลราคา'}</p>`}
+                <p class="shop-note">▲▼ เทียบกับเมื่อวาน · เส้นเล็กคือราคา 7 วัน แตะแต่ละอย่างเพื่อดูกราฟ · ขายชนิดเดียวกันเยอะในวันเดียว ราคาลดทีละ 3% (ต่ำสุด 60%) · แผงหน้าฟาร์มกับตลาดเพื่อนไม่ทำให้ราคาตก</p>`;
         }
         // 🐾 สัตว์เลี้ยงประจำฟาร์ม: เดินเล่นในสวน ลูบหัวได้วันละครั้ง ช่วยไล่หนอน และขุดหาของให้เมื่อสนิทกัน
         function adoptPet(kind) {
@@ -6113,7 +6237,7 @@
             if (!cook.key) return;
             if (cook.round >= COOK_ROUNDS) { showCookResult(cook.hits >= 3 ? 3 : cook.hits >= 2 ? 2 : 1); return; }
             cook.round += 1; cook.busy = false;
-            cook.width = [0.32, 0.25, 0.18][cook.round - 1];
+            cook.width = [0.32, 0.25, 0.18][cook.round - 1] * (1 + 0.1 * upgLv('stove'));
             cook.zone = rnd(0.2 + cook.width / 2, 0.8 - cook.width / 2);
             cook.t0 = performance.now();
             const r = RECIPES[cook.key];
@@ -6164,7 +6288,7 @@
             veg.bestQ[key] = Math.max(veg.bestQ[key] || 0, q);
             if (q === 3) veg.stats.chef3 += 1;
             if (r.secret) setTimeout(() => unlockSecret('secretRecipe'), 600);
-            saveVeg(); addXP(8 + (q - 1) * 3); bumpChallenge('cook');
+            saveVeg(); addXP(Math.round((8 + (q - 1) * 3) * (1 + 0.1 * upgLv('stove')))); bumpChallenge('cook');
             playSound('welcome');
             if (!quiet) showToast(`🍳 ทำ${r.name}เสร็จแล้ว! ${r.e}${starText(q)} อยู่ในยุ้งฉาง`, 'success');
             renderFarmPanel(); renderFarmStatus();
@@ -6206,7 +6330,7 @@
             const info = itemInfo(key), n = all ? (veg.inv[key] || 0) : Math.min(1, veg.inv[key] || 0);
             if (!info || !n) return;
             takeExact(key, n);
-            veg.compost += info.value * n;
+            veg.compost += Math.round(info.value * n * (1 + 0.2 * upgLv('compost')));
             let bags = 0;
             while (veg.compost >= COMPOST_PTS && veg.tools.compost < 99) { veg.compost -= COMPOST_PTS; veg.tools.compost += 1; bags++; }
             veg.stats.compost += bags;
@@ -6217,8 +6341,8 @@
         }
 
         // 🌾 หน้าต่างฟาร์ม: ออเดอร์ · ยุ้งฉาง · ครัว · สัตว์ · ปุ๋ยหมัก
-        const FARM_TABS = [['orders', '📋', 'ออเดอร์'], ['friends', '👥', 'เพื่อน'], ['barn', '🏠', 'ยุ้งฉาง'], ['stall', '🏪', 'แผงขาย'], ['kitchen', '🍳', 'ครัว'], ['animals', '🐔', 'สัตว์'],
-            ['pond', '🎣', 'บ่อปลา'], ['contest', '🏆', 'ประกวด'], ['compost', '🪱', 'ปุ๋ยหมัก'], ['house', '🏡', 'บ้านไร่'], ['ach', '🎖️', 'ความสำเร็จ'], ['stats', '📊', 'สถิติ']];
+        const FARM_TABS = [['orders', '📋', 'ออเดอร์'], ['friends', '👥', 'เพื่อน'], ['barn', '🏠', 'ยุ้งฉาง'], ['stall', '🏪', 'แผงขาย'], ['market', '📈', 'ตลาด'], ['kitchen', '🍳', 'ครัว'], ['animals', '🐔', 'สัตว์'],
+            ['pond', '🎣', 'บ่อปลา'], ['contest', '🏆', 'ประกวด'], ['compost', '🪱', 'ปุ๋ยหมัก'], ['house', '🏡', 'บ้านไร่'], ['upgrade', '🔧', 'อัปเกรด'], ['ach', '🎖️', 'ความสำเร็จ'], ['stats', '📊', 'สถิติ']];
         let farmTab = 'orders', kitchenFilter = 'all';
         function setKitchenFilter(f) { kitchenFilter = f; renderFarmPanel(); }
         function openFarm(tab) {
@@ -6226,9 +6350,10 @@
             document.getElementById('farm-modal').style.display = 'flex';
             renderFarmPanel();
             if (farmTab === 'friends') mpOnOpen();
+            if (farmTab === 'stall' && stallView === 'friends') mkOnOpen();
         }
         function closeFarm() { cancelFishing(); document.getElementById('farm-modal').style.display = 'none'; }
-        function setFarmTab(tab) { if (tab !== 'pond') cancelFishing(); farmTab = tab; renderFarmPanel(); if (tab === 'friends') mpOnOpen(); }
+        function setFarmTab(tab) { if (tab !== 'pond') cancelFishing(); farmTab = tab; renderFarmPanel(); if (tab === 'friends') mpOnOpen(); if (tab === 'stall' && stallView === 'friends') mkOnOpen(); }
         const itemChip = (k, need) => {
             const it = itemInfo(k), have = countBase(k);
             return `<span class="farm-chip${need !== undefined && have < need ? ' is-short' : ''}">${it.e} ${it.name}${need !== undefined ? ` <b>${Math.min(have, need)}/${need}</b>` : ''}</span>`;
@@ -6250,7 +6375,7 @@
             // วัดตำแหน่งเทียบกับแถบแท็บเอง (offsetLeft อ้างอิงกล่องอื่นได้ ทำให้แถบเลื่อนหนีไปไกล)
             if (act && tabs.clientWidth) tabs.scrollLeft = Math.max(0, tabs.scrollLeft + act.getBoundingClientRect().left - tabs.getBoundingClientRect().left - (tabs.clientWidth - act.offsetWidth) / 2);
             const body = document.getElementById('farm-body');
-            const custom = { friends: renderFriendsTab, stall: renderStallTab, pond: renderPondTab, contest: renderContestTab, house: renderHouseTab, ach: renderAchTab, stats: renderStatsTab }[farmTab];
+            const custom = { friends: renderFriendsTab, stall: renderStallTab, market: renderMarketTab, upgrade: renderUpgradeTab, pond: renderPondTab, contest: renderContestTab, house: renderHouseTab, ach: renderAchTab, stats: renderStatsTab }[farmTab];
             if (custom) { body.innerHTML = custom(); updateCoinUI(); return; }
             if (farmTab === 'orders') {
                 body.innerHTML = todaysOrders().map((o, i) => {
@@ -6269,7 +6394,7 @@
                     const it = itemInfo(k), m = priceMult(k), price = sellPrice(k);
                     return `<div class="barn-item${it.q > 1 ? ' q' + it.q : ''}${rarClass(k)}"><span class="barn-emoji">${it.e}</span><span class="farm-card-title">${it.name} ×${veg.inv[k]}</span>${rarTag(itemRarity(k))}
                         ${it.q > 1 ? `<span class="barn-stars" aria-label="คุณภาพ ${it.q} ดาว">${'★'.repeat(it.q)}</span>` : ''}
-                        <span class="barn-price${m > 1 ? ' is-up' : m < 1 ? ' is-down' : ''}">🪙${price}/ชิ้น ${m > 1 ? '▲' : m < 1 ? '▼' : ''}${it.kind === 'crop' && inSeason(it.base) ? ' 🍃' : ''}</span>
+                        <span class="barn-price${m > 1 ? ' is-up' : m < 1 ? ' is-down' : ''}">🪙${price}/ชิ้น ${m > 1 ? '▲' : m < 1 ? '▼' : ''}${it.kind === 'crop' && inSeason(it.base) ? ' 🍃' : ''}</span>${pressureNote(k) ? `<span class="farm-card-sub">${pressureNote(k)}</span>` : ''}
                         <span class="barn-btns"><button type="button" class="chip-btn" onclick="sellItem('${k}')">ขาย 1</button><button type="button" class="chip-btn" onclick="sellItem('${k}', true)">ขายหมด</button></span></div>`;
                 }).join('')}</div>` : '<p class="rp-empty">ยุ้งฉางยังว่างอยู่ เก็บผักก่อนนะ 🌱</p>')
                     + `<p class="shop-note">ราคาตลาดเปลี่ยนทุกวัน ▲ แพงกว่าปกติ · ▼ ถูกกว่าปกติ · 🍃 ผักตามฤดูแพงขึ้น · ★ ยิ่งดาวเยอะยิ่งแพง${veg.hybridSeeds.length ? ` · 🧬 เมล็ดลูกผสมรอปลูก ${veg.hybridSeeds.length} เมล็ด` : ''}<br>ตะกร้าขนมท้ายหน้าก็หยิบผักจากยุ้งฉางนี้</p>`;
@@ -6324,7 +6449,7 @@
                         <span class="compost-icon" aria-hidden="true">🪣</span>
                         <div class="farm-card-main"><span class="farm-card-title">ถังปุ๋ยหมัก ${veg.compost}/${COMPOST_PTS} แต้ม</span>
                             <span class="farm-xp compost-meter"><span style="width:${(veg.compost / COMPOST_PTS * 100).toFixed(0)}%"></span></span>
-                            <span class="farm-card-sub">มีปุ๋ยหมักพร้อมใช้ ${veg.tools.compost} ถุง · เติมดินแปลงละ +${COMPOST_SOIL}</span></div>
+                            <span class="farm-card-sub">มีปุ๋ยหมักพร้อมใช้ ${veg.tools.compost} ถุง · เติมดินแปลงละ +${compostSoil()}</span></div>
                     </div>`
                     + (keys.length ? `<div class="barn-grid">${keys.map(k => {
                         const it = itemInfo(k);
@@ -6345,19 +6470,21 @@
             if (glut === hot) glut = NEWS_POOL[(NEWS_POOL.indexOf(hot) + 5) % NEWS_POOL.length];
             return { hot, glut };
         }
-        const newsMult = base => { const n = marketNews(); return base === n.hot ? 2 : base === n.glut ? 0.5 : 1; };
+        const newsMult = (base, week) => { const n = marketNews(week); return base === n.hot ? 1.6 : base === n.glut ? 0.7 : 1; };
         function newsLine() {
             const n = marketNews(), h = itemInfo(n.hot), g = itemInfo(n.glut);
-            return `📰 ข่าวตลาดสัปดาห์นี้: ${h.e} ${h.name}ขาดตลาด ราคา ×2! · ${g.e} ${g.name}ล้นตลาด ราคาครึ่งเดียว`;
+            return `📰 ข่าวตลาดสัปดาห์นี้: ${h.e} ${h.name}ขาดตลาด ราคา ×1.6! · ${g.e} ${g.name}ล้นตลาด ราคาลด 30%`;
         }
 
         // 🏪 แผงขายหน้าฟาร์ม: วางของขายแพงกว่ายุ้งฉาง 40% เพื่อนในขบวนทยอยมาซื้อทุก 10 นาที (ปิดเว็บไว้ก็ขายได้)
-        const stallPrice = key => Math.max(1, Math.round(sellPrice(key) * 1.4));
+        const stallMs = () => STALL_MS - upgLv('stall') * 60000;
+        const stallMarkup = () => 1.4 + 0.05 * upgLv('stall');
+        const stallPrice = key => Math.max(1, Math.round(marketPrice(key) * stallMarkup()));
         function stallTick() {
             const st = veg.stall, now = Date.now();
-            const n = Math.min(30, Math.floor((now - st.lastTick) / STALL_MS));
+            const n = Math.min(30, Math.floor((now - st.lastTick) / stallMs()));
             if (n < 1) return 0;
-            st.lastTick += n * STALL_MS;
+            st.lastTick += n * stallMs();
             let sold = 0;
             const who = Object.keys(CR);
             for (let k = 0; k < n; k++) {
@@ -6401,21 +6528,28 @@
             renderFarmPanel(); renderFarmStatus();
         }
         function renderStallTab() {
+            const others = mk.data && friends.room ? mk.data.open.filter(l => l.seller !== mk.data.me).length : 0;
+            return `<div class="mk-seg" role="tablist" aria-label="แผงขาย">
+                    <button type="button" role="tab" aria-selected="${stallView === 'npc'}" class="${stallView === 'npc' ? 'is-active' : ''}" onclick="setStallView('npc')">🏪 แผงหน้าฟาร์ม</button>
+                    <button type="button" role="tab" aria-selected="${stallView === 'friends'}" class="${stallView === 'friends' ? 'is-active' : ''}" onclick="setStallView('friends')">🤝 ตลาดเพื่อน${others ? `<b>${others}</b>` : ''}</button></div>`
+                + (stallView === 'friends' ? renderFriendsMarket() : renderNpcStall());
+        }
+        function renderNpcStall() {
             stallTick();
             const st = veg.stall, slots = st.slots.slice(0, stallSlots());
-            const next = Math.max(1, Math.ceil((STALL_MS - (Date.now() - st.lastTick)) / 60000));
+            const next = Math.max(1, Math.ceil((stallMs() - (Date.now() - st.lastTick)) / 60000));
             const keys = barnKeys();
             return `<p class="farm-news">${escHtml(newsLine())}</p>
                 <div class="stall-cash"><span class="barn-emoji">🏪</span><div class="farm-card-main"><span class="farm-card-title">เงินในลิ้นชัก 🪙${st.cash}</span>
                     <span class="farm-card-sub">${slots.some(Boolean) ? `ลูกค้าคนต่อไปมาในอีกราว ${next} นาที` : 'วางของบนแผงแล้วเพื่อนในขบวนจะทยอยมาซื้อ'}</span></div>
                     <button type="button" class="shop-buy farm-action" ${st.cash ? '' : 'disabled'} onclick="collectStallCash()">เก็บเงิน 💰</button></div>
-                <div class="stall-slots${slots.length > 3 ? ' has-4' : ''}">${slots.map((s, i) => s ? `<div class="stall-slot"><span class="barn-emoji">${itemInfo(s.key).e}</span><span class="farm-card-title">${itemInfo(s.key).name}${starText(itemInfo(s.key).q)}</span>
+                <div class="stall-slots${slots.length === 4 ? ' has-4' : ''}">${slots.map((s, i) => s ? `<div class="stall-slot"><span class="barn-emoji">${itemInfo(s.key).e}</span><span class="farm-card-title">${itemInfo(s.key).name}${starText(itemInfo(s.key).q)}</span>
                     <span class="farm-card-sub">เหลือ ${s.qty} ชิ้น · 🪙${s.price}/ชิ้น</span><button type="button" class="chip-btn" onclick="takeFromStall(${i})">เก็บกลับ</button></div>`
                     : '<div class="stall-slot is-empty"><span class="barn-emoji">🧺</span><span class="farm-card-sub">ช่องว่าง เลือกของด้านล่างมาวาง</span></div>').join('')}</div>
                 ${st.log.length ? `<div class="stall-log">${st.log.slice().reverse().map(l => `<span>🛒 ${escHtml(l.t)}</span>`).join('')}</div>` : ''}
                 ${keys.length ? `<div class="barn-grid">${keys.map(k => `<div class="barn-item"><span class="barn-emoji">${itemInfo(k).e}</span><span class="farm-card-title">${itemInfo(k).name}${starText(itemInfo(k).q)} ×${veg.inv[k]}</span>
                     <span class="barn-price is-up">แผง 🪙${stallPrice(k)} · ยุ้งฉาง 🪙${sellPrice(k)}</span><button type="button" class="chip-btn" onclick="putOnStall('${k}')">วางขาย (สูงสุด 10)</button></div>`).join('')}</div>` : '<p class="rp-empty">ยุ้งฉางว่าง ยังไม่มีของมาวางขาย</p>'}
-                <p class="shop-note">ขายบนแผงได้แพงกว่าขายส่งที่ยุ้งฉาง 40% แต่ต้องรอลูกค้า · ปิดเว็บไว้ก็ยังขายได้ (นับย้อนหลังสูงสุด 5 ชั่วโมง)</p>`;
+                <p class="shop-note">ขายบนแผงได้แพงกว่าราคาตลาด ${Math.round((stallMarkup() - 1) * 100)}% แต่ต้องรอลูกค้า · ปิดเว็บไว้ก็ยังขายได้ (นับย้อนหลังสูงสุด 5 ชั่วโมง)</p>`;
         }
 
         // 🏆 ประกวดผักยักษ์ประจำสัปดาห์: ปลูกเมล็ดยักษ์สัปดาห์ละ 1 เมล็ด ดูแลดีผักยิ่งหนัก แข่งกับเพื่อนในขบวน
@@ -6527,7 +6661,7 @@
             return out.join(' · ') || '🕒 ได้ตลอดเวลา';
         }
         const fishOpen = k => { const f = FISH[k]; return f.w > 0 && fishWhenOk(f) && (!f.secret || !!veg.secrets[k]); };
-        const fishWeight = f => f.w * (f.boost && f.boost === todayWeather() ? 3 : 1);
+        const fishWeight = f => f.w * (f.boost && f.boost === todayWeather() ? 3 : 1) * (f.r !== 'common' ? 1 + 0.15 * upgLv('rod') : 1);
         function rollFish() {
             const pool = Object.keys(FISH).filter(fishOpen);
             let r = Math.random() * pool.reduce((s, k) => s + fishWeight(FISH[k]), 0);
@@ -6550,7 +6684,7 @@
             const big = !!FISH_FIGHT[FISH[fishing.fish].r];
             try { if (navigator.vibrate) navigator.vibrate(big ? [120, 60, 160] : 120); } catch (e) {}
             playSound('pop');
-            fishing.timer = setTimeout(() => endFishing('late'), 900);
+            fishing.timer = setTimeout(() => endFishing('late'), 900 + 120 * upgLv('rod'));
             renderFarmPanel();
         }
         function reelIn() {
@@ -6559,7 +6693,7 @@
                 const fight = FISH_FIGHT[FISH[fishing.fish].r];
                 if (!fight) { endFishing('catch'); return; }
                 clearTimeout(fishing.timer);
-                Object.assign(fishing, { state: 'fight', taps: 0, need: fight.taps, until: Date.now() + fight.ms });
+                Object.assign(fishing, { state: 'fight', taps: 0, need: fightTaps(fight), until: Date.now() + fight.ms });
                 fishing.timer = setTimeout(() => endFishing('escape'), fight.ms);
                 renderFarmPanel();
             } else if (fishing.state === 'fight') {
@@ -6859,7 +6993,10 @@
             { id: 'legendAll', e: '👑', name: 'ราชันแห่งตำนาน', desc: 'เก็บผักตำนานครบ 6 ชนิด', goal: 6, v: () => Object.keys(LEGEND_VEGGIES).filter(k => veg.harvest[k]).length, coins: 120, title: 'ราชันตำนาน' },
             { id: 'fishEpic', e: '🦈', name: 'นักสู้ปลายักษ์', desc: 'ตกปลาระดับหายากขึ้นไป 3 ตัว', goal: 3, v: () => Object.keys(FISH).filter(k => FISH[k].r === 'epic' || FISH[k].r === 'legendary').reduce((a, k) => a + (veg.fishCaught[k] || 0), 0), coins: 25, title: 'นักสู้ปลายักษ์' },
             { id: 'fishLegend', e: '🐉', name: 'ผู้พิชิตเจ้าแห่งบ่อ', desc: 'ตกปลาตำนานได้ 1 ตัว', goal: 1, v: () => Object.keys(FISH).filter(k => FISH[k].r === 'legendary' && veg.fishCaught[k]).length, coins: 60, title: 'เจ้าแห่งบ่อ' },
-            { id: 'box10', e: '🎁', name: 'มือเปิดกล่อง', desc: 'เปิดกล่องเมล็ดปริศนา 10 กล่อง', goal: 10, v: () => veg.box.n, coins: 20, title: 'นักเสี่ยงโชค' }
+            { id: 'box10', e: '🎁', name: 'มือเปิดกล่อง', desc: 'เปิดกล่องเมล็ดปริศนา 10 กล่อง', goal: 10, v: () => veg.box.n, coins: 20, title: 'นักเสี่ยงโชค' },
+            { id: 'upgrade1', e: '🔧', name: 'ช่างประจำฟาร์ม', desc: 'อัปเกรดเครื่องมือครั้งแรก', goal: 1, v: () => sum(veg.upg), coins: 10, title: 'ช่างประจำฟาร์ม' },
+            { id: 'upgradeMax', e: '⚙️', name: 'เครื่องมือขั้นเทพ', desc: 'อัปเกรดเครื่องมือชิ้นไหนก็ได้ถึงระดับ 5', goal: 5, v: () => Math.max(0, ...Object.values(veg.upg)), coins: 60, title: 'ช่างเทพ' },
+            { id: 'trader10', e: '🤝', name: 'พ่อค้าแม่ค้าตลาดเพื่อน', desc: 'ซื้อขายกับเพื่อน 10 ครั้ง', goal: 10, v: () => veg.stats.trades, coins: 30, title: 'เซียนตลาดนัด' }
         ];
         const achDone = a => a.v() >= a.goal;
         const achClaimable = () => ACHIEVEMENTS.filter(a => achDone(a) && !veg.ach[a.id]).length;
@@ -6900,7 +7037,7 @@
         }
 
         // 🏡 บ้านไร่ + จัดสวน
-        const stallSlots = () => STALL_SLOTS + (veg.house >= 2 ? 1 : 0);
+        const stallSlots = () => STALL_SLOTS + (veg.house >= 2 ? 1 : 0) + (upgLv('stall') >= 3 ? 2 : upgLv('stall') >= 1 ? 1 : 0);
         function upgradeHouse() {
             const next = HOUSE_LEVELS[veg.house];
             if (!next || farmLevel() < next.level || shop.coins < next.coins || !hasItems(next.items)) return;
@@ -7027,7 +7164,7 @@
         }
 
         // --- 📖 สมุดสะสม: ผักผลไม้ ปลา อาหาร ดอกไม้ และกระเป๋าเมล็ด พร้อมรายละเอียดทุกชนิด ---
-        const FRAG_NEED = 10, BOX_PRICE = 25, BOX_PITY = 15;
+        const FRAG_NEED = 10, BOX_PRICE = 20, BOX_PITY = 15;
         const BOX_RATES = [['rare', 70], ['epic', 25], ['legendary', 5]];
         const DEX_CROPS = [...new Set([...BASE_VEGGIES, ...Object.values(SEASON_VEGGIE), ...RARE_VEGGIES, 'apple', ...HYBRID_VEGGIES, ...Object.keys(LEGEND_VEGGIES)])];
         const RARITY_NOTE = { common: 'ปลูกได้ตลอด เมล็ดฟรี', rare: 'ผักเทศกาล เมล็ดจากร้านค้า และผลไม้จากต้น', epic: 'ผักลูกผสม ต้องผสมพันธุ์เองหรือลุ้นจากกล่อง', legendary: 'เมล็ดจากกล่องปริศนาหรือเศษเมล็ดตำนาน มีพลังพิเศษ' };
@@ -7088,9 +7225,10 @@
             if (veg.box.pity + 1 < BOX_PITY) { let x = Math.random() * 100; r = BOX_RATES.find(([, p]) => (x -= p) < 0)[0]; }
             const pool = boxPool(r), k = pool[Math.floor(Math.random() * pool.length)];
             veg.box.n += 1; veg.box.pity = r === 'legendary' ? 0 : veg.box.pity + 1;
-            veg.seeds[k] = Math.min(99, (veg.seeds[k] || 0) + 1);
+            const got = r === 'rare' ? 2 : 1;
+            veg.seeds[k] = Math.min(99, (veg.seeds[k] || 0) + got);
             saveVeg();
-            dex.reveal = { k, r, from: 'box' };
+            dex.reveal = { k, r, from: 'box', n: got };
             playSound(r === 'legendary' ? 'welcome' : 'pop');
             if (r === 'legendary') fireConfetti();
             renderDex(); renderFarmStatus();
@@ -7185,7 +7323,7 @@
             const bag = Object.keys(veg.seeds).filter(k => veg.seeds[k] > 0).sort((a, b) => RARITY_KEYS.indexOf(cropRarity(b)) - RARITY_KEYS.indexOf(cropRarity(a)));
             const rv = dex.reveal;
             const reveal = rv ? `<div class="dex-reveal rar-${rv.r}" role="status"><span class="dex-reveal-e">${rv.r === 'epic' && !cropTotal(rv.k) ? '🧬' : VEGGIES[rv.k].e}</span>
-                    <div><small>${rv.from === 'frag' ? 'แลกเศษเมล็ดได้' : 'เปิดกล่องได้'}</small><b>${rv.r === 'epic' && !cropTotal(rv.k) ? 'เมล็ดลูกผสมลับ' : 'เมล็ด' + VEGGIES[rv.k].name}</b>${rarTag(rv.r)}
+                    <div><small>${rv.from === 'frag' ? 'แลกเศษเมล็ดได้' : 'เปิดกล่องได้'}</small><b>${rv.r === 'epic' && !cropTotal(rv.k) ? 'เมล็ดลูกผสมลับ' : 'เมล็ด' + VEGGIES[rv.k].name}${rv.n > 1 ? ' ×' + rv.n : ''}</b>${rarTag(rv.r)}
                     ${rv.r === 'legendary' ? `<span class="farm-card-sub">✨ ${LEGEND_VEGGIES[rv.k].trait}</span>` : ''}</div></div>` : '';
             return `<div class="farm-card dex-frag"><span class="barn-emoji" aria-hidden="true">🧩</span>
                     <div class="farm-card-main"><span class="farm-card-title">เศษเมล็ดตำนาน ${fr}/${FRAG_NEED}</span>
@@ -7194,7 +7332,7 @@
                     <button type="button" class="shop-buy farm-action" ${fr >= FRAG_NEED ? '' : 'disabled'} onclick="tradeFragments()">${fr >= FRAG_NEED ? 'แลกเมล็ดตำนาน ✨' : `อีก ${FRAG_NEED - fr} ชิ้น`}</button></div>
                 <div class="farm-card dex-box-card"><span class="barn-emoji" aria-hidden="true">🎁</span>
                     <div class="farm-card-main"><span class="farm-card-title">กล่องเมล็ดปริศนา</span>
-                        <div class="farm-chips">${BOX_RATES.map(([r, p]) => `<span class="rar-tag rar-${r}">${RARITY[r].e} ${RARITY[r].name} ${p}%</span>`).join('')}</div>
+                        <div class="farm-chips">${BOX_RATES.map(([r, p]) => `<span class="rar-tag rar-${r}">${RARITY[r].e} ${RARITY[r].name} ${p}%${r === 'rare' ? ' (ได้ 2 เมล็ด)' : ''}</span>`).join('')}</div>
                         <span class="farm-card-sub">การันตีได้เมล็ดตำนานภายใน ${pity} กล่อง · เปิดไปแล้ว ${veg.box.n} กล่อง</span></div>
                     <button type="button" class="shop-buy farm-action" ${shop.coins >= BOX_PRICE ? '' : 'disabled'} onclick="openSeedBox()">เปิดกล่อง 🪙${BOX_PRICE}</button></div>
                 ${reveal}
@@ -7254,7 +7392,7 @@
         function fishDetail(k) {
             const f = FISH[k], hid = fishHidden(k), fight = FISH_FIGHT[f.r];
             const clue = dexStats([['⏰', 'ออกมาตอน', f.secret && !veg.secrets[k] ? '🔮 อีเวนต์ลับ ลองดูคำใบ้ในแท็บความสำเร็จ' : fishWhenText(f)], ['🎣', 'ตอนนี้', fishOpen(k) ? '✅ อยู่ในบ่อ ลองตกดู!' : '💤 ยังไม่ออกมา'],
-                ...(fight ? [['💪', 'ต้องสู้', `แตะดึง ${fight.taps} ครั้งใน ${fight.ms / 1000} วินาที`]] : [])]);
+                ...(fight ? [['💪', 'ต้องสู้', `แตะดึง ${fightTaps(fight)} ครั้งใน ${fight.ms / 1000} วินาที`]] : [])]);
             if (hid) return dexHead('❔', '???', f.r, 'ปลาที่ยังไม่เคยตกได้') + '<p class="dex-desc">เบาะแสของปลาตัวนี้ 👇</p>' + clue;
             const uses = recipesUsing(k);
             return dexHead(f.e, f.name, f.r, 'ปลาในบ่อ')
@@ -7267,6 +7405,62 @@
                     ['📅', 'ตกได้ครั้งแรก', veg.dexDay[k] ? thaiDay(veg.dexDay[k]) : 'ก่อนมีสมุดสะสม']
                 ]) + clue
                 + (uses.length ? `<p class="dex-group"><b>🍳 ใช้ทำ</b></p><div class="farm-chips">${uses.map(([, rv]) => `<span class="farm-chip">${rv.e} ${rv.name}</span>`).join('')}</div>` : '');
+        }
+
+        // --- 🔧 โรงอัปเกรด: เครื่องมือ 6 อย่าง อย่างละ 5 ระดับ ใช้เหรียญ + ผลผลิตในฟาร์ม (ระดับสูงต้องมีเลเวลฟาร์มถึง) ---
+        const UPGRADES = {
+            rod: { e: '🎣', name: 'คันเบ็ด', what: 'ตกปลาง่ายขึ้น เจอปลาหายากบ่อยขึ้น',
+                mats: [{ fish: 2 }, { fish: 3, shrimp: 1 }, { tropical: 2, crab: 2 }, { puffer: 1, oyster: 2 }, { octopus: 1, shrimp: 3 }],
+                perk: lv => [`ปลากินเบ็ดนานขึ้น +${(lv * 0.12).toFixed(2)} วินาที`, `ปลาแรร์ขึ้นไปติดเบ็ดบ่อยขึ้น +${lv * 15}%`, ...(lv >= 3 ? [`สู้ปลาใหญ่ แตะน้อยลง ${lv >= 5 ? 2 : 1} ครั้ง`] : [])] },
+            stall: { e: '🏪', name: 'แผงขาย', what: 'ลูกค้ามาไวขึ้น ขายได้แพงขึ้น ช่องวางของเพิ่ม',
+                mats: [{ wheat: 4 }, { bouquet: 2, egg: 2 }, { honey: 2, milk: 2 }, { wool: 2, duckEgg: 2 }, { cheese: 2, bread: 2 }],
+                perk: lv => [`ลูกค้ามาทุก ${10 - lv} นาที`, `ขายแพงกว่าตลาด ${40 + lv * 5}%`, ...(lv ? [`ช่องวางของ +${lv >= 3 ? 2 : 1}`] : [])] },
+            basket: { e: '🧺', name: 'ตะกร้าเก็บเกี่ยว', what: 'ลุ้นได้ผักเพิ่มทุกครั้งที่เก็บ',
+                mats: [{ wheat: 3, carrot: 3 }, { corn: 4, tomato: 4 }, { strawberry: 5, cabbage: 5 }, { egg: 4, chili: 6 }, { milk: 3, corn: 8 }],
+                perk: lv => [`ลุ้นได้ผลผลิตเพิ่ม 1 ชิ้นทุกครั้งที่เก็บผัก ${lv * 7}%`] },
+            hoe: { e: '⛏️', name: 'จอบพรวนดิน', what: 'เก็บผักแล้วดินจืดช้าลง',
+                mats: [{ cabbage: 4 }, { carrot: 5, chili: 3 }, { egg: 3, corn: 4 }, { tomato: 6, wool: 1 }, { strawberry: 6, cheese: 1 }],
+                perk: lv => [`เก็บผักแล้วดินลดน้อยลง ${lv * 12}%`] },
+            stove: { e: '🍳', name: 'เตาครัว', what: 'ทำอาหารง่ายขึ้น ได้ XP มากขึ้น',
+                mats: [{ tomato: 3, cabbage: 2 }, { egg: 3, wheat: 3 }, { milk: 2, honey: 1 }, { duckEgg: 3, bread: 1 }, { cheese: 2, salad: 2 }],
+                perk: lv => [`โซนเขียวตอนทำอาหารกว้างขึ้น ${lv * 10}%`, `XP จากทำอาหาร +${lv * 10}%`] },
+            compost: { e: '🪱', name: 'ถังหมักปุ๋ย', what: 'ได้ปุ๋ยหมักไวขึ้น ปุ๋ยแรงขึ้น',
+                mats: [{ carrot: 4 }, { cabbage: 6 }, { egg: 2, corn: 4 }, { honey: 2, wool: 1 }, { milk: 3, cheese: 1 }],
+                perk: lv => [`แต้มปุ๋ยหมัก +${lv * 20}%`, `ปุ๋ยหมักเติมดิน +${COMPOST_SOIL + lv * 3}`] }
+        };
+        const UPG_COINS = [40, 80, 140, 220, 320], UPG_FARM_LV = [2, 3, 5, 6, 8];
+        const fightTaps = f => Math.max(2, f.taps - (upgLv('rod') >= 5 ? 2 : upgLv('rod') >= 3 ? 1 : 0));
+        const compostSoil = () => COMPOST_SOIL + upgLv('compost') * 3;
+        function upgradeTool(k) {
+            const u = UPGRADES[k], lv = upgLv(k);
+            if (!u || lv >= 5) return;
+            const coins = UPG_COINS[lv], need = UPG_FARM_LV[lv], mats = u.mats[lv];
+            if (farmLevel() < need || shop.coins < coins || !hasItems(mats)) return;
+            shop.coins -= coins; saveShop(); updateCoinUI();
+            takeItems(mats);
+            veg.upg[k] = lv + 1; saveVeg();
+            addXP(10 + lv * 5); playSound('welcome');
+            if (lv + 1 === 5) fireConfetti();
+            showToast(`${u.e} อัปเกรด${u.name}เป็นระดับ ${lv + 1} แล้ว! ${u.perk(lv + 1)[0]}`, 'success', { duration: 5000 });
+            renderFarmPanel(); renderFarmStatus(); updateBasketFood();
+        }
+        const upgReady = () => Object.keys(UPGRADES).filter(k => { const lv = upgLv(k); return lv < 5 && farmLevel() >= UPG_FARM_LV[lv] && shop.coins >= UPG_COINS[lv] && hasItems(UPGRADES[k].mats[lv]); }).length;
+        function renderUpgradeTab() {
+            const lvl = farmLevel();
+            return `<p class="farm-news">🔧 อัปเกรดเครื่องมือด้วยเหรียญ + ผลผลิตในฟาร์ม อย่างละ 5 ระดับ ยิ่งระดับสูงยิ่งเก่ง</p>` + Object.entries(UPGRADES).map(([k, u]) => {
+                const lv = upgLv(k), max = lv >= 5, coins = UPG_COINS[lv], need = UPG_FARM_LV[lv], mats = max ? {} : u.mats[lv];
+                const ok = !max && lvl >= need && shop.coins >= coins && hasItems(mats);
+                const now = lv ? u.perk(lv) : ['ยังไม่ได้อัปเกรด'], next = max ? [] : u.perk(lv + 1);
+                return `<div class="farm-card upg-card${ok ? ' is-ready' : ''}${max ? ' is-max' : ''}"><span class="barn-emoji">${u.e}</span>
+                    <div class="farm-card-main"><span class="farm-card-title">${u.name} <small class="mp-lv">Lv ${lv}/5</small></span>
+                        <span class="upg-pips" aria-label="ระดับ ${lv} จาก 5">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= lv ? 'is-on' : ''}"></i>`).join('')}</span>
+                        <span class="farm-card-sub">${u.what}</span>
+                        <span class="farm-card-sub">ตอนนี้: ${now.join(' · ')}</span>
+                        ${max ? '' : `<span class="farm-card-sub upg-next">ระดับ ${lv + 1}: ${next.join(' · ')}</span>
+                        <div class="farm-chips"><span class="farm-chip${shop.coins < coins ? ' is-short' : ''}">🪙 <b>${Math.min(shop.coins, coins)}/${coins}</b></span>${Object.entries(mats).map(([m, n]) => itemChip(m, n)).join('')}</div>`}</div>
+                    ${max ? '<span class="farm-done">สูงสุดแล้ว ✨</span>' : lvl < need ? `<button type="button" class="shop-buy farm-action" disabled>🔒 เลเวล ${need}</button>`
+                        : `<button type="button" class="shop-buy farm-action" ${ok ? '' : 'disabled'} onclick="upgradeTool('${k}')">${ok ? 'อัปเกรด ⬆️' : 'ของยังไม่ครบ'}</button>`}</div>`;
+            }).join('') + '<p class="shop-note">วัตถุดิบใช้ของดาวน้อยก่อน · อาหารอย่างขนมปังกับสลัดทำได้ในครัว</p>';
         }
 
         function initVeggies() {
@@ -7299,7 +7493,9 @@
         const MP_ERRORS = {
             offline: 'ต่ออินเทอร์เน็ตไม่ได้ ลองใหม่อีกครั้งนะ', no_room: 'ไม่เจอห้องนี้ ลองเช็กรหัสอีกทีนะ', room_full: 'ห้องนี้เต็มแล้ว (สูงสุด 20 คน)',
             bad_name: 'ใส่ชื่อเล่นก่อนนะ', limit: 'วันนี้ทำครบโควตาแล้ว พรุ่งนี้มาใหม่นะ', no_target: 'เพื่อนคนนี้ออกจากห้องไปแล้ว',
-            busy: 'ระบบยุ่งอยู่ ลองใหม่อีกครั้งนะ', bad_gift: 'ส่งของชิ้นนี้ไม่ได้', no_item: 'ของในยุ้งฉางไม่พอแล้ว', bad_code: 'รหัสห้องมี 6 ตัว ลองเช็กอีกทีนะ'
+            busy: 'ระบบยุ่งอยู่ ลองใหม่อีกครั้งนะ', bad_gift: 'ส่งของชิ้นนี้ไม่ได้', no_item: 'ของในยุ้งฉางไม่พอแล้ว', bad_code: 'รหัสห้องมี 6 ตัว ลองเช็กอีกทีนะ',
+            too_many: 'วางขายพร้อมกันได้สูงสุด 6 รายการ', gone: 'ของชิ้นนี้มีคนซื้อไปแล้วหรือถูกเก็บกลับแล้ว', own: 'ซื้อของตัวเองไม่ได้นะ',
+            bad_item: 'ของชิ้นนี้วางขายไม่ได้', bad_price: 'ราคาหรือจำนวนไม่ถูกต้อง', no_coins: 'เหรียญไม่พอซื้อ'
         };
         const TEAM_MISSIONS = [
             { id: 'harvest', e: '🧺', text: 'เก็บผักผลไม้รวมกันทั้งห้อง', per: 15, unit: 'ชิ้น', val: (p, wk) => p.farm.wk === wk ? p.farm.wh : 0 },
@@ -7413,6 +7609,7 @@
                 try { await mpPush(); } catch (e) { if (e.message === 'bad_player') throw e; }
                 const [st, inbox] = await Promise.allSettled([mpCall('bt_room_state', mpAuth()), mpCall('bt_claim_events', mpAuth())]);
                 if (inbox.status === 'fulfilled' && Array.isArray(inbox.value.events)) mpApplyInbox(inbox.value.events);
+                if (inbox.status === 'fulfilled' && Array.isArray(inbox.value.sales)) mkApplySales(inbox.value.sales);
                 if (st.status === 'rejected') throw st.reason;
                 mp.state = mpCleanState(st.value); mp.at = Date.now(); mp.skew = mp.state.now - mp.at; mp.error = '';
                 if (mp.state.roomName && mp.state.roomName !== friends.roomName) { friends.roomName = mp.state.roomName; saveFriends(); }
@@ -7427,8 +7624,8 @@
         }
         function mpSchedule(ms) { clearTimeout(mp.timer); mp.timer = friends.room ? setTimeout(mpTick, ms) : 0; }
         async function mpTick() {
-            if (friends.room && !document.hidden) await mpRefresh();
-            mpSchedule(mpTabOpen() ? 15000 : 60000);
+            if (friends.room && !document.hidden) { await mpRefresh(); if (mkOpen()) await mkRefresh(); }
+            mpSchedule(mpTabOpen() || mkOpen() ? 15000 : 60000);
         }
         // เพื่อนช่วยฟาร์มเรา: รดน้ำ (ผักโตไวขึ้น 20 นาที + ได้ดาว) จับหนอน ส่งของเข้ายุ้งฉาง ทักทาย
         function mpApplyInbox(events) {
@@ -7551,7 +7748,7 @@
         async function mpLeave() {
             if (mp.leaveArmed < Date.now()) { mp.leaveArmed = Date.now() + 4000; mpRender(); setTimeout(mpRender, 4100); return; }
             mp.leaveArmed = 0;
-            try { await mpCall('bt_leave_room', mpAuth()); }
+            try { const r = await mpCall('bt_leave_room', mpAuth()); if (r && Array.isArray(r.returned)) mkApplySales(r.returned.map(x => x && x.status === 'sold' ? x : { ...x, status: 'cancelled' })); }
             catch (e) { if (e.message !== 'bad_player') { showToast(mpErr(e), 'warning'); return; } }
             mpForget('ออกจากห้องแล้ว กลับเข้ามาใหม่ได้ด้วยรหัสห้องเดิมนะ');
         }
@@ -7770,6 +7967,165 @@
             renderFriendsBtn();
             if (friends.room) mpSchedule(2500);
             document.addEventListener('visibilitychange', () => { if (!document.hidden && friends.room && Date.now() - mp.at > 30000) mpSchedule(400); });
+        }
+
+        // 🤝 ตลาดเพื่อน: วางของขายให้เพื่อนในห้อง เพื่อนจ่ายเหรียญซื้อได้ทันที
+        // ของออกจากยุ้งฉางตอนวางขาย · เงินเข้าตอนมีคนซื้อ · ขายไม่ออกใน 3 วันของคืนเข้ายุ้งฉาง
+        const MK_MAX_OPEN = 6, MK_DAYS = 3;
+        const mk = { data: null, at: 0, error: '', busy: false, pick: '', qty: 1, price: 0 };
+        let stallView = 'npc';
+        const mkOpen = () => document.getElementById('farm-modal').style.display === 'flex' && farmTab === 'stall' && stallView === 'friends';
+        function mkClean(d) {
+            const int = (n, max) => Math.min(max, Math.max(0, Math.floor(+n) || 0));
+            const listing = l => l && mpItemOk(l.item) && int(l.qty, 20) && int(l.price, 9999) ? {
+                id: int(l.id, Number.MAX_SAFE_INTEGER), seller: typeof l.seller === 'string' ? l.seller.slice(0, 36) : '', sellerName: mpCleanName(l.seller_name) || 'เพื่อน',
+                buyerName: mpCleanName(l.buyer_name), avatar: mpCleanName(l.avatar, 8) || MP_AVATARS[0], item: l.item, qty: int(l.qty, 20), price: int(l.price, 9999), at: Date.parse(l.at) || 0
+            } : null;
+            const avg = {};
+            Object.entries(d.avg && typeof d.avg === 'object' ? d.avg : {}).forEach(([k, v]) => { if (mpItemOk(k) && Array.isArray(v)) avg[k] = [int(v[0], 9999), int(v[1], 9999)]; });
+            return { me: typeof d.me === 'string' ? d.me : '', open: (Array.isArray(d.open) ? d.open : []).map(listing).filter(Boolean).slice(0, 120),
+                recent: (Array.isArray(d.recent) ? d.recent : []).map(listing).filter(Boolean).slice(0, 15), avg, skew: (Date.parse(d.now) || Date.now()) - Date.now() };
+        }
+        async function mkRefresh() {
+            if (!friends.room || mk.busy) return;
+            try { mk.data = mkClean(await mpCall('bt_market', mpAuth())); mk.at = Date.now(); mk.error = ''; }
+            catch (e) {
+                if (e.message === 'bad_player') { mpForget('คุณไม่ได้อยู่ในห้องนี้แล้ว เข้าห้องใหม่ได้ด้วยรหัสห้อง'); return; }
+                mk.error = mpErr(e);
+            }
+            if (mkOpen()) renderFarmPanel();
+        }
+        function mkOnOpen() { if (!friends.room) return; if (Date.now() - mk.at > 8000) mkRefresh(); mpSchedule(15000); }
+        function setStallView(v) { stallView = v === 'friends' ? 'friends' : 'npc'; renderFarmPanel(); if (stallView === 'friends') mkOnOpen(); }
+        // เงินจากของที่เพื่อนซื้อ และของที่ขายไม่ออก/เก็บกลับตอนออกห้อง
+        function mkApplySales(sales) {
+            let coins = 0;
+            const lines = [];
+            sales.forEach(s => {
+                if (!s || !mpItemOk(s.item)) return;
+                const qty = Math.min(20, Math.max(0, Math.floor(+s.qty) || 0)), price = Math.min(9999, Math.max(0, Math.floor(+s.price) || 0)), it = itemInfo(s.item);
+                if (!qty) return;
+                if (s.status === 'sold') {
+                    if (!price) return;
+                    coins += qty * price; veg.stats.trades = Math.min(1e6, veg.stats.trades + 1);
+                    lines.push(`💰 ${mpCleanName(s.buyer_name) || 'เพื่อน'} ซื้อ ${it.e} ${it.name}${starText(it.q)} ×${qty} ของคุณ ได้ 🪙${qty * price}`);
+                } else {
+                    giveItem(s.item, qty);
+                    lines.push(`📦 ${it.e} ${it.name}${starText(it.q)} ×${qty} ${s.status === 'expired' ? 'ขายไม่ออกใน 3 วัน' : 'ที่วางขายไว้'} คืนเข้ายุ้งฉางแล้ว`);
+                }
+            });
+            if (!lines.length) return;
+            saveVeg();
+            if (coins) addCoins(coins);
+            lines.slice(0, 3).forEach((l, i) => setTimeout(() => showToast(l, 'success', { duration: 5500 }), i * 400));
+            if (lines.length > 3) showToast(`🤝 ตลาดเพื่อนมีอีก ${lines.length - 3} รายการ ดูที่แผงขาย`, 'info');
+            if (coins) playSound('welcome');
+            renderFarmStatus();
+            if (mkOpen()) mkRefresh();
+        }
+        // ตั้งราคาได้ 50%–300% ของราคาตลาดวันนี้ (กันพิมพ์ผิด/ตั้งราคาเว่อร์)
+        const mkRange = k => { const base = marketPrice(k); return { base, min: Math.max(1, Math.round(base * 0.5)), max: Math.max(2, Math.round(base * 3)), step: Math.max(1, Math.round(base * 0.1)) }; };
+        function mkPick(k) {
+            if (!mpItemOk(k) || !veg.inv[k]) return;
+            Object.assign(mk, { pick: k, qty: 1, price: Math.round(mkRange(k).base * 1.2) });
+            renderFarmPanel();
+        }
+        function mkAdj(field, dir) {
+            if (!mk.pick) return;
+            const r = mkRange(mk.pick);
+            if (field === 'qty') mk.qty = Math.min(Math.min(20, veg.inv[mk.pick] || 1), Math.max(1, mk.qty + dir));
+            else mk.price = Math.min(r.max, Math.max(r.min, mk.price + dir * r.step));
+            renderFarmPanel();
+        }
+        async function mkList() {
+            const k = mk.pick;
+            if (mk.busy || !mpItemOk(k)) return;
+            const r = mkRange(k), n = Math.min(20, mk.qty), price = Math.min(r.max, Math.max(r.min, mk.price));
+            if ((veg.inv[k] || 0) < n) { showToast(MP_ERRORS.no_item, 'warning'); return; }
+            mk.busy = true;
+            takeExact(k, n); saveVeg(); // ของออกจากยุ้งฉางก่อน ลงขายไม่สำเร็จจะคืนให้
+            try {
+                await mpCall('bt_list_item', { ...mpAuth(), p_item: k, p_qty: n, p_price: price });
+                const it = itemInfo(k);
+                showToast(`🏷️ วางขาย ${it.e} ${it.name}${starText(it.q)} ×${n} ชิ้นละ 🪙${price} ให้เพื่อนแล้ว`, 'success');
+                Object.assign(mk, { pick: '', qty: 1, price: 0 });
+                playSound('pop');
+            } catch (e) { giveItem(k, n); saveVeg(); showToast(mpErr(e), 'warning'); }
+            mk.busy = false;
+            renderFarmStatus(); updateBasketFood();
+            await mkRefresh();
+        }
+        async function mkBuy(id) {
+            const l = mk.data && mk.data.open.find(x => x.id === id);
+            if (mk.busy || !l) return;
+            const total = l.qty * l.price;
+            if (shop.coins < total) { showToast(MP_ERRORS.no_coins, 'warning'); return; }
+            mk.busy = true;
+            try {
+                const r = await mpCall('bt_buy_item', { ...mpAuth(), p_id: id });
+                const qty = Math.min(20, Math.max(1, Math.floor(+r.qty) || 0)), price = Math.min(9999, Math.max(1, Math.floor(+r.price) || 0));
+                if (mpItemOk(r.item)) {
+                    shop.coins -= qty * price; saveShop(); updateCoinUI();
+                    giveItem(r.item, qty); veg.stats.trades = Math.min(1e6, veg.stats.trades + 1); saveVeg();
+                    const it = itemInfo(r.item);
+                    showToast(`🛍️ ซื้อ ${it.e} ${it.name}${starText(it.q)} ×${qty} จาก ${l.sellerName} แล้ว จ่าย 🪙${qty * price}`, 'success');
+                    playSound('welcome');
+                }
+            } catch (e) { showToast(mpErr(e), 'warning'); }
+            mk.busy = false;
+            renderFarmStatus(); updateBasketFood();
+            await mkRefresh();
+        }
+        async function mkCancel(id) {
+            if (mk.busy) return;
+            mk.busy = true;
+            try {
+                const r = await mpCall('bt_cancel_listing', { ...mpAuth(), p_id: id });
+                if (mpItemOk(r.item)) { giveItem(r.item, Math.min(20, Math.max(1, Math.floor(+r.qty) || 1))); saveVeg(); showToast(`📦 เก็บ ${itemInfo(r.item).e} ${itemInfo(r.item).name} กลับเข้ายุ้งฉางแล้ว`, 'success'); }
+            } catch (e) { showToast(mpErr(e), 'warning'); }
+            mk.busy = false;
+            renderFarmStatus(); updateBasketFood();
+            await mkRefresh();
+        }
+        function renderFriendsMarket() {
+            if (!friends.room) return `<div class="mp-hero"><span class="mp-hero-e" aria-hidden="true">🤝</span><div><b>ตลาดเพื่อน</b>
+                    <span>วางของขายให้เพื่อนในห้อง หรือซื้อของที่เพื่อนวางไว้ด้วยเหรียญ เข้าห้องเดียวกับเพื่อนก่อนนะ</span></div></div>
+                <div class="modal-btn-group"><button type="button" class="modal-btn btn-primary" onclick="setFarmTab('friends')">👥 ไปหน้าเพื่อน</button></div>`;
+            const d = mk.data;
+            if (!d) return `<p class="rp-empty">${mk.error ? '⚠️ ' + escHtml(mk.error) : 'กำลังเปิดตลาด… 🛒'}</p>`;
+            const now = Date.now() + d.skew;
+            const others = d.open.filter(l => l.seller !== d.me), mine = d.open.filter(l => l.seller === d.me);
+            const card = (l, own) => {
+                const it = itemInfo(l.item), base = marketPrice(l.item), total = l.qty * l.price, diff = Math.round((l.price / base - 1) * 100);
+                const hours = Math.max(1, Math.ceil((l.at + MK_DAYS * 864e5 - now) / 36e5));
+                const deal = diff < 0 ? `<span class="mk-deal is-good">ถูกกว่าตลาด ${-diff}%</span>` : diff > 0 ? `<span class="mk-deal">แพงกว่าตลาด ${diff}%</span>` : '<span class="mk-deal">ราคาเท่าตลาด</span>';
+                return `<div class="farm-card mk-card${rarClass(l.item)}"><span class="barn-emoji">${it.e}</span>
+                    <div class="farm-card-main"><span class="farm-card-title">${it.name}${starText(it.q)} ×${l.qty} ${rarTag(itemRarity(l.item))}</span>
+                        <span class="farm-card-sub">🪙${l.price}/ชิ้น · ตลาดวันนี้ 🪙${base} ${deal}</span>
+                        <span class="farm-card-sub">${own ? `⏳ ขายไม่ออกจะคืนใน ${hours} ชม.` : `${escHtml(l.avatar)} ${escHtml(l.sellerName)} วางขาย · ${mpAgo(l.at)}`}</span></div>
+                    ${own ? `<button type="button" class="chip-btn" ${mk.busy ? 'disabled' : ''} onclick="mkCancel(${l.id})">เก็บกลับ</button>`
+                        : `<button type="button" class="shop-buy farm-action" ${shop.coins >= total && !mk.busy ? '' : 'disabled'} onclick="mkBuy(${l.id})">${shop.coins >= total ? `ซื้อ 🪙${total}` : `ขาด 🪙${total - shop.coins}`}</button>`}</div>`;
+            };
+            const keys = barnKeys().filter(mpItemOk);
+            let form;
+            if (mine.length >= MK_MAX_OPEN) form = `<p class="farm-news">วางขายครบ ${MK_MAX_OPEN} รายการแล้ว รอเพื่อนซื้อหรือเก็บกลับก่อนนะ</p>`;
+            else if (!keys.length) form = '<p class="rp-empty">ยุ้งฉางยังว่าง เก็บผักหรือตกปลามาขายก่อนนะ 🌱</p>';
+            else {
+                const k = keys.includes(mk.pick) ? mk.pick : '', r = k ? mkRange(k) : null;
+                form = `<div class="mp-gift-items">${keys.map(x => { const it = itemInfo(x); return `<button type="button" class="chip-btn${x === k ? ' is-active' : ''}" onclick="mkPick('${x}')">${it.e} ${it.name}${starText(it.q)} ×${veg.inv[x]}</button>`; }).join('')}</div>`
+                    + (k ? `<div class="mk-form">
+                        <div class="mk-form-row"><span>จำนวน</span><button type="button" class="chip-btn" onclick="mkAdj('qty', -1)" aria-label="ลดจำนวน">−</button><b>${mk.qty}</b><button type="button" class="chip-btn" onclick="mkAdj('qty', 1)" aria-label="เพิ่มจำนวน">+</button></div>
+                        <div class="mk-form-row"><span>ราคา/ชิ้น</span><button type="button" class="chip-btn" onclick="mkAdj('price', -1)" aria-label="ลดราคา">−</button><b>🪙${mk.price}</b><button type="button" class="chip-btn" onclick="mkAdj('price', 1)" aria-label="เพิ่มราคา">+</button></div>
+                        <span class="farm-card-sub">ราคาตลาดวันนี้ 🪙${r.base} · ตั้งได้ ${r.min}–${r.max} · รวม 🪙${mk.qty * mk.price} · ขายไม่ออกใน ${MK_DAYS} วันของคืนเข้ายุ้งฉาง</span>
+                        <button type="button" class="shop-buy farm-action" ${mk.busy ? 'disabled' : ''} onclick="mkList()">วางขายให้เพื่อน 🏷️</button></div>` : '');
+            }
+            return `${others.length ? `<p class="dex-group"><b>🛒 ของที่เพื่อนวางขาย</b> · ${others.length} รายการ</p><div class="mk-cards">${others.map(l => card(l, false)).join('')}</div>`
+                    : '<p class="farm-news">ยังไม่มีเพื่อนวางของขาย ลองวางของของคุณให้เพื่อนซื้อดูสิ</p>'}
+                <p class="dex-group"><b>📦 ของที่ฉันวางขาย</b> · ${mine.length}/${MK_MAX_OPEN}</p>
+                ${mine.length ? `<div class="mk-cards">${mine.map(l => card(l, true)).join('')}</div>` : ''}
+                ${form}
+                ${d.recent.length ? `<p class="dex-group"><b>🧾 ซื้อขายล่าสุดในห้อง</b></p><ul class="mp-feed">${d.recent.map(l => { const it = itemInfo(l.item); return `<li><span>${escHtml(l.buyerName || 'เพื่อน')} ซื้อ ${it.e} ${it.name}${starText(it.q)} ×${l.qty} จาก ${escHtml(l.sellerName)} · 🪙${l.qty * l.price}</span><small>${mpAgo(l.at)}</small></li>`; }).join('')}</ul>` : ''}
+                <p class="shop-note">${mk.error ? `<span class="mp-err">⚠️ ${escHtml(mk.error)}</span> · ` : ''}เงินจากของที่เพื่อนซื้อจะเข้ากระเป๋าอัตโนมัติ · วางพร้อมกันได้ ${MK_MAX_OPEN} รายการ · <button type="button" class="mp-link" onclick="mkRefresh()">🔄 รีเฟรช</button></p>`;
         }
 
         // --- 🛍️ ร้านค้า: ใช้เหรียญจากฟาร์มและชาเลนจ์ แลกสติกเกอร์ ของแต่งมาสคอต ของแต่งสวน เมล็ดหายาก และอุปกรณ์ฟาร์ม ---
