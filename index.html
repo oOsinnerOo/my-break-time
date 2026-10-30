@@ -10224,7 +10224,7 @@
                 wk: weekStartKey(), wh: mpWeekSum('crops'), wc: mpWeekSum('coins'),
                 tot: sum(veg.harvest) + sum(veg.fruits), ach: Object.keys(veg.ach).length,
                 ct: (() => { const c = veg.contest, gp = veg.plots.find(p => p.giant); return c && c.week === weekStartKey() && c.planted ? [1, c.weight || 0, gp ? gp.stage : 5] : 0; })(),
-                gd: gardenSnapshot()
+                gn: gardenSnapshot() // สวนพัก (gd ใช้กับจำนวนตุ๊กตาเฝ้าสวนอยู่แล้ว)
             };
         }
         // ข้อมูลจากเพื่อนผ่านเน็ตมา ตรวจทุกช่องก่อนแสดง (ชนิดผักต้องมีจริง ตัวเลขต้องอยู่ในช่วง)
@@ -10244,7 +10244,7 @@
                 wk: typeof f.wk === 'string' ? f.wk.slice(0, 10) : '', wh: int(f.wh, 99999), wc: int(f.wc, 999999),
                 tot: int(f.tot, 1e7), ach: int(f.ach, 999), ns: f.ns === 1, gd: int(f.gd, 99), sc: int(f.sc, SCARE_MAX), wd: f.wd === 1,
                 ct: Array.isArray(f.ct) && f.ct[0] === 1 && f.wk === weekStartKey() ? { kg: Math.min(99, Math.max(0, Math.round((+f.ct[1] || 0) * 10) / 10)), stage: int(f.ct[2], 5) } : null,
-                gd: cleanFriendGarden(f.gd)
+                garden: cleanFriendGarden(f.gn)
             };
         }
         function mpCleanState(s) {
@@ -10268,7 +10268,7 @@
         // 🔄 ซิงก์กับห้อง: ส่งหน้าฟาร์มล่าสุด ดึงสถานะห้อง และรับของ/ความช่วยเหลือที่เพื่อนส่งมา
         async function mpPush() {
             const snap = friendSnapshot(), size = () => { const j = JSON.stringify(snap); return j.length + (j.match(/[,:]/g) || []).length; };
-            while (size() > 5900 && snap.gd.i.length) snap.gd.i.splice(-8);
+            while (size() > 5900 && snap.gn.i.length) snap.gn.i.splice(-8);
             const key = JSON.stringify(snap);
             if (key === mp.lastPush) return;
             const r = await mpCall('bt_update_farm', { ...mpAuth(), p_farm: snap, p_name: friends.name || null, p_avatar: friends.avatar });
@@ -10635,7 +10635,7 @@
             const pests = f.plots.filter(pl => pl && pl.pest).length;
             const growing = f.plots.some(pl => pl && !pl.pest && (pl.stage < pl.need || pl.type === 't'));
             const left = k => MP_LIMITS[k] - mpDone(p.id, k);
-            const extras = [house.e, f.pet ? PETS[f.pet.kind].e : '', ...f.animals.map(a => ANIMALS[a].e), f.ct && f.ct.kg ? `🏆 ${f.ct.kg} กก.` : '', f.gd ? `💖 ${f.gd.beauty}` : ''].filter(Boolean).join(' ');
+            const extras = [house.e, f.pet ? PETS[f.pet.kind].e : '', ...f.animals.map(a => ANIMALS[a].e), f.ct && f.ct.kg ? `🏆 ${f.ct.kg} กก.` : '', f.garden ? `💖 ${f.garden.beauty}` : ''].filter(Boolean).join(' ');
             let acts = '';
             if (!isMe) {
                 const canWater = left('water') > 0 && growing, canPest = left('pest') > 0 && pests > 0;
@@ -11937,11 +11937,11 @@
         }
         function renderGardenContest(s) {
             const g = rm.garden, votes = id => g ? (g.votes.find(v => v.id === id) || { n: 0 }).n : 0;
-            const list = s.players.filter(p => p.farm.gd).sort((a, b) => votes(b.id) - votes(a.id) || b.farm.gd.beauty - a.farm.gd.beauty);
-            const waiting = s.players.filter(p => !p.farm.gd);
+            const list = s.players.filter(p => p.farm.garden).sort((a, b) => votes(b.id) - votes(a.id) || b.farm.garden.beauty - a.farm.garden.beauty);
+            const waiting = s.players.filter(p => !p.farm.garden);
             const last = g && g.last.length ? `<p class="farm-news">🏆 สวนสวยประจำห้องสัปดาห์ที่แล้ว: ${g.last.map(w => `${escHtml(w.name)} (${w.n} โหวต)`).join(' · ')}</p>` : '';
             const cards = list.map(p => {
-                const G = p.farm.gd, isMe = p.id === s.me, mine = g && g.mine === p.id, n = votes(p.id);
+                const G = p.farm.garden, isMe = p.id === s.me, mine = g && g.mine === p.id, n = votes(p.id);
                 return `<div class="farm-card mp-garden-card${mine ? ' is-voted' : ''}${isMe ? ' is-me' : ''}">${miniGardenHTML(G, p.farm.h)}
                     <div class="mp-garden-foot"><span class="farm-card-title">${escHtml(p.avatar)} ${escHtml(p.name)}${isMe ? ' <small class="farm-card-sub">(คุณ)</small>' : ''}</span>
                         <span class="farm-card-sub">💖 ${G.beauty} · ${GD_TIERS[gdTier(G.beauty)][1]} · 🗳️ ${n} โหวต</span>
