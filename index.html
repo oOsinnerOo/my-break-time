@@ -14,12 +14,13 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600;700&family=Noto+Color+Emoji&display=swap" rel="stylesheet">
     <style>
         /* 🎨 โทเคนสีของแต่ละธีม — ทุกคอมโพเนนต์อ่านสีจากตัวแปรชุดนี้ เพิ่มธีมใหม่ได้แค่ประกาศโทเคนชุดใหม่ */
         :root {
-            --font-display: 'Mitr', 'Anuphan', sans-serif;
-            --font-body: 'Anuphan', 'Mitr', sans-serif;
+            /* อิโมจิใช้ฟอนต์ Noto Color Emoji ทุกเครื่อง รูปของในเกมจะหน้าตาเหมือนกันทั้งมือถือและคอม (ปิดได้ในตั้งค่า) */
+            --font-display: 'Mitr', 'Anuphan', 'Noto Color Emoji', sans-serif;
+            --font-body: 'Anuphan', 'Mitr', 'Noto Color Emoji', sans-serif;
 
             /* ☀️ กลางวัน (ค่าเริ่มต้น) */
             --bg-solid: #FFF3F7;
@@ -294,6 +295,8 @@
             overflow-x: hidden;
         }
         button { font-family: inherit; }
+        :root.native-emoji { --font-display: 'Mitr', 'Anuphan', sans-serif; --font-body: 'Anuphan', 'Mitr', sans-serif; }
+        input, select, textarea { font-family: inherit; }
         h1, h2, h3 { font-family: var(--font-display); font-weight: 500; }
         :focus-visible { outline: 3px solid rgba(var(--accent-rgb), 0.55); outline-offset: 3px; }
 
@@ -2673,6 +2676,11 @@
         .stall-cash, .contest-head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 18px; background: var(--surface-2); border: 1px solid var(--line); }
         .stall-slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
         .stall-slot { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 6px; border-radius: 16px; text-align: center; background: linear-gradient(180deg, rgba(255, 196, 120, 0.18), var(--surface-2)); border: 1px solid var(--line); }
+        .stall-pick { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; }
+        .stall-pick-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; }
+        .stall-pick-row b { min-width: 2ch; font-size: 16px; text-align: center; }
+        .animal-cycle { display: block; flex: none; height: 8px; margin: 5px 0 2px; }
+        .animal-hungry { color: var(--accent-ink); font-weight: 700; }
         .stall-slot.is-empty { background: var(--surface-2); border-style: dashed; opacity: 0.8; }
         .stall-slots.has-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .stall-log { display: flex; flex-direction: column; gap: 2px; font-size: 11.5px; color: var(--ink-3); font-weight: 600; padding: 0 4px; }
@@ -3541,6 +3549,10 @@
                     <label class="settings-row settings-switch-row" for="reduce-motion-check">
                         <span class="settings-row-text"><span class="settings-row-label">ลดแอนิเมชัน</span><span class="settings-row-sub" id="reduce-motion-sub">หยุดสิ่งที่ขยับอยู่ตลอด ช่วยประหยัดแบตและไม่รบกวนตอนทำงาน</span></span>
                         <span class="toggle-switch"><input type="checkbox" id="reduce-motion-check" onchange="setEffect('reduceMotion', this.checked)"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="settings-row settings-switch-row" for="native-emoji-check">
+                        <span class="settings-row-text"><span class="settings-row-label">ใช้อิโมจิของเครื่องนี้</span><span class="settings-row-sub">ปิดไว้ = รูปของในเกมหน้าตาเหมือนกันทุกเครื่อง · เปิด = ใช้แบบของมือถือ/คอมเครื่องนี้ ประหยัดเน็ตครั้งแรก</span></span>
+                        <span class="toggle-switch"><input type="checkbox" id="native-emoji-check" onchange="setEffect('nativeEmoji', this.checked)"><span class="toggle-slider"></span></span>
                     </label>
                 </div>
 
@@ -6099,7 +6111,10 @@
             const keyMap = (o, re) => Object.fromEntries(Object.keys(o && typeof o === 'object' ? o : {}).filter(k => re.test(k)).sort().slice(-20).map(k => [k, true]));
             const animals = {};
             const day = x => typeof x === 'string' ? x.slice(0, 10) : '';
+            // fedAt = เวลาที่ป้อนอาหาร (0 = หิว รอป้อน) · เซฟเก่าแบบวันละครั้ง: วันนี้ยังไม่ได้เก็บ ให้เก็บได้เลยหนึ่งรอบ
             Object.keys(ANIMALS).forEach(a => { const s = (v.animals || {})[a] || {}; animals[a] = { lastDay: day(s.lastDay), hearts: int(s.hearts, 10), fedDay: day(s.fedDay), favDay: day(s.favDay), n: int(s.n, BARN_CAPS[BARN_CAPS.length - 1]),
+                fedAt: Number.isFinite(+s.fedAt) && s.fedAt !== null && s.fedAt !== '' ? Math.max(0, Math.min(Date.now(), Math.floor(+s.fedAt))) : day(s.lastDay) !== dayKeyLocal() ? 1 : 0,
+                fav: s.fav === true, heartDay: day(s.heartDay), heartN: int(s.heartN, 9),
                 pets: (Array.isArray(s.pets) ? s.pets : []).filter(p => p && typeof p === 'object' && (!p.t || ANIMAL_VARIANTS[a].some(v => v.k === p.t))).slice(0, BARN_CAPS[BARN_CAPS.length - 1])
                     .map(p => ({ t: p.t || '', name: String(p.name || '').replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 12), born: day(p.born) })) }; });
             const pv = v.pet && typeof v.pet === 'object' && PETS[v.pet.kind] ? v.pet : null;
@@ -6936,7 +6951,7 @@
             const ordersReady = todaysOrders().filter(o => !o.done && hasItems(o.items)).length;
             const od = document.getElementById('fa-orders');
             if (od) { od.textContent = ordersReady || ''; od.hidden = !ordersReady; }
-            const animalsReady = Object.keys(ANIMALS).filter(animalReady).length + (honeyReady() ? 1 : 0) + (veg.pet && veg.pet.petDay !== dayKeyLocal() ? 1 : 0) + veg.babies.filter(b => b.day !== dayKeyLocal()).length;
+            const animalsReady = Object.keys(ANIMALS).filter(a => animalReady(a) || canFeedNow(a)).length + (honeyReady() ? 1 : 0) + (veg.pet && veg.pet.petDay !== dayKeyLocal() ? 1 : 0) + veg.babies.filter(b => b.day !== dayKeyLocal()).length;
             const ad = document.getElementById('fa-animals');
             if (ad) { ad.textContent = animalsReady || ''; ad.hidden = !animalsReady; }
             const bd = document.getElementById('fa-barn');
@@ -7289,8 +7304,8 @@
         }
         const heartsBar = n => `<span class="hearts" aria-label="ความผูกพัน ${n}/10">${'💗'.repeat(Math.ceil(n / 2))}${'🤍'.repeat(5 - Math.ceil(n / 2))}<small>${n}/10</small></span>`;
 
-        // 🍽️ อาหารสัตว์: แต่ละตัวกินของคนละอย่าง เลือกเองว่าจะป้อนอะไร (วันละครั้ง)
-        // ❤️ ของโปรด = หัวใจ +2 และวันนี้ให้ผลผลิตเพิ่ม 1 · อาหารอื่นในรายการ = หัวใจ +1 · หัวใจ 5 = ผลผลิต +1 · หัวใจ 10 = +1 อีก และลุ้นของขวัญ
+        // 🍽️ อาหารสัตว์: แต่ละตัวกินของคนละอย่าง เลือกเองว่าจะป้อนอะไร (ป้อนได้รอบละครั้ง)
+        // ❤️ ของโปรด = หัวใจ +2 และรอบนี้ให้ผลผลิตเพิ่ม 1 · อาหารอื่นในรายการ = หัวใจ +1 · หัวใจ 5 = ผลผลิต +1 · หัวใจ 10 = +1 อีก และลุ้นของขวัญ
         const ANIMAL_FEEDS = {
             hen: { fav: 'wheat', also: ['corn', 'cabbage'] },
             duck: { fav: 'fish', also: ['cabbage', 'wheat'] },
@@ -7304,17 +7319,20 @@
         function toggleFeed(a) { feedFor = feedFor === a ? '' : a; renderFarmPanel(); }
         function feedAnimal(a, k) {
             const st = veg.animals[a], today = dayKeyLocal();
-            if (!ANIMAL_FEEDS[a] || !shop.owned.includes(ANIMALS[a].shopId) || st.fedDay === today) return;
+            if (!ANIMAL_FEEDS[a] || !animalHungry(a)) return;
             if (!animalFoods(a).includes(k)) return;
             const need = feedNeed(a);
             if (countBase(k) < need) { showToast(`${itemInfo(k).name}ไม่พอ ต้องใช้ ${need} ชิ้น (${animalCount(a)} ตัว) ${FISH[k] ? 'ไปตกปลา' : 'ปลูกเพิ่ม'}ก่อนนะ`, 'info'); return; }
             const fav = k === ANIMAL_FEEDS[a].fav;
             takeItems({ [k]: need });
             st.fedDay = today; if (fav) st.favDay = today;
-            st.hearts = Math.min(10, st.hearts + (fav ? 2 : 1));
+            st.fedAt = Date.now(); st.fav = fav;
+            if (st.heartDay !== today) { st.heartDay = today; st.heartN = 0; }
+            const gain = Math.min(fav ? 2 : 1, ANIMAL_HEARTS_DAY - st.heartN);
+            st.hearts = Math.min(10, st.hearts + gain); st.heartN += gain;
             feedFor = '';
             saveVeg(); playSound(fav ? 'welcome' : 'pop'); passNote('feed');
-            showToast(`${ANIMALS[a].e} ${ANIMALS[a].name}กิน${itemInfo(k).name}${fav ? ' ของโปรดเลย! 💗💗 วันนี้ให้ผลผลิตเพิ่ม 1' : 'อร่อยเลย 💗'} (${st.hearts}/10)`, 'success', { duration: 4500 });
+            showToast(`${ANIMALS[a].e} ${ANIMALS[a].name}กิน${itemInfo(k).name}${fav ? ' ของโปรดเลย! รอบนี้ได้ผลผลิตเพิ่ม 1' : 'อร่อยเลย'} · อีก ${animalLeftText(cycleMs(a))} มาเก็บ${FARM_PRODUCTS[ANIMALS[a].product].name}${gain ? ` · 💗 ${st.hearts}/10` : ' · หัวใจวันนี้ขึ้นครบแล้ว'}`, 'success', { duration: 4500 });
             renderFarmPanel(); renderFarmStatus(); updateBasketFood();
         }
 
@@ -7397,8 +7415,31 @@
             return q;
         }
         function toggleCookHi() { veg.cookHi = !veg.cookHi; saveVeg(); renderFarmPanel(); }
-        // 🐔 สัตว์ในฟาร์ม: เก็บผลผลิตได้วันละครั้ง ถ้าวันนี้พักไม่เกินโควตาได้ 2 เท่า
-        function animalReady(a) { return shop.owned.includes(ANIMALS[a].shopId) && veg.animals[a].lastDay !== dayKeyLocal(); }
+        // 🐔 สัตว์ในฟาร์ม: ป้อนอาหารแล้วรอครบรอบค่อยเก็บ ถ้าวันนี้พักไม่เกินโควตาได้เพิ่มครึ่งหนึ่ง
+        // 🕐 รอบผลิตของสัตว์แต่ละชนิด (นาที) · หัวใจขึ้นได้วันละไม่เกิน 2 ดวง
+        const ANIMAL_CYCLE = { hen: 60, duck: 60, sheep: 120, goat: 120, cow: 120, pig: 120 }, ANIMAL_HEARTS_DAY = 2;
+        const cycleMs = a => (ANIMAL_CYCLE[a] || 120) * 60000;
+        const animalOwned = a => shop.owned.includes(ANIMALS[a].shopId);
+        const animalHungry = a => animalOwned(a) && !veg.animals[a].fedAt;
+        const animalLeft = a => veg.animals[a].fedAt ? Math.max(0, veg.animals[a].fedAt + cycleMs(a) - Date.now()) : 0;
+        function animalReady(a) { return animalOwned(a) && veg.animals[a].fedAt > 0 && animalLeft(a) <= 0; }
+        const canFeedNow = a => animalHungry(a) && animalFoods(a).some(k => countBase(k) >= feedNeed(a));
+        function animalLeftText(ms) { const m = Math.max(1, Math.ceil(ms / 60000)); return m >= 60 ? `${Math.floor(m / 60)} ชม.${m % 60 ? ` ${m % 60} นาที` : ''}` : `${m} นาที`; }
+        // อัปเดตเวลาถอยหลังบนการ์ดสัตว์ทุกนาที ครบรอบแล้ววาดการ์ดใหม่ให้มีปุ่มเก็บ (ไม่วาดทับตอนกำลังพิมพ์ชื่อลูกสัตว์)
+        const animalNotified = {};
+        function animalTick() {
+            let flip = false;
+            document.querySelectorAll('[data-acd]').forEach(el => {
+                const a = el.dataset.acd, left = animalLeft(a);
+                if (left <= 0) { flip = true; return; }
+                el.textContent = `⏳ อีก ${animalLeftText(left)}`;
+                const bar = el.closest('.farm-card') && el.closest('.farm-card').querySelector('.animal-cycle > span');
+                if (bar) bar.style.width = `${Math.round((1 - left / cycleMs(a)) * 100)}%`;
+            });
+            if (flip && farmTabIs('animals') && !(document.activeElement && document.activeElement.tagName === 'INPUT')) renderFarmPanel();
+            const fresh = Object.keys(ANIMALS).filter(a => animalReady(a) && animalNotified[a] !== veg.animals[a].fedAt);
+            if (fresh.length && farmNotify('animals', '🐔 ผลผลิตสัตว์พร้อมเก็บแล้ว', `${fresh.map(a => ANIMALS[a].e).join(' ')} แวะไปเก็บแล้วป้อนอาหารรอบใหม่นะ`)) fresh.forEach(a => { animalNotified[a] = veg.animals[a].fedAt; });
+        }
         const animalCount = a => shop.owned.includes(ANIMALS[a].shopId) ? Math.max(1, veg.animals[a].n || 1) : 0;
         const barnCap = () => BARN_CAPS[Math.min(BARN_CAPS.length, veg.barnLv) - 1];
         const animalPrice = a => Math.round(SHOP_ITEMS[ANIMALS[a].shopId].price * (1 + 0.5 * animalCount(a))); // ตัวต่อไปแพงขึ้นตัวละครึ่งราคา
@@ -7441,16 +7482,19 @@
         }
         function collectAnimal(a) {
             if (!animalReady(a)) return;
-            const an = ANIMALS[a], st = veg.animals[a], good = goodDayToday(), fav = st.favDay === dayKeyLocal();
-            const vy = variantYield(a), c = animalCount(a), n = c * (good ? 2 : 1) + (st.hearts >= 5 ? 1 : 0) + (st.hearts >= 10 ? 1 : 0) + (fav ? 1 : 0) + vy.extra; // ทุกตัวในคอกให้ผลผลิต โบนัสหัวใจ/ของโปรดได้ทั้งคอกครั้งเดียว
+            const an = ANIMALS[a], st = veg.animals[a], good = goodDayToday(), fav = st.fav, first = st.lastDay !== dayKeyLocal();
+            // ต่อรอบ: ตัวละ 1 ชิ้น + วันพักดี + โบนัสหัวใจ + ของโปรด · ของพิเศษจากสัตว์ลายหายาก/ตำนานได้รอบแรกของวัน
+            const vy = variantYield(a), c = animalCount(a), n = c + (good ? Math.ceil(c / 2) : 0) + (st.hearts >= 5 ? 1 : 0) + (st.hearts >= 10 ? 1 : 0) + (fav ? 1 : 0) + vy.extra;
+            if (!first) vy.items = {};
             giveItem(an.product, n);
-            Object.entries(vy.items).forEach(([k, q]) => giveItem(k, q)); // ของพิเศษจากสัตว์ลายหายาก/ตำนาน
+            Object.entries(vy.items).forEach(([k, q]) => giveItem(k, q));
             if (Object.keys(vy.items).length) setTimeout(() => showToast(`✨ สัตว์ลายพิเศษให้ ${Object.entries(vy.items).map(([k, q]) => `${itemInfo(k).e} ${itemInfo(k).name} ×${q}`).join(' · ')}`, 'success', { duration: 4500 }), 600);
             addCompostPts(1); // มูลสัตว์ลงถังหมัก
-            st.lastDay = dayKeyLocal();
-            const gift = st.hearts >= 10 && Math.random() < 0.2;
+            st.lastDay = dayKeyLocal(); st.fedAt = 0; st.fav = false;
+            const gift = st.hearts >= 10 && Math.random() < 0.1;
             if (gift) addCoins(10);
-            saveVeg(); addXP(5); playSound('pop'); passNote('animal');
+            feedFor = a; // เก็บแล้วเปิดเมนูอาหารรอบใหม่ให้เลย
+            saveVeg(); addXP(3); playSound('pop'); passNote('animal');
             showToast(`${an.e} เก็บ${FARM_PRODUCTS[an.product].name} ${n} ${FARM_PRODUCTS[an.product].e}${good ? ' (วันนี้พักดี ได้เพิ่ม!)' : ''}${fav ? ' · ได้กินของโปรด +1' : ''}${st.hearts >= 5 ? ' 💗' : ''}${gift ? ' · 💝 ได้ของขวัญ 10 เหรียญ!' : ''}`, 'success');
             renderFarmPanel(); renderFarmStatus();
         }
@@ -7592,21 +7636,24 @@
                         <span class="farm-card-sub">น้องจะเดินเล่นในสวน แตะที่ตัวเพื่อลูบหัวได้ทุกวัน</span></div>`;
                 body.innerHTML = petCard + babiesHTML() + barnCard() + Object.entries(ANIMALS).map(([a, an]) => {
                     const owned = shop.owned.includes(an.shopId), ready = animalReady(a), p = FARM_PRODUCTS[an.product], st = veg.animals[a], cnt = animalCount(a), need = feedNeed(a), full = owned && herdSpace(a) <= 0, price = animalPrice(a);
+                    const hungry = owned && !st.fedAt, left = owned ? animalLeft(a) : 0;
                     const action = !owned ? (lvl < an.level ? `<button type="button" class="shop-buy farm-action" disabled>🔒 เลเวล ${an.level}</button>`
                             : `<button type="button" class="shop-buy farm-action is-owned" onclick="closeFarm(); openShop('tool')">ซื้อที่ร้านค้า</button>`)
-                        : `<div class="farm-card-btns">${ready ? `<button type="button" class="shop-buy farm-action" onclick="collectAnimal('${a}')">เก็บ ${p.e}</button>` : '<span class="farm-done">พรุ่งนี้มาเก็บใหม่</span>'}
-                            <button type="button" class="shop-buy farm-action is-owned${feedFor === a ? ' is-active' : ''}" ${st.fedDay === today ? 'disabled' : ''} aria-expanded="${feedFor === a}" onclick="toggleFeed('${a}')">${st.fedDay === today ? (st.favDay === today ? 'อิ่มแล้ว 💗💗' : 'อิ่มแล้ว') : 'ป้อนอาหาร 🍽️'}</button>
+                        : `<div class="farm-card-btns">${ready ? `<button type="button" class="shop-buy farm-action" onclick="collectAnimal('${a}')">เก็บ ${p.e}</button>` : hungry ? '' : `<span class="farm-done" data-acd="${a}">⏳ อีก ${animalLeftText(left)}</span>`}
+                            ${ready ? '' : `<button type="button" class="shop-buy farm-action is-owned${feedFor === a ? ' is-active' : ''}" ${hungry ? '' : 'disabled'} aria-expanded="${feedFor === a}" onclick="toggleFeed('${a}')">${hungry ? 'ป้อนอาหาร 🍽️' : st.fav ? 'อิ่มแล้ว 💗' : 'อิ่มแล้ว'}</button>`}
                             <button type="button" class="shop-buy farm-action is-owned animal-more" ${full || shop.coins < price ? 'disabled' : ''} onclick="buyMoreAnimal('${a}')">${full ? 'คอกเต็ม' : `➕ ตัวที่ ${cnt + 1} 🪙${price}`}</button>
                             ${veg.breed[a] ? `<span class="farm-done">💕 รอลูก ${Math.max(1, Math.ceil((veg.breed[a].at - Date.now()) / 3600000))} ชม.</span>` : canBreed(a) ? `<button type="button" class="shop-buy farm-action is-owned breed-btn" onclick="startBreed('${a}')">💕 จับคู่</button>${countBase('herbTonic') ? `<button type="button" class="shop-buy farm-action is-owned breed-btn" onclick="startBreed('${a}', true)" title="ใช้อาหารบำรุง 1 ขวด ลุ้นลายพิเศษ ×2">💕+🧪</button>` : ''}` : ''}</div>`;
                     const fd = ANIMAL_FEEDS[a], foods = animalFoods(a).map(k => { const it = itemInfo(k), n = countBase(k), fav = k === fd.fav;
                         return `<button type="button" class="chip-btn feed-chip${fav ? ' is-fav' : ''}" ${n >= need ? '' : 'disabled'} onclick="feedAnimal('${a}', '${k}')">${fav ? '❤️ ' : ''}${it.e} ${it.name} ${need > 1 ? `ใช้ ${need} (มี ${n})` : `×${n}`}${fav ? ' · 💗+2 ผลผลิต+1' : ' · 💗+1'}</button>`; }).join('');
                     return `<div class="farm-card${owned ? '' : ' is-locked'}${feedFor === a && owned ? ' is-feeding' : ''}"><span class="barn-emoji${owned ? ' animal-bob' : ''}">${an.e}</span>
-                        <div class="farm-card-main"><span class="farm-card-title">${an.name}${cnt > 1 ? ` ×${cnt}` : ''}${cnt > 1 ? ` <span class="herd" aria-hidden="true">${an.e.repeat(cnt)}</span>` : ''}${owned && st.pets.some(p => p.t) ? ` <span class="herd-tags" title="${st.pets.filter(p => p.t).map(p => (p.name ? p.name + ' · ' : '') + variantName(a, p.t)).join(', ')}">${st.pets.filter(p => p.t).map(p => variantOf(a, p.t).tag).join('')}</span>` : ''}</span>${owned ? heartsBar(st.hearts) : ''}<span class="farm-card-sub">ให้${p.name} ${p.e} ${cnt > 1 ? `ตัวละ 1 (วันพักดีตัวละ 2) รวม ${cnt} ตัว` : 'วันละครั้ง'}${owned ? ' · 💗5 ได้ +1 · 💗10 ได้ +1 และลุ้นของขวัญ' : ''}</span>
-                            <span class="farm-card-sub feed-likes">🍽️ กิน: ❤️ ${itemInfo(fd.fav).e} ${itemInfo(fd.fav).name} (ของโปรด) · ${fd.also.map(k => `${itemInfo(k).e} ${itemInfo(k).name}`).join(' · ')}${owned && st.fedDay === today ? ' · วันนี้กินแล้ว' : ''}</span>
-                            ${owned && feedFor === a && st.fedDay !== today ? `<div class="feed-pick" role="group" aria-label="เลือกอาหารให้${an.name}">${foods}</div>` : ''}</div>${action}</div>`;
+                        <div class="farm-card-main"><span class="farm-card-title">${an.name}${cnt > 1 ? ` ×${cnt}` : ''}${cnt > 1 ? ` <span class="herd" aria-hidden="true">${an.e.repeat(cnt)}</span>` : ''}${owned && st.pets.some(p => p.t) ? ` <span class="herd-tags" title="${st.pets.filter(p => p.t).map(p => (p.name ? p.name + ' · ' : '') + variantName(a, p.t)).join(', ')}">${st.pets.filter(p => p.t).map(p => variantOf(a, p.t).tag).join('')}</span>` : ''}</span>${owned ? heartsBar(st.hearts) : ''}<span class="farm-card-sub">ให้${p.name} ${p.e} ${cnt > 1 ? `ตัวละ 1 ต่อรอบ รวม ${cnt} ตัว` : 'รอบละ 1'} (วันพักดีได้เพิ่มครึ่งหนึ่ง)${owned ? ' · 💗5 ได้ +1 · 💗10 ได้ +1 และลุ้นของขวัญ' : ''}</span>
+                            <span class="farm-card-sub feed-likes">🍽️ กิน: ❤️ ${itemInfo(fd.fav).e} ${itemInfo(fd.fav).name} (ของโปรด) · ${fd.also.map(k => `${itemInfo(k).e} ${itemInfo(k).name}`).join(' · ')} · 🕐 รอบละ ${animalLeftText(cycleMs(a))}</span>
+                            ${owned && !hungry && !ready ? `<span class="farm-xp animal-cycle" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round((1 - left / cycleMs(a)) * 100)}" aria-label="กำลังผลิต${p.name}"><span style="width:${Math.round((1 - left / cycleMs(a)) * 100)}%"></span></span>` : ''}
+                            ${owned && hungry ? `<span class="farm-card-sub animal-hungry">${ANIMALS[a].e} หิวแล้ว ป้อนอาหารเพื่อเริ่มรอบผลิตใหม่</span>` : ''}
+                            ${owned && feedFor === a && hungry ? `<div class="feed-pick" role="group" aria-label="เลือกอาหารให้${an.name}">${foods}</div>` : ''}</div>${action}</div>`;
                 }).join('') + `<div class="farm-card${hive ? '' : ' is-locked'}"><span class="barn-emoji${hive ? ' animal-bob' : ''}">🐝</span>
                         <div class="farm-card-main"><span class="farm-card-title">บ้านผึ้ง</span><span class="farm-card-sub">ผึ้งเก็บน้ำหวานจากดอกไม้ที่บาน ได้น้ำผึ้ง 🍯 วันละ 1–3 ขวด (ตอนนี้บาน ${blooms} ดอก)</span></div>${hiveAction}</div>`
-                    + animalBookHTML() + '<p class="shop-note">💕 สัตว์ชนิดเดียวกัน 2 ตัว หัวใจ ≥ 5 จับคู่ได้ (คอกต้องว่าง) รอ 1 วันได้ลูก ป้อนอาหาร 3 วันโต · ลูกอาจได้ลายพิเศษ ⭐ · ห่อลูกสัตว์ส่งให้เพื่อนได้ · วันไหนพักไม่เกินโควตา สัตว์อารมณ์ดี ให้ผลผลิตเพิ่ม 💖 · เลือกอาหารให้สัตว์วันละครั้ง ❤️ ของโปรดได้หัวใจ 2 ดวงและผลผลิตเพิ่ม (ป้อนก่อนเก็บนะ) · ใช้ของดาวน้อยก่อน</p>';
+                    + animalBookHTML() + '<p class="shop-note">🕐 ป้อนอาหาร → รอครบรอบ → เก็บผลผลิต → ป้อนใหม่ได้ทันที · ไก่ เป็ด รอบละ 1 ชม. · แกะ แพะ วัว หมู รอบละ 2 ชม. · ของโปรดได้ผลผลิตเพิ่ม 1 · หัวใจขึ้นได้วันละ 2 ดวง<br>💕 สัตว์ชนิดเดียวกัน 2 ตัว หัวใจ ≥ 5 จับคู่ได้ (คอกต้องว่าง) รอ 1 วันได้ลูก ป้อนอาหาร 3 วันโต · ลูกอาจได้ลายพิเศษ ⭐ · ห่อลูกสัตว์ส่งให้เพื่อนได้ · วันไหนพักไม่เกินโควตา สัตว์อารมณ์ดี ให้ผลผลิตเพิ่ม 💖 · เลือกอาหารให้สัตว์วันละครั้ง ❤️ ของโปรดได้หัวใจ 2 ดวงและผลผลิตเพิ่ม (ป้อนก่อนเก็บนะ) · ใช้ของดาวน้อยก่อน</p>';
             } else {
                 const keys = barnKeys().filter(k => itemInfo(k).kind !== 'dish');
                 body.innerHTML = `<div class="compost-bin">
@@ -7787,12 +7834,29 @@
             else if (asked) farmNotify('stall', '🙋 มีลูกค้าขอต่อราคา', 'ไปต่อรองที่แผงขายภายใน 30 นาที');
             return sold + asked;
         }
-        function putOnStall(key) {
+        function stallPickHTML(k) {
+            if (stallPick !== k) return `<button type="button" class="chip-btn" onclick="stallPickOpen('${k}')">วางขาย</button>`;
+            const max = stallPickMax(), q = Math.min(stallQty, max);
+            return `<div class="stall-pick" role="group" aria-label="เลือกจำนวน${itemInfo(k).name}ที่จะวางขาย">
+                <div class="stall-pick-row"><button type="button" class="chip-btn" onclick="stallPickQty(stallQty - 1)" ${q <= 1 ? 'disabled' : ''} aria-label="ลดจำนวน">−</button><b aria-live="polite">${q}</b>
+                    <button type="button" class="chip-btn" onclick="stallPickQty(stallQty + 1)" ${q >= max ? 'disabled' : ''} aria-label="เพิ่มจำนวน">+</button></div>
+                <div class="stall-pick-row">${[1, 5].filter(n => n < max).map(n => `<button type="button" class="chip-btn${q === n ? ' is-active' : ''}" onclick="stallPickQty(${n})">${n}</button>`).join('')}<button type="button" class="chip-btn${q === max ? ' is-active' : ''}" onclick="stallPickQty(${max})">ทั้งหมด ${max}</button></div>
+                <button type="button" class="chip-btn haggle-yes" onclick="putOnStall('${k}', ${q})">วาง ${q} ชิ้น · 🪙${stallPrice(k) * q}</button>
+                <button type="button" class="mp-link" onclick="stallPickOpen('${k}')">ยกเลิก</button></div>`;
+        }
+        // เลือกจำนวนก่อนวางขาย (ช่องละไม่เกิน 10 ชิ้น)
+        const STALL_SLOT_MAX = 10;
+        let stallPick = '', stallQty = 1;
+        const stallPickMax = () => Math.min(STALL_SLOT_MAX, veg.inv[stallPick] || 0);
+        function stallPickOpen(k) { stallPick = stallPick === k ? '' : k; stallQty = stallPickMax(); renderFarmPanel(); }
+        function stallPickQty(n) { stallQty = Math.max(1, Math.min(stallPickMax(), Math.floor(n) || 1)); renderFarmPanel(); }
+        function putOnStall(key, want) {
             const i = veg.stall.slots.slice(0, stallSlots()).findIndex(s => !s);
             const have = veg.inv[key] || 0;
             if (i < 0) { showToast('แผงเต็มแล้ว รอขายหมดหรือเก็บของกลับก่อนนะ', 'info'); return; }
             if (!have) return;
-            const qty = Math.min(10, have);
+            const qty = Math.max(1, Math.min(STALL_SLOT_MAX, have, Math.floor(+want) || STALL_SLOT_MAX));
+            stallPick = '';
             takeExact(key, qty);
             veg.stall.slots[i] = { key, qty, price: stallPrice(key) };
             if (veg.stall.slots.every(s => !s || s === veg.stall.slots[i])) veg.stall.lastTick = Date.now();
@@ -7838,7 +7902,7 @@
                     : '<div class="stall-slot is-empty"><span class="barn-emoji">🧺</span><span class="farm-card-sub">ช่องว่าง เลือกของด้านล่างมาวาง</span></div>').join('')}</div>
                 ${st.log.length ? `<div class="stall-log">${st.log.slice().reverse().map(l => `<span>🛒 ${escHtml(l.t)}</span>`).join('')}</div>` : ''}
                 ${keys.length ? `<div class="barn-grid">${keys.map(k => `<div class="barn-item"><span class="barn-emoji">${itemInfo(k).e}</span><span class="farm-card-title">${itemInfo(k).name}${starText(itemInfo(k).q)} ×${veg.inv[k]}</span>
-                    <span class="barn-price is-up">แผง 🪙${stallPrice(k)} · ยุ้งฉาง 🪙${sellPrice(k)}</span><button type="button" class="chip-btn" onclick="putOnStall('${k}')">วางขาย (สูงสุด 10)</button></div>`).join('')}</div>` : '<p class="rp-empty">ยุ้งฉางว่าง ยังไม่มีของมาวางขาย</p>'}
+                    <span class="barn-price is-up">แผง 🪙${stallPrice(k)} · ยุ้งฉาง 🪙${sellPrice(k)}</span>${stallPickHTML(k)}</div>`).join('')}</div>` : '<p class="rp-empty">ยุ้งฉางว่าง ยังไม่มีของมาวางขาย</p>'}
                 <p class="shop-note">ขายบนแผงได้แพงกว่าราคาตลาด ${Math.round((stallMarkup() - 1) * 100)}% แต่ต้องรอลูกค้า · ปิดเว็บไว้ก็ยังขายได้ (นับย้อนหลังสูงสุด 5 ชั่วโมง)<br>💬 ลูกค้าบางคนขอต่อราคา ลองขอเพิ่มดูได้ ถ้าแพงเกินลูกค้าจะหน้าบึ้งและอาจเดินหนี · ⭐ ชื่อเสียงสูง ลูกค้ามาไวขึ้นและยอมจ่ายแพงขึ้น (ปิดดีล +1 · ลูกค้าเดินหนี −3)</p>`;
         }
 
@@ -8429,8 +8493,7 @@
                 document.getElementById('forest-energy-next').textContent = `${energyText()} · พักดี +${ENERGY_BREAK} · กินอาหารฟื้นแรง`;
                 if (bar) { bar.setAttribute('aria-valuenow', Math.min(en, ENERGY_MAX)); bar.firstElementChild.style.width = `${Math.min(100, en / ENERGY_MAX * 100).toFixed(0)}%`; }
             }
-            const ar = Object.keys(ANIMALS).filter(animalReady);
-            if (ar.length && farmNotifyAnimalDay !== dayKeyLocal() && farmNotify('animals', '🐔 สัตว์พร้อมให้ผลผลิตแล้ว', `${ar.map(a => ANIMALS[a].e).join(' ')} แวะไปเก็บผลผลิตวันนี้ที่ฟาร์มนะ`)) farmNotifyAnimalDay = dayKeyLocal();
+            animalTick();
             renderFarmStatus();
         }
 
@@ -9883,7 +9946,7 @@
             stall: 'วางของบนแผงขายได้แพงกว่าตลาด แต่ต้องรอลูกค้า · บางคนขอต่อราคาหรือเดินมาขอซื้อของในยุ้งฉาง · ขายดีชื่อเสียงร้านขึ้น ลูกค้ามาไวขึ้น',
             market: 'ราคาตลาดขึ้นลงทุกวันและมีข่าวตลาดประจำสัปดาห์ · ขายของเดิมเยอะๆ ในวันเดียวราคาจะตก',
             kitchen: 'เอาวัตถุดิบมาทำอาหาร กด "ผัด!" ให้ตรงโซนเขียว ยิ่งตรงยิ่งได้ดาว · อาหารขายได้แพงกว่าวัตถุดิบเสมอ',
-            animals: 'ซื้อสัตว์ที่ร้านค้า เก็บผลผลิตวันละครั้ง · ป้อนของโปรดได้หัวใจเพิ่ม · ขยายคอกเพื่อเลี้ยงชนิดเดียวกันได้หลายตัว · 💕 สัตว์ 2 ตัวหัวใจ ≥ 5 จับคู่ได้ลูก ลุ้นลายพิเศษที่ให้ของหายากทุกวัน',
+            animals: 'ซื้อสัตว์ที่ร้านค้า ป้อนอาหารแล้วรอครบรอบ (ไก่ เป็ด 1 ชม. · ตัวใหญ่ 2 ชม.) ค่อยเก็บผลผลิต · ป้อนของโปรดได้หัวใจเพิ่มและผลผลิต +1 · ขยายคอกเพื่อเลี้ยงชนิดเดียวกันได้หลายตัว · 💕 สัตว์ 2 ตัวหัวใจ ≥ 5 จับคู่ได้ลูก ลุ้นลายพิเศษที่ให้ของหายากทุกวัน',
             craft: 'ซื้อเครื่องแปรรูปครั้งเดียว ใส่วัตถุดิบแล้วรอ ได้ของราคาสูงขึ้น · ปิดเว็บไว้เครื่องก็ทำต่อ',
             sea: 'ทะเล: 🏝️ เดินชายหาด (3 ⚡) ขุดทรายเก็บเปลือกหอย ปู สาหร่าย ปะการัง ไข่มุก · 🚤 ออกเรือ (3 ⚡) ตกปลาทะเลลึก 3 ครั้ง ต้องใช้เหยื่อ · 🧂 นาเกลือตาก 2 ชั่วโมงได้เกลือ',
             mine: 'ทุบหินก้อนละ 1 ⚡ หาแร่ อัญมณี ฟอสซิล และบันไดลงชั้นถัดไป · ทุก 5 ชั้นมีลิฟต์ · ค้างคาวกินแรง หินถล่มต้องถอยขึ้น · แร่ใส่เตาถลุงได้แท่งโลหะไว้อัปเกรดเครื่องมือขั้น 6–7',
@@ -12683,12 +12746,12 @@
             'can-gold':    { cat: 'tool', name: 'บัวรดน้ำทอง', price: 40, svg: canSVG('#FFD45C', '#E0A526'), desc: 'รดน้ำได้ทุก 10 นาที', needs: 'can-silver', level: 3 },
             'fertilizer':  { cat: 'tool', name: 'ปุ๋ยเร่งโต ×3', price: 9, emoji: '🧪', desc: 'ใส่แล้วผักโตทันที 1 ระยะ', consumable: 'fertilizer', qty: 3 },
             'guard':       { cat: 'tool', name: 'ตุ๊กตาเฝ้าสวน', price: 12, emoji: '🧸', desc: 'กันหนอนได้ 1 วันที่พักเกิน', consumable: 'guard', qty: 1 },
-            'animal-hen':  { cat: 'tool', name: 'แม่ไก่', price: 25, emoji: '🐔', desc: 'ให้ไข่วันละครั้ง', level: 3 },
-            'animal-cow':  { cat: 'tool', name: 'วัวนม', price: 40, emoji: '🐄', desc: 'ให้นมวันละครั้ง', level: 5 },
-            'animal-duck': { cat: 'tool', name: 'เป็ด', price: 35, emoji: '🦆', desc: 'ให้ไข่เป็ดวันละครั้ง (ทำเกี๊ยว คัสตาร์ด)', level: 4 },
-            'animal-sheep': { cat: 'tool', name: 'แกะ', price: 55, emoji: '🐑', desc: 'ให้ขนแกะวันละครั้ง (ถักผ้าพันคอ ตุ๊กตา)', level: 6 },
-            'animal-goat': { cat: 'tool', name: 'แพะ', price: 60, emoji: '🐐', desc: 'ให้ชีสนมแพะวันละครั้ง (พิซซ่า ชีสเค้ก)', level: 7 },
-            'animal-pig':  { cat: 'tool', name: 'หมูน้อย', price: 80, emoji: '🐖', desc: 'ขุดหาเห็ดทรัฟเฟิลวันละครั้ง (ของแพง ทำน้ำมันทรัฟเฟิลได้)', level: 8 },
+            'animal-hen':  { cat: 'tool', name: 'แม่ไก่', price: 25, emoji: '🐔', desc: 'ให้ไข่ทุก 1 ชม. เมื่อป้อนอาหาร', level: 3 },
+            'animal-cow':  { cat: 'tool', name: 'วัวนม', price: 40, emoji: '🐄', desc: 'ให้นมทุก 2 ชม. เมื่อป้อนอาหาร', level: 5 },
+            'animal-duck': { cat: 'tool', name: 'เป็ด', price: 35, emoji: '🦆', desc: 'ให้ไข่เป็ดทุก 1 ชม. (ทำเกี๊ยว คัสตาร์ด)', level: 4 },
+            'animal-sheep': { cat: 'tool', name: 'แกะ', price: 55, emoji: '🐑', desc: 'ให้ขนแกะทุก 2 ชม. (ถักผ้าพันคอ ตุ๊กตา)', level: 6 },
+            'animal-goat': { cat: 'tool', name: 'แพะ', price: 60, emoji: '🐐', desc: 'ให้ชีสนมแพะทุก 2 ชม. (พิซซ่า ชีสเค้ก)', level: 7 },
+            'animal-pig':  { cat: 'tool', name: 'หมูน้อย', price: 80, emoji: '🐖', desc: 'ขุดหาเห็ดทรัฟเฟิลทุก 2 ชม. (ของแพง ทำน้ำมันทรัฟเฟิลได้)', level: 8 },
             'land':        { cat: 'tool', name: 'ที่ดินเพิ่ม', price: 30, emoji: '🗺️', desc: 'ขยายสวนเพิ่ม 1 แปลง (สูงสุด 12 แปลง)', repeatable: true },
             'sprinkler':   { cat: 'tool', name: 'สปริงเกอร์', price: 45, emoji: '💦', desc: 'รดน้ำให้เอง ผักโตเองไวขึ้น 25% และนับว่าได้รดน้ำทุกแปลง', level: 4 },
             'beehive':     { cat: 'tool', name: 'บ้านผึ้ง', price: 35, emoji: '🐝', desc: 'ผึ้งเก็บน้ำหวานจากดอกไม้ที่บาน ได้น้ำผึ้งทุกวัน', level: 4 },
@@ -12932,6 +12995,8 @@
             if (shop.owned.includes(id)) return;
             shop.coins -= price;
             shop.owned.push(id);
+            const boughtAnimal = Object.keys(ANIMALS).find(a => ANIMALS[a].shopId === id);
+            if (boughtAnimal) { veg.animals[boughtAnimal].fedAt = 0; veg.animals[boughtAnimal].fav = false; saveVeg(); } // สัตว์ใหม่เริ่มจากหิว ป้อนอาหารเพื่อเริ่มรอบแรก
             if (it.cat === 'hat') shop.hat = id;
             if (it.cat === 'decor') shop.decor.push(id);
             saveShop(); applyShopItems(); renderShop();
@@ -13367,15 +13432,16 @@
         }
 
         // เอฟเฟกต์ที่เปิด/ปิดได้ (ค่าเริ่มต้นเปิดหมด ยกเว้นลดแอนิเมชัน)
-        const EFFECT_KEYS = { parade: 'fx_parade', tapfx: 'fx_tap', stickers: 'fx_stickers', reduceMotion: 'reduce_motion' };
+        const EFFECT_KEYS = { parade: 'fx_parade', tapfx: 'fx_tap', stickers: 'fx_stickers', reduceMotion: 'reduce_motion', nativeEmoji: 'native_emoji' };
         function isEffectOn(name) {
             const v = localStorage.getItem(EFFECT_KEYS[name]);
-            return name === 'reduceMotion' ? v === 'true' : v !== 'false';
+            return name === 'reduceMotion' || name === 'nativeEmoji' ? v === 'true' : v !== 'false';
         }
         function applyEffectSettings() {
             document.body.classList.toggle('no-parade', !isEffectOn('parade'));
             document.body.classList.toggle('no-stickers', !isEffectOn('stickers'));
             document.body.classList.toggle('reduce-motion', isEffectOn('reduceMotion'));
+            document.documentElement.classList.toggle('native-emoji', isEffectOn('nativeEmoji'));
             if (!isEffectOn('stickers')) toggleStickerTray(false);
         }
         function setEffect(name, on) {
@@ -13459,6 +13525,7 @@
             set('tapfx-check', isEffectOn('tapfx'));
             set('stickers-check', isEffectOn('stickers'));
             set('reduce-motion-check', isEffectOn('reduceMotion') || PREFERS_REDUCED_MOTION);
+            set('native-emoji-check', isEffectOn('nativeEmoji'));
             const rm = document.getElementById('reduce-motion-check');
             if (rm) rm.disabled = PREFERS_REDUCED_MOTION;
             if (PREFERS_REDUCED_MOTION) document.getElementById('reduce-motion-sub').textContent = 'เปิดอยู่แล้วจากการตั้งค่า "ลดการเคลื่อนไหว" ของเครื่อง';
@@ -14488,9 +14555,9 @@
             const now = new Date();
             const dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
             ctx.textAlign = 'center';
-            ctx.fillStyle = textColor; ctx.font = "700 30px 'Mitr', sans-serif";
+            ctx.fillStyle = textColor; ctx.font = "700 30px 'Mitr', 'Noto Color Emoji', sans-serif";
             ctx.fillText('✨ สรุปเวลาพักวันนี้', W / 2, 90);
-            ctx.fillStyle = subTextColor; ctx.font = "500 16px 'Mitr', sans-serif";
+            ctx.fillStyle = subTextColor; ctx.font = "500 16px 'Mitr', 'Noto Color Emoji', sans-serif";
             ctx.fillText(dateStr, W / 2, 118);
 
             let y = 165;
@@ -14504,14 +14571,14 @@
                 const x = 50 + i * (pillW + 20);
                 ctx.fillStyle = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.7)';
                 drawRoundedRect(ctx, x, y, pillW, 70, 16); ctx.fill();
-                ctx.fillStyle = accent; ctx.textAlign = 'center'; ctx.font = "700 20px 'Mitr', sans-serif";
+                ctx.fillStyle = accent; ctx.textAlign = 'center'; ctx.font = "700 20px 'Mitr', 'Noto Color Emoji', sans-serif";
                 ctx.fillText(s.value, x + pillW / 2, y + 32);
-                ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Mitr', sans-serif";
+                ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Mitr', 'Noto Color Emoji', sans-serif";
                 ctx.fillText(s.label, x + pillW / 2, y + 54);
             });
 
             y += 100;
-            ctx.textAlign = 'left'; ctx.fillStyle = textColor; ctx.font = "700 15px 'Mitr', sans-serif";
+            ctx.textAlign = 'left'; ctx.fillStyle = textColor; ctx.font = "700 15px 'Mitr', 'Noto Color Emoji', sans-serif";
             ctx.fillText('รายการวันนี้', 50, y);
             logs.slice(0, 9).forEach((log, i) => {
                 y += 42;
@@ -14519,17 +14586,17 @@
                 ctx.fillStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.6)';
                 drawRoundedRect(ctx, 50, y - 26, W - 100, 36, 12); ctx.fill();
                 ctx.fillStyle = barColor; drawRoundedRect(ctx, 50, y - 26, 5, 36, 3); ctx.fill();
-                ctx.fillStyle = textColor; ctx.font = "600 14px 'Mitr', sans-serif"; ctx.textAlign = 'left';
+                ctx.fillStyle = textColor; ctx.font = "600 14px 'Mitr', 'Noto Color Emoji', sans-serif"; ctx.textAlign = 'left';
                 ctx.fillText(`${log.action}`, 68, y - 4);
-                ctx.textAlign = 'right'; ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Mitr', sans-serif";
+                ctx.textAlign = 'right'; ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Mitr', 'Noto Color Emoji', sans-serif";
                 ctx.fillText(`${log.start} - ${log.end} · ${log.duration} น.`, W - 60, y - 4);
             });
             if (logs.length > 9) {
-                y += 32; ctx.textAlign = 'center'; ctx.fillStyle = subTextColor; ctx.font = "500 13px 'Mitr', sans-serif";
+                y += 32; ctx.textAlign = 'center'; ctx.fillStyle = subTextColor; ctx.font = "500 13px 'Mitr', 'Noto Color Emoji', sans-serif";
                 ctx.fillText(`และอีก ${logs.length - 9} รายการ...`, W / 2, y);
             }
 
-            ctx.textAlign = 'center'; ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Mitr', sans-serif";
+            ctx.textAlign = 'center'; ctx.fillStyle = subTextColor; ctx.font = "500 12px 'Mitr', 'Noto Color Emoji', sans-serif";
             ctx.fillText('สร้างจาก Break Recorder ✨', W / 2, H - 45);
 
             canvas.toBlob(async (blob) => {
