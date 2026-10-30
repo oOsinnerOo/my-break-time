@@ -2512,6 +2512,21 @@
         @keyframes boat-rock { 50% { transform: rotate(-6deg) translateY(2px); } }
         .salt-card.is-ready { border-color: rgba(76, 175, 80, 0.5); }
         @media (prefers-reduced-motion: reduce) { .sea-boat, .beach-scene .sand-spot svg { animation: none !important; } }
+        /* 🐣 ลูกสัตว์ + สมุดสัตว์ */
+        .baby-box { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 16px; background: rgba(255, 213, 79, 0.1); border: 1px dashed rgba(230, 160, 0, 0.45); }
+        .baby-card.rar-rare { border-color: rgba(var(--rc-rgb, 59, 130, 246), 0.5); }
+        .baby-face { position: relative; }
+        .baby-face i { position: absolute; right: -6px; bottom: -4px; font-size: 14px; font-style: normal; }
+        .baby-bar > span { background: linear-gradient(90deg, #FFB74D, #FF8A65); }
+        .baby-name { display: flex; gap: 4px; align-items: center; }
+        .baby-name .field { flex: 1; min-width: 0; padding: 4px 8px; font-size: 12px; }
+        .herd-tags { font-size: 13px; letter-spacing: 1px; }
+        .breed-btn { white-space: nowrap; }
+        .animal-book { border-radius: 16px; border: 1px solid var(--line); background: var(--surface-2); padding: 8px 10px; }
+        .animal-book summary { cursor: pointer; font-weight: 700; font-size: 13px; color: var(--ink); }
+        .ab-row { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+        .ab-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .museum-cell .ab-tag { font-style: normal; font-size: 12px; margin-left: 1px; }
         .aquarium { position: relative; height: 120px; margin-bottom: 10px; border-radius: 18px; overflow: hidden; background: linear-gradient(180deg, #7FD3F7, #2E7DB8); box-shadow: inset 0 -12px 0 rgba(255, 220, 150, 0.6); }
         .aq-fish { position: absolute; left: -10%; font-size: 22px; animation: aq-swim 11s linear infinite; }
         .aq-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 700; }
@@ -5726,7 +5741,14 @@
             giantClam: { e: '🐚', name: 'หอยมือเสือ', value: 35, zone: 'sea', rar: 'epic' }, seaCrab: { e: '🦀', name: 'ปูม้า', value: 9, zone: 'sea' },
             seaweed: { e: '🌿', name: 'สาหร่ายทะเล', value: 4, zone: 'sea' }, coral: { e: '🪸', name: 'ปะการังหลุด', value: 14, zone: 'sea', rar: 'rare' },
             pearl: { e: '🫧', name: 'ไข่มุก', value: 50, zone: 'sea', rar: 'legendary' }, salt: { e: '🧂', name: 'เกลือทะเล', value: 3, zone: 'sea' },
-            saltedFish: { e: '🐟', name: 'ปลาทูเค็ม', value: 0, art: true }, cannedTuna: { e: '🥫', name: 'ทูน่ากระป๋อง', value: 0, art: true }, fishSauce: { e: '🍶', name: 'น้ำปลา', value: 0, art: true } };
+            saltedFish: { e: '🐟', name: 'ปลาทูเค็ม', value: 0, art: true }, cannedTuna: { e: '🥫', name: 'ทูน่ากระป๋อง', value: 0, art: true }, fishSauce: { e: '🍶', name: 'น้ำปลา', value: 0, art: true },
+            // 🐣 ผลผลิตพิเศษจากสัตว์ลายหายาก/ตำนาน
+            blackEgg: { e: '🥚', name: 'ไข่ไก่ดำ', value: 12, rar: 'epic' }, goldenEgg: { e: '🥚', name: 'ไข่ทองคำ', value: 45, rar: 'legendary' },
+            jadeEgg: { e: '🥚', name: 'ไข่หยก', value: 14, rar: 'epic' }, swanEgg: { e: '🥚', name: 'ไข่หงส์', value: 45, rar: 'legendary' },
+            chocoMilk: { e: '🥛', name: 'นมช็อกโกแลต', value: 15, rar: 'epic' }, moonMilk: { e: '🥛', name: 'นมจันทรา', value: 50, rar: 'legendary' },
+            pinkWool: { e: '🧶', name: 'ขนแกะสีชมพู', value: 18, rar: 'epic' }, rainbowWool: { e: '🧶', name: 'ขนแกะสีรุ้ง', value: 55, rar: 'legendary' },
+            alpineCheese: { e: '🧀', name: 'ชีสภูเขา', value: 20, rar: 'epic' }, goldCheese: { e: '🧀', name: 'ชีสทองคำ', value: 60, rar: 'legendary' },
+            whiteTruffle: { e: '🍄', name: 'ทรัฟเฟิลขาว', value: 70, rar: 'legendary' } };
         // 🏭 โรงแปรรูป: ซื้อเครื่องครั้งเดียว ใส่วัตถุดิบแล้วรอ ได้ของราคาสูงกว่าขายดิบๆ (ทำงานต่อแม้ปิดเว็บ)
         const MACHINES = {
             mill:   { e: '🪨', name: 'โรงสีข้าวสาลี', price: 60, level: 3, recipes: [{ out: 'flour', need: { wheat: 3 }, mins: 30, n: 2 }] },
@@ -5788,6 +5810,7 @@
             grilledTuna: { e: '🥩', name: 'ทูน่าย่างเกลือ', need: { tuna: 1, salt: 1 }, value: 0, level: 10, en: 12 },
             friedMackerel: { e: '🍽️', name: 'ปลาทูทอดน้ำปลา', need: { mackerel: 2, fishSauce: 1 }, value: 0, level: 10, en: 12 },
             tunaSalad:  { e: '🥗', name: 'สลัดทูน่า', need: { cannedTuna: 1, cabbage: 1, tomato: 1 }, value: 0, level: 10, en: 10 },
+            herbTonic:  { e: '🧪', name: 'อาหารบำรุงสมุนไพร', need: { lemongrass: 1, galangal: 1, honey: 1 }, value: 0, level: 6 }, // ใช้ตอนจับคู่สัตว์ ลุ้นลายพิเศษ ×2
             farmTea:    { e: '🧋', name: 'ชานมฟาร์ม (เมนูลับ)', need: { milk: 1, honey: 1, wheat: 1 }, value: 25, level: 1, secret: true } // ซ่อนจนกว่าจะมีวัตถุดิบครบหรือเคยทำ
         };
         const ANIMALS = {
@@ -5798,6 +5821,19 @@
             goat: { e: '🐐', name: 'แพะ', product: 'cheese', shopId: 'animal-goat', level: 7 },
             pig: { e: '🐖', name: 'หมูน้อย', product: 'truffle', shopId: 'animal-pig', level: 8 }
         };
+        // 🐣 ลายพิเศษของสัตว์แต่ละชนิด: tier 1 สีพิเศษ (ผลผลิต +1) · 2 หายาก · 3 ตำนาน (ให้ของพิเศษทุกวัน)
+        const ANIMAL_VARIANTS = {
+            hen: [{ k: 'brown', name: 'ไก่แจ้สีน้ำตาล', tier: 1, tag: '🟤' }, { k: 'black', name: 'ไก่ดำ', tier: 2, tag: '⚫', item: 'blackEgg' }, { k: 'gold', name: 'ไก่ทองคำ', tier: 3, tag: '🟡', item: 'goldenEgg' }],
+            duck: [{ k: 'mandarin', name: 'เป็ดแมนดาริน', tier: 1, tag: '🟠' }, { k: 'jade', name: 'เป็ดหยก', tier: 2, tag: '🟢', item: 'jadeEgg' }, { k: 'swan', name: 'เป็ดหงส์ขาว', tier: 3, tag: '🤍', item: 'swanEgg' }],
+            cow: [{ k: 'spot', name: 'วัวลายจุด', tier: 1, tag: '🐾' }, { k: 'star', name: 'วัวลายดาว', tier: 2, tag: '⭐', item: 'chocoMilk' }, { k: 'moon', name: 'วัวจันทรา', tier: 3, tag: '🌙', item: 'moonMilk' }],
+            sheep: [{ k: 'black', name: 'แกะดำ', tier: 1, tag: '⚫' }, { k: 'pink', name: 'แกะสีชมพู', tier: 2, tag: '🌸', item: 'pinkWool' }, { k: 'rainbow', name: 'แกะสีรุ้ง', tier: 3, tag: '🌈', item: 'rainbowWool' }],
+            goat: [{ k: 'white', name: 'แพะขาวหิมะ', tier: 1, tag: '❄️' }, { k: 'mountain', name: 'แพะภูเขา', tier: 2, tag: '⛰️', item: 'alpineCheese' }, { k: 'gold', name: 'แพะขนทอง', tier: 3, tag: '🟡', item: 'goldCheese' }],
+            pig: [{ k: 'spot', name: 'หมูลายจุด', tier: 1, tag: '🐾' }, { k: 'boar', name: 'หมูป่า', tier: 2, tag: '🐗', item: 'truffle' }, { k: 'gold', name: 'หมูทองคำ', tier: 3, tag: '🟡', item: 'whiteTruffle' }]
+        };
+        // ลูกสัตว์ที่ห่อเป็นของขวัญ (ส่งให้เพื่อนได้ เพื่อนกดรับเลี้ยง) ชื่อคีย์เป็นตัวอักษรล้วน เช่น bbHenGold
+        Object.entries(ANIMAL_VARIANTS).forEach(([a, vs]) => [{ k: '', name: ANIMALS[a].name, tier: 0 }, ...vs].forEach(v => {
+            FARM_PRODUCTS['bb' + a[0].toUpperCase() + a.slice(1) + (v.k ? v.k[0].toUpperCase() + v.k.slice(1) : 'Plain')] = { e: '🐣', name: `ลูก${v.name} (ห่อของขวัญ)`, value: 20 + v.tier * 40, zone: 'baby', ...(v.tier ? { rar: ['', 'rare', 'epic', 'legendary'][v.tier] } : {}) };
+        }));
         // 🏚️ คอกสัตว์: เลี้ยงสัตว์ชนิดเดียวกันได้หลายตัว ขยายคอกให้จุได้มากขึ้น
         const BARN_CAPS = [2, 3, 4, 6];
         const BARN_UPG = [{ coins: 80, lv: 5, mats: { wheat: 6, corn: 4 } }, { coins: 150, lv: 7, mats: { wool: 2, milk: 3 } }, { coins: 260, lv: 9, mats: { cheese: 2, honey: 2 } }];
@@ -5938,6 +5974,7 @@
         });
         const VEG_GROW_MS = 60 * 60 * 1000, FARM_MAX_PLOTS = 12, HYBRID_SEED_MAX = 6, SOIL_START = 80, COMPOST_SOIL = 35, COMPOST_PTS = 6;
         const ENERGY_MAX = 30, ENERGY_OVER = 60, ENERGY_MS = 6 * 60000, ENERGY_BREAK = 5, FOREST_LEVEL = 6, FOREST_COST = 3; // ⚡ แรง และ 🌲 ป่า
+        const BREED_MS = 24 * 60 * 60000, BABY_FEEDS = 3, BREED_HEARTS = 5; // 🐣 จับคู่รอ 1 วัน ป้อนอาหาร 3 วันโต
         const SEA_LEVEL = 10, SEA_COST = 3, BOAT_CASTS = 3, SALT_MS = 2 * 60 * 60000, SALT_YIELD = 3; // 🏖️ ทะเล
         const MINE_LEVEL = 8, MINE_FLOORS = 30, UPG_MAX = 7; // ⛏️ เหมือง และเครื่องมือ 7 ระดับ (ขั้น 6–7 ใช้แท่งโลหะ)
         const VEG_STAGE_NAMES = ['เมล็ด', 'ต้นอ่อน', 'กำลังโต'];
@@ -6041,7 +6078,9 @@
             const keyMap = (o, re) => Object.fromEntries(Object.keys(o && typeof o === 'object' ? o : {}).filter(k => re.test(k)).sort().slice(-20).map(k => [k, true]));
             const animals = {};
             const day = x => typeof x === 'string' ? x.slice(0, 10) : '';
-            Object.keys(ANIMALS).forEach(a => { const s = (v.animals || {})[a] || {}; animals[a] = { lastDay: day(s.lastDay), hearts: int(s.hearts, 10), fedDay: day(s.fedDay), favDay: day(s.favDay), n: int(s.n, BARN_CAPS[BARN_CAPS.length - 1]) }; });
+            Object.keys(ANIMALS).forEach(a => { const s = (v.animals || {})[a] || {}; animals[a] = { lastDay: day(s.lastDay), hearts: int(s.hearts, 10), fedDay: day(s.fedDay), favDay: day(s.favDay), n: int(s.n, BARN_CAPS[BARN_CAPS.length - 1]),
+                pets: (Array.isArray(s.pets) ? s.pets : []).filter(p => p && typeof p === 'object' && (!p.t || ANIMAL_VARIANTS[a].some(v => v.k === p.t))).slice(0, BARN_CAPS[BARN_CAPS.length - 1])
+                    .map(p => ({ t: p.t || '', name: String(p.name || '').replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 12), born: day(p.born) })) }; });
             const pv = v.pet && typeof v.pet === 'object' && PETS[v.pet.kind] ? v.pet : null;
             const pet = pv ? { kind: pv.kind, name: String(pv.name || '').replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 12) || PETS[pv.kind].name,
                 hearts: int(pv.hearts, 10), petDay: day(pv.petDay), treatDay: day(pv.treatDay), digDay: day(pv.digDay) } : null;
@@ -6112,7 +6151,13 @@
                 ev: loadEvState(v.ev), guards: { sc: int((v.guards || {}).sc, SCARE_MAX), dog: !!(v.guards || {}).dog },
                 secrets: Object.fromEntries(Object.entries(v.secrets && typeof v.secrets === 'object' ? v.secrets : {}).filter(([k]) => SECRETS.some(x => x.id === k)).map(([k, d]) => [k, day(d) || '?'])),
                 energy: { n: v.energy && Number.isFinite(+v.energy.n) ? int(v.energy.n, ENERGY_OVER) : ENERGY_MAX, at: Math.min(Date.now(), +((v.energy || {}).at) || Date.now()) },
-                forest: loadForest(v.forest), mine: loadMine(v.mine), sea: loadSea(v.sea)
+                forest: loadForest(v.forest), mine: loadMine(v.mine), sea: loadSea(v.sea),
+                breed: Object.fromEntries(Object.entries(v.breed && typeof v.breed === 'object' ? v.breed : {}).filter(([a, x]) => ANIMALS[a] && x && Number.isFinite(+x.at))
+                    .map(([a, x]) => [a, { at: Math.min(+x.at, Date.now() + BREED_MS), tonic: !!x.tonic }])),
+                babies: (Array.isArray(v.babies) ? v.babies : []).filter(b => b && ANIMALS[b.a] && (!b.t || ANIMAL_VARIANTS[b.a].some(x => x.k === b.t))).slice(0, 30)
+                    .map((b, i) => ({ id: int(b.id, 1e6) || i + 1, a: b.a, t: b.t || '', name: String(b.name || '').replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 12), fed: int(b.fed, BABY_FEEDS - 1), day: day(b.day), born: day(b.born) })),
+                babySeq: Math.max(int(v.babySeq, 1e6), ...(Array.isArray(v.babies) ? v.babies.map(b => int(b && b.id, 1e6)) : [0])),
+                animalDex: Object.fromEntries(Object.entries(v.animalDex && typeof v.animalDex === 'object' ? v.animalDex : {}).filter(([k]) => /^[a-z]{1,8}:[a-z]{1,10}$/.test(k)).map(([k, d]) => [k, day(d) || '?']))
             };
         }
         const UPGRADE_KEYS = ['rod', 'stall', 'basket', 'hoe', 'stove', 'compost', 'axe', 'pick'];
@@ -6868,7 +6913,7 @@
             const ordersReady = todaysOrders().filter(o => !o.done && hasItems(o.items)).length;
             const od = document.getElementById('fa-orders');
             if (od) { od.textContent = ordersReady || ''; od.hidden = !ordersReady; }
-            const animalsReady = Object.keys(ANIMALS).filter(animalReady).length + (honeyReady() ? 1 : 0) + (veg.pet && veg.pet.petDay !== dayKeyLocal() ? 1 : 0);
+            const animalsReady = Object.keys(ANIMALS).filter(animalReady).length + (honeyReady() ? 1 : 0) + (veg.pet && veg.pet.petDay !== dayKeyLocal() ? 1 : 0) + veg.babies.filter(b => b.day !== dayKeyLocal()).length;
             const ad = document.getElementById('fa-animals');
             if (ad) { ad.textContent = animalsReady || ''; ad.hidden = !animalsReady; }
             const bd = document.getElementById('fa-barn');
@@ -7337,7 +7382,7 @@
         const feedNeed = a => Math.max(1, Math.ceil(animalCount(a) / 2)); // อาหาร 1 ชิ้นต่อสัตว์ 2 ตัว
         function buyMoreAnimal(a) {
             const an = ANIMALS[a], c = animalCount(a), price = animalPrice(a);
-            if (!an || !c || c >= barnCap() || shop.coins < price) return;
+            if (!an || !c || herdSpace(a) <= 0 || shop.coins < price) return;
             shop.coins -= price; saveShop(); updateCoinUI();
             veg.animals[a].n = c + 1;
             saveVeg(); playSound('welcome');
@@ -7374,8 +7419,10 @@
         function collectAnimal(a) {
             if (!animalReady(a)) return;
             const an = ANIMALS[a], st = veg.animals[a], good = goodDayToday(), fav = st.favDay === dayKeyLocal();
-            const c = animalCount(a), n = c * (good ? 2 : 1) + (st.hearts >= 5 ? 1 : 0) + (st.hearts >= 10 ? 1 : 0) + (fav ? 1 : 0); // ทุกตัวในคอกให้ผลผลิต โบนัสหัวใจ/ของโปรดได้ทั้งคอกครั้งเดียว
+            const vy = variantYield(a), c = animalCount(a), n = c * (good ? 2 : 1) + (st.hearts >= 5 ? 1 : 0) + (st.hearts >= 10 ? 1 : 0) + (fav ? 1 : 0) + vy.extra; // ทุกตัวในคอกให้ผลผลิต โบนัสหัวใจ/ของโปรดได้ทั้งคอกครั้งเดียว
             giveItem(an.product, n);
+            Object.entries(vy.items).forEach(([k, q]) => giveItem(k, q)); // ของพิเศษจากสัตว์ลายหายาก/ตำนาน
+            if (Object.keys(vy.items).length) setTimeout(() => showToast(`✨ สัตว์ลายพิเศษให้ ${Object.entries(vy.items).map(([k, q]) => `${itemInfo(k).e} ${itemInfo(k).name} ×${q}`).join(' · ')}`, 'success', { duration: 4500 }), 600);
             addCompostPts(1); // มูลสัตว์ลงถังหมัก
             st.lastDay = dayKeyLocal();
             const gift = st.hearts >= 10 && Math.random() < 0.2;
@@ -7520,22 +7567,23 @@
                         <input type="text" id="pet-name-input" class="field" maxlength="12" placeholder="ตั้งชื่อน้อง (ไม่ใส่ก็ได้)">
                         <div class="pet-kinds">${Object.entries(PETS).map(([k, pt]) => `<button type="button" class="pet-kind" onclick="adoptPet('${k}')"><span>${pt.e}</span>${pt.name}</button>`).join('')}</div>
                         <span class="farm-card-sub">น้องจะเดินเล่นในสวน แตะที่ตัวเพื่อลูบหัวได้ทุกวัน</span></div>`;
-                body.innerHTML = petCard + barnCard() + Object.entries(ANIMALS).map(([a, an]) => {
-                    const owned = shop.owned.includes(an.shopId), ready = animalReady(a), p = FARM_PRODUCTS[an.product], st = veg.animals[a], cnt = animalCount(a), need = feedNeed(a), full = cnt >= barnCap(), price = animalPrice(a);
+                body.innerHTML = petCard + babiesHTML() + barnCard() + Object.entries(ANIMALS).map(([a, an]) => {
+                    const owned = shop.owned.includes(an.shopId), ready = animalReady(a), p = FARM_PRODUCTS[an.product], st = veg.animals[a], cnt = animalCount(a), need = feedNeed(a), full = owned && herdSpace(a) <= 0, price = animalPrice(a);
                     const action = !owned ? (lvl < an.level ? `<button type="button" class="shop-buy farm-action" disabled>🔒 เลเวล ${an.level}</button>`
                             : `<button type="button" class="shop-buy farm-action is-owned" onclick="closeFarm(); openShop('tool')">ซื้อที่ร้านค้า</button>`)
                         : `<div class="farm-card-btns">${ready ? `<button type="button" class="shop-buy farm-action" onclick="collectAnimal('${a}')">เก็บ ${p.e}</button>` : '<span class="farm-done">พรุ่งนี้มาเก็บใหม่</span>'}
                             <button type="button" class="shop-buy farm-action is-owned${feedFor === a ? ' is-active' : ''}" ${st.fedDay === today ? 'disabled' : ''} aria-expanded="${feedFor === a}" onclick="toggleFeed('${a}')">${st.fedDay === today ? (st.favDay === today ? 'อิ่มแล้ว 💗💗' : 'อิ่มแล้ว') : 'ป้อนอาหาร 🍽️'}</button>
-                            <button type="button" class="shop-buy farm-action is-owned animal-more" ${full || shop.coins < price ? 'disabled' : ''} onclick="buyMoreAnimal('${a}')">${full ? 'คอกเต็ม' : `➕ ตัวที่ ${cnt + 1} 🪙${price}`}</button></div>`;
+                            <button type="button" class="shop-buy farm-action is-owned animal-more" ${full || shop.coins < price ? 'disabled' : ''} onclick="buyMoreAnimal('${a}')">${full ? 'คอกเต็ม' : `➕ ตัวที่ ${cnt + 1} 🪙${price}`}</button>
+                            ${veg.breed[a] ? `<span class="farm-done">💕 รอลูก ${Math.max(1, Math.ceil((veg.breed[a].at - Date.now()) / 3600000))} ชม.</span>` : canBreed(a) ? `<button type="button" class="shop-buy farm-action is-owned breed-btn" onclick="startBreed('${a}')">💕 จับคู่</button>${countBase('herbTonic') ? `<button type="button" class="shop-buy farm-action is-owned breed-btn" onclick="startBreed('${a}', true)" title="ใช้อาหารบำรุง 1 ขวด ลุ้นลายพิเศษ ×2">💕+🧪</button>` : ''}` : ''}</div>`;
                     const fd = ANIMAL_FEEDS[a], foods = animalFoods(a).map(k => { const it = itemInfo(k), n = countBase(k), fav = k === fd.fav;
                         return `<button type="button" class="chip-btn feed-chip${fav ? ' is-fav' : ''}" ${n >= need ? '' : 'disabled'} onclick="feedAnimal('${a}', '${k}')">${fav ? '❤️ ' : ''}${it.e} ${it.name} ${need > 1 ? `ใช้ ${need} (มี ${n})` : `×${n}`}${fav ? ' · 💗+2 ผลผลิต+1' : ' · 💗+1'}</button>`; }).join('');
                     return `<div class="farm-card${owned ? '' : ' is-locked'}${feedFor === a && owned ? ' is-feeding' : ''}"><span class="barn-emoji${owned ? ' animal-bob' : ''}">${an.e}</span>
-                        <div class="farm-card-main"><span class="farm-card-title">${an.name}${cnt > 1 ? ` ×${cnt}` : ''}${cnt > 1 ? ` <span class="herd" aria-hidden="true">${an.e.repeat(cnt)}</span>` : ''}</span>${owned ? heartsBar(st.hearts) : ''}<span class="farm-card-sub">ให้${p.name} ${p.e} ${cnt > 1 ? `ตัวละ 1 (วันพักดีตัวละ 2) รวม ${cnt} ตัว` : 'วันละครั้ง'}${owned ? ' · 💗5 ได้ +1 · 💗10 ได้ +1 และลุ้นของขวัญ' : ''}</span>
+                        <div class="farm-card-main"><span class="farm-card-title">${an.name}${cnt > 1 ? ` ×${cnt}` : ''}${cnt > 1 ? ` <span class="herd" aria-hidden="true">${an.e.repeat(cnt)}</span>` : ''}${owned && st.pets.some(p => p.t) ? ` <span class="herd-tags" title="${st.pets.filter(p => p.t).map(p => (p.name ? p.name + ' · ' : '') + variantName(a, p.t)).join(', ')}">${st.pets.filter(p => p.t).map(p => variantOf(a, p.t).tag).join('')}</span>` : ''}</span>${owned ? heartsBar(st.hearts) : ''}<span class="farm-card-sub">ให้${p.name} ${p.e} ${cnt > 1 ? `ตัวละ 1 (วันพักดีตัวละ 2) รวม ${cnt} ตัว` : 'วันละครั้ง'}${owned ? ' · 💗5 ได้ +1 · 💗10 ได้ +1 และลุ้นของขวัญ' : ''}</span>
                             <span class="farm-card-sub feed-likes">🍽️ กิน: ❤️ ${itemInfo(fd.fav).e} ${itemInfo(fd.fav).name} (ของโปรด) · ${fd.also.map(k => `${itemInfo(k).e} ${itemInfo(k).name}`).join(' · ')}${owned && st.fedDay === today ? ' · วันนี้กินแล้ว' : ''}</span>
                             ${owned && feedFor === a && st.fedDay !== today ? `<div class="feed-pick" role="group" aria-label="เลือกอาหารให้${an.name}">${foods}</div>` : ''}</div>${action}</div>`;
                 }).join('') + `<div class="farm-card${hive ? '' : ' is-locked'}"><span class="barn-emoji${hive ? ' animal-bob' : ''}">🐝</span>
                         <div class="farm-card-main"><span class="farm-card-title">บ้านผึ้ง</span><span class="farm-card-sub">ผึ้งเก็บน้ำหวานจากดอกไม้ที่บาน ได้น้ำผึ้ง 🍯 วันละ 1–3 ขวด (ตอนนี้บาน ${blooms} ดอก)</span></div>${hiveAction}</div>`
-                    + '<p class="shop-note">วันไหนพักไม่เกินโควตา สัตว์อารมณ์ดี ให้ผลผลิตเพิ่ม 💖 · เลือกอาหารให้สัตว์วันละครั้ง ❤️ ของโปรดได้หัวใจ 2 ดวงและผลผลิตเพิ่ม (ป้อนก่อนเก็บนะ) · ใช้ของดาวน้อยก่อน</p>';
+                    + animalBookHTML() + '<p class="shop-note">💕 สัตว์ชนิดเดียวกัน 2 ตัว หัวใจ ≥ 5 จับคู่ได้ (คอกต้องว่าง) รอ 1 วันได้ลูก ป้อนอาหาร 3 วันโต · ลูกอาจได้ลายพิเศษ ⭐ · ห่อลูกสัตว์ส่งให้เพื่อนได้ · วันไหนพักไม่เกินโควตา สัตว์อารมณ์ดี ให้ผลผลิตเพิ่ม 💖 · เลือกอาหารให้สัตว์วันละครั้ง ❤️ ของโปรดได้หัวใจ 2 ดวงและผลผลิตเพิ่ม (ป้อนก่อนเก็บนะ) · ใช้ของดาวน้อยก่อน</p>';
             } else {
                 const keys = barnKeys().filter(k => itemInfo(k).kind !== 'dish');
                 body.innerHTML = `<div class="compost-bin">
@@ -8350,6 +8398,7 @@
             eventTick();
             maybeWalkIn();
             craftTick();
+            breedTick();
             if (farmTabIs('sea') && veg.sea.salt && seaView === 'salt' && fishing.state === 'idle') renderFarmPanel();
             if ((farmTabIs('forest') || farmTabIs('mine') || farmTabIs('sea')) && document.getElementById('forest-energy')) {
                 const en = energyNow(), bar = document.querySelector('.energy-bar');
@@ -8494,6 +8543,9 @@
             { id: 'seaAll', e: '🌊', name: 'เจ้าแห่งท้องทะเล', desc: 'ตกปลาทะเลครบ 10 ชนิด', goal: 10, v: () => Object.keys(FISH).filter(k => FISH[k].sea && veg.fishCaught[k]).length, coins: 80, title: 'กัปตันเรือประมง' },
             { id: 'naga1', e: '🐲', name: 'ผู้พิชิตพญานาค', desc: 'ตกพญานาคได้', goal: 1, v: () => veg.fishCaught.naga || 0, coins: 100, title: 'ผู้พิชิตพญานาค' },
             { id: 'clean20', e: '💙', name: 'ฮีโร่ชายหาด', desc: 'เก็บขยะที่ชายหาด 20 ชิ้น', goal: 20, v: () => veg.sea.clean, coins: 25, title: 'ฮีโร่ชายหาด' },
+            { id: 'baby1', e: '🐣', name: 'ลูกน้อยตัวแรก', desc: 'เลี้ยงลูกสัตว์จนโต 1 ตัว', goal: 1, v: () => veg.stats.babies || 0, coins: 20, title: 'พ่อแม่มือใหม่' },
+            { id: 'legendPet', e: '🌈', name: 'สัตว์ในตำนาน', desc: 'มีสัตว์ลายตำนานในคอก 1 ตัว', goal: 1, v: () => Object.keys(ANIMALS).filter(a => veg.animals[a].pets.some(p => variantTier(a, p.t) === 3)).length, coins: 60, title: 'ผู้เลี้ยงสัตว์ในตำนาน' },
+            { id: 'animalBook12', e: '📗', name: 'สมุดสัตว์เล่มหนา', desc: 'พบสัตว์ลายพิเศษ 12 ลาย', goal: 12, v: () => Object.keys(veg.animalDex).filter(k => !k.endsWith(':plain')).length, coins: 40, title: 'นักสะสมสัตว์' },
             { id: 'daily1', e: '🏅', name: 'แชมป์ประกวดรายวัน', desc: 'ชนะประกวดประจำวันในห้องเพื่อน', goal: 1, v: () => veg.stats.dailyWins, coins: 30, title: 'ราชาผักประจำวัน' }
         ];
         const achDone = a => a.v() >= a.goal;
@@ -9058,7 +9110,7 @@
         }
         const energyText = () => { const en = energyNow(); return en > ENERGY_MAX ? `แรงเกินเต็ม +${en - ENERGY_MAX}` : en >= ENERGY_MAX ? 'แรงเต็มแล้ว' : `+1 ในอีก ${energyNextMin()} นาที`; };
         // 🍽️ กินอาหาร: ฟื้นแรงตามจำนวนวัตถุดิบ (เมนูป่าบอกไว้เอง) ★ ยิ่งสูงยิ่งฟื้นเพิ่ม · ผ้าพันคอกับตุ๊กตากินไม่ได้นะ
-        const NO_EAT = ['scarf', 'woolDoll'];
+        const NO_EAT = ['scarf', 'woolDoll', 'herbTonic'];
         function dishEnergy(key) {
             const k = baseOf(key), r = RECIPES[k];
             if (!r || NO_EAT.includes(k)) return 0;
@@ -9603,6 +9655,143 @@
             return html;
         }
 
+        // --- 🐣 ลูกสัตว์และลายพิเศษ: สัตว์ชนิดเดียวกัน 2 ตัวขึ้นไป หัวใจ ≥ 5 จับคู่ได้ (ต้องมีที่ว่างในคอก) รอ 1 วันได้ลูก ป้อนอาหาร 3 วันถึงโต ---
+        // ลาย 4 ระดับ: ปกติ → สีพิเศษ (ผลผลิต +1) → หายาก → ตำนาน (ให้ของพิเศษทุกวัน) · หัวใจเต็ม ของโปรดวันนี้ อาหารบำรุง และพ่อแม่ลายดี ช่วยให้ได้ลายดีง่ายขึ้น
+        const VARIANT_TIER = ['ปกติ', 'สีพิเศษ', 'หายาก', 'ตำนาน'], VARIANT_RAR = ['common', 'rare', 'epic', 'legendary'];
+        const variantOf = (a, t) => (ANIMAL_VARIANTS[a] || []).find(v => v.k === t) || null;
+        const variantTier = (a, t) => (variantOf(a, t) || { tier: 0 }).tier;
+        const variantName = (a, t) => variantOf(a, t) ? variantOf(a, t).name : ANIMALS[a].name;
+        const babyKey = (a, t) => 'bb' + a[0].toUpperCase() + a.slice(1) + (t ? t[0].toUpperCase() + t.slice(1) : 'Plain'); // ลูกสัตว์ที่ส่งให้เพื่อนได้ (เป็นของในยุ้งฉาง)
+        const babyFromKey = k => { for (const a of Object.keys(ANIMALS)) for (const t of ['', ...ANIMAL_VARIANTS[a].map(v => v.k)]) if (babyKey(a, t) === k) return { a, t }; return null; };
+        const herdSpace = a => barnCap() - animalCount(a) - veg.babies.filter(b => b.a === a).length - (veg.breed[a] ? 1 : 0);
+        const canBreed = a => shop.owned.includes(ANIMALS[a].shopId) && animalCount(a) >= 2 && veg.animals[a].hearts >= BREED_HEARTS && !veg.breed[a] && herdSpace(a) > 0;
+        function rollVariant(a, tonic) {
+            const st = veg.animals[a], best = Math.max(0, ...(st.pets || []).map(p => variantTier(a, p.t)));
+            const m = (st.hearts >= 10 ? 1.5 : 1) * (tonic ? 2 : 1) * (1 + best * 0.25) * (st.favDay === dayKeyLocal() ? 1.2 : 1);
+            const r = typeof window.fixedVariant === 'number' ? window.fixedVariant : Math.random(); // ให้เทสต์กำหนดผลได้
+            const vs = ANIMAL_VARIANTS[a];
+            return r < 0.02 * m ? vs[2].k : r < 0.1 * m ? vs[1].k : r < 0.35 * m ? vs[0].k : '';
+        }
+        function startBreed(a, tonic) {
+            if (!canBreed(a)) return;
+            if (tonic && countBase('herbTonic') < 1) return;
+            if (tonic) takeItems({ herbTonic: 1 });
+            veg.breed[a] = { at: Date.now() + BREED_MS, tonic: !!tonic };
+            saveVeg(); playSound('welcome');
+            showToast(`💕 ${ANIMALS[a].name}จับคู่แล้ว อีก 1 วันลูกน้อยจะเกิด${tonic ? ' (ใช้อาหารบำรุง ลุ้นลายพิเศษ ×2)' : ''}`, 'success', { duration: 5000 });
+            renderFarmPanel(); renderFarmStatus();
+        }
+        function breedTick() {
+            const born = Object.keys(veg.breed).filter(a => veg.breed[a].at <= Date.now() && ANIMALS[a]);
+            if (!born.length) return;
+            born.forEach(a => {
+                const t = rollVariant(a, veg.breed[a].tonic);
+                delete veg.breed[a];
+                veg.babies.push({ id: ++veg.babySeq, a, t, name: '', fed: 0, day: '', born: dayKeyLocal() });
+                noteAnimalDex(a, t);
+                farmNotify('animals', `🐣 ลูก${ANIMALS[a].name}เกิดแล้ว!`, t ? `เป็น${variantName(a, t)} ลาย${VARIANT_TIER[variantTier(a, t)]}!` : 'มาป้อนอาหารให้โตนะ');
+                if (variantTier(a, t) >= 2) setTimeout(fireConfetti, 400);
+            });
+            saveVeg();
+            if (farmTabIs('animals')) renderFarmPanel();
+            renderFarmStatus();
+        }
+        function noteAnimalDex(a, t) { const k = `${a}:${t || 'plain'}`; if (!veg.animalDex[k]) veg.animalDex[k] = dayKeyLocal(); }
+        function feedBaby(id, k) {
+            const b = veg.babies.find(x => x.id === id), today = dayKeyLocal();
+            if (!b || b.day === today || !animalFoods(b.a).includes(k) || countBase(k) < 1) return;
+            takeItems({ [k]: 1 });
+            b.fed += 1; b.day = today; passNote('baby');
+            let grown = false;
+            if (b.fed >= BABY_FEEDS) {
+                grown = true;
+                const st = veg.animals[b.a];
+                st.n = Math.min(BARN_CAPS[BARN_CAPS.length - 1], animalCount(b.a) + 1);
+                if (b.t || b.name) st.pets.push({ t: b.t, name: b.name || variantName(b.a, b.t), born: b.born });
+                veg.babies = veg.babies.filter(x => x !== b);
+                veg.stats.babies = Math.min(1e5, (veg.stats.babies || 0) + 1);
+                fireConfetti();
+            }
+            saveVeg(); playSound(grown ? 'welcome' : 'pop'); addXP(grown ? 15 : 3);
+            showToast(grown ? `🎉 ${b.name || 'ลูก' + ANIMALS[b.a].name}โตแล้ว! เข้าคอกเป็น${variantName(b.a, b.t)}${b.t ? ` (${VARIANT_TIER[variantTier(b.a, b.t)]})` : ''}`
+                : `🍼 ป้อน${itemInfo(k).name}ให้ลูก${ANIMALS[b.a].name}แล้ว (${b.fed}/${BABY_FEEDS} วัน) พรุ่งนี้มาป้อนอีกนะ`, 'success', { duration: 4500 });
+            renderFarmPanel(); renderFarmStatus(); updateBasketFood();
+        }
+        function nameBaby(id) {
+            const b = veg.babies.find(x => x.id === id), el = document.getElementById(`baby-name-${id}`);
+            if (!b || !el) return;
+            b.name = String(el.value || '').replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 12);
+            saveVeg(); renderFarmPanel();
+        }
+        // 🎁 ห่อลูกสัตว์เป็นของขวัญ (ไปอยู่ในยุ้งฉาง ส่งให้เพื่อนในห้องได้) · คนได้รับกดรับเลี้ยงได้ถ้ามีสัตว์ชนิดนั้นและคอกยังว่าง
+        function wrapBaby(id) {
+            const b = veg.babies.find(x => x.id === id);
+            if (!b) return;
+            veg.babies = veg.babies.filter(x => x !== b);
+            giveItem(babyKey(b.a, b.t), 1);
+            saveVeg(); playSound('pop');
+            showToast(`🎁 ห่อลูก${variantName(b.a, b.t)}ไว้ในยุ้งฉางแล้ว ส่งให้เพื่อนได้ที่แท็บ 👥 เพื่อน (หรือกดรับเลี้ยงคืนก็ได้)`, 'success', { duration: 5000 });
+            renderFarmPanel(); updateBasketFood();
+        }
+        function adoptBaby(k) {
+            const x = babyFromKey(k);
+            if (!x || countBase(k) < 1) return;
+            if (!shop.owned.includes(ANIMALS[x.a].shopId)) { showToast(`ต้องเลี้ยง${ANIMALS[x.a].name}ก่อนถึงจะรับเลี้ยงลูกได้`, 'info'); return; }
+            if (herdSpace(x.a) <= 0) { showToast('คอกเต็มแล้ว ขยายคอกก่อนนะ', 'info'); return; }
+            takeItems({ [k]: 1 });
+            veg.babies.push({ id: ++veg.babySeq, a: x.a, t: x.t, name: '', fed: 0, day: '', born: dayKeyLocal() });
+            noteAnimalDex(x.a, x.t);
+            saveVeg(); playSound('welcome');
+            showToast(`🐣 รับเลี้ยงลูก${variantName(x.a, x.t)}แล้ว ป้อนอาหาร ${BABY_FEEDS} วันก็โต`, 'success');
+            renderFarmPanel(); renderFarmStatus(); updateBasketFood();
+        }
+        // ผลผลิตพิเศษจากสัตว์ลายดี (เพิ่มตอนเก็บผลผลิต)
+        function variantYield(a) {
+            const out = { extra: 0, items: {} };
+            (veg.animals[a].pets || []).forEach(p => {
+                const v = variantOf(a, p.t);
+                if (!v) return;
+                if (v.tier === 1) out.extra += 1;
+                if (v.item) out.items[v.item] = (out.items[v.item] || 0) + 1;
+                if (v.bonus) out.extra += v.bonus;
+            });
+            return out;
+        }
+        function babiesHTML() {
+            const wrapped = Object.keys(veg.inv).filter(k => babyFromKey(k));
+            if (!veg.babies.length && !wrapped.length && !Object.keys(veg.breed).length) return '';
+            const today = dayKeyLocal();
+            const pending = Object.entries(veg.breed).map(([a, x]) => `<span class="farm-chip">${ANIMALS[a].e}💕 อีก ${Math.max(1, Math.ceil((x.at - Date.now()) / 3600000))} ชม.${x.tonic ? ' 🧪' : ''}</span>`).join('');
+            return `<div class="baby-box"><span class="farm-card-title">🐣 ลูกสัตว์ ${veg.babies.length ? `(${veg.babies.length})` : ''}</span>${pending ? `<div class="farm-chips">${pending}</div>` : ''}`
+                + veg.babies.map(b => {
+                    const v = variantOf(b.a, b.t), fed = b.day === today, foods = animalFoods(b.a).filter(k => countBase(k) > 0);
+                    return `<div class="farm-card baby-card${v ? ' rar-' + VARIANT_RAR[v.tier] : ''}"><span class="barn-emoji baby-face" aria-hidden="true">${ANIMALS[b.a].e}<i>🍼</i></span>
+                        <div class="farm-card-main"><span class="farm-card-title">${b.name ? escHtml(b.name) + ' · ' : ''}ลูก${variantName(b.a, b.t)} ${v ? `<span class="rar-tag rar-${VARIANT_RAR[v.tier]}">${v.tag} ${VARIANT_TIER[v.tier]}</span>` : ''}</span>
+                            <span class="farm-xp baby-bar" role="progressbar" aria-label="โตแล้ว" aria-valuemin="0" aria-valuemax="${BABY_FEEDS}" aria-valuenow="${b.fed}"><span style="width:${Math.round(b.fed / BABY_FEEDS * 100)}%"></span></span>
+                            <span class="farm-card-sub">ป้อนอาหารแล้ว ${b.fed}/${BABY_FEEDS} วัน${v && v.item ? ` · โตแล้วให้${itemInfo(v.item).e} ${itemInfo(v.item).name}ทุกวัน` : v && v.tier === 1 ? ' · โตแล้วให้ผลผลิตเพิ่ม 1' : ''}</span>
+                            ${!b.name ? `<span class="baby-name"><input type="text" class="field" id="baby-name-${b.id}" maxlength="12" placeholder="ตั้งชื่อน้อง"><button type="button" class="chip-btn" onclick="nameBaby(${b.id})">ตั้งชื่อ</button></span>` : ''}
+                            <div class="farm-chips">${fed ? '<span class="farm-done">วันนี้อิ่มแล้ว 💤</span>' : foods.length ? foods.map(k => `<button type="button" class="chip-btn" onclick="feedBaby(${b.id}, '${k}')">🍼 ${itemInfo(k).e} ${itemInfo(k).name}</button>`).join('') : `<span class="farm-card-sub">ไม่มีอาหาร (${animalFoods(b.a).map(k => itemInfo(k).e).join(' ')})</span>`}
+                                <button type="button" class="chip-btn" onclick="wrapBaby(${b.id})" title="ห่อเป็นของขวัญ ส่งให้เพื่อนในห้องได้">🎁 ห่อ</button></div></div></div>`;
+                }).join('')
+                + wrapped.map(k => { const x = babyFromKey(k); return `<div class="farm-card baby-card"><span class="barn-emoji" aria-hidden="true">🎁</span><div class="farm-card-main"><span class="farm-card-title">ลูก${variantName(x.a, x.t)} (ห่อไว้) ×${veg.inv[k]}</span><span class="farm-card-sub">ส่งให้เพื่อนที่แท็บเพื่อน หรือรับเลี้ยงเอง</span></div><button type="button" class="shop-buy farm-action" onclick="adoptBaby('${k}')">รับเลี้ยง 🐣</button></div>`; }).join('')
+                + '</div>';
+        }
+        function animalBookHTML() {
+            const rows = Object.entries(ANIMALS).map(([a, an]) => {
+                const cells = [['', an.name, 0], ...ANIMAL_VARIANTS[a].map(v => [v.k, v.name, v.tier])].map(([t, name, tier]) => {
+                    const seen = veg.animalDex[`${a}:${t || 'plain'}`] || (!t && shop.owned.includes(an.shopId));
+                    const v = variantOf(a, t), n = (veg.animals[a].pets || []).filter(p => p.t === t).length;
+                    return `<div class="museum-cell${seen ? ' is-have' : ''} rar-${VARIANT_RAR[tier]}" title="${seen ? name : '???'} · ${VARIANT_TIER[tier]}${v && v.item ? ` · ให้${itemInfo(v.item).name}` : ''}"><span>${seen ? an.e : '❔'}${v && seen ? `<i class="ab-tag">${v.tag}</i>` : ''}</span><small>${seen ? name : '???'}</small>${t && n ? `<b class="forest-n">${n}</b>` : ''}</div>`;
+                }).join('');
+                const named = (veg.animals[a].pets || []).filter(p => p.name);
+                return `<div class="ab-row"><div class="museum-grid ab-grid">${cells}</div>${named.length ? `<span class="farm-card-sub">🏷️ ${named.map(p => `${escHtml(p.name)} (${variantName(a, p.t)}${p.born ? ` · เกิด ${thaiDay(p.born)}` : ''})`).join(' · ')}</span>` : ''}</div>`;
+            }).join('');
+            const seen = Object.keys(veg.animalDex).length, total = Object.values(ANIMAL_VARIANTS).reduce((s, v) => s + v.length + 1, 0);
+            return `<details class="animal-book"${animalBookOpen ? ' open' : ''} ontoggle="animalBookOpen = this.open"><summary>📗 สมุดสัตว์ · พบแล้ว ${Math.min(seen, total)}/${total} ลาย</summary>${rows}
+                <p class="shop-note">ลาย 4 ระดับ: ปกติ → สีพิเศษ (ผลผลิต +1) → หายาก → ตำนาน (ให้ของพิเศษทุกวัน) · หัวใจเต็ม ของโปรดวันนี้ อาหารบำรุง 🧪 และพ่อแม่ลายดี ช่วยให้ลูกได้ลายดีง่ายขึ้น</p></details>`;
+        }
+        let animalBookOpen = false;
+
         // --- 🌱 ภารกิจมือใหม่: สอนเล่นทีละขั้น ทำครบแล้วกดรับรางวัล (อยู่บนสุดของแท็บความสำเร็จ) ---
         const GUIDE_STEPS = [
             { id: 'plant', e: '🌱', text: 'ปลูกผักในแปลงว่าง', how: 'แตะแปลงว่างในสวน แล้วเลือกเมล็ดที่อยากปลูก', done: () => veg.plots.some(p => p.seed) || sum(veg.harvest) > 0, r: { coins: 5 } },
@@ -9669,7 +9858,7 @@
             stall: 'วางของบนแผงขายได้แพงกว่าตลาด แต่ต้องรอลูกค้า · บางคนขอต่อราคาหรือเดินมาขอซื้อของในยุ้งฉาง · ขายดีชื่อเสียงร้านขึ้น ลูกค้ามาไวขึ้น',
             market: 'ราคาตลาดขึ้นลงทุกวันและมีข่าวตลาดประจำสัปดาห์ · ขายของเดิมเยอะๆ ในวันเดียวราคาจะตก',
             kitchen: 'เอาวัตถุดิบมาทำอาหาร กด "ผัด!" ให้ตรงโซนเขียว ยิ่งตรงยิ่งได้ดาว · อาหารขายได้แพงกว่าวัตถุดิบเสมอ',
-            animals: 'ซื้อสัตว์ที่ร้านค้า เก็บผลผลิตวันละครั้ง · ป้อนของโปรดได้หัวใจเพิ่ม · ขยายคอกเพื่อเลี้ยงชนิดเดียวกันได้หลายตัว',
+            animals: 'ซื้อสัตว์ที่ร้านค้า เก็บผลผลิตวันละครั้ง · ป้อนของโปรดได้หัวใจเพิ่ม · ขยายคอกเพื่อเลี้ยงชนิดเดียวกันได้หลายตัว · 💕 สัตว์ 2 ตัวหัวใจ ≥ 5 จับคู่ได้ลูก ลุ้นลายพิเศษที่ให้ของหายากทุกวัน',
             craft: 'ซื้อเครื่องแปรรูปครั้งเดียว ใส่วัตถุดิบแล้วรอ ได้ของราคาสูงขึ้น · ปิดเว็บไว้เครื่องก็ทำต่อ',
             sea: 'ทะเล: 🏝️ เดินชายหาด (3 ⚡) ขุดทรายเก็บเปลือกหอย ปู สาหร่าย ปะการัง ไข่มุก · 🚤 ออกเรือ (3 ⚡) ตกปลาทะเลลึก 3 ครั้ง ต้องใช้เหยื่อ · 🧂 นาเกลือตาก 2 ชั่วโมงได้เกลือ',
             mine: 'ทุบหินก้อนละ 1 ⚡ หาแร่ อัญมณี ฟอสซิล และบันไดลงชั้นถัดไป · ทุก 5 ชั้นมีลิฟต์ · ค้างคาวกินแรง หินถล่มต้องถอยขึ้น · แร่ใส่เตาถลุงได้แท่งโลหะไว้อัปเกรดเครื่องมือขั้น 6–7',
