@@ -2490,6 +2490,18 @@
         .energy-box .farm-card-sub { grid-column: 1 / -1; }
         .energy-label { font-size: 13px; font-weight: 700; white-space: nowrap; color: var(--ink); }
         .energy-bar > span { background: linear-gradient(90deg, #FFD54F, #FFA000); }
+        .hp-box { margin-top: 8px; background: rgba(229, 72, 77, 0.07); border-color: rgba(229, 72, 77, 0.3); }
+        .hp-box.is-low { background: rgba(229, 72, 77, 0.16); border-color: rgba(229, 72, 77, 0.6); }
+        .hp-box .farm-chips { grid-column: 1 / -1; }
+        .hp-bar > span { background: linear-gradient(90deg, #FF8A80, #E5484D); }
+        .farm-hp { background: rgba(229, 72, 77, 0.1); border-color: rgba(229, 72, 77, 0.4); }
+        .farm-hp.is-low { background: rgba(229, 72, 77, 0.24); border-color: #E5484D; }
+        .risk-sign { position: absolute; right: 4%; top: 2%; font-size: clamp(13px, 3.6vw, 18px); line-height: 1; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35)); pointer-events: none; animation: risk-bob 1.6s ease-in-out infinite; }
+        .forest-bush .risk-sign { top: -6%; }
+        @keyframes risk-bob { 50% { transform: translateY(-3px); } }
+        @media (prefers-reduced-motion: reduce) { .risk-sign { animation: none; } }
+        .risk-ask { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 6px 0 2px; }
+        .skill-head { background: linear-gradient(90deg, rgba(124, 92, 255, 0.1), rgba(255, 138, 0, 0.1)); }
         .forest-scene { position: relative; aspect-ratio: 16 / 11; border-radius: 18px; overflow: hidden; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06); }
         .forest-bg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
         .forest-bush { position: absolute; width: 23%; aspect-ratio: 64 / 46; transform: translate(-50%, -88%); padding: 0; border: 0; background: none; cursor: pointer; font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
@@ -3352,6 +3364,7 @@
                         <button type="button" class="farm-act" onclick="openFarm('sea')"><span class="farm-act-icon">🏖️</span>ทะเล<b class="farm-dot" id="fa-sea" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openFarm('contest')"><span class="farm-act-icon">🏆</span>ประกวด<b class="farm-dot" id="fa-contest" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openFarm('compost')"><span class="farm-act-icon">🪱</span>ปุ๋ยหมัก</button>
+                        <button type="button" class="farm-act" onclick="openFarm('skills')"><span class="farm-act-icon">🎯</span>สกิล<b class="farm-dot" id="fa-skills" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openFarm('house')"><span class="farm-act-icon">🏡</span>บ้านไร่<b class="farm-dot" id="fa-house" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openFarm('ach')"><span class="farm-act-icon">🎖️</span>ภารกิจ<b class="farm-dot" id="fa-ach" hidden></b></button>
                         <button type="button" class="farm-act" onclick="openFarm('quest')"><span class="farm-act-icon">📜</span>เควสต์<b class="farm-dot" id="fa-quest" hidden></b></button>
@@ -6111,6 +6124,29 @@
         const ENERGY_MAX = 30, ENERGY_OVER = 60, ENERGY_MS = 6 * 60000, ENERGY_BREAK = 5, FOREST_LEVEL = 6, FOREST_COST = 3; // ⚡ แรง และ 🌲 ป่า
         const BREED_MS = 24 * 60 * 60000, BABY_FEEDS = 3, BREED_HEARTS = 5; // 🐣 จับคู่รอ 1 วัน ป้อนอาหาร 3 วันโต
         const SEA_LEVEL = 10, SEA_COST = 3, BOAT_CASTS = 3, SALT_MS = 2 * 60 * 60000, SALT_YIELD = 3; // 🏖️ ทะเล
+        // 🎯 สกิล: เลเวลขึ้น 1 แต้ม · 9 สาย สายละ 5 ขั้น (ขั้น 1–2 ใช้ 1 แต้ม ขั้น 3–4 ใช้ 2 ขั้น 5 ใช้ 3) · ล้างแต้มได้ เสียเหรียญแต้มละ SKILL_RESPEC
+        const SKILL_COST = [1, 1, 2, 2, 3], SKILL_MAX = 5, SKILL_RESPEC = 40;
+        const zonePerk = t => [`ลุ้นไม่เสียแรง ${8 * t}%`, `เจอของหายากบ่อยขึ้น ${10 * t}%`, `จุด ⚠️ มีกับดักน้อยลง ${5 * t}%`];
+        const SKILLS = {
+            farm: { e: '🌾', name: 'ชาวไร่', what: 'ปลูกผักและไม้ผล', perk: t => [`ผักและไม้ผลโตไวขึ้น ${5 * t}%`, `ลุ้นได้ผักเพิ่ม +${3 * t}%`, ...(t >= 3 ? [`ลุ้นดาวเพิ่ม 1 ดวง ${4 * (t - 2)}%`] : [])], top: 'ทุกวันมีผักหนึ่งแปลงโตเต็มทันที' },
+            animal: { e: '🐄', name: 'คนเลี้ยงสัตว์', what: 'สัตว์ในฟาร์ม', perk: t => [`รอบผลิตสั้นลง ${6 * t}%`, ...(t >= 2 ? [`ลุ้นผลผลิตเพิ่ม 1 ชิ้น ${5 * t}%`] : [])], top: 'หัวใจขึ้นได้วันละ 3 ดวง' },
+            fish: { e: '🎣', name: 'นักตกปลา', what: 'บ่อปลาและออกเรือ', perk: t => [`ปลาหายากขึ้นไปติดเบ็ดบ่อยขึ้น ${10 * t}%`, 'ปลาตัวใหญ่ขึ้น'], top: 'ลุ้นไม่เสียเหยื่อ 30%' },
+            chef: { e: '🍳', name: 'เชฟ', what: 'ทำอาหารในครัว', perk: t => [`ลุ้นอาหารดาวเพิ่ม 1 ดวง ${6 * t}%`, `ลุ้นได้วัตถุดิบคืน 1 ชิ้น ${5 * t}%`], top: 'กินอาหารฟื้นแรงและเลือด ×1.5' },
+            forest: { e: '🌲', name: 'นักสำรวจป่า', what: 'เดินป่า', perk: zonePerk, top: 'ลิงไม่กล้าขโมย กระรอกเอาของมาให้ 2 เท่า' },
+            mine: { e: '⛏️', name: 'นักขุดแร่', what: 'ลงเหมือง', perk: zonePerk, top: 'หินแข็งแตกในทีเดียว' },
+            sea: { e: '🌊', name: 'ชาวเล', what: 'ชายหาด ออกเรือ นาเกลือ', perk: zonePerk, top: 'ออกเรือเหวี่ยงเบ็ดได้ +1 ครั้ง นาเกลือได้ +2 ถุง' },
+            trade: { e: '💰', name: 'พ่อค้า', what: 'ขายของและส่งออเดอร์', perk: t => [`ขายของในยุ้งฉางแพงขึ้น ${3 * t}%`, `ค่าจ้างออเดอร์ +${4 * t}%`], top: 'ลูกค้าแวะแผงขายบ่อยขึ้น 25%' },
+            survive: { e: '❤️', name: 'เอาตัวรอด', what: 'ป่า เหมือง ทะเล', perk: t => [`เลือดสูงสุด +${10 * t}`, `โดนกับดักเจ็บน้อยลง ${8 * t}%`, `มองเห็นกับดักที่ซ่อนอยู่ ${20 * t}%`], top: 'สลบแล้วของไม่หาย' }
+        };
+        // ❤️ เลือด: โดนกับดักในป่า เหมือง ชายหาดแล้วลด ไม่ฟื้นเอง ต้องกินอาหาร ผลไม้ หรืออาหารบำรุงสมุนไพร · ต่ำกว่า HP_TRIP ออกสำรวจไม่ได้
+        const HP_BASE = 100, HP_TRIP = 10, RISK_TRAP = 0.4;
+        // กับดักแต่ละที่: [รูป, ชื่อ, เลือดลดต่ำสุด, สูงสุด] · จุด ⚠️ ของดีกว่าแต่อาจมีกับดัก · บางจุดซ่อนกับดักไว้ (เจ็บน้อยกว่า)
+        const TRAPS = {
+            forest: { snare: ['🪤', 'บ่วงดักสัตว์', 8, 14], wasp: ['🐝', 'รังต่อ', 10, 18], snake: ['🐍', 'งู', 15, 25] },
+            mine: { rockfall: ['🪨', 'หินถล่ม', 15, 25], gas: ['☁️', 'แก๊สพิษ', 10, 18], pit: ['🕳️', 'หลุม', 8, 14] },
+            beach: { jelly: ['🪼', 'แมงกะพรุน', 8, 14], urchin: ['🦔', 'เม่นทะเล', 5, 12], wave: ['🌊', 'คลื่นซัด', 12, 20] }
+        };
+        const trapBits = (c, z) => ({ ...(c.risk ? { risk: 1 } : {}), ...(hasOwn(TRAPS[z], c.trap) ? { trap: c.trap } : {}), ...(c.skip ? { skip: 1 } : {}), ...(c.hit ? { hit: 1 } : {}) });
         const MINE_LEVEL = 8, MINE_FLOORS = 30, UPG_MAX = 7; // ⛏️ เหมือง และเครื่องมือ 7 ระดับ (ขั้น 6–7 ใช้แท่งโลหะ)
         const VEG_STAGE_NAMES = ['เมล็ด', 'ต้นอ่อน', 'กำลังโต'];
         const VEG_PEST = `<svg viewBox="0 0 40 20"><path d="M29 4.5l-1.5-3M33 4.5l1.5-3" stroke="#6BA84A" stroke-width="1.2" stroke-linecap="round"/>
@@ -6291,6 +6327,9 @@
                 secrets: Object.fromEntries(Object.entries(v.secrets && typeof v.secrets === 'object' ? v.secrets : {}).filter(([k]) => SECRETS.some(x => x.id === k)).map(([k, d]) => [k, day(d) || '?'])),
                 energy: { n: v.energy && Number.isFinite(+v.energy.n) ? int(v.energy.n, ENERGY_OVER) : ENERGY_MAX, at: Math.min(Date.now(), +((v.energy || {}).at) || Date.now()) },
                 forest: loadForest(v.forest), mine: loadMine(v.mine), sea: loadSea(v.sea),
+                skills: Object.fromEntries(Object.keys(SKILLS).map(k => [k, int((v.skills || {})[k], SKILL_MAX)])), skDay: day(v.skDay),
+                hp: Number.isFinite(+v.hp) ? Math.min(HP_BASE + 10 * SKILL_MAX, Math.max(0, Math.round(+v.hp))) : HP_BASE, faints: int(v.faints, 1e6),
+                trip: { z: ['forest', 'mine', 'beach'].includes((v.trip || {}).z) ? v.trip.z : '', got: (Array.isArray((v.trip || {}).got) ? v.trip.got : []).filter(x => Array.isArray(x) && hasOwn(FARM_PRODUCTS, x[0])).slice(-60).map(([k, n]) => [k, Math.max(1, Math.min(99, Math.floor(+n) || 1))]) },
                 breed: Object.fromEntries(Object.entries(v.breed && typeof v.breed === 'object' ? v.breed : {}).filter(([a, x]) => ANIMALS[a] && x && Number.isFinite(+x.at))
                     .map(([a, x]) => [a, { at: Math.min(+x.at, Date.now() + BREED_MS), tonic: !!x.tonic }])),
                 babies: (Array.isArray(v.babies) ? v.babies : []).filter(b => b && ANIMALS[b.a] && (!b.t || ANIMAL_VARIANTS[b.a].some(x => x.k === b.t))).slice(0, 30)
@@ -6321,7 +6360,7 @@
             const int = (n, max) => Math.min(max, Math.max(0, Math.floor(+n) || 0)), item = k => hasOwn(FARM_PRODUCTS, k);
             const okKey = k => typeof k === 'string' && (item(k) || (k.startsWith('seed:') && hasOwn(FOREST_CROPS, k.slice(5))) || ['leaves', 'squirrel', 'monkey'].includes(k));
             const cells = Array.isArray(f.cells) && f.cells.length === 9 && f.cells.every(c => c && okKey(c.k))
-                ? f.cells.map(c => ({ k: c.k, n: Math.max(1, int(c.n, 9)), open: !!c.open, ...(item(c.gift) ? { gift: c.gift } : {}), ...(item(c.stole) ? { stole: c.stole } : {}) })) : null;
+                ? f.cells.map(c => ({ k: c.k, n: Math.max(1, int(c.n, 9)), open: !!c.open, ...(item(c.gift) ? { gift: c.gift } : {}), ...(item(c.stole) ? { stole: c.stole } : {}), ...trapBits(c, 'forest') })) : null;
             return { trips: int(f.trips, 1e6), cells,
                 got: cells && Array.isArray(f.got) ? f.got.filter(x => Array.isArray(x) && item(x[0])).slice(-40).map(([k, n]) => [k, Math.max(-9, Math.min(9, Math.floor(+n) || 0))]) : [],
                 found: Object.fromEntries(Object.entries(f.found && typeof f.found === 'object' ? f.found : {}).filter(([k]) => okKey(k)).map(([k, n]) => [k, int(n, 1e6)]).filter(([, n]) => n > 0)) };
@@ -6332,7 +6371,7 @@
             const okKey = k => typeof k === 'string' && (hasOwn(FARM_PRODUCTS, k) || ['fossil', 'dust', 'bat', 'cavein', 'ladder', 'chest'].includes(k));
             const floor = Math.max(0, int(m.floor, MINE_FLOORS)), deepest = int(m.deepest, MINE_FLOORS);
             const cells = floor && Array.isArray(m.cells) && m.cells.length === 25 && m.cells.every(c => c && okKey(c.k))
-                ? m.cells.map(c => ({ k: c.k, n: Math.max(1, int(c.n, 9)), hp: int(c.hp, 2), open: !!c.open, ...(c.cracked ? { cracked: true } : {}) })) : null;
+                ? m.cells.map(c => ({ k: c.k, n: Math.max(1, int(c.n, 9)), hp: int(c.hp, 2), open: !!c.open, ...(c.cracked ? { cracked: true } : {}), ...trapBits(c, 'mine') })) : null;
             return { floor: cells ? floor : 0, cells, deepest: Math.max(deepest, cells ? floor : 0), lift: Math.min(Math.floor(int(m.lift, MINE_FLOORS) / 5) * 5, Math.floor(deepest / 5) * 5),
                 rocks: int(m.rocks, 1e7), chests: int(m.chests, 1e5),
                 found: Object.fromEntries(Object.entries(m.found && typeof m.found === 'object' ? m.found : {}).filter(([k]) => hasOwn(FARM_PRODUCTS, k)).map(([k, n]) => [k, int(n, 1e6)]).filter(([, n]) => n > 0)) };
@@ -6340,8 +6379,8 @@
         function loadSea(s) {
             s = s && typeof s === 'object' && !Array.isArray(s) ? s : {};
             const int = (n, max) => Math.min(max, Math.max(0, Math.floor(+n) || 0)), ok = k => typeof k === 'string' && (hasOwn(FARM_PRODUCTS, k) || k === 'trash' || k === 'bottle');
-            const cells = Array.isArray(s.cells) && s.cells.length === 8 && s.cells.every(c => c && ok(c.k)) ? s.cells.map(c => ({ k: c.k, n: Math.max(1, int(c.n, 99)), open: !!c.open })) : null;
-            return { cells, beach: int(s.beach, 1e6), boats: int(s.boats, 1e6), casts: int(s.casts, BOAT_CASTS + 1), clean: int(s.clean, 1e6),
+            const cells = Array.isArray(s.cells) && s.cells.length === 8 && s.cells.every(c => c && ok(c.k)) ? s.cells.map(c => ({ k: c.k, n: Math.max(1, int(c.n, 99)), open: !!c.open, ...trapBits(c, 'beach') })) : null;
+            return { cells, beach: int(s.beach, 1e6), boats: int(s.boats, 1e6), casts: int(s.casts, BOAT_CASTS + 2), clean: int(s.clean, 1e6),
                 salt: Number.isFinite(+s.salt) && +s.salt > 0 ? Math.min(+s.salt, Date.now() + SALT_MS) : 0,
                 found: Object.fromEntries(Object.entries(s.found && typeof s.found === 'object' ? s.found : {}).filter(([k]) => hasOwn(FARM_PRODUCTS, k)).map(([k, n]) => [k, int(n, 1e6)]).filter(([, n]) => n > 0)) };
         }
@@ -6408,7 +6447,7 @@
             if (after > before) {
                 ensurePlots(); saveVeg(); renderVeggies();
                 fireConfetti(); playSound('welcome');
-                showToast(`🧑‍🌾 เลเวล ${after}! ${LEVEL_UNLOCKS[after] ? 'ปลดล็อก: ' + LEVEL_UNLOCKS[after] : 'เก่งขึ้นอีกขั้นแล้ว'}`, 'success', { duration: 5500 });
+                showToast(`🧑‍🌾 เลเวล ${after}! ${LEVEL_UNLOCKS[after] ? 'ปลดล็อก: ' + LEVEL_UNLOCKS[after] : 'เก่งขึ้นอีกขั้นแล้ว'} · 🎯 แต้มสกิล +${after - before}`, 'success', { duration: 5500 });
                 mascotSay(`เลเวลอัปเป็น ${after} แล้ว! 🎉`, 3000);
             }
             renderFarmStatus();
@@ -6821,12 +6860,13 @@
             if (key === 'galaxyMelon') return QMAX;
             let q = starsForPoints(qualityPoints(p, key, grade, golden));
             if (q === 4 && Math.random() < 0.08) q = 5;
+            if (sk('farm') >= 3 && q < QMAX && Math.random() < 0.04 * (sk('farm') - 2)) q += 1;
             return key === 'crystalBerry' ? Math.max(4, q) : q;
         }
         // 🧺 ลุ้นได้เพิ่ม: เก็บผักทุกครั้งลุ้น +1 ชิ้น (ดินดี รดน้ำ ตามฤดู ปุ๋ยหมัก ช่วยให้ลุ้นง่ายขึ้น) หรือผลดก +2 · ผักตำนานลุ้นได้ครึ่งเดียว
         function yieldChance(p, key) {
             const cared = p.cared || hasTool('sprinkler') || todayWeather() === 'rain', special = hasOwn(SPECIAL_VEGGIES, key);
-            const plus1 = 25 + (p.soil >= 70 ? 10 : 0) + (cared ? 10 : 0) + (inSeason(key) ? 10 : 0) + (p.comp ? 5 : 0);
+            const plus1 = 25 + (p.soil >= 70 ? 10 : 0) + (cared ? 10 : 0) + (inSeason(key) ? 10 : 0) + (p.comp ? 5 : 0) + 3 * sk('farm');
             return { plus1: special ? Math.round(plus1 / 2) : plus1, bumper: special ? 0 : 6 + (gdSetOn('fairy') ? 3 : 0) };
         }
         function rollYield(p, key) {
@@ -6911,7 +6951,7 @@
                 if (reason === 'break') { p.stage += 1; p.lastGrowAt = now; }
                 else {
                     if (!Number.isFinite(base)) { p.lastGrowAt = now; changed = true; return; } // พายุ: วันนี้ไม่โตเอง
-                    const step = base * (p.type === 'tree' ? 2 : 1) * (p.type === 'veg' && nearBloom(i) ? 0.75 : 1);
+                    const step = base * (p.type === 'tree' ? 2 : 1) * (p.type === 'veg' && nearBloom(i) ? 0.75 : 1) * (1 - 0.05 * sk('farm'));
                     // นับย้อนหลังด้วย เผื่อปิดเว็บไปหลายชั่วโมง ผักก็ยังโตต่อ
                     const steps = Math.floor((now - p.lastGrowAt) / step);
                     if (steps < 1) return;
@@ -7111,6 +7151,7 @@
                 + `<span class="farm-xp" role="progressbar" aria-label="XP ชาวสวน" aria-valuemin="0" aria-valuemax="${next - cur}" aria-valuenow="${veg.xp - cur}"><span style="width:${((veg.xp - cur) / (next - cur) * 100).toFixed(0)}%"></span></span>`
                 + `<span class="farm-xp-text">${veg.xp - cur}/${next - cur} XP</span>`
                 + (lvl >= FOREST_LEVEL ? `<span class="farm-energy" title="แรง ใช้เดินป่า · ${energyText()} · พักดี +${ENERGY_BREAK} · กินอาหารฟื้นแรง">⚡ ${energyNow()}/${ENERGY_MAX}</span>` : '')
+                + (lvl >= FOREST_LEVEL ? `<span class="farm-energy farm-hp${hpNow() < HP_TRIP ? ' is-low' : ''}" title="เลือด: โดนกับดักในป่า เหมือง ชายหาดแล้วลด · ไม่ฟื้นเอง กินอาหารหรือผลไม้ฟื้นเลือด">❤️ ${hpNow()}/${hpMax()}</span>` : '')
                 + `<span class="farm-weather" title="${w.note}">${w.e} ${w.name}</span>`
                 + `<span class="farm-weather farm-season" title="${s.name}: ผักตามฤดูโตไวขึ้น 1 ระยะ ขายแพงขึ้น ${seasonal}">${s.e} ${s.name}</span>`
                 + `<button type="button" class="farm-weather farm-luck${luckyDay() ? ' is-lucky' : ''}" onclick="openDex('other')" title="ดวงสะสม: ได้ของธรรมดาถึงแรร์ ดวงขึ้นทีละนิด ช่วยเพิ่มโอกาสของล้ำค่าและสมบัติ · โอกาสตอนนี้ ×${luckMult().toFixed(2)}">🍀 ${veg.luck || 0}%${luckyDay() ? ' · วันโชคดี' : ''}</button>`
@@ -7129,6 +7170,7 @@
             dot('fa-pond', veg.fish.tickets + (veg.fish.freeDay !== dayKeyLocal() ? 1 : 0));
             dot('fa-mine', lvl >= MINE_LEVEL && veg.mine.floor ? veg.mine.floor : '');
             dot('fa-sea', lvl < SEA_LEVEL ? '' : saltReady() ? '🧂' : veg.sea.casts ? '🎣' : '');
+            dot('fa-skills', skillPts() > 0 ? String(skillPts()) : '');
             dot('fa-forest', lvl < FOREST_LEVEL ? '' : veg.forest.cells && veg.forest.cells.some(c => !c.open) ? '!' : energyNow() >= ENERGY_MAX ? '⚡' : '');
             dot('fa-contest', !c.planted || (c.weight && !c.done) ? '!' : '');
             dot('fa-checkin', checkinNext() ? '!' : '');
@@ -7293,7 +7335,7 @@
             const o = todaysOrders()[i];
             if (!o || o.done || !hasItems(o.items)) return;
             takeItems(o.items); o.done = true; veg.stats.orders += 1; saveVeg(); bossAdd('order', 1);
-            addCoins(o.coins); addXP(o.xp);
+            addCoins(Math.round(o.coins * (1 + 0.04 * sk('trade')))); addXP(o.xp);
             const bonus = o.bonus && !shop.owned.includes(o.bonus) ? o.bonus : null;
             if (bonus) { shop.owned.push(bonus); saveShop(); applyShopItems(); }
             bumpChallenge('order');
@@ -7328,10 +7370,11 @@
         function marketDay() { const d = dayKeyLocal(); if (veg.market.day !== d) veg.market = { day: d, sold: {} }; return veg.market; }
         const soldToday = key => marketDay().sold[baseOf(key)] || 0;
         const pressureMult = (key, extra = 0) => Math.max(PRESSURE_MIN, 1 - PRESSURE_STEP * (soldToday(key) + extra));
-        const sellPrice = key => Math.max(1, Math.round(marketPrice(key) * pressureMult(key)));
+        const tradeMult = () => 1 + 0.03 * sk('trade'); // 💰 สกิลพ่อค้า
+        const sellPrice = key => Math.max(1, Math.round(marketPrice(key) * pressureMult(key) * tradeMult()));
         function sellQuote(key, n) {
             let s = 0;
-            for (let i = 0; i < n; i++) s += Math.max(1, Math.round(marketPrice(key) * pressureMult(key, i)));
+            for (let i = 0; i < n; i++) s += Math.max(1, Math.round(marketPrice(key) * pressureMult(key, i) * tradeMult()));
             return s;
         }
         function sellItem(key, all) {
@@ -7495,7 +7538,7 @@
             st.fedDay = today; if (fav) st.favDay = today;
             st.fedAt = Date.now(); st.fav = fav;
             if (st.heartDay !== today) { st.heartDay = today; st.heartN = 0; }
-            const gain = Math.min(fav ? 2 : 1, ANIMAL_HEARTS_DAY - st.heartN);
+            const gain = Math.min(fav ? 2 : 1, ANIMAL_HEARTS_DAY + (sk('animal') >= SKILL_MAX ? 1 : 0) - st.heartN);
             st.hearts = Math.min(10, st.hearts + gain); st.heartN += gain;
             feedFor = '';
             saveVeg(); playSound(fav ? 'welcome' : 'pop'); passNote('feed');
@@ -7570,6 +7613,9 @@
             const avg = n ? used.reduce((s, [uq, c]) => s + uq * c, 0) / n : 1;
             // วัตถุดิบดาวเฉลี่ย ★3 ขึ้นไป +1 ดาว · ★4 ขึ้นไป +2 ดาว (ต้องผัดโดนอย่างน้อย 2 รอบ)
             if (q >= 2) q = Math.min(QMAX, q + (avg >= 4 ? 2 : avg >= 3 ? 1 : 0));
+            if (sk('chef') && q < QMAX && Math.random() < 0.06 * sk('chef')) q += 1;
+            const back = sk('chef') && Math.random() < 0.05 * sk('chef') ? pick(Object.keys(r.need)) : '';
+            if (back) giveItem(back, 1);
             giveItem(qKey(key, q));
             veg.cooked[key] = (veg.cooked[key] || 0) + 1;
             veg.bestQ[key] = Math.max(veg.bestQ[key] || 0, q);
@@ -7577,7 +7623,7 @@
             if (r.secret) setTimeout(() => unlockSecret('secretRecipe'), 600);
             saveVeg(); addXP(Math.round((8 + (q - 1) * 3) * (1 + 0.1 * upgLv('stove')))); bumpChallenge('cook');
             playSound('welcome');
-            if (!quiet) showToast(`🍳 ทำ${r.name}เสร็จแล้ว! ${r.e}${starText(q)} อยู่ในยุ้งฉาง`, 'success');
+            if (!quiet) showToast(`🍳 ทำ${r.name}เสร็จแล้ว! ${r.e}${starText(q)} อยู่ในยุ้งฉาง${back ? ` · สกิลเชฟ: ได้${itemInfo(back).name}คืน 1` : ''}`, 'success');
             renderFarmPanel(); renderFarmStatus();
             return q;
         }
@@ -7585,7 +7631,7 @@
         // 🐔 สัตว์ในฟาร์ม: ป้อนอาหารแล้วรอครบรอบค่อยเก็บ ถ้าวันนี้พักไม่เกินโควตาได้เพิ่มครึ่งหนึ่ง
         // 🕐 รอบผลิตของสัตว์แต่ละชนิด (นาที) · หัวใจขึ้นได้วันละไม่เกิน 2 ดวง
         const ANIMAL_CYCLE = { hen: 60, duck: 60, sheep: 120, goat: 120, cow: 120, pig: 120 }, ANIMAL_HEARTS_DAY = 2;
-        const cycleMs = a => (ANIMAL_CYCLE[a] || 120) * 60000;
+        const cycleMs = a => Math.round((ANIMAL_CYCLE[a] || 120) * 60000 * (1 - 0.06 * sk('animal')));
         const animalOwned = a => shop.owned.includes(ANIMALS[a].shopId);
         const animalHungry = a => animalOwned(a) && !veg.animals[a].fedAt;
         const animalLeft = a => veg.animals[a].fedAt ? Math.max(0, veg.animals[a].fedAt + cycleMs(a) - Date.now()) : 0;
@@ -7651,7 +7697,7 @@
             if (!animalReady(a)) return;
             const an = ANIMALS[a], st = veg.animals[a], good = goodDayToday(), fav = st.fav, first = st.lastDay !== dayKeyLocal();
             // ต่อรอบ: ตัวละ 1 ชิ้น + วันพักดี + โบนัสหัวใจ + ของโปรด · ของพิเศษจากสัตว์ลายหายาก/ตำนานได้รอบแรกของวัน
-            const vy = variantYield(a), c = animalCount(a), n = c + (good ? Math.ceil(c / 2) : 0) + (st.hearts >= 5 ? 1 : 0) + (st.hearts >= 10 ? 1 : 0) + (fav ? 1 : 0) + vy.extra;
+            const vy = variantYield(a), c = animalCount(a), n = c + (good ? Math.ceil(c / 2) : 0) + (st.hearts >= 5 ? 1 : 0) + (st.hearts >= 10 ? 1 : 0) + (fav ? 1 : 0) + vy.extra + (sk('animal') >= 2 && Math.random() < 0.05 * sk('animal') ? 1 : 0);
             if (!first) vy.items = {};
             giveItem(an.product, n);
             Object.entries(vy.items).forEach(([k, q]) => giveItem(k, q));
@@ -7700,7 +7746,7 @@
 
         // 🌾 หน้าต่างฟาร์ม: ออเดอร์ · ยุ้งฉาง · ครัว · สัตว์ · ปุ๋ยหมัก
         const FARM_TABS = [['orders', '📋', 'ออเดอร์'], ['friends', '👥', 'เพื่อน'], ['barn', '🏠', 'ยุ้งฉาง'], ['stall', '🏪', 'แผงขาย'], ['market', '📈', 'ตลาด'], ['kitchen', '🍳', 'ครัว'], ['animals', '🐔', 'สัตว์'], ['craft', '🏭', 'แปรรูป'],
-            ['pond', '🎣', 'บ่อปลา'], ['forest', '🌲', 'ป่า'], ['mine', '⛏️', 'เหมือง'], ['sea', '🏖️', 'ทะเล'], ['contest', '🏆', 'ประกวด'], ['compost', '🪱', 'ปุ๋ยหมัก'], ['house', '🏡', 'บ้านไร่'], ['upgrade', '🔧', 'อัปเกรด'], ['ach', '🎖️', 'ความสำเร็จ'], ['quest', '📜', 'เควสต์'], ['museum', '🏛️', 'พิพิธภัณฑ์'], ['pass', '🎫', 'บัตรสะสม'], ['stats', '📊', 'สถิติ']];
+            ['pond', '🎣', 'บ่อปลา'], ['forest', '🌲', 'ป่า'], ['mine', '⛏️', 'เหมือง'], ['sea', '🏖️', 'ทะเล'], ['contest', '🏆', 'ประกวด'], ['compost', '🪱', 'ปุ๋ยหมัก'], ['house', '🏡', 'บ้านไร่'], ['upgrade', '🔧', 'อัปเกรด'], ['skills', '🎯', 'สกิล'], ['ach', '🎖️', 'ความสำเร็จ'], ['quest', '📜', 'เควสต์'], ['museum', '🏛️', 'พิพิธภัณฑ์'], ['pass', '🎫', 'บัตรสะสม'], ['stats', '📊', 'สถิติ']];
         let farmTab = 'orders', kitchenFilter = 'all';
         function setKitchenFilter(f) { kitchenFilter = f; renderFarmPanel(); }
         function openFarm(tab) {
@@ -7726,7 +7772,7 @@
         function renderFarmPanel() {
             if (farmTab === 'event' && !activeFarmEvent()) farmTab = 'orders';
             const lvl = farmLevel(), w = WEATHERS[todayWeather()], s = FARM_SEASONS[farmSeason()];
-            document.getElementById('farm-meta').innerHTML = `🧑‍🌾 เลเวล ${lvl}${lvl >= FOREST_LEVEL ? ` · ⚡ ${energyNow()}/${ENERGY_MAX}` : ''} · ${w.e} ${w.name}: ${w.note} · ${s.e} ${s.name} · 🔮 ${forecastDays().map(x => WEATHERS[x.w].e).join('')}`;
+            document.getElementById('farm-meta').innerHTML = `🧑‍🌾 เลเวล ${lvl}${lvl >= FOREST_LEVEL ? ` · ⚡ ${energyNow()}/${ENERGY_MAX} · ❤️ ${hpNow()}/${hpMax()}` : ''} · ${w.e} ${w.name}: ${w.note} · ${s.e} ${s.name} · 🔮 ${forecastDays().map(x => WEATHERS[x.w].e).join('')}`;
             const tabs = document.getElementById('farm-tabs');
             tabs.classList.add('is-scroll');
             tabs.innerHTML = farmTabList().map(([k, icon, label]) =>
@@ -7736,7 +7782,7 @@
             if (act && tabs.clientWidth) tabs.scrollLeft = Math.max(0, tabs.scrollLeft + act.getBoundingClientRect().left - tabs.getBoundingClientRect().left - (tabs.clientWidth - act.offsetWidth) / 2);
             renderFarmHelp();
             const body = document.getElementById('farm-body');
-            const custom = { event: renderEventTab, forest: renderForestTab, mine: renderMineTab, sea: renderSeaTab, craft: renderCraftTab, quest: renderQuestTab, museum: renderMuseumTab, pass: renderPassTab, friends: renderFriendsTab, stall: renderStallTab, market: renderMarketTab, upgrade: renderUpgradeTab, pond: renderPondTab, contest: renderContestTab, house: renderHouseTab, ach: renderAchTab, stats: renderStatsTab }[farmTab];
+            const custom = { event: renderEventTab, forest: renderForestTab, mine: renderMineTab, sea: renderSeaTab, craft: renderCraftTab, quest: renderQuestTab, museum: renderMuseumTab, pass: renderPassTab, friends: renderFriendsTab, stall: renderStallTab, market: renderMarketTab, upgrade: renderUpgradeTab, skills: renderSkillsTab, pond: renderPondTab, contest: renderContestTab, house: renderHouseTab, ach: renderAchTab, stats: renderStatsTab }[farmTab];
             if (custom) { body.innerHTML = custom(); updateCoinUI(); return; }
             if (farmTab === 'orders') {
                 const list = todaysOrders(), left = orderResets() - (veg.orders.rolls || 0), done = list.filter(o => o.done).length, armed = orderResetArmed > Date.now();
@@ -7763,7 +7809,7 @@
                     return `<div class="barn-item${it.q > 1 ? ' q' + it.q : ''}${rarClass(k)}"><span class="barn-emoji">${it.e}</span><span class="farm-card-title">${it.name} ×${veg.inv[k]}</span>${rarTag(itemRarity(k))}
                         ${it.q > 1 ? `<span class="barn-stars q${it.q}" title="${QUALITY_NAME[it.q]}" aria-label="คุณภาพ${QUALITY_NAME[it.q]} ${it.q} ดาว">${'★'.repeat(it.q)}</span>` : ''}
                         <span class="barn-price${m > 1 ? ' is-up' : m < 1 ? ' is-down' : ''}">🪙${price}/ชิ้น ${m > 1 ? '▲' : m < 1 ? '▼' : ''}${it.kind === 'crop' && inSeason(it.base) ? ' 🍃' : ''}</span>${pressureNote(k) ? `<span class="farm-card-sub">${pressureNote(k)}</span>` : ''}
-                        <span class="barn-btns"><button type="button" class="chip-btn" onclick="sellItem('${k}')">ขาย 1</button><button type="button" class="chip-btn" onclick="sellItem('${k}', true)">ขายหมด</button>${dishEnergy(k) ? `<button type="button" class="chip-btn eat-btn" onclick="eatDish('${k}')">😋 กิน ⚡+${dishEnergy(k)}</button>` : ''}</span></div>`;
+                        <span class="barn-btns"><button type="button" class="chip-btn" onclick="sellItem('${k}')">ขาย 1</button><button type="button" class="chip-btn" onclick="sellItem('${k}', true)">ขายหมด</button>${foodEn(k) || foodHp(k) ? `<button type="button" class="chip-btn eat-btn" onclick="eatDish('${k}')">😋 กิน${foodEn(k) ? ` ⚡+${foodEn(k)}` : ''}${foodHp(k) ? ` ❤️+${foodHp(k)}` : ''}</button>` : ''}</span></div>`;
                 }).join('')}</div>` : '<p class="rp-empty">ยุ้งฉางยังว่างอยู่ เก็บผักก่อนนะ 🌱</p>')
                     + `<p class="shop-note">ราคาตลาดเปลี่ยนทุกวัน ▲ แพงกว่าปกติ · ▼ ถูกกว่าปกติ · 🍃 ผักตามฤดูแพงขึ้น · ★ ยิ่งดาวเยอะยิ่งแพง${veg.hybridSeeds.length ? ` · 🧬 เมล็ดลูกผสมรอปลูก ${veg.hybridSeeds.length} เมล็ด` : ''}<br>ตะกร้าขนมท้ายหน้าก็หยิบผักจากยุ้งฉางนี้</p>`;
             } else if (farmTab === 'kitchen') {
@@ -7933,7 +7979,7 @@
             showToast(o.ask === 1 ? `💬 ${who.name}ยอมเพิ่มให้! ค่าจ้างเป็น 🪙${o.coins}` : o.ask === 2 ? `💬 ${who.name}ขอราคาเดิมนะ` : `😤 ${who.name}ไม่พอใจ ลดค่าจ้างเหลือ 🪙${o.coins} · ชื่อเสียงร้าน −2`, o.ask === 3 ? 'info' : 'success');
             renderFarmPanel();
         }
-        const stallMs = () => Math.max(2 * 60000, STALL_MS - upgLv('stall') * 60000 - (veg.rep >= 80 ? 120000 : veg.rep >= 60 ? 60000 : 0) - (villagePerk('market') ? 60000 : 0) - (gdSetOn('cafe') ? 60000 : 0)) * (roomEventIs('bazaar') ? 0.5 : 1);
+        const stallMs = () => (sk('trade') >= SKILL_MAX ? 0.75 : 1) * Math.max(2 * 60000, STALL_MS - upgLv('stall') * 60000 - (veg.rep >= 80 ? 120000 : veg.rep >= 60 ? 60000 : 0) - (villagePerk('market') ? 60000 : 0) - (gdSetOn('cafe') ? 60000 : 0)) * (roomEventIs('bazaar') ? 0.5 : 1);
         const stallMarkup = () => 1.4 + 0.05 * upgLv('stall');
         const stallPrice = key => Math.max(1, Math.round(marketPrice(key) * stallMarkup()));
         // 🙋 ลูกค้าเดินเข้ามาที่แผงหน้าฟาร์ม ขอซื้อของในยุ้งฉางแล้วต่อราคา (มีของในยุ้งฉางก็มีคนมา ไม่ต้องวางบนแผง)
@@ -8208,7 +8254,7 @@
         // เหยื่อ: 🪱 เหยื่อหนอน ปลาแรร์ขึ้นไป ×1.5 · ✨ เหยื่อทอง ปลาแรร์ขึ้นไป ×2.5 ปลาธรรมดาน้อยลง และเรียกปลาเทพได้
         const curBait = () => fishing.state !== 'idle' ? fishing.bait : veg.baitSel === 'gold' && veg.goldBait > 0 ? 'gold' : veg.baitSel === 'bait' && veg.bait > 0 ? 'bait' : '';
         const baitMult = f => { const b = curBait(); return rarAtLeast(f.r, 'mythic') ? 1 : b === 'gold' ? (rarAtLeast(f.r, 'rare') ? 2.5 : 0.4) : b === 'bait' && rarAtLeast(f.r, 'rare') ? 1.5 : 1; };
-        const fishWeight = f => f.w * (f.boost && f.boost === todayWeather() ? 3 : 1) * (rarAtLeast(f.r, 'rare') ? 1 + 0.15 * upgLv('rod') : 1) * (rarAtLeast(f.r, 'rare') && gdSetOn('beach') ? 1.1 : 1) * baitMult(f);
+        const fishWeight = f => f.w * (f.boost && f.boost === todayWeather() ? 3 : 1) * (rarAtLeast(f.r, 'rare') ? 1 + 0.15 * upgLv('rod') : 1) * (rarAtLeast(f.r, 'rare') && gdSetOn('beach') ? 1.1 : 1) * baitMult(f) * (rarAtLeast(f.r, 'rare') ? 1 + 0.1 * sk('fish') : 1);
         const BAIT_PRICE = 4, BAIT_BUY_MAX = 10;
         const baitBuyLeft = () => BAIT_BUY_MAX - (veg.baitBuy.day === dayKeyLocal() ? veg.baitBuy.n : 0);
         function buyBait() {
@@ -8230,10 +8276,17 @@
             for (const k of pool) { r -= fishWeight(FISH[k]); if (r <= 0) return k; }
             return fishing.where === 'sea' ? 'mackerel' : 'fish';
         }
+        // 🎣 นักตกปลาขั้น 5: ลุ้นเหยื่อไม่หลุด ใช้ซ้ำได้
+        function baitSave(bait) {
+            if (!bait || sk('fish') < SKILL_MAX || Math.random() >= 0.3) return;
+            if (bait === 'gold') veg.goldBait += 1; else veg.bait += 1;
+            showToast('🎣 สกิลนักตกปลา: เหยื่อไม่หลุด ใช้ซ้ำได้อีก', 'info');
+        }
         function castLine() {
             if (fishing.state !== 'idle' || veg.fish.tickets < 1) return;
             const bait = curBait();
             if (bait === 'gold') veg.goldBait -= 1; else if (bait === 'bait') veg.bait -= 1;
+            baitSave(bait);
             veg.fish.tickets -= 1; saveVeg();
             fishing.state = 'waiting'; fishing.result = null; fishing.fish = null; fishing.bait = bait; fishing.where = 'pond';
             playSound('pop');
@@ -8278,7 +8331,7 @@
                 if (k === 'ghostFish') setTimeout(() => unlockSecret('ghostFish'), 700);
                 // ตัวใหญ่หายากกว่าตัวเล็ก · ยาวเกิน 90% ของขนาดสูงสุด = ตัวยักษ์ ได้เหรียญเพิ่มเท่าราคาปลา
                 res.caught = k;
-                res.cm = Math.round((f.cm[0] + (f.cm[1] - f.cm[0]) * Math.pow(Math.random(), 1.6)) * 10) / 10;
+                res.cm = Math.round((f.cm[0] + (f.cm[1] - f.cm[0]) * Math.pow(Math.random(), 1.6 - 0.1 * sk('fish'))) * 10) / 10;
                 res.trophy = res.cm >= f.cm[0] + (f.cm[1] - f.cm[0]) * 0.9;
                 res.record = res.cm > (veg.fishRecord[k] || 0);
                 if (res.record) veg.fishRecord[k] = res.cm;
@@ -8664,6 +8717,7 @@
             }
             animalTick();
             treeTick();
+            farmSkillTick();
             renderFarmStatus();
         }
 
@@ -9404,17 +9458,162 @@
             if (!r || NO_EAT.includes(k)) return 0;
             return (r.en || Math.min(16, 2 + 2 * Object.values(r.need).reduce((a, b) => a + b, 0))) + Math.max(0, qualOf(key) - 1);
         }
+        // ❤️ ฟื้นเลือด: อาหารจากครัว +20–50 · ผลไม้ +6–15 ตามความหายาก · อาหารบำรุงสมุนไพร +40 · ดาวยิ่งสูงยิ่งฟื้นเพิ่ม
+        const FRUIT_EAT = ['strawberry', 'watermelon', 'tangerine', 'grape', 'cherry', 'banana', 'blueberry', 'peach', 'kiwi', 'mango', 'melon', 'pineapple', 'coconut', 'apple', 'pear', 'greenApple', 'goldLantern', 'moonFruit'];
+        const FRUIT_HP = { common: 6, uncommon: 8, rare: 10, epic: 12 };
+        const chefMult = () => sk('chef') >= 5 ? 1.5 : 1;
+        function foodHp(key) {
+            const b = baseOf(key);
+            let n = b === 'herbTonic' ? 40 : RECIPES[b] && !NO_EAT.includes(b) ? Math.min(50, 14 + 2 * dishEnergy(b)) : FRUIT_EAT.includes(b) && itemInfo(b) ? FRUIT_HP[cropRarity(b)] || 15 : 0;
+            if (!n) return 0;
+            n += 2 * Math.max(0, qualOf(key) - 1);
+            return Math.round(n * chefMult());
+        }
+        const foodEn = key => Math.round(dishEnergy(key) * chefMult());
         function eatDish(key) {
-            const n = dishEnergy(key);
-            if (!n || !(veg.inv[key] > 0)) return;
-            if (energyNow() >= ENERGY_OVER) { showToast(`⚡ แรงล้นเต็มที่ ${ENERGY_OVER} แล้ว เก็บอาหารไว้กินทีหลังนะ`, 'warning'); return; }
+            const n = foodEn(key), hp = foodHp(key);
+            if ((!n && !hp) || !(veg.inv[key] > 0)) return;
+            const roomEn = n > 0 && energyNow() < ENERGY_OVER, roomHp = hp > 0 && hpNow() < hpMax();
+            if (!roomEn && !roomHp) { showToast(n ? `⚡ แรงล้นเต็มที่ ${ENERGY_OVER} แล้ว เก็บอาหารไว้กินทีหลังนะ` : '❤️ เลือดเต็มแล้ว เก็บไว้กินตอนบาดเจ็บนะ', 'warning'); return; }
             const it = itemInfo(key);
             takeExact(key, 1);
-            addEnergy(n); playSound('pop');
-            showToast(`😋 กิน${it.name} ${it.e}${starText(it.q)} แรง +${n} ⚡ ตอนนี้ ${energyNow()}/${ENERGY_MAX}`, 'success');
-            renderFarmPanel(); updateBasketFood();
+            if (roomEn) addEnergy(n);
+            const healed = roomHp ? heal(hp) : 0;
+            saveVeg(); playSound('pop');
+            showToast(`😋 กิน${it.name} ${it.e}${starText(it.q)}${roomEn ? ` แรง +${n} ⚡ ตอนนี้ ${energyNow()}/${ENERGY_MAX}` : ''}${healed ? ` เลือด +${healed} ❤️ ${hpNow()}/${hpMax()}` : ''}`, 'success');
+            renderFarmPanel(); updateBasketFood(); renderFarmStatus();
         }
-        const eatableKeys = () => Object.keys(veg.inv).filter(k => dishEnergy(k) > 0).sort((a, b) => dishEnergy(b) - dishEnergy(a));
+        const eatableKeys = () => Object.keys(veg.inv).filter(k => foodEn(k) > 0).sort((a, b) => foodEn(b) - foodEn(a));
+        const healKeys = () => Object.keys(veg.inv).filter(k => veg.inv[k] > 0 && foodHp(k) > 0).sort((a, b) => foodHp(b) - foodHp(a));
+
+        // --- 🎯 สกิล
+        const sk = k => (veg && veg.skills && veg.skills[k]) || 0;
+        const skillSpent = () => Object.keys(SKILLS).reduce((a, k) => a + SKILL_COST.slice(0, sk(k)).reduce((x, y) => x + y, 0), 0);
+        const skillPts = () => Math.max(0, farmLevel() - 1 - skillSpent());
+        const skFree = z => sk(z) > 0 && Math.random() < 0.08 * sk(z); // ลุ้นไม่เสียแรง
+        function learnSkill(k) {
+            const t = sk(k);
+            if (!SKILLS[k] || t >= SKILL_MAX || skillPts() < SKILL_COST[t]) return;
+            veg.skills[k] = t + 1; saveVeg(); playSound('welcome');
+            if (t + 1 === SKILL_MAX) fireConfetti();
+            showToast(`${SKILLS[k].e} ${SKILLS[k].name} ขั้น ${t + 1}! ${t + 1 === SKILL_MAX ? `ความสามารถพิเศษ: ${SKILLS[k].top}` : SKILLS[k].perk(t + 1).join(' · ')}`, 'success', { duration: 5000 });
+            renderFarmPanel(); renderFarmStatus();
+        }
+        let respecArmed = 0;
+        function respecSkills() {
+            const pts = skillSpent(), cost = pts * SKILL_RESPEC;
+            if (!pts) return;
+            if (shop.coins < cost) { showToast(`ล้างแต้มต้องใช้ 🪙${cost} (แต้มละ ${SKILL_RESPEC})`, 'warning'); return; }
+            if (respecArmed < Date.now()) { respecArmed = Date.now() + 4000; renderFarmPanel(); return; }
+            respecArmed = 0;
+            shop.coins -= cost; saveShop(); updateCoinUI();
+            Object.keys(SKILLS).forEach(k => { veg.skills[k] = 0; });
+            veg.hp = Math.min(veg.hp, hpMax()); saveVeg(); playSound('pop');
+            showToast(`♻️ ล้างแต้มสกิลแล้ว ได้คืน ${pts} แต้ม เลือกเรียนใหม่ได้เลย`, 'success');
+            renderFarmPanel(); renderFarmStatus();
+        }
+        // 🌾 ชาวไร่ขั้น 5: วันละครั้ง ผักแปลงที่ยังเหลือนานที่สุดโตเต็มทันที
+        function farmSkillTick() {
+            if (sk('farm') < SKILL_MAX || veg.skDay === dayKeyLocal()) return;
+            const grow = veg.plots.filter(p => p.type === 'veg' && p.seed && !p.pest && !p.giant && p.stage < p.need).sort((a, b) => (b.need - b.stage) - (a.need - a.stage));
+            if (!grow.length) return;
+            const p = grow[0];
+            p.stage = p.need; p.lastGrowAt = Date.now(); markRipe(p); veg.skDay = dayKeyLocal();
+            saveVeg(); renderVeggies();
+            showToast(`🌾 สกิลชาวไร่: ${VEGGIES[p.seed].e} ${VEGGIES[p.seed].name} โตเต็มแปลงทันที (วันละครั้ง)`, 'success', { duration: 5000 });
+        }
+        function renderSkillsTab() {
+            const pts = skillPts(), spent = skillSpent(), armed = respecArmed > Date.now();
+            return `<div class="farm-card skill-head"><span class="barn-emoji" aria-hidden="true">🎯</span><div class="farm-card-main"><span class="farm-card-title">แต้มสกิลว่าง ${pts} แต้ม</span>`
+                + `<span class="farm-card-sub">เลเวลขึ้นได้ 1 แต้ม (เลเวล ${farmLevel()} ได้ ${Math.max(0, farmLevel() - 1)} แต้ม ใช้ไป ${spent}) · ขั้น 1–2 ใช้ 1 แต้ม · ขั้น 3–4 ใช้ 2 · ขั้น 5 ใช้ 3 และได้ความสามารถพิเศษ</span></div>`
+                + (spent ? `<button type="button" class="shop-buy farm-action${armed ? ' is-armed' : ''}" onclick="respecSkills()">${armed ? `แตะอีกครั้ง ยืนยัน 🪙${spent * SKILL_RESPEC}` : `♻️ ล้างแต้ม 🪙${spent * SKILL_RESPEC}`}</button>` : '') + '</div>'
+                + Object.entries(SKILLS).map(([k, s]) => {
+                    const t = sk(k), max = t >= SKILL_MAX, cost = SKILL_COST[t], ok = !max && pts >= cost;
+                    return `<div class="farm-card upg-card skill-card${ok ? ' is-ready' : ''}${max ? ' is-max' : ''}"><span class="barn-emoji">${s.e}</span>
+                        <div class="farm-card-main"><span class="farm-card-title">${s.name} <small class="mp-lv">ขั้น ${t}/${SKILL_MAX}</small></span>
+                            <span class="upg-pips" aria-label="ขั้น ${t} จาก ${SKILL_MAX}">${SKILL_COST.map((_, i) => `<i class="${i < t ? 'is-on' : ''}"></i>`).join('')}</span>
+                            <span class="farm-card-sub">${s.what}</span>
+                            <span class="farm-card-sub">ตอนนี้: ${t ? s.perk(t).join(' · ') : 'ยังไม่ได้เรียน'}${max ? ` · ⭐ ${s.top}` : ''}</span>
+                            ${max ? '' : `<span class="farm-card-sub upg-next">ขั้น ${t + 1}: ${s.perk(t + 1).join(' · ')}${t + 1 === SKILL_MAX ? ` · ⭐ ${s.top}` : ''}</span>`}</div>
+                        ${max ? '<span class="farm-done">ขั้นสูงสุด ✨</span>' : `<button type="button" class="shop-buy farm-action" ${ok ? '' : 'disabled'} onclick="learnSkill('${k}')">${ok ? `เรียน (${cost} แต้ม)` : `ต้องใช้ ${cost} แต้ม`}</button>`}</div>`;
+                }).join('') + '<p class="shop-note">แต้มได้ย้อนหลังครบตามเลเวล · ล้างแต้มแล้วเลือกสายใหม่ได้ทุกเมื่อ</p>';
+        }
+
+        // --- ❤️ เลือด กับดัก และสลบ
+        const hpMax = () => HP_BASE + 10 * sk('survive');
+        const hpNow = () => Math.min(veg.hp, hpMax());
+        function hurt(n) { const d = Math.max(1, Math.round(n * (1 - 0.08 * sk('survive')))); veg.hp = Math.max(0, hpNow() - d); return d; }
+        function heal(n) { const before = hpNow(); veg.hp = Math.min(hpMax(), before + n); return veg.hp - before; }
+        const hpLowMsg = () => `❤️ เลือดเหลือ ${hpNow()} ต้องมีอย่างน้อย ${HP_TRIP} ถึงออกสำรวจได้ · กินอาหาร ผลไม้ หรืออาหารบำรุงสมุนไพรก่อนนะ`;
+        const ZONE_SKILL = { forest: 'forest', mine: 'mine', beach: 'sea' };
+        const pickTrap = z => pick(Object.keys(TRAPS[z]));
+        // เริ่มรอบ/ชั้นใหม่: จุด ⚠️ ได้ของดีขึ้นแต่อาจมีกับดัก · บางจุดซ่อนกับดักไว้ (สกิลเอาตัวรอดช่วยให้เห็นก่อน)
+        function armTraps(z, cells, reroll, nRisk, hidden) {
+            const idx = cells.map((c, i) => c && !['ladder', 'chest', 'squirrel', 'monkey', 'cavein'].includes(c.k) ? i : -1).filter(i => i >= 0);
+            for (let r = 0; r < nRisk && idx.length; r++) {
+                const i = idx.splice(Math.floor(Math.random() * idx.length), 1)[0];
+                Object.assign(cells[i], reroll(), { risk: 1 });
+                if (Math.random() < RISK_TRAP - 0.05 * sk(ZONE_SKILL[z])) cells[i].trap = pickTrap(z);
+            }
+            idx.forEach(i => {
+                if (Math.random() >= hidden) return;
+                cells[i].trap = pickTrap(z);
+                if (Math.random() < 0.2 * sk('survive')) cells[i].risk = 1;
+            });
+            return cells;
+        }
+        function trapHit(z, c) {
+            if (!c.trap || c.hit) return null;
+            const [e, name, lo, hi] = TRAPS[z][c.trap];
+            c.hit = 1;
+            const d = hurt(Math.round((lo + Math.random() * (hi - lo)) * (c.risk ? 1 : 0.6)));
+            return { lost: !!c.risk, down: veg.hp <= 0, msg: c.risk ? `${e} โดน${name}! เลือด −${d} (❤️ ${hpNow()}/${hpMax()}) ของตรงนี้หลุดมือไป` : `${e} มี${name}ซ่อนอยู่! เลือด −${d} (❤️ ${hpNow()}/${hpMax()})` };
+        }
+        const riskMsg = z => `⚠️ ตรงนี้ดูน่าสงสัย ของน่าจะดีกว่าที่อื่น แต่อาจมี${Object.values(TRAPS[z]).map(t => t[1]).join(' ')} · เสี่ยงดู หรือเดินอ้อม?`;
+        let riskAsk = '';
+        function riskAskHTML(z, open) {
+            const [zz, i] = riskAsk.split(':');
+            return zz === z ? `<div class="risk-ask"><button type="button" class="modal-btn btn-primary" onclick="${open}(${i}, true)">⚠️ เสี่ยงเลย</button><button type="button" class="modal-btn btn-secondary" onclick="detourCell('${z}', ${i})">↪️ เดินอ้อม</button></div>` : '';
+        }
+        function detourCell(z, i) {
+            const c = z === 'forest' ? (veg.forest.cells || [])[i] : z === 'mine' ? (veg.mine.cells || [])[i] : (veg.sea.cells || [])[i];
+            riskAsk = '';
+            if (!c || c.open || !c.risk) { renderFarmPanel(); return; }
+            if (z === 'mine') { mineMsg = '↪️ ข้ามหินก้อนนี้ไป ปลอดภัยไว้ก่อน'; mineNew = -1; renderFarmPanel(); return; }
+            c.open = true; c.skip = 1;
+            if (z === 'forest') { forestMsg = '↪️ เดินอ้อมพุ่มนี้ไป ปลอดภัยไว้ก่อน'; forestNew = -1; forestDone(); }
+            else { seaMsg = '↪️ เดินอ้อมกองทรายนี้ไป ปลอดภัยไว้ก่อน'; seaNew = -1; beachDone(); }
+            saveVeg(); renderFarmPanel();
+        }
+        function tripNote(z, k, n) { if (veg.trip.z === z && n > 0) { veg.trip.got.push([k, n]); veg.trip.got = veg.trip.got.slice(-60); } }
+        // 😵 เลือดหมด: สลบ ถูกหามกลับบ้าน รอบนี้จบ ของที่เก็บได้รอบนี้หายไปราว 30% (สกิลเอาตัวรอดขั้น 5 ของไม่หาย)
+        function faint(z) {
+            let lost = [];
+            if (veg.trip.z === z && sk('survive') < SKILL_MAX) {
+                const tot = {};
+                veg.trip.got.forEach(([k, n]) => { tot[k] = (tot[k] || 0) + n; });
+                lost = Object.entries(tot).map(([k, n]) => [k, Math.min(countBase(k), Math.floor(n * 0.3))]).filter(([, n]) => n > 0);
+                if (!lost.length) { const have = Object.keys(tot).filter(k => countBase(k) > 0); if (have.length) lost = [[pick(have), 1]]; }
+                lost.forEach(([k, n]) => takeItems({ [k]: n }));
+            }
+            if (z === 'forest') Object.assign(veg.forest, { cells: null, got: [] });
+            else if (z === 'mine') Object.assign(veg.mine, { floor: 0, cells: null });
+            else veg.sea.cells = null;
+            veg.trip = { z: '', got: [] }; veg.hp = 1; veg.faints = Math.min(1e6, veg.faints + 1); riskAsk = '';
+            const msg = `😵 เลือดหมด สลบไป! ชาวบ้านหามกลับมานอนพักที่บ้าน${lost.length ? ` · ของรอบนี้หล่นหาย ${lost.map(([k, n]) => `${itemInfo(k).e}×${n}`).join(' ')}` : sk('survive') >= SKILL_MAX ? ' · สกิลเอาตัวรอด: ของไม่หายสักชิ้น' : ''} · กินอาหารหรือผลไม้ฟื้นเลือดก่อนออกไปใหม่นะ`;
+            if (z === 'forest') forestMsg = msg; else if (z === 'mine') mineMsg = msg; else seaMsg = msg;
+            saveVeg(); playSound('boing');
+            showToast(msg, 'warning', { duration: 7000 });
+            renderFarmPanel(); renderFarmStatus(); updateBasketFood();
+        }
+        function hpBoxHTML() {
+            const hp = hpNow(), max = hpMax(), foods = hp < max ? healKeys().slice(0, 6) : [];
+            return `<div class="energy-box hp-box${hp < HP_TRIP ? ' is-low' : ''}"><span class="energy-label">❤️ เลือด <b id="zone-hp">${hp}/${max}</b></span>`
+                + `<span class="farm-xp hp-bar" role="progressbar" aria-label="เลือด" aria-valuemin="0" aria-valuemax="${max}" aria-valuenow="${hp}"><span style="width:${(hp / max * 100).toFixed(0)}%"></span></span>`
+                + `<span class="farm-card-sub">${hp < HP_TRIP ? `เลือดต่ำกว่า ${HP_TRIP} ออกสำรวจไม่ได้ · ` : ''}โดนกับดักเลือดลด · ไม่ฟื้นเอง ต้องกินอาหาร ผลไม้ หรืออาหารบำรุงสมุนไพร</span>`
+                + (hp < max ? (foods.length ? `<div class="farm-chips">${foods.map(k => { const it = itemInfo(k); return `<button type="button" class="chip-btn" onclick="eatDish('${k}')">${it.e} ${it.name}${starText(it.q)} ×${veg.inv[k]} · ❤️+${foodHp(k)}</button>`; }).join('')}</div>`
+                    : '<span class="farm-card-sub">ยังไม่มีของกินฟื้นเลือด เก็บผลไม้ หรือทำอาหารในครัวก่อนนะ</span>') : '') + '</div>';
+        }
 
         // --- 🌲 ป่าหลังฟาร์ม (เลเวล 6): ใช้แรง 3 ⚡ ต่อรอบ แตะพุ่มไม้ 9 จุด เจอไม้ เห็ด สมุนไพร เมล็ดกาแฟ โกโก้ ชา · กระรอกเอาของมาให้ ลิงแอบขโมย ---
         // [ของ, น้ำหนักสุ่ม, จำนวนต่ำสุด, สูงสุด, ของหายาก (ขวานระดับ 3 และชุดสวนป่าเจอบ่อยขึ้น)]
@@ -9423,10 +9622,10 @@
             ['seed:coffee', 1.3, 1, 1, true], ['seed:cocoa', 1.3, 1, 1, true], ['seed:tea', 1.3, 1, 1, true], ['leaves', 5, 1, 1], ['squirrel', 3, 0, 0], ['monkey', 3, 0, 0]];
         const FOREST_FINDS = ['wood', 'resin', 'strawMushroom', 'shiitake', 'lingzhi', 'lemongrass', 'galangal', 'pandan', 'bambooShoot', 'wildHoney', 'feather'];
         const forestCost = () => FOREST_COST - (upgLv('axe') >= 5 ? 1 : 0);
-        const forestLuck = () => (upgLv('axe') >= 3 ? 1.5 : 1) * (gdSetOn('forest') ? 1.3 : 1);
+        const forestLuck = () => (upgLv('axe') >= 3 ? 1.5 : 1) * (gdSetOn('forest') ? 1.3 : 1) * (1 + 0.1 * sk('forest'));
         let forestMsg = '', forestNew = -1;
-        function rollForestCell(skip) {
-            const pool = FOREST_LOOT.filter(([k]) => !skip.includes(k)), luck = forestLuck(), w = x => x[1] * (x[4] ? luck : 1);
+        function rollForestCell(skip, boost = 1) {
+            const pool = FOREST_LOOT.filter(([k]) => !skip.includes(k)), luck = forestLuck() * boost, w = x => x[1] * (x[4] ? luck : 1);
             let r = Math.random() * pool.reduce((s, x) => s + w(x), 0);
             const [k, , lo, hi] = pool.find(x => (r -= w(x)) <= 0) || pool[0];
             return { k, n: lo + Math.floor(Math.random() * (hi - lo + 1)), open: false };
@@ -9434,31 +9633,39 @@
         function startForest() {
             const f = veg.forest, cost = forestCost();
             if (farmLevel() < FOREST_LEVEL || (f.cells && f.cells.some(c => !c.open))) return;
-            if (!useEnergy(cost)) { forestMsg = `⚡ แรงไม่พอ ต้องใช้ ${cost} (มี ${energyNow()}) · รอแรงฟื้น พักให้ดีตามเวลา หรือกินอาหารก่อนนะ`; renderFarmPanel(); return; }
+            if (hpNow() < HP_TRIP) { forestMsg = hpLowMsg(); renderFarmPanel(); return; }
+            const free = skFree('forest');
+            if (!free && !useEnergy(cost)) { forestMsg = `⚡ แรงไม่พอ ต้องใช้ ${cost} (มี ${energyNow()}) · รอแรงฟื้น พักให้ดีตามเวลา หรือกินอาหารก่อนนะ`; renderFarmPanel(); return; }
             let cells = [];
-            if (Array.isArray(window.fixedForest)) cells = window.fixedForest.slice(0, 9).map(x => ({ k: x.k, n: x.n || 1, open: false })); // ให้เทสต์กำหนดของในพุ่มได้
+            if (Array.isArray(window.fixedForest)) cells = window.fixedForest.slice(0, 9).map(x => ({ k: x.k, n: x.n || 1, open: false, ...trapBits(x, 'forest') })); // ให้เทสต์กำหนดของในพุ่มได้
             else {
                 for (let i = 0; i < 9; i++) cells.push(rollForestCell(cells.filter(c => c.k === 'monkey' || c.k === 'squirrel').map(c => c.k))); // ลิงกับกระรอกมาได้รอบละตัว
                 if (!cells.some(c => c.k === 'wood')) cells[Math.floor(Math.random() * 9)] = { k: 'wood', n: 1, open: false }; // ทุกรอบได้ไม้อย่างน้อย 1
+                armTraps('forest', cells, () => { const x = rollForestCell(['squirrel', 'monkey', 'leaves'], 6); return { k: x.k, n: x.n + 1 }; }, 1 + (Math.random() < 0.5 ? 1 : 0), 0.04);
             }
             Object.assign(f, { cells, got: [], trips: Math.min(1e6, f.trips + 1) });
-            forestMsg = '🌲 เข้าป่าแล้ว แตะพุ่มไม้ให้ครบ 9 จุด มีอะไรซ่อนอยู่บ้างนะ'; forestNew = -1;
+            veg.trip = { z: 'forest', got: [] }; riskAsk = '';
+            forestMsg = `🌲 เข้าป่าแล้ว แตะพุ่มไม้ให้ครบ 9 จุด มีอะไรซ่อนอยู่บ้างนะ${cells.some(c => c.risk) ? ' · ระวังพุ่มที่มีป้าย ⚠️' : ''}${free ? ' · สกิลนักสำรวจป่า: รอบนี้ไม่เสียแรง!' : ''}`; forestNew = -1;
             saveVeg(); playSound('pop'); passNote('forest');
             renderFarmPanel(); renderFarmStatus();
         }
         function forestFind(k, n) {
             giveItem(k, n);
             veg.forest.found[k] = Math.min(1e6, (veg.forest.found[k] || 0) + n);
-            veg.forest.got.push([k, n]);
+            veg.forest.got.push([k, n]); tripNote('forest', k, n);
             luckGain(itemRarity(k) || 'common'); rollTreasure('forest');
         }
         const forestName = k => `${itemInfo(k).e} ${itemInfo(k).name}`;
-        function openBush(i) {
+        function openBush(i, go) {
             const f = veg.forest, c = f.cells && f.cells[i];
             if (!c || c.open) return;
+            if (c.risk && !go && riskAsk !== 'forest:' + i) { riskAsk = 'forest:' + i; forestMsg = riskMsg('forest'); forestNew = -1; renderFarmPanel(); return; }
+            riskAsk = '';
             c.open = true; forestNew = i;
             let sound = 'pop';
-            if (c.k.startsWith('seed:')) {
+            const tr = trapHit('forest', c);
+            if (tr && tr.lost) { forestMsg = tr.msg; sound = 'boing'; }
+            else if (c.k.startsWith('seed:')) {
                 const s = c.k.slice(5), first = !cropTotal(s) && !(veg.seeds[s] > 0);
                 veg.seeds[s] = Math.min(99, (veg.seeds[s] || 0) + 1);
                 f.found[c.k] = Math.min(1e6, (f.found[c.k] || 0) + 1);
@@ -9469,12 +9676,13 @@
                 const bags = addCompostPts(1);
                 forestMsg = `🍁 กองใบไม้แห้ง เอาไปใส่ถังหมัก ปุ๋ยหมัก +1 แต้ม${bags ? ` · ได้ปุ๋ยหมักใหม่ ${bags} ถุง!` : ''}`;
             } else if (c.k === 'squirrel') {
-                const gifts = ['resin', 'feather', 'shiitake', 'wildHoney', 'bambooShoot'], g = gifts[Math.floor(Math.random() * gifts.length)], n = g === 'wildHoney' ? 1 : 2;
+                const gifts = ['resin', 'feather', 'shiitake', 'wildHoney', 'bambooShoot'], g = gifts[Math.floor(Math.random() * gifts.length)], n = (g === 'wildHoney' ? 1 : 2) * (sk('forest') >= SKILL_MAX ? 2 : 1);
                 c.gift = g; forestFind(g, n);
                 forestMsg = `🐿️ กระรอกน้อยวิ่งเอา${forestName(g)} ×${n} มาให้! ขอบใจนะ`;
                 sound = 'welcome';
             } else if (c.k === 'monkey') {
-                if (veg.guards.dog) forestMsg = '🐒 ลิงย่องมาหวังฉกของ แต่หมาเฝ้าสวน 🐕 เห่าไล่ไปก่อน ของไม่หายสักชิ้น';
+                if (sk('forest') >= SKILL_MAX) forestMsg = '🐒 ลิงย่องมา แต่เจอสายตานักสำรวจป่าเข้า เลยรีบโหนเถาวัลย์หนีไป';
+                else if (veg.guards.dog) forestMsg = '🐒 ลิงย่องมาหวังฉกของ แต่หมาเฝ้าสวน 🐕 เห่าไล่ไปก่อน ของไม่หายสักชิ้น';
                 else if (countBase('banana') > 0) {
                     takeItems({ banana: 1 }); c.gift = 'feather'; forestFind('feather', 1);
                     forestMsg = '🐒 ลิงมาขอของกิน เลยยื่นกล้วย 🍌 ให้ ลิงดีใจเอาขนนก 🪶 มาแลก';
@@ -9494,19 +9702,31 @@
                 if (rarAtLeast(rar, 'epic')) fireConfetti();
                 if (rar) sound = 'welcome';
             }
+            if (tr && !tr.lost) forestMsg = `${tr.msg} · ${forestMsg}`;
+            else if (c.risk && !tr) forestMsg = `⚠️ เสี่ยงแล้วคุ้ม! ${forestMsg}`;
             addXP(1);
-            if (f.cells.every(x => x.open)) {
-                const tot = {};
-                f.got.forEach(([k, n]) => { tot[k] = (tot[k] || 0) + n; });
-                const list = Object.entries(tot).filter(([, n]) => n > 0).map(([k, n]) => `${itemInfo(k).e}×${n}`).join(' ');
-                forestMsg += ` · 🎒 จบรอบนี้ได้ ${list || 'ของเล็กๆ น้อยๆ'} +5 XP`;
-                addXP(5);
-            }
+            if (tr && tr.down) { faint('forest'); return; }
+            forestDone();
             saveVeg(); playSound(sound);
             renderFarmPanel(); renderFarmStatus(); updateBasketFood();
         }
+        function forestDone() {
+            const f = veg.forest;
+            if (!f.cells || !f.cells.every(x => x.open)) return;
+            const tot = {};
+            f.got.forEach(([k, n]) => { tot[k] = (tot[k] || 0) + n; });
+            const list = Object.entries(tot).filter(([, n]) => n > 0).map(([k, n]) => `${itemInfo(k).e}×${n}`).join(' ');
+            forestMsg += ` · 🎒 จบรอบนี้ได้ ${list || 'ของเล็กๆ น้อยๆ'} +5 XP`;
+            addXP(5); veg.trip = { z: '', got: [] };
+        }
         // หน้าตาของในพุ่มที่เปิดแล้ว
         function forestFace(c) {
+            if (c.skip) return '↪️';
+            if (c.hit && c.risk) return TRAPS.forest[c.trap][0];
+            const face = forestFace0(c);
+            return c.hit && !face.includes('<i>') ? `${face}<i>${TRAPS.forest[c.trap][0]}</i>` : face;
+        }
+        function forestFace0(c) {
             if (c.k.startsWith('seed:')) return `${VEGGIES[c.k.slice(5)].e}<i>🌱</i>`;
             if (c.k === 'leaves') return '🍁';
             if (c.k === 'squirrel') return `🐿️${c.gift ? `<i>${itemInfo(c.gift).e}</i>` : ''}`;
@@ -9514,6 +9734,8 @@
             return itemInfo(c.k) ? `${itemInfo(c.k).e}${c.n > 1 ? `<b>×${c.n}</b>` : ''}` : '❔';
         }
         function forestLabel(c) {
+            if (c.skip) return 'เดินอ้อม';
+            if (c.hit && c.risk) return `โดน${TRAPS.forest[c.trap][1]}`;
             if (c.k.startsWith('seed:')) return `เมล็ด${VEGGIES[c.k.slice(5)].name}`;
             return c.k === 'leaves' ? 'ใบไม้แห้ง' : c.k === 'squirrel' ? 'กระรอก' : c.k === 'monkey' ? 'ลิง' : itemInfo(c.k) ? `${itemInfo(c.k).name} ×${c.n}` : '';
         }
@@ -9549,12 +9771,12 @@
             const bar = energyBoxHTML();
             const scene = `<div class="forest-scene${busy ? ' is-trip' : ''}">${FOREST_BG}${cells.map((c, i) => {
                 const [x, y] = BUSH_POS[i], open = !!(c && c.open);
-                return `<button type="button" class="forest-bush${open ? ' is-open' : ''}${open && i === forestNew ? ' is-new' : ''}" style="left:${x}%;top:${y}%;z-index:${y}" ${c && !open ? '' : 'disabled'} onclick="openBush(${i})"`
-                    + ` aria-label="${!c ? 'พุ่มไม้ (เริ่มเดินป่าก่อน)' : open ? 'เจอแล้ว: ' + forestLabel(c) : `พุ่มไม้ที่ ${i + 1} แตะเพื่อค้นหา`}">${forestBushSVG(i)}${open ? `<span class="fb-find">${forestFace(c)}</span>` : ''}</button>`;
+                return `<button type="button" class="forest-bush${open ? ' is-open' : ''}${open && i === forestNew ? ' is-new' : ''}${c && !open && c.risk ? ' is-risk' : ''}" style="left:${x}%;top:${y}%;z-index:${y}" ${c && !open ? '' : 'disabled'} onclick="openBush(${i})"`
+                    + ` aria-label="${!c ? 'พุ่มไม้ (เริ่มเดินป่าก่อน)' : open ? 'เจอแล้ว: ' + forestLabel(c) : `พุ่มไม้ที่ ${i + 1} แตะเพื่อค้นหา${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${forestBushSVG(i)}${c && !open && c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : ''}${open ? `<span class="fb-find">${forestFace(c)}</span>` : ''}</button>`;
             }).join('')}${!busy ? `<span class="forest-hint">${f.cells ? 'เดินป่าครบรอบแล้ว 🎒' : 'กดเดินป่าเพื่อเริ่มค้นหา'}</span>` : ''}</div>`;
             const eats = eatableKeys().slice(0, 6);
             const eat = !busy && en < cost ? `<div class="forest-eat"><span class="farm-card-sub">🍽️ แรงไม่พอ กินอาหารในยุ้งฉางเพิ่มแรงได้:</span>${eats.length
-                ? `<div class="farm-chips">${eats.map(k => { const it = itemInfo(k); return `<button type="button" class="chip-btn" onclick="eatDish('${k}')">${it.e} ${it.name}${starText(it.q)} ×${veg.inv[k]} · ⚡+${dishEnergy(k)}</button>`; }).join('')}</div>`
+                ? `<div class="farm-chips">${eats.map(k => { const it = itemInfo(k); return `<button type="button" class="chip-btn" onclick="eatDish('${k}')">${it.e} ${it.name}${starText(it.q)} ×${veg.inv[k]} · ⚡+${foodEn(k)}</button>`; }).join('')}</div>`
                 : '<span class="farm-card-sub">ยังไม่มีอาหารในยุ้งฉาง ไปทำที่ครัว 🍳 ก่อนนะ (เมนูจากของป่าฟื้นแรงเยอะ)</span>'}</div>` : '';
             const action = busy ? `<span class="farm-done">แตะพุ่มไม้ที่เหลืออีก ${f.cells.filter(c => !c.open).length} จุด</span>`
                 : `<button type="button" class="modal-btn btn-primary" ${en >= cost ? '' : 'disabled'} onclick="startForest()">🌲 เดินป่า (ใช้ ⚡${cost})</button>`;
@@ -9570,7 +9792,7 @@
             const dexCells = [...FOREST_FINDS.map(k => [k, f.found[k] || 0, itemInfo(k)]), ...seeds.map(s => [s, f.found['seed:' + s] || 0, { e: VEGGIES[s].e, name: 'เมล็ด' + VEGGIES[s].name }])]
                 .map(([k, n, it]) => n ? `<div class="museum-cell is-have"><span>${it.e}</span><small>${it.name}</small><b class="forest-n">${n}</b></div>` : `<div class="museum-cell"><span>❔</span><small>???</small></div>`).join('');
             const html = `${bar}${scene}<p class="pond-msg forest-msg" aria-live="polite">${escHtml(forestMsg || 'เดินป่ารอบละ 9 พุ่ม แต่ละพุ่มซ่อนของไว้ บางพุ่มมีกระรอกใจดี บางพุ่มมีลิงจอมซน 🐒')}</p>`
-                + `${eat}<div class="modal-btn-group">${action}</div>`
+                + `${riskAskHTML('forest', 'openBush')}${eat}<div class="modal-btn-group">${action}</div>`
                 + `<p class="veg-book-head">🪚 งานไม้: ทำของแต่งสวนจากไม้ป่า (วางในสวนให้เลย)</p>${craft}`
                 + `<p class="veg-book-head">🌲 ของป่าที่เคยเจอ · เดินป่าแล้ว ${f.trips} รอบ</p><div class="museum-grid">${dexCells}</div>`
                 + `<p class="shop-note">แรงฟื้น 1 หน่วยทุก 6 นาที (ปิดเว็บไว้ก็ฟื้น) · พักไม่เกินลิมิต +${ENERGY_BREAK} · กินอาหารในยุ้งฉางฟื้นแรง · ลิงชอบขโมยของ พกกล้วย 🍌 หรือมีหมาเฝ้าสวนไว้กันได้ · ใบไม้แห้งกลายเป็นปุ๋ยหมัก · 🪓 อัปเกรดขวานที่แท็บอัปเกรด · 🪚 แผ่นไม้ทำที่โต๊ะช่างไม้ในโรงแปรรูป</p>`;
@@ -9598,14 +9820,14 @@
         // ยิ่งลึกยิ่งเจอของดี: ทองแดง → เหล็ก (5+) → เงิน (10+) → ทอง (18+) · อัญมณี (8+) เพชร (20+) · ฟอสซิล (4+) · ค้างคาวกินแรงเพิ่ม · หินถล่มต้องถอยขึ้น 1 ชั้น · ชั้น 30 มีหีบสมบัติ
         const MINE_FOSSILS = ['fSkull', 'fTooth', 'fNeck', 'fRib', 'fSpine', 'fArm', 'fLeg', 'fTail'];
         const MINE_FINDS = ['stone', 'coal', 'copperOre', 'ironOre', 'silverOre', 'goldOre', 'ruby', 'emerald', 'sapphire', 'diamond'];
-        const mineLuck = () => (upgLv('pick') >= 5 ? 1.3 : 1) * (gdSetOn('mine') ? 1.3 : 1);
+        const mineLuck = () => (upgLv('pick') >= 5 ? 1.3 : 1) * (gdSetOn('mine') ? 1.3 : 1) * (1 + 0.1 * sk('mine'));
         // [ของ, น้ำหนักสุ่ม, จำนวนต่ำสุด, สูงสุด, ของหายาก]
         const mineTable = f => [['stone', 30, 1, 2], ['coal', 14, 1, 2], ['copperOre', f < 15 ? 12 : 6, 1, 2], ['ironOre', f >= 5 ? 10 : 0, 1, 2],
             ['silverOre', f >= 10 ? 7 : 0, 1, 1, true], ['goldOre', f >= 18 ? 6 : 0, 1, 1, true], ['ruby', f >= 8 ? 1.5 : 0, 1, 1, true], ['emerald', f >= 8 ? 1.5 : 0, 1, 1, true],
             ['sapphire', f >= 12 ? 1.5 : 0, 1, 1, true], ['diamond', f >= 20 ? 0.8 : 0, 1, 1, true], ['fossil', f >= 4 ? 1.6 : 0, 1, 1, true],
             ['dust', 12, 1, 1], ['bat', f >= 3 ? 4 : 0, 1, 1], ['cavein', f >= 6 ? 1 : 0, 1, 1]].filter(x => x[1] > 0);
         function mineFloorCells(f) {
-            if (Array.isArray(window.fixedMine)) return window.fixedMine.slice(0, 25).map(x => ({ k: x.k, n: x.n || 1, hp: x.hp || 1, open: false })); // ให้เทสต์กำหนดหินได้
+            if (Array.isArray(window.fixedMine)) return window.fixedMine.slice(0, 25).map(x => ({ k: x.k, n: x.n || 1, hp: x.hp || 1, open: false, ...trapBits(x, 'mine') })); // ให้เทสต์กำหนดหินได้
             const t = mineTable(f), luck = mineLuck(), w = x => x[1] * (x[4] ? luck : 1), total = t.reduce((s, x) => s + w(x), 0);
             const cells = Array.from({ length: 25 }, () => {
                 let r = Math.random() * total;
@@ -9613,14 +9835,20 @@
                 return { k, n: lo + Math.floor(Math.random() * (hi - lo + 1)), hp: Math.random() < 0.2 + f / 60 ? 2 : 1, open: false }; // ยิ่งลึกหินแข็งยิ่งเยอะ
             });
             cells[Math.floor(Math.random() * 25)] = { k: f >= MINE_FLOORS ? 'chest' : 'ladder', n: 1, hp: 1, open: false };
+            // หิน ⚠️ ได้แร่จากชั้นที่ลึกกว่า 6 ชั้น แต่อาจมีกับดัก (เริ่มชั้น 2)
+            const deep = mineTable(Math.min(MINE_FLOORS, f + 6)).filter(x => !['dust', 'bat', 'cavein'].includes(x[0])), wd = x => x[1] * (x[4] ? luck * 4 : 1), wt = deep.reduce((s, x) => s + wd(x), 0);
+            if (f >= 2) armTraps('mine', cells, () => { let r = Math.random() * wt; const [k, , lo, hi] = deep.find(x => (r -= wd(x)) <= 0) || deep[0]; return { k, n: lo + Math.floor(Math.random() * (hi - lo + 1)) }; },
+                1 + Math.floor(Math.random() * 2) + (f >= 15 ? 1 : 0), 0.025);
             return cells;
         }
         let mineMsg = '', mineNew = -1;
         function enterMine(start) {
             const m = veg.mine;
             if (farmLevel() < MINE_LEVEL || m.floor) return;
+            if (hpNow() < HP_TRIP) { mineMsg = hpLowMsg(); renderFarmPanel(); return; }
             start = start === 1 || (start % 5 === 0 && start <= m.lift) ? start : 1;
             Object.assign(m, { floor: start, cells: mineFloorCells(start) });
+            veg.trip = { z: 'mine', got: [] }; riskAsk = '';
             mineMsg = start > 1 ? `🛗 ลงลิฟต์มาชั้น ${start} แล้ว ทุบหินหาบันไดลงต่อ` : '⛏️ เข้าเหมืองแล้ว ทุบหินก้อนละ 1 ⚡ หาบันไดลงชั้นถัดไป';
             mineNew = -1; saveVeg(); playSound('pop');
             renderFarmPanel(); renderFarmStatus();
@@ -9629,26 +9857,31 @@
             const m = veg.mine;
             if (!m.floor) return;
             Object.assign(m, { floor: 0, cells: null });
+            veg.trip = { z: '', got: [] }; riskAsk = '';
             mineMsg = `🏃 ขึ้นจากเหมืองแล้ว${m.lift ? ` ครั้งหน้านั่งลิฟต์ลงชั้น ${m.lift} ได้เลย` : ''}`;
             saveVeg(); renderFarmPanel(); renderFarmStatus();
         }
         function mineFind(k, n) {
             giveItem(k, n);
-            veg.mine.found[k] = Math.min(1e6, (veg.mine.found[k] || 0) + n);
+            veg.mine.found[k] = Math.min(1e6, (veg.mine.found[k] || 0) + n); tripNote('mine', k, n);
             luckGain(itemRarity(k) || 'common'); rollTreasure('mine');
         }
-        function hitRock(i) {
+        function hitRock(i, go) {
             const m = veg.mine, c = m.cells && m.cells[i];
             if (!c || !m.floor) return;
             if (c.open) { if (c.k === 'ladder') mineDown(); return; }
-            if (!useEnergy(1)) { mineMsg = '⚡ แรงหมดแล้ว รอแรงฟื้น พักให้ดีตามเวลา หรือกินอาหารก่อนนะ'; mineNew = -1; renderFarmPanel(); return; }
-            c.hp = c.hp > 1 && Math.random() < upgLv('pick') * 0.15 ? 0 : c.hp - 1; // อีเต้อระดับสูงทุบหินแข็งทีเดียวแตก
+            if (c.risk && !c.cracked && !go && riskAsk !== 'mine:' + i) { riskAsk = 'mine:' + i; mineMsg = riskMsg('mine'); mineNew = -1; renderFarmPanel(); return; }
+            riskAsk = '';
+            if (!skFree('mine') && !useEnergy(1)) { mineMsg = '⚡ แรงหมดแล้ว รอแรงฟื้น พักให้ดีตามเวลา หรือกินอาหารก่อนนะ'; mineNew = -1; renderFarmPanel(); return; }
+            c.hp = c.hp > 1 && (sk('mine') >= SKILL_MAX || Math.random() < upgLv('pick') * 0.15) ? 0 : c.hp - 1; // อีเต้อระดับสูงทุบหินแข็งทีเดียวแตก
             if (c.hp > 0) { c.cracked = true; mineMsg = '🪨 หินก้อนนี้แข็ง! ทุบอีกที'; mineNew = -1; saveVeg(); playSound('pop'); renderFarmPanel(); renderFarmStatus(); return; }
             c.open = true; mineNew = i;
             m.rocks = Math.min(1e7, m.rocks + 1); passNote('mine');
             const name = k => `${itemInfo(k).e} ${itemInfo(k).name}`;
             let sound = 'pop';
-            if (c.k === 'ladder') mineMsg = '🪜 เจอบันไดแล้ว! แตะที่บันไดหรือปุ่มด้านล่างเพื่อลงชั้นถัดไป';
+            const tr = trapHit('mine', c);
+            if (tr && tr.lost) { mineMsg = tr.msg; sound = 'boing'; }
+            else if (c.k === 'ladder') mineMsg = '🪜 เจอบันไดแล้ว! แตะที่บันไดหรือปุ่มด้านล่างเพื่อลงชั้นถัดไป';
             else if (c.k === 'chest') {
                 const fos = MINE_FOSSILS[Math.floor(Math.random() * MINE_FOSSILS.length)];
                 mineFind('diamond', 1); mineFind('goldBar', 2); mineFind(fos, 1); m.chests = Math.min(1e5, m.chests + 1);
@@ -9679,7 +9912,10 @@
                 if (rarAtLeast(rar, 'legendary')) fireConfetti();
                 if (rar) sound = 'welcome';
             }
+            if (tr && !tr.lost) mineMsg = `${tr.msg} · ${mineMsg}`;
+            else if (c.risk && !tr) mineMsg = `⚠️ เสี่ยงแล้วคุ้ม! ${mineMsg}`;
             addXP(1);
+            if (tr && tr.down) { faint('mine'); return; }
             saveVeg(); playSound(sound);
             renderFarmPanel(); renderFarmStatus(); updateBasketFood();
         }
@@ -9708,6 +9944,11 @@
                 + (c.cracked ? '<path d="M21 3l-3 9 5 4-4 7 3 8M18 12l-7 3M23 16l7 1" stroke="#2B2140" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.85"/>' : '') + '</svg>';
         }
         function mineFace(c) {
+            if (c.hit && c.risk) return TRAPS.mine[c.trap][0];
+            if (c.hit) return `${mineFace0(c)}<i>${TRAPS.mine[c.trap][0]}</i>`;
+            return mineFace0(c);
+        }
+        function mineFace0(c) {
             if (c.k === 'ladder') return '🪜';
             if (c.k === 'chest') return '🎁';
             if (c.k === 'dust') return '💨';
@@ -9715,7 +9956,7 @@
             if (c.k === 'cavein') return '💥';
             return itemInfo(c.k) ? `${itemInfo(c.k).e}${c.n > 1 ? `<b>×${c.n}</b>` : ''}` : '❔';
         }
-        const mineLabel = c => ({ ladder: 'บันไดลงชั้นถัดไป', chest: 'หีบสมบัติ', dust: 'ฝุ่น', bat: 'ค้างคาว', cavein: 'หินถล่ม' })[c.k] || (itemInfo(c.k) ? `${itemInfo(c.k).name} ×${c.n}` : '');
+        const mineLabel = c => c.hit && c.risk ? `โดน${TRAPS.mine[c.trap][1]}` : ({ ladder: 'บันไดลงชั้นถัดไป', chest: 'หีบสมบัติ', dust: 'ฝุ่น', bat: 'ค้างคาว', cavein: 'หินถล่ม' })[c.k] || (itemInfo(c.k) ? `${itemInfo(c.k).name} ×${c.n}` : '');
         const MINE_ENTRANCE = '<svg class="mine-entrance" viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="mi-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7D9A8"/><stop offset="1" stop-color="#F4E7CF"/></linearGradient></defs>'
             + '<rect width="320" height="150" fill="url(#mi-sky)"/><path d="M0 70Q70 20 160 26T320 64V150H0z" fill="#9C7B5C"/><path d="M0 92Q90 60 170 72T320 86V150H0z" fill="#B48F6A"/>'
             + '<path d="M118 150V86q0-34 42-34t42 34v64z" fill="#2B2033"/><path d="M112 150V82h8v68zM200 150V82h8v68zM106 78h108v10H106z" fill="#7A4E2D"/><path d="M118 80l84 0" stroke="#5A3A20" stroke-width="2"/>'
@@ -9727,7 +9968,7 @@
             const en = energyNow();
             return `<div class="energy-box"><span class="energy-label">⚡ แรง <b id="forest-energy">${en}/${ENERGY_MAX}</b></span>`
                 + `<span class="farm-xp energy-bar" role="progressbar" aria-label="แรง" aria-valuemin="0" aria-valuemax="${ENERGY_MAX}" aria-valuenow="${Math.min(en, ENERGY_MAX)}"><span style="width:${Math.min(100, en / ENERGY_MAX * 100).toFixed(0)}%"></span></span>`
-                + `<span class="farm-card-sub" id="forest-energy-next">${energyText()} · พักดี +${ENERGY_BREAK} · กินอาหารฟื้นแรง</span></div>`;
+                + `<span class="farm-card-sub" id="forest-energy-next">${energyText()} · พักดี +${ENERGY_BREAK} · กินอาหารฟื้นแรง</span></div>` + hpBoxHTML();
         }
         function zoneCraftHTML(list) {
             return Object.entries(list).map(([id, [name, mats]]) => {
@@ -9755,14 +9996,14 @@
                 main = `<div class="mine-head"><b>⛏️ ชั้น ${m.floor}/${MINE_FLOORS}</b><span class="mine-depth" aria-hidden="true"><i style="width:${(m.floor / MINE_FLOORS * 100).toFixed(0)}%"></i></span><small>เหลือ ${left} ก้อน</small></div>`
                     + `<div class="mine-scene" style="--depth:${Math.min(1, m.floor / MINE_FLOORS).toFixed(2)}">${m.cells.map((c, i) => {
                         const go = c.open && c.k === 'ladder';
-                        return `<button type="button" class="mine-rock${c.open ? ' is-open' : ''}${c.hp > 1 ? ' is-hard' : ''}${c.open && i === mineNew ? ' is-new' : ''}${go ? ' is-ladder' : ''}" ${!c.open || go ? '' : 'disabled'} onclick="hitRock(${i})"`
-                            + ` aria-label="${c.open ? (go ? 'ลงบันได' : 'เจอแล้ว: ' + mineLabel(c)) : `หินก้อนที่ ${i + 1}${c.hp > 1 ? ' (แข็ง)' : ''}`}">${c.open ? `<span class="mr-rubble"></span><span class="fb-find">${mineFace(c)}</span>` : mineRockSVG(c, m.floor, i)}</button>`;
+                        return `<button type="button" class="mine-rock${c.open ? ' is-open' : ''}${c.hp > 1 ? ' is-hard' : ''}${!c.open && c.risk ? ' is-risk' : ''}${c.open && i === mineNew ? ' is-new' : ''}${go ? ' is-ladder' : ''}" ${!c.open || go ? '' : 'disabled'} onclick="hitRock(${i})"`
+                            + ` aria-label="${c.open ? (go ? 'ลงบันได' : 'เจอแล้ว: ' + mineLabel(c)) : `หินก้อนที่ ${i + 1}${c.hp > 1 ? ' (แข็ง)' : ''}${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${c.open ? `<span class="mr-rubble"></span><span class="fb-find">${mineFace(c)}</span>` : mineRockSVG(c, m.floor, i) + (c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : '')}</button>`;
                     }).join('')}</div>`
-                    + `<p class="pond-msg forest-msg" aria-live="polite">${escHtml(mineMsg)}</p>`
+                    + `<p class="pond-msg forest-msg" aria-live="polite">${escHtml(mineMsg)}</p>` + riskAskHTML('mine', 'hitRock')
                     + `<div class="modal-btn-group">${ladder && m.floor < MINE_FLOORS ? `<button type="button" class="modal-btn btn-primary" onclick="mineDown()">🪜 ลงชั้น ${m.floor + 1}</button>` : ''}<button type="button" class="modal-btn btn-secondary" onclick="leaveMine()">🏃 ขึ้นจากเหมือง</button></div>`;
                 if (en < 1) {
                     const eats = eatableKeys().slice(0, 6);
-                    main += `<div class="forest-eat"><span class="farm-card-sub">🍽️ แรงหมด กินอาหารในยุ้งฉางเพิ่มแรงได้:</span>${eats.length ? `<div class="farm-chips">${eats.map(k => { const it = itemInfo(k); return `<button type="button" class="chip-btn" onclick="eatDish('${k}')">${it.e} ${it.name}${starText(it.q)} ×${veg.inv[k]} · ⚡+${dishEnergy(k)}</button>`; }).join('')}</div>` : '<span class="farm-card-sub">ยังไม่มีอาหารในยุ้งฉาง ไปทำที่ครัว 🍳 ก่อนนะ</span>'}</div>`;
+                    main += `<div class="forest-eat"><span class="farm-card-sub">🍽️ แรงหมด กินอาหารในยุ้งฉางเพิ่มแรงได้:</span>${eats.length ? `<div class="farm-chips">${eats.map(k => { const it = itemInfo(k); return `<button type="button" class="chip-btn" onclick="eatDish('${k}')">${it.e} ${it.name}${starText(it.q)} ×${veg.inv[k]} · ⚡+${foodEn(k)}</button>`; }).join('')}</div>` : '<span class="farm-card-sub">ยังไม่มีอาหารในยุ้งฉาง ไปทำที่ครัว 🍳 ก่อนนะ</span>'}</div>`;
                 }
             }
             const cells = [...MINE_FINDS, ...MINE_FOSSILS].map(k => { const n = m.found[k] || 0, it = itemInfo(k); return n ? `<div class="museum-cell is-have"><span>${it.e}</span><small>${it.name}</small><b class="forest-n">${n}</b></div>` : '<div class="museum-cell"><span>❔</span><small>???</small></div>'; }).join('');
@@ -9792,36 +10033,45 @@
             ['seaweed', 12, 1, 3], ['coral', 4, 1, 1, true], ['pearl', 1, 1, 1, true], ['wood', 5, 1, 2], ['trash', 7, 1, 1], ['bottle', 2.5, 1, 1]];
         const BEACH_FINDS = ['conch', 'scallop', 'starfish', 'seaGlass', 'giantClam', 'seaCrab', 'seaweed', 'coral', 'pearl'];
         const BOTTLE_NOTES = ['"ใครเก็บได้ ขอให้วันนี้ได้พักครบทุกเบรกนะ"', '"ฉันอยู่เกาะข้างๆ ปลูกมะพร้าวเยอะมาก มาเที่ยวสิ"', '"แผนที่สมบัติ… ล้อเล่น ข้างในมีแค่เหรียญ"', '"อย่าลืมดื่มน้ำ อย่าลืมยืดเส้น"', '"จากนางเงือกที่เบื่อปลาทู"'];
-        const boatCasts = () => BOAT_CASTS + (gdSetOn('ocean') ? 1 : 0);
+        const boatCasts = () => BOAT_CASTS + (gdSetOn('ocean') ? 1 : 0) + (sk('sea') >= SKILL_MAX ? 1 : 0);
         let seaView = 'beach', seaMsg = '', seaNew = -1;
         function setSeaView(v) { if (fishing.state !== 'idle' && fishing.where === 'sea') return; seaView = v; seaMsg = ''; renderFarmPanel(); }
         function startBeach() {
             const s = veg.sea;
             if (farmLevel() < SEA_LEVEL || (s.cells && s.cells.some(c => !c.open))) return;
-            if (!useEnergy(SEA_COST)) { seaMsg = `⚡ แรงไม่พอ ต้องใช้ ${SEA_COST} (มี ${energyNow()})`; renderFarmPanel(); return; }
+            if (hpNow() < HP_TRIP) { seaMsg = hpLowMsg(); renderFarmPanel(); return; }
+            const free = skFree('sea');
+            if (!free && !useEnergy(SEA_COST)) { seaMsg = `⚡ แรงไม่พอ ต้องใช้ ${SEA_COST} (มี ${energyNow()})`; renderFarmPanel(); return; }
             let cells = [];
-            if (Array.isArray(window.fixedBeach)) cells = window.fixedBeach.slice(0, 8).map(x => ({ k: x.k, n: x.n || 1, open: false })); // ให้เทสต์กำหนดของในทรายได้
+            if (Array.isArray(window.fixedBeach)) cells = window.fixedBeach.slice(0, 8).map(x => ({ k: x.k, n: x.n || 1, open: false, ...trapBits(x, 'beach') })); // ให้เทสต์กำหนดของในทรายได้
             else {
-                const w = x => x[1] * (x[4] && gdSetOn('beach') ? 1.3 : 1), total = BEACH_LOOT.reduce((a, x) => a + w(x), 0);
+                const w = x => x[1] * (x[4] ? (gdSetOn('beach') ? 1.3 : 1) * (1 + 0.1 * sk('sea')) : 1), total = BEACH_LOOT.reduce((a, x) => a + w(x), 0);
                 for (let i = 0; i < 8; i++) {
                     let r = Math.random() * total;
                     const [k, , lo, hi] = BEACH_LOOT.find(x => (r -= w(x)) <= 0) || BEACH_LOOT[0];
                     cells.push({ k, n: lo + Math.floor(Math.random() * (hi - lo + 1)), open: false });
                 }
+                const good = BEACH_LOOT.filter(x => !['trash', 'bottle'].includes(x[0])), w5 = x => w(x) * (x[4] ? 5 : 1), gt = good.reduce((a, x) => a + w5(x), 0);
+                armTraps('beach', cells, () => { let r = Math.random() * gt; const [k, , lo, hi] = good.find(x => (r -= w5(x)) <= 0) || good[0]; return { k, n: lo + Math.floor(Math.random() * (hi - lo + 1)) }; }, 1 + (Math.random() < 0.4 ? 1 : 0), 0.04);
             }
             Object.assign(s, { cells, beach: Math.min(1e6, s.beach + 1) });
-            seaMsg = '🏝️ น้ำลงแล้ว! แตะกองทรายที่มีประกายวิบวับให้ครบ 8 จุด'; seaNew = -1;
+            veg.trip = { z: 'beach', got: [] }; riskAsk = '';
+            seaMsg = `🏝️ น้ำลงแล้ว! แตะกองทรายที่มีประกายวิบวับให้ครบ 8 จุด${cells.some(c => c.risk) ? ' · ระวังกองที่มีป้าย ⚠️' : ''}${free ? ' · สกิลชาวเล: รอบนี้ไม่เสียแรง!' : ''}`; seaNew = -1;
             saveVeg(); playSound('pop'); passNote('sea');
             renderFarmPanel(); renderFarmStatus();
         }
         function seaFind(k, n) { giveItem(k, n); veg.sea.found[k] = Math.min(1e6, (veg.sea.found[k] || 0) + n); luckGain(itemRarity(k) || 'common'); rollTreasure('sea'); }
-        function digSand(i) {
+        function digSand(i, go) {
             const s = veg.sea, c = s.cells && s.cells[i];
             if (!c || c.open) return;
+            if (c.risk && !go && riskAsk !== 'beach:' + i) { riskAsk = 'beach:' + i; seaMsg = riskMsg('beach'); seaNew = -1; renderFarmPanel(); return; }
+            riskAsk = '';
             c.open = true; seaNew = i;
             const it = itemInfo(c.k);
             let sound = 'pop';
-            if (c.k === 'trash') {
+            const tr = trapHit('beach', c);
+            if (tr && tr.lost) { seaMsg = tr.msg; sound = 'boing'; }
+            else if (c.k === 'trash') {
                 s.clean = Math.min(1e6, s.clean + 1); addCoins(2);
                 seaMsg = '🧴 ขยะพลาสติกติดทราย เก็บไปทิ้งให้ +🪙2 (ค่ารีไซเคิล) ชายหาดสะอาดขึ้นแล้ว 💙';
             } else if (c.k === 'bottle') {
@@ -9829,26 +10079,35 @@
                 seaMsg = `🍾 ขวดจดหมายลอยมาเกยหาด ข้างในมี 🪙${coins} และข้อความว่า ${BOTTLE_NOTES[Math.floor(Math.random() * BOTTLE_NOTES.length)]}`;
                 sound = 'welcome';
             } else if (it) {
-                seaFind(c.k, c.n);
+                seaFind(c.k, c.n); tripNote('beach', c.k, c.n);
                 const rar = FARM_PRODUCTS[c.k] && FARM_PRODUCTS[c.k].rar;
                 seaMsg = `${it.e} ${it.name} ×${c.n}${c.k === 'wood' ? ' (ไม้ลอยน้ำ)' : ''}${rar ? ` · ${RARITY[rar].e} ของ${RARITY[rar].name}!` : ''}`;
                 if (rarAtLeast(rar, 'legendary')) fireConfetti();
                 if (rar) sound = 'welcome';
             }
+            if (tr && !tr.lost) seaMsg = `${tr.msg} · ${seaMsg}`;
+            else if (c.risk && !tr) seaMsg = `⚠️ เสี่ยงแล้วคุ้ม! ${seaMsg}`;
             addXP(1);
-            if (s.cells.every(x => x.open)) { addXP(4); seaMsg += ' · 🏝️ เดินครบหาดแล้ว +4 XP'; }
+            if (tr && tr.down) { faint('beach'); return; }
+            beachDone();
             saveVeg(); playSound(sound);
             renderFarmPanel(); renderFarmStatus(); updateBasketFood();
+        }
+        function beachDone() {
+            const s = veg.sea;
+            if (!s.cells || !s.cells.every(x => x.open)) return;
+            addXP(4); seaMsg += ' · 🏝️ เดินครบหาดแล้ว +4 XP'; veg.trip = { z: '', got: [] };
         }
         // 🚤 ออกเรือ: ใช้แรงครั้งเดียวได้เหวี่ยงเบ็ด 3 ครั้ง (ชุดสวนท้องทะเล +1) ทุกครั้งต้องมีเหยื่อ
         const seaBait = () => veg.baitSel === 'gold' && veg.goldBait > 0 ? 'gold' : veg.bait > 0 ? 'bait' : veg.goldBait > 0 ? 'gold' : '';
         function startBoat() {
             const s = veg.sea;
             if (farmLevel() < SEA_LEVEL || s.casts > 0 || fishing.state !== 'idle') return;
-            if (!useEnergy(SEA_COST)) { seaMsg = `⚡ แรงไม่พอ ต้องใช้ ${SEA_COST} (มี ${energyNow()})`; renderFarmPanel(); return; }
+            const free = skFree('sea');
+            if (!free && !useEnergy(SEA_COST)) { seaMsg = `⚡ แรงไม่พอ ต้องใช้ ${SEA_COST} (มี ${energyNow()})`; renderFarmPanel(); return; }
             s.casts = boatCasts(); s.boats = Math.min(1e6, s.boats + 1);
             fishing.result = null; fishing.where = 'sea';
-            seaMsg = `🚤 ออกเรือมากลางทะเลแล้ว เหวี่ยงเบ็ดได้ ${s.casts} ครั้ง (ต้องใช้เหยื่อทุกครั้ง)`;
+            seaMsg = `🚤 ออกเรือมากลางทะเลแล้ว เหวี่ยงเบ็ดได้ ${s.casts} ครั้ง (ต้องใช้เหยื่อทุกครั้ง)${free ? ' · สกิลชาวเล: ไม่เสียแรง!' : ''}`;
             saveVeg(); playSound('pop'); passNote('sea');
             renderFarmPanel(); renderFarmStatus();
         }
@@ -9856,6 +10115,7 @@
             const s = veg.sea, bait = seaBait();
             if (fishing.state !== 'idle' || s.casts < 1 || !bait) return;
             if (bait === 'gold') veg.goldBait -= 1; else veg.bait -= 1;
+            baitSave(bait);
             s.casts -= 1; saveVeg();
             Object.assign(fishing, { state: 'waiting', result: null, fish: null, bait, where: 'sea' });
             seaMsg = '';
@@ -9873,9 +10133,10 @@
         }
         function collectSalt() {
             if (!saltReady()) return;
-            veg.sea.salt = 0; seaFind('salt', SALT_YIELD); addXP(3);
+            const n = SALT_YIELD + (sk('sea') >= SKILL_MAX ? 2 : 0);
+            veg.sea.salt = 0; seaFind('salt', n); addXP(3);
             saveVeg(); playSound('welcome');
-            seaMsg = `🧂 ได้เกลือทะเล ×${SALT_YIELD} เข้ายุ้งฉางแล้ว ใช้ทำปลาเค็ม น้ำปลา และเมนูทะเล`;
+            seaMsg = `🧂 ได้เกลือทะเล ×${n} เข้ายุ้งฉางแล้ว ใช้ทำปลาเค็ม น้ำปลา และเมนูทะเล`;
             renderFarmPanel(); renderFarmStatus(); updateBasketFood();
         }
         const BEACH_POS = [[14, 60], [38, 57], [63, 59], [87, 62], [22, 80], [49, 78], [74, 82], [92, 90]];
@@ -9902,12 +10163,12 @@
             if (seaView === 'beach') {
                 const open = !!(s.cells && s.cells.some(c => !c.open)), cells = s.cells || Array(8).fill(null);
                 main = `<div class="forest-scene beach-scene${open ? ' is-trip' : ''}">${BEACH_BG}${cells.map((c, i) => {
-                    const [x, y] = BEACH_POS[i], done = !!(c && c.open), face = !done ? '' : c.k === 'trash' ? '🧴' : c.k === 'bottle' ? '🍾' : `${itemInfo(c.k).e}${c.n > 1 ? `<b>×${c.n}</b>` : ''}`;
-                    return `<button type="button" class="forest-bush sand-spot${done ? ' is-open' : ''}${done && i === seaNew ? ' is-new' : ''}" style="left:${x}%;top:${y}%;z-index:${y}" ${c && !done ? '' : 'disabled'} onclick="digSand(${i})"`
-                        + ` aria-label="${!c ? 'กองทราย (เริ่มเดินชายหาดก่อน)' : done ? 'เจอแล้ว' : `กองทรายที่ ${i + 1} แตะเพื่อขุด`}">${sandSVG(i)}${done ? `<span class="fb-find">${face}</span>` : ''}</button>`;
+                    const [x, y] = BEACH_POS[i], done = !!(c && c.open), face = !done ? '' : c.skip ? '↪️' : c.hit && c.risk ? TRAPS.beach[c.trap][0] : c.k === 'trash' ? '🧴' : c.k === 'bottle' ? '🍾' : `${itemInfo(c.k).e}${c.n > 1 ? `<b>×${c.n}</b>` : ''}`;
+                    return `<button type="button" class="forest-bush sand-spot${done ? ' is-open' : ''}${done && i === seaNew ? ' is-new' : ''}${c && !done && c.risk ? ' is-risk' : ''}" style="left:${x}%;top:${y}%;z-index:${y}" ${c && !done ? '' : 'disabled'} onclick="digSand(${i})"`
+                        + ` aria-label="${!c ? 'กองทราย (เริ่มเดินชายหาดก่อน)' : done ? 'เจอแล้ว' : `กองทรายที่ ${i + 1} แตะเพื่อขุด${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${sandSVG(i)}${c && !done && c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : ''}${done ? `<span class="fb-find">${face}</span>` : ''}</button>`;
                 }).join('')}${!open ? `<span class="forest-hint">${s.cells ? 'เดินครบหาดแล้ว 🐚' : 'กดเดินชายหาดเพื่อเริ่ม'}</span>` : ''}</div>`
                     + `<p class="pond-msg forest-msg" aria-live="polite">${escHtml(seaMsg || 'น้ำลงทีไรมีของขึ้นมาเกยหาด เปลือกหอย ปู สาหร่าย ปะการัง บางทีมีไข่มุกด้วย 🫧')}</p>`
-                    + `<div class="modal-btn-group">${open ? `<span class="farm-done">ขุดทรายที่เหลืออีก ${s.cells.filter(c => !c.open).length} จุด</span>` : `<button type="button" class="modal-btn btn-primary" ${en >= SEA_COST ? '' : 'disabled'} onclick="startBeach()">🏝️ เดินชายหาด (ใช้ ⚡${SEA_COST})</button>`}</div>`;
+                    + riskAskHTML('beach', 'digSand') + `<div class="modal-btn-group">${open ? `<span class="farm-done">ขุดทรายที่เหลืออีก ${s.cells.filter(c => !c.open).length} จุด</span>` : `<button type="button" class="modal-btn btn-primary" ${en >= SEA_COST ? '' : 'disabled'} onclick="startBeach()">🏝️ เดินชายหาด (ใช้ ⚡${SEA_COST})</button>`}</div>`;
             } else if (seaView === 'boat') {
                 const f = fishing, r = f.where === 'sea' ? f.result : null, hooked = busy && f.fish && FISH[f.fish], big = hooked && FISH_FIGHT[hooked.r];
                 const msg = busy && f.state === 'waiting' ? 'รอปลาทะเลกินเหยื่อ… คลื่นแรงหน่อยนะ 🌊' : busy && f.state === 'bite' ? (big ? `❗❗ ${RARITY[hooked.r].e} ตัวใหญ่ติดเบ็ด ดึงเลย!` : '❗ ปลากินเบ็ดแล้ว! ดึงเร็ว!')
@@ -10141,6 +10402,7 @@
 
         // --- ❓ วิธีเล่นแต่ละหน้า ---
         const TAB_HELP = {
+            skills: 'เลเวลขึ้นได้ 1 แต้มสกิล เลือกลงสายที่ชอบ 9 สาย สายละ 5 ขั้น ขั้น 5 ได้ความสามารถพิเศษ ล้างแต้มแล้วเลือกใหม่ได้ (เสียเหรียญ)',
             event: 'อีเวนต์ตามเทศกาล: เก็บผัก จับของที่ลอยมาในสวน ให้ของคนที่แวะมา แล้วเอาแต้มเทศกาลไปแลกหมวกกับของแต่งที่มีเฉพาะช่วงนี้',
             orders: 'เพื่อนในขบวนสั่งของวันละ 6 ใบ ส่งครบได้เหรียญกับ XP · ขอค่าจ้างเพิ่มได้ใบละครั้ง (ลุ้น +20% หรือโดนลด) · กด 🔄 เปลี่ยนชุดใหม่ได้วันละ 2 ครั้ง',
             friends: 'สร้างห้องหรือใส่รหัสเพื่อนเพื่อเล่นด้วยกัน: รดน้ำ จับหนอน ส่งของขวัญ แอบเก็บผัก ประกวดรายวัน ประมูล และแข่งลีกประจำเดือน',
