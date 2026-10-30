@@ -8825,7 +8825,7 @@
         const MYTH_ROLL = 6, MYTH_BASE = 10, MYTH_STEP = 3;
         const mythChance = () => Math.min(100, MYTH_BASE + MYTH_STEP * veg.mythPity);
         const BOX_RATES = [['uncommon', 22], ['rare', 47], ['epic', 25], ['legendary', 5], ['mythic', 1]];
-        const DEX_CROPS = [...new Set([...BASE_VEGGIES, ...Object.values(SEASON_VEGGIE), ...RARE_VEGGIES, ...Object.keys(FOREST_CROPS), ...TREE_ONLY, ...HYBRID_VEGGIES, ...Object.keys(LEGEND_VEGGIES), ...Object.keys(MYTH_VEGGIES)])];
+        const DEX_CROPS = [...new Set([...BASE_VEGGIES, ...Object.values(SEASON_VEGGIE), ...RARE_VEGGIES, ...Object.keys(FOREST_CROPS), 'apple', 'pear', 'olive', 'greenApple', ...HYBRID_VEGGIES, ...Object.keys(LEGEND_VEGGIES), 'goldLantern', ...Object.keys(MYTH_VEGGIES), 'moonFruit'])];
         const RARITY_NOTE = { common: 'ปลูกได้ตลอด เมล็ดฟรี', uncommon: 'เมล็ดจากร้านค้า และผลจากต้นสาลี่ ต้นมะกอก', rare: 'ผักเทศกาล ผลไม้จากต้น และเมล็ดจากป่า', epic: 'ผักลูกผสม ต้องผสมพันธุ์เองหรือลุ้นจากกล่อง', legendary: 'เมล็ดจากกล่องปริศนาหรือเศษเมล็ดตำนาน มีพลังพิเศษ · ผลจากต้นโทงเทงทอง', mythic: 'เมล็ดเทพ: กล่องปริศนา 1% · ลุ้นด้วยเศษเมล็ด (ครั้งละ 6 ชิ้น โอกาสค่อยๆ เพิ่ม) · ปลูกผักตำนานสองชนิดติดกันแล้วลุ้น 10% · ผลจากต้นผลจันทรา',
             immortal: 'ระดับอมตะ ของที่แทบไม่มีใครเคยเห็น', cosmic: 'ระดับจักรวาล หายากที่สุดในเกม' };
         const FISH_NOTE = { common: 'ติดเบ็ดง่าย มีทั้งวัน', uncommon: 'ติดเบ็ดบ่อย ราคาดีกว่าปลาธรรมดา', rare: 'ออกมาบางเวลาหรือบางอากาศ', epic: 'ติดเบ็ดแล้วต้องดึงสู้ 5 ครั้ง', legendary: 'นานๆ โผล่ที ต้องดึงสู้ 8 ครั้ง ได้ 🧩 3 ชิ้น', mythic: 'กินเฉพาะเหยื่อทอง ✨ จากหนอนทอง ต้องดึงสู้ 10 ครั้ง ได้ 🧩 6 ชิ้น', immortal: 'ต้องดึงสู้ 12 ครั้ง ได้ 🧩 10 ชิ้น', cosmic: 'ต้องดึงสู้ 14 ครั้ง ได้ 🧩 15 ชิ้น' };
