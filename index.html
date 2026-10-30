@@ -8968,9 +8968,9 @@
         }
 
         // --- 📖 สมุดสะสม: ผักผลไม้ ปลา อาหาร ดอกไม้ และกระเป๋าเมล็ด พร้อมรายละเอียดทุกชนิด ---
-        const FRAG_NEED = 10, BOX_PRICE = 20, BOX_PITY = 15;
-        // ลุ้นเมล็ดเทพ: ใช้เศษ 6 ชิ้นต่อครั้ง โอกาสเริ่ม 2% พลาดแต่ละครั้ง +1% (ได้แล้วเริ่มนับใหม่) · เฉลี่ยราว 68 ชิ้น ของเทพต้องหายากจริง
-        const MYTH_ROLL = 6, MYTH_BASE = 2, MYTH_STEP = 1, MYTH_PITY_MAX = 98;
+        const FRAG_NEED = 60, BOX_PRICE = 20, BOX_PITY = 15; // ของหายากต้องได้ยาก: เมล็ดตำนานใช้เศษ 60 ชิ้น
+        // ลุ้นเมล็ดเทพ: ใช้เศษ 18 ชิ้นต่อครั้ง โอกาสเริ่ม 2% พลาดแต่ละครั้ง +1% (ได้แล้วเริ่มนับใหม่) · เฉลี่ยราว 200 ชิ้น (ราว 3 เท่าของเมล็ดตำนาน)
+        const MYTH_ROLL = 18, MYTH_BASE = 2, MYTH_STEP = 1, MYTH_PITY_MAX = 98;
         const mythChance = () => Math.min(100, MYTH_BASE + MYTH_STEP * veg.mythPity);
         const BOX_RATES = [['uncommon', 22], ['rare', 47], ['epic', 25], ['legendary', 5], ['mythic', 1]];
         const DEX_CROPS = [...new Set([...BASE_VEGGIES, ...Object.values(SEASON_VEGGIE), ...RARE_VEGGIES, ...Object.keys(FOREST_CROPS), 'apple', 'pear', 'olive', 'greenApple', ...HYBRID_VEGGIES, ...Object.keys(LEGEND_VEGGIES), 'goldLantern', ...Object.keys(MYTH_VEGGIES), 'moonFruit'])];
@@ -9048,7 +9048,7 @@
             if (rarAtLeast(r, 'legendary')) fireConfetti();
             renderDex(); renderFarmStatus();
         }
-        // 🧩 แลกเศษเมล็ด 10 ชิ้นเป็นเมล็ดตำนาน (สุ่มจากชนิดที่ยังไม่เคยเก็บก่อน) · หรือลุ้นเมล็ดเทพครั้งละ 6 ชิ้น
+        // 🧩 แลกเศษเมล็ด 60 ชิ้นเป็นเมล็ดตำนาน (สุ่มจากชนิดที่ยังไม่เคยเก็บก่อน) · หรือลุ้นเมล็ดเทพครั้งละ 6 ชิ้น
         function tradeFragments(myth) {
             const need = myth ? MYTH_ROLL : FRAG_NEED;
             if (veg.frags < need) return;
