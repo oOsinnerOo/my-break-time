@@ -6320,7 +6320,7 @@
                 eventDay: day(v.eventDay), eventClaim: day(v.eventClaim),
                 bait: int(v.bait, 99), goldBait: int(v.goldBait, 99), baitBuy: { day: day((v.baitBuy || {}).day), n: int((v.baitBuy || {}).n, 10) }, baitSel: v.baitSel === 'bait' || v.baitSel === 'gold' ? v.baitSel : '', cookHi: !!v.cookHi,
                 roam: { day: day((v.roam || {}).day), n: int((v.roam || {}).n, 8), at: Math.min(Date.now(), +((v.roam || {}).at) || Date.now()) }, // ครั้งแรกรอ 45 นาทีก่อนลุ้นหนอนจร
-                frags: int(v.frags, 999), mythPity: int(v.mythPity, 30), box: { n: int((v.box || {}).n, 1e6), pity: int((v.box || {}).pity, BOX_PITY_MAX) },
+                frags: int(v.frags, 999), mythPity: int(v.mythPity, 98), box: { n: int((v.box || {}).n, 1e6), pity: int((v.box || {}).pity, BOX_PITY_MAX) },
                 fishRecord: (() => { const o = {}; Object.keys(FISH).forEach(k => { const x = +((v.fishRecord || {})[k]); if (x > 0 && x < 1000) o[k] = Math.round(x * 10) / 10; }); return o; })(),
                 dexDay: Object.fromEntries(Object.entries(v.dexDay && typeof v.dexDay === 'object' ? v.dexDay : {}).filter(([k, d]) => (hasOwn(VEGGIES, k) || hasOwn(FISH, k)) && typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d))),
                 upg: Object.fromEntries(UPGRADE_KEYS.map(k => [k, int((v.upg || {})[k], UPG_MAX)])),
@@ -6908,9 +6908,9 @@
                 hybrid = hybridOf(key, veg.plots[mate].seed);
                 veg.hybridSeeds.push(hybrid);
             }
-            // ผักตำนานสองชนิดปลูกติดกัน ลุ้นได้เมล็ดผักเทพ 10%
+            // ผักตำนานสองชนิดปลูกติดกัน ลุ้นได้เมล็ดผักเทพ 3%
             let mythSeed = null;
-            if (hasOwn(LEGEND_VEGGIES, key) && plotNeighbors(i).some(j => veg.plots[j].type === 'veg' && hasOwn(LEGEND_VEGGIES, veg.plots[j].seed) && veg.plots[j].seed !== key) && Math.random() < 0.1) {
+            if (hasOwn(LEGEND_VEGGIES, key) && plotNeighbors(i).some(j => veg.plots[j].type === 'veg' && hasOwn(LEGEND_VEGGIES, veg.plots[j].seed) && veg.plots[j].seed !== key) && Math.random() < 0.03) {
                 mythSeed = pick(Object.keys(MYTH_VEGGIES));
                 veg.seeds[mythSeed] = Math.min(99, (veg.seeds[mythSeed] || 0) + 1);
             }
@@ -8969,12 +8969,12 @@
 
         // --- 📖 สมุดสะสม: ผักผลไม้ ปลา อาหาร ดอกไม้ และกระเป๋าเมล็ด พร้อมรายละเอียดทุกชนิด ---
         const FRAG_NEED = 10, BOX_PRICE = 20, BOX_PITY = 15;
-        // ลุ้นเมล็ดเทพ: ใช้เศษ 6 ชิ้นต่อครั้ง โอกาสเริ่ม 10% พลาดแต่ละครั้ง +3% (ได้แล้วเริ่มนับใหม่) · เฉลี่ยราว 31 ชิ้น ใกล้เคียงแบบเดิม 30 ชิ้น
-        const MYTH_ROLL = 6, MYTH_BASE = 10, MYTH_STEP = 3;
+        // ลุ้นเมล็ดเทพ: ใช้เศษ 6 ชิ้นต่อครั้ง โอกาสเริ่ม 2% พลาดแต่ละครั้ง +1% (ได้แล้วเริ่มนับใหม่) · เฉลี่ยราว 68 ชิ้น ของเทพต้องหายากจริง
+        const MYTH_ROLL = 6, MYTH_BASE = 2, MYTH_STEP = 1, MYTH_PITY_MAX = 98;
         const mythChance = () => Math.min(100, MYTH_BASE + MYTH_STEP * veg.mythPity);
         const BOX_RATES = [['uncommon', 22], ['rare', 47], ['epic', 25], ['legendary', 5], ['mythic', 1]];
         const DEX_CROPS = [...new Set([...BASE_VEGGIES, ...Object.values(SEASON_VEGGIE), ...RARE_VEGGIES, ...Object.keys(FOREST_CROPS), 'apple', 'pear', 'olive', 'greenApple', ...HYBRID_VEGGIES, ...Object.keys(LEGEND_VEGGIES), 'goldLantern', ...Object.keys(MYTH_VEGGIES), 'moonFruit'])];
-        const RARITY_NOTE = { common: 'ปลูกได้ตลอด เมล็ดฟรี', uncommon: 'เมล็ดจากร้านค้า และผลจากต้นสาลี่ ต้นมะกอก', rare: 'ผักเทศกาล ผลไม้จากต้น และเมล็ดจากป่า', epic: 'ผักลูกผสม ต้องผสมพันธุ์เองหรือลุ้นจากกล่อง', legendary: 'เมล็ดจากกล่องปริศนาหรือเศษเมล็ดตำนาน มีพลังพิเศษ · ผลจากต้นโทงเทงทอง', mythic: 'เมล็ดเทพ: กล่องปริศนา 1% · ลุ้นด้วยเศษเมล็ด (ครั้งละ 6 ชิ้น โอกาสค่อยๆ เพิ่ม) · ปลูกผักตำนานสองชนิดติดกันแล้วลุ้น 10% · ผลจากต้นผลจันทรา',
+        const RARITY_NOTE = { common: 'ปลูกได้ตลอด เมล็ดฟรี', uncommon: 'เมล็ดจากร้านค้า และผลจากต้นสาลี่ ต้นมะกอก', rare: 'ผักเทศกาล ผลไม้จากต้น และเมล็ดจากป่า', epic: 'ผักลูกผสม ต้องผสมพันธุ์เองหรือลุ้นจากกล่อง', legendary: 'เมล็ดจากกล่องปริศนาหรือเศษเมล็ดตำนาน มีพลังพิเศษ · ผลจากต้นโทงเทงทอง', mythic: 'เมล็ดเทพ: กล่องปริศนา 1% · ลุ้นด้วยเศษเมล็ด (ครั้งละ 6 ชิ้น โอกาสค่อยๆ เพิ่ม) · ปลูกผักตำนานสองชนิดติดกันแล้วลุ้น 3% · ผลจากต้นผลจันทรา',
             immortal: 'ระดับอมตะ ของที่แทบไม่มีใครเคยเห็น', cosmic: 'ระดับจักรวาล หายากที่สุดในเกม' };
         const FISH_NOTE = { common: 'ติดเบ็ดง่าย มีทั้งวัน', uncommon: 'ติดเบ็ดบ่อย ราคาดีกว่าปลาธรรมดา', rare: 'ออกมาบางเวลาหรือบางอากาศ', epic: 'ติดเบ็ดแล้วต้องดึงสู้ 5 ครั้ง', legendary: 'นานๆ โผล่ที ต้องดึงสู้ 8 ครั้ง ได้ 🧩 3 ชิ้น', mythic: 'กินเฉพาะเหยื่อทอง ✨ จากหนอนทอง ต้องดึงสู้ 10 ครั้ง ได้ 🧩 6 ชิ้น', immortal: 'ต้องดึงสู้ 12 ครั้ง ได้ 🧩 10 ชิ้น', cosmic: 'ต้องดึงสู้ 14 ครั้ง ได้ 🧩 15 ชิ้น' };
         const dex = { tab: 'crops', filter: 'all', sel: '', reveal: null };
@@ -9056,7 +9056,7 @@
             if (myth) {
                 const chance = mythChance(), roll = typeof window.fixedMyth === 'number' ? window.fixedMyth : Math.random() * 100; // ให้เทสต์กำหนดผลได้
                 if (roll >= chance) {
-                    veg.mythPity = Math.min(30, veg.mythPity + 1); saveVeg();
+                    veg.mythPity = Math.min(MYTH_PITY_MAX, veg.mythPity + 1); saveVeg();
                     dex.reveal = { miss: true, chance, next: mythChance() };
                     playSound('boing');
                     renderDex(); renderFarmStatus();
