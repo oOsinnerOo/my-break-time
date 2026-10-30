@@ -15588,7 +15588,7 @@
 
         // --- 💾 บันทึกง่าย + กันข้อมูลหาย: ปุ่มบันทึกหน้าแรก · จุดกู้คืนอัตโนมัติ 7 วัน · บันทึกลงไฟล์อัตโนมัติ · เตือนสำรอง · ดูก่อนกู้คืน ---
         const SNAP_DAYS = 7, SNAP_SAFETY = 3, BACKUP_REMIND_DAYS = 7;
-        const SAFE_IGNORE_KEYS = ['active_break_state', 's2_cmd', 'phone_qr_open', 'phone_qr_mode', 'last_backup_at', 'backup_reminded_day', 'autosave_at', 'farm_friends', 'cloud_save'];
+        const SAFE_IGNORE_KEYS = ['active_break_state', 's2_cmd', 'phone_qr_open', 'phone_qr_mode', 'last_backup_at', 'backup_reminded_day', 'autosave_at', 'farm_friends', 'cloud_save', 'cloud_last'];
         // ☁️ เซฟบนเซิร์ฟเวอร์ (แยกจากห้องเพื่อน): เครื่องเก็บแค่ id + รหัสลับ · เซิร์ฟเวอร์เก็บสำเนาล่าสุดชุดเดียว พร้อมเลขรอบกันเครื่องเก่าเขียนทับเครื่องใหม่
         const CLOUD_GAP = 3 * 60 * 1000, CLOUD_WAIT = 30 * 1000, CLOUD_CODE_RE = /^[A-HJKMNP-Z2-9]{8}$/;
         const ACCT_USER_RE = /^[a-z0-9_.]{3,20}$/;
@@ -15596,10 +15596,12 @@
             let v = null;
             try { v = JSON.parse(localStorage.getItem('cloud_save') || 'null'); } catch (e) {}
             const ok = v && typeof v === 'object' && MP_UUID_RE.test(v.id || '') && /^[0-9a-f]{36}$/.test(v.secret || '');
-            return ok ? { id: v.id, secret: v.secret, rev: Math.max(0, Math.floor(+v.rev) || 0), at: Math.max(0, +v.at || 0), user: ACCT_USER_RE.test(v.user || '') ? v.user : '' } : null;
+            return ok ? { id: v.id, secret: v.secret, rev: Math.max(0, Math.floor(+v.rev) || 0), at: Math.max(0, +v.at || 0), user: ACCT_USER_RE.test(v.user || '') ? v.user : '', pend: v.pend === true } : null;
         }
         let cloud = loadCloud();
-        const cloudRt = { state: 'idle', timer: 0, dirty: false, paused: false, link: null, conflict: null, busy: false, offline: false, claimOpen: false, offArmed: 0, checkedAt: 0, acct: '', acctMsg: '' };
+        const cloudRt = { state: 'idle', timer: 0, dirty: false, paused: false, link: null, conflict: null, busy: false, offline: false, claimOpen: false, offArmed: 0, checkedAt: 0, acct: '', acctMsg: '', seq: 0, userAt: 0, out: false };
+        // ผู้เล่นแตะหรือพิมพ์ = การเปลี่ยนแปลงที่ตามมาเป็นของผู้เล่น (ผักโตเอง/แผงขายเองตอนเปิดทิ้งไว้ไม่นับ) ใช้ตัดสินว่าโหลดเซฟใหม่จากเครื่องอื่นมาทับได้เลยไหม
+        ['pointerdown', 'keydown'].forEach(t => document.addEventListener(t, () => { cloudRt.userAt = Date.now(); }, { capture: true, passive: true }));
         const thaiAgo = (ms) => {
             if (!ms) return 'ยังไม่เคย';
             const d = new Date(ms), diff = Date.now() - ms, today = new Date(); today.setHours(0, 0, 0, 0);
@@ -15900,7 +15902,10 @@
             renderCloudBox();
         }
         function cloudSchedule() {
-            if (!cloud || cloudRt.conflict || cloudRt.paused) return;
+            if (!cloud || cloudRt.paused) return; // กำลังโหลดเซฟมาแทน (รอโหลดหน้าใหม่) ไม่นับเป็นของที่ผู้เล่นทำ
+            cloudRt.seq += 1;
+            if (!cloud.pend && Date.now() - cloudRt.userAt < 15000) { cloud.pend = true; saveCloud(); }
+            if (cloudRt.conflict) return;
             cloudRt.dirty = true;
             if (cloudRt.timer || cloudRt.state === 'saving') return;
             cloudRt.timer = setTimeout(() => cloudUpload(), CLOUD_WAIT);
@@ -15914,10 +15919,17 @@
             if (!now && gap < CLOUD_GAP) { cloudRt.dirty = true; cloudRt.timer = setTimeout(() => cloudUpload(), CLOUD_GAP - gap); return 'wait'; }
             cloudRt.state = 'saving'; cloudRt.dirty = false; renderCloudBox();
             let res = '';
+            const seq = cloudRt.seq, id = cloud.id;
             try {
                 const r = await mpCall('bt_save_put', { p_id: cloud.id, p_secret: cloud.secret, p_data: cloudPayload(), p_rev: force ? null : cloud.rev, p_device: deviceLabel() });
-                if (r.ok && Number.isFinite(+r.rev)) { cloud.rev = Math.floor(+r.rev); cloud.at = Date.now(); saveCloud(); cloudRt.conflict = null; cloudRt.offline = false; res = 'ok'; }
-                else if (r.error === 'conflict') { cloudRt.conflict = { rev: Math.floor(+r.rev) || 0, at: Date.parse(r.at) || 0, device: mpCleanName(r.device, 30) || 'อีกเครื่อง' }; res = 'conflict'; }
+                if (!cloud || cloud.id !== id) res = 'switched'; // เปลี่ยนบัญชีระหว่างรอ ไม่แตะตัวตนใหม่
+                else if (r.ok && Number.isFinite(+r.rev)) { cloud.rev = Math.floor(+r.rev); cloud.at = Date.now(); if (cloudRt.seq === seq) cloud.pend = false; saveCloud(); cloudRt.conflict = null; cloudRt.offline = false; res = 'ok'; }
+                else if (r.error === 'conflict') {
+                    const rev = Math.floor(+r.rev) || 0, disk = loadCloud();
+                    // แท็บ/หน้าต่างอื่นในเครื่องนี้เพิ่งบันทึกไป (ใช้ข้อมูลชุดเดียวกันในเครื่อง) รับเลขรอบล่าสุดแล้วส่งซ้ำ ไม่ต้องถามผู้เล่น
+                    if (disk && disk.id === cloud.id && disk.rev >= rev && disk.rev > cloud.rev) { cloud.rev = disk.rev; cloud.at = disk.at; res = 'retry'; }
+                    else { cloudRt.conflict = { rev, at: Date.parse(r.at) || 0, device: mpCleanName(r.device, 30) || 'อีกเครื่อง' }; res = 'conflict'; }
+                }
             } catch (e) {
                 res = e.message;
                 if (res === 'bad_save') cloudForget('☁️ ที่เก็บเซฟบนเซิร์ฟเวอร์ใช้ไม่ได้แล้ว เปิดใหม่ได้ในหน้าตั้งค่า');
@@ -15925,6 +15937,7 @@
             }
             cloudRt.state = 'idle';
             if (res === 'conflict') cloudConflictToast();
+            if (res === 'retry') { cloudRt.dirty = true; clearTimeout(cloudRt.timer); cloudRt.timer = setTimeout(() => { cloudRt.timer = 0; cloudUpload(true); }, 1500); }
             if (cloud && cloudRt.dirty && !cloudRt.conflict && !cloudRt.timer) cloudRt.timer = setTimeout(() => cloudUpload(), res === 'ok' ? CLOUD_WAIT : 60 * 1000);
             renderCloudBox();
             return res;
@@ -15952,7 +15965,12 @@
                 cloudRt.offline = false;
                 const user = ACCT_USER_RE.test(r.user || '') ? r.user : '';
                 if (cloud && user !== cloud.user) { cloud.user = user; saveCloud(); } // สมัครบัญชีจากอีกเครื่องที่ใช้เซฟเดียวกัน
-                if (rev > cloud.rev && !cloudRt.conflict) { cloudRt.conflict = { rev, at: Date.parse(r.at) || 0, device: mpCleanName(r.device, 30) || 'อีกเครื่อง', newer: true }; cloudConflictToast(); }
+                if (rev > cloud.rev && !cloudRt.conflict) {
+                    const disk = loadCloud();
+                    if (disk && disk.id === cloud.id && disk.rev >= rev) { cloud.rev = disk.rev; cloud.at = disk.at; } // แท็บอื่นในเครื่องนี้บันทึกไปแล้ว
+                    else if (!cloud.pend && !S2_MODE && !cloudRt.paused) { renderCloudBox(); await cloudAutoPull(); return; }
+                    else { cloudRt.conflict = { rev, at: Date.parse(r.at) || 0, device: mpCleanName(r.device, 30) || 'อีกเครื่อง', newer: true }; cloudConflictToast(); }
+                }
             } catch (e) {
                 if (e.message === 'bad_save') cloudForget('☁️ ที่เก็บเซฟบนเซิร์ฟเวอร์ใช้ไม่ได้แล้ว เปิดใหม่ได้ในหน้าตั้งค่า');
                 else cloudRt.offline = e.message === 'offline';
@@ -15970,6 +15988,60 @@
             cloudRt.conflict = null;
             cloudUpload(true, true);
         }
+        // ตัวตนในห้องเพื่อนที่ติดมากับเซฟ: replace = สลับบัญชี (ห้ามใช้ห้องของคนก่อนหน้า) · ไม่งั้นใช้เฉพาะตอนเครื่องนี้ยังไม่มีห้อง
+        function cloudApplyFriends(data, replace) {
+            const ff = data && data.farm_friends, ok = ff && typeof ff === 'object' && MP_CODE_RE.test(ff.room || '') && MP_UUID_RE.test(ff.player || '') && /^[0-9a-f]{36}$/.test(ff.secret || '');
+            if (ok && (replace || !friends.room)) safeSetItem('farm_friends', JSON.stringify({ room: ff.room, player: ff.player, secret: ff.secret, roomName: mpCleanName(ff.roomName, 30), name: mpCleanName(ff.name),
+                avatar: MP_AVATARS.includes(ff.avatar) ? ff.avatar : MP_AVATARS[0], noSteal: !!ff.noSteal }));
+            else if (replace) { try { localStorage.removeItem('farm_friends'); } catch (e) {} }
+        }
+        // เซฟบนเซิร์ฟเวอร์ใหม่กว่าและเครื่องนี้ไม่มีอะไรที่ผู้เล่นทำค้างส่ง → โหลดมาเลย (มีจุดกู้คืนก่อนโหลดเสมอ)
+        async function cloudAutoPull() {
+            if (!cloud || cloudRt.busy) return false;
+            const id = cloud.id;
+            let r = null, parsed = null;
+            try { r = await mpCall('bt_save_get', { p_id: cloud.id, p_secret: cloud.secret, p_meta: false }); } catch (e) { return false; }
+            if (!cloud || cloud.id !== id || cloud.pend || !r || !r.data || typeof r.data !== 'object') return false;
+            try { parsed = sanitizeBackup(r.data); } catch (e) {}
+            if (!parsed) return false;
+            cloud.rev = Math.floor(+r.rev) || 0; cloud.at = Date.now(); cloud.pend = false;
+            clearTimeout(cloudRt.timer);
+            Object.assign(cloudRt, { timer: 0, dirty: false, conflict: null, paused: true });
+            await applyBackup(parsed.out, `☁️ โหลดข้อมูลล่าสุดที่เล่นจาก ${mpCleanName(r.device, 30) || 'อีกเครื่อง'} แล้ว กำลังโหลดหน้าใหม่`);
+            cloudApplyFriends(r.data, false);
+            saveCloud();
+            return true;
+        }
+        // สลับไปใช้เซฟของบัญชี/รหัสย้ายเครื่อง: ให้ดูข้อมูลก่อน ยืนยันแล้วค่อยเปลี่ยนตัวตนในเครื่อง · ยกเลิก = ยังใช้ของเดิมทุกอย่าง
+        async function cloudSwitchTo(ident, title) {
+            cloudRt.busy = true; renderCloudBox();
+            let r = null;
+            try { r = await mpCall('bt_save_get', { p_id: ident.id, p_secret: ident.secret, p_meta: false }); } catch (e) { showToast(cloudErr(e), 'warning'); }
+            cloudRt.busy = false; renderCloudBox();
+            if (!r) return false;
+            if (!r.data || typeof r.data !== 'object') { // บัญชียังไม่มีข้อมูล: ใช้ข้อมูลในเครื่องนี้เริ่มต้น
+                cloud = { ...ident, rev: Math.floor(+r.rev) || 0, at: 0, pend: true }; saveCloud();
+                try { localStorage.removeItem('cloud_last'); } catch (e) {}
+                Object.assign(cloudRt, { conflict: null, dirty: true, paused: false });
+                await cloudUpload(true);
+                showToast('☁️ บัญชีนี้ยังไม่มีข้อมูลบนเซิร์ฟเวอร์ เลยใช้ข้อมูลในเครื่องนี้เริ่มต้น', 'info');
+                return true;
+            }
+            let parsed = null;
+            try { parsed = sanitizeBackup(r.data); } catch (e) {}
+            if (!parsed) { showToast('ข้อมูลบนเซิร์ฟเวอร์อ่านไม่ได้', 'error'); return false; }
+            const sum = backupSummary({ ...parsed.out, backup_meta: r.data.backup_meta });
+            const ok = await previewRestore(sum, `${title} · จาก ${mpCleanName(r.device, 30) || 'อีกเครื่อง'}`);
+            if (!ok) { showToast('ยกเลิกแล้ว เครื่องนี้ยังใช้ข้อมูลและบัญชีเดิมเหมือนเดิม', 'info'); renderCloudBox(); return false; }
+            clearTimeout(cloudRt.timer);
+            Object.assign(cloudRt, { timer: 0, dirty: false, conflict: null, paused: true, link: null });
+            cloud = { ...ident, rev: Math.floor(+r.rev) || 0, at: Date.now(), pend: false };
+            try { localStorage.removeItem('cloud_last'); } catch (e) {}
+            await applyBackup(parsed.out, '☁️ โหลดข้อมูลของบัญชีแล้ว! กำลังโหลดหน้าใหม่');
+            cloudApplyFriends(r.data, true);
+            saveCloud();
+            return true;
+        }
         async function cloudPull() {
             if (!cloud || cloudRt.busy) return;
             cloudRt.busy = true; renderCloudBox();
@@ -15985,14 +16057,10 @@
             const sum = backupSummary({ ...parsed.out, backup_meta: r.data.backup_meta });
             const ok = await previewRestore(sum, `☁️ เซฟบนเซิร์ฟเวอร์ · จาก ${mpCleanName(r.device, 30) || 'อีกเครื่อง'}`);
             if (!ok || !cloud) return;
-            cloud.rev = Math.floor(+r.rev) || 0; cloud.at = Date.now(); saveCloud();
+            cloud.rev = Math.floor(+r.rev) || 0; cloud.at = Date.now(); cloud.pend = false; saveCloud();
             clearTimeout(cloudRt.timer);
             Object.assign(cloudRt, { timer: 0, dirty: false, conflict: null, paused: true }); // ไม่ส่งของเก่าขึ้นไประหว่างรอโหลดหน้าใหม่
-            const ff = r.data.farm_friends;
-            if (ff && typeof ff === 'object' && !friends.room && MP_CODE_RE.test(ff.room || '') && MP_UUID_RE.test(ff.player || '') && /^[0-9a-f]{36}$/.test(ff.secret || '')) {
-                safeSetItem('farm_friends', JSON.stringify({ room: ff.room, player: ff.player, secret: ff.secret, roomName: mpCleanName(ff.roomName, 30), name: mpCleanName(ff.name),
-                    avatar: MP_AVATARS.includes(ff.avatar) ? ff.avatar : MP_AVATARS[0], noSteal: !!ff.noSteal }));
-            }
+            cloudApplyFriends(r.data, false);
             applyBackup(parsed.out, '☁️ โหลดเซฟจากเซิร์ฟเวอร์แล้ว! กำลังโหลดหน้าใหม่');
         }
         async function cloudLink() {
@@ -16010,14 +16078,16 @@
             if (!CLOUD_CODE_RE.test(code)) { showToast('รหัสย้ายเครื่องเป็นตัวอักษรและตัวเลข 8 ตัว เช่น ABCD-2345', 'warning'); return; }
             if (cloudRt.busy) return;
             cloudRt.busy = true; renderCloudBox();
+            let ident = null;
             try {
                 const r = await mpCall('bt_save_claim', { p_code: code });
                 if (!MP_UUID_RE.test(r.id || '') || !/^[0-9a-f]{36}$/.test(r.secret || '')) throw new Error('bad');
-                cloud = { id: r.id, secret: r.secret, rev: 0, at: 0 }; saveCloud();
-                Object.assign(cloudRt, { claimOpen: false, conflict: null, link: null, busy: false });
+                ident = { id: r.id, secret: r.secret, user: '' };
+                Object.assign(cloudRt, { claimOpen: false, link: null, busy: false });
             } catch (e) { cloudRt.busy = false; renderCloudBox(); showToast(cloudErr(e), 'warning'); return; }
-            showToast('☁️ เชื่อมกับเซฟของเครื่องเดิมแล้ว ดูข้อมูลก่อนโหลดมาเล่นต่อได้เลย', 'success');
-            await cloudPull();
+            if (cloud && cloud.id !== ident.id && (cloud.pend || cloudRt.dirty) && !cloudRt.conflict && await cloudUpload(true) !== 'ok') { showToast(acctErr('pending_old'), 'warning'); return; }
+            showToast('☁️ เจอเซฟของเครื่องเดิมแล้ว ดูข้อมูลก่อนโหลดมาเล่นต่อได้เลย', 'success');
+            await cloudSwitchTo(ident, '☁️ เซฟจากรหัสย้ายเครื่อง');
         }
         function cloudToggleClaim() { cloudRt.claimOpen = !cloudRt.claimOpen; renderCloudBox(); if (cloudRt.claimOpen) { const i = document.querySelector('#cloud-box input'); if (i) i.focus(); } }
         function cloudOff() {
@@ -16076,7 +16146,7 @@
         const acctErr = code => ({ bad_user: 'ชื่อผู้ใช้ใช้ตัวอักษรอังกฤษพิมพ์เล็ก ตัวเลข _ หรือ . ยาว 3–20 ตัว', bad_pass: 'รหัสผ่านต้องยาว 6 ตัวขึ้นไป',
             user_taken: 'ชื่อผู้ใช้นี้มีคนใช้แล้ว ลองชื่ออื่นนะ', has_account: 'เซฟนี้มีบัญชีอยู่แล้ว', bad_login: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
             locked: 'ใส่รหัสผิดหลายครั้ง บัญชีถูกล็อกไว้ 15 นาที ลองใหม่ทีหลังนะ', bad_old: 'รหัสผ่านเดิมไม่ถูกต้อง', no_account: 'เซฟนี้ยังไม่มีบัญชี',
-            mismatch: 'รหัสผ่านสองช่องไม่ตรงกัน' }[code] || cloudErr({ message: code }));
+            mismatch: 'รหัสผ่านสองช่องไม่ตรงกัน', pending_old: 'ยังส่งข้อมูลล่าสุดของเซฟที่ใช้อยู่ขึ้นเซิร์ฟเวอร์ไม่ได้ (เน็ตหลุดหรือชนกับอีกเครื่อง) เลยยังสลับบัญชีไม่ได้ ข้อมูลจะได้ไม่หาย ลองใหม่อีกครั้งนะ' }[code] || cloudErr({ message: code }));
         function acctHTML(btn) {
             const f = cloudRt.acct, msg = cloudRt.acctMsg ? `<p class="acct-note is-warn" role="alert">⚠️ ${escHtml(cloudRt.acctMsg)}</p>` : '';
             const dis = cloudRt.busy ? 'disabled' : '';
@@ -16085,7 +16155,10 @@
             if (cloud && cloud.user) {
                 let h = `<div class="acct-box" id="acct-box"><div class="cloud-head"><span class="cloud-ico" aria-hidden="true">👤</span><div class="cloud-text"><b>เข้าสู่ระบบเป็น <span class="acct-name">${escHtml(cloud.user)}</span></b>
                     <small>ล็อกอินชื่อนี้บนมือถือหรือคอมเครื่องไหนก็ได้ จะได้ข้อมูลชุดเดียวกัน (ประวัติพัก ฟาร์ม ร้านค้า ห้องเพื่อน) ข้อมูลบันทึกขึ้นเซิร์ฟเวอร์เองเรื่อยๆ</small></div></div>
-                    <div class="data-actions">${btn("acctOpen('pass')", '🔑', 'เปลี่ยนรหัสผ่าน')}${btn('acctLogout()', '🚪', cloudRt.offArmed > Date.now() ? 'แตะอีกครั้งเพื่อออก' : 'ออกจากระบบ', ' is-danger')}</div>`;
+                    <div class="data-actions">${btn("acctOpen('pass')", '🔑', 'เปลี่ยนรหัสผ่าน')}${btn('acctLogout()', '🚪', 'ออกจากระบบ', cloudRt.out ? ' is-active' : ' is-danger')}</div>`;
+                if (cloudRt.out) h += `<div class="cloud-warn acct-out" role="group" aria-label="ออกจากระบบ"><span>ข้อมูลในเครื่องนี้จะเอาไว้ไหม? ข้อมูลของ <b>${escHtml(cloud.user)}</b> บนเซิร์ฟเวอร์ยังอยู่ครบทั้งสองแบบ</span>
+                    <div class="data-actions">${btn("acctLogout('keep')", '🚪', 'ออก · เก็บข้อมูลไว้ในเครื่อง')}${btn("acctLogout('wipe')", '🧹', 'ออก · ล้างข้อมูลในเครื่อง (เครื่องใช้ร่วมกัน)', ' is-danger')}</div>
+                    <small>ใช้เครื่องนี้ร่วมกับคนอื่น หรือจะให้อีกคนสมัคร/เข้าบัญชีของตัวเอง ให้เลือก "ล้างข้อมูล" ฟาร์มจะได้ไม่ปนกัน</small></div>`;
                 if (f === 'pass') h += `<form class="acct-form" onsubmit="event.preventDefault(); acctPassword(this)">${field('old', 'password', 'รหัสผ่านเดิม', 'current-password')}${field('pass', 'password', 'รหัสผ่านใหม่ (6 ตัวขึ้นไป)', 'new-password', 'maxlength="64"')}${field('pass2', 'password', 'ใส่รหัสผ่านใหม่อีกครั้ง', 'new-password', 'maxlength="64"')}
                     <button type="submit" class="data-btn" ${dis}>🔑 เปลี่ยนรหัสผ่าน</button></form>`;
                 return h + msg + '</div>';
@@ -16093,6 +16166,9 @@
             let h = `<div class="acct-box" id="acct-box"><div class="cloud-head"><span class="cloud-ico" aria-hidden="true">👤</span><div class="cloud-text"><b>บัญชีผู้ใช้ · ยังไม่ได้เข้าสู่ระบบ</b>
                 <small>${cloud ? 'ตั้งชื่อผู้ใช้กับรหัสผ่านให้เซฟนี้ แล้วเข้าเล่นต่อจากเครื่องไหนก็ได้ ไม่ต้องใช้รหัสย้ายเครื่องอีก' : 'สมัครด้วยชื่อผู้ใช้ + รหัสผ่าน ข้อมูลทั้งหมดจะเก็บบนเซิร์ฟเวอร์ให้เอง ล้างเบราว์เซอร์หรือเปลี่ยนเครื่องก็แค่เข้าสู่ระบบ'}</small></div></div>
                 <div class="data-actions">${btn("acctOpen('signup')", '✨', cloud ? 'ตั้งชื่อผู้ใช้ให้เซฟนี้' : 'สมัครบัญชี', f === 'signup' ? ' is-active' : '')}${btn("acctOpen('login')", '🔓', 'เข้าสู่ระบบ', f === 'login' ? ' is-active' : '')}</div>`;
+            let last = '';
+            try { const l = JSON.parse(localStorage.getItem('cloud_last') || 'null'); last = l && ACCT_USER_RE.test(l.user || '') ? l.user : ''; } catch (e) {}
+            if (f === 'signup' && last && !cloud) h += `<p class="acct-note is-warn">⚠️ ข้อมูลในเครื่องนี้เป็นของบัญชี <b>${escHtml(last)}</b> (ออกจากระบบไปแล้ว) ถ้าสมัครตอนนี้ ฟาร์มชุดนี้จะติดไปกับบัญชีใหม่ · อยากเริ่มฟาร์มใหม่ ให้เข้า ${escHtml(last)} แล้วออกแบบ "ล้างข้อมูล" หรือกด 🗑️ ล้างข้อมูลทั้งหมด ก่อน</p>`;
             if (f === 'signup') h += `<form class="acct-form" onsubmit="event.preventDefault(); acctSignup(this)">${userField}${field('pass', 'password', 'รหัสผ่าน (6 ตัวขึ้นไป)', 'new-password', 'maxlength="64"')}${field('pass2', 'password', 'ใส่รหัสผ่านอีกครั้ง', 'new-password', 'maxlength="64"')}
                 <button type="submit" class="data-btn" ${dis}>${cloudRt.busy ? 'กำลังสมัคร…' : '✨ สมัครและเก็บข้อมูลบนเซิร์ฟเวอร์'}</button>
                 <p class="acct-note">จำรหัสผ่านไว้ให้ดี ไม่มีอีเมลกู้คืน (ถ้าลืม เปลี่ยนรหัสได้จากเครื่องที่ยังล็อกอินอยู่)</p></form>`;
@@ -16127,6 +16203,7 @@
                 return acctFail(e.message);
             }
             cloud.user = user; saveCloud();
+            try { localStorage.removeItem('cloud_last'); } catch (e) {}
             Object.assign(cloudRt, { busy: false, acct: '', acctMsg: '', claimOpen: false });
             const res = await cloudUpload(true);
             showToast(`👤 สมัครแล้ว! ชื่อผู้ใช้ ${user}${res === 'ok' ? ' · บันทึกข้อมูลขึ้นเซิร์ฟเวอร์แล้ว' : ''} เครื่องอื่นเข้าสู่ระบบด้วยชื่อนี้ได้เลย`, 'success', { duration: 6000 });
@@ -16147,14 +16224,17 @@
             }
             if (!MP_UUID_RE.test(r.id || '') || !/^[0-9a-f]{36}$/.test(r.secret || '') || !ACCT_USER_RE.test(r.user || '')) return acctFail('busy');
             const same = cloud && cloud.id === r.id;
-            clearTimeout(cloudRt.timer);
-            cloud = same ? { ...cloud, secret: r.secret, user: r.user } : { id: r.id, secret: r.secret, rev: 0, at: 0, user: r.user };
-            saveCloud();
-            Object.assign(cloudRt, { busy: false, acct: '', acctMsg: '', claimOpen: false, link: null, timer: 0, ...(same ? {} : { conflict: null, dirty: false }) });
-            if (same) { showToast(`👤 เข้าสู่ระบบเป็น ${r.user} แล้ว เครื่องนี้ใช้ข้อมูลของบัญชีนี้อยู่แล้ว`, 'success'); renderCloudBox(); return; }
-            showToast(`👤 เข้าสู่ระบบเป็น ${r.user} แล้ว ดูข้อมูลก่อนโหลดมาเล่นต่อได้เลย`, 'success');
+            if (same) {
+                cloud = { ...cloud, secret: r.secret, user: r.user }; saveCloud();
+                Object.assign(cloudRt, { busy: false, acct: '', acctMsg: '', claimOpen: false, link: null });
+                showToast(`👤 เข้าสู่ระบบเป็น ${r.user} แล้ว เครื่องนี้ใช้ข้อมูลของบัญชีนี้อยู่แล้ว`, 'success'); renderCloudBox(); return;
+            }
+            // ข้อมูลของเซฟเดิมในเครื่องนี้ที่ยังไม่ได้ส่งขึ้น: ส่งก่อน ไม่งั้นจะหายตอนโหลดบัญชีใหม่มาแทน
+            if (cloud && (cloud.pend || cloudRt.dirty) && !cloudRt.conflict && await cloudUpload(true) !== 'ok') return acctFail('pending_old');
+            Object.assign(cloudRt, { busy: false, acct: '', acctMsg: '', claimOpen: false, link: null });
+            showToast(`👤 รหัสถูกต้อง! ดูข้อมูลของ ${r.user} ก่อนโหลดมาเล่นต่อได้เลย`, 'success');
             renderCloudBox();
-            await cloudPull();
+            await cloudSwitchTo({ id: r.id, secret: r.secret, user: r.user }, `👤 บัญชี ${r.user}`);
         }
         async function acctPassword(form) {
             const old = form.old.value, pass = form.pass.value;
@@ -16171,13 +16251,29 @@
             renderCloudBox();
         }
         // ออกจากระบบ: ส่งข้อมูลล่าสุดขึ้นไปก่อน แล้วยกเลิกกุญแจของเครื่องนี้ · ข้อมูลในเครื่องยังอยู่ครบ
-        async function acctLogout() {
+        // mode: ไม่ส่ง = ถามก่อนว่าจะเก็บข้อมูลไว้ไหม · 'keep' = เก็บไว้ในเครื่อง · 'wipe' = ล้างข้อมูลในเครื่อง (ต้องบันทึกขึ้นเซิร์ฟเวอร์สำเร็จก่อน)
+        async function acctLogout(mode) {
             if (!cloud || cloudRt.busy) return;
-            if (!(cloudRt.offArmed > Date.now())) { cloudRt.offArmed = Date.now() + 4000; renderCloudBox(); setTimeout(renderCloudBox, 4100); return; }
-            cloudRt.offArmed = 0; cloudRt.busy = true; renderCloudBox();
-            if (cloudRt.dirty && !cloudRt.conflict) await cloudUpload(true);
+            if (mode !== 'keep' && mode !== 'wipe') { cloudRt.out = !cloudRt.out; renderCloudBox(); return; }
+            cloudRt.busy = true; renderCloudBox();
+            const user = cloud.user;
+            let up = 'ok';
+            if ((cloud.pend || cloudRt.dirty) && !cloudRt.conflict) up = await cloudUpload(true);
+            if (mode === 'wipe' && (up !== 'ok' || cloudRt.conflict)) {
+                cloudRt.busy = false; cloudRt.acctMsg = cloudRt.conflict ? 'มีเซฟที่ชนกับอีกเครื่องอยู่ เลือกก่อนว่าจะใช้อันไหน แล้วค่อยออก + ล้างข้อมูล' : 'ยังบันทึกข้อมูลล่าสุดขึ้นเซิร์ฟเวอร์ไม่ได้ (เน็ตหลุด?) เลยยังล้างข้อมูลในเครื่องไม่ได้ ลองใหม่อีกครั้งนะ';
+                renderCloudBox(); return;
+            }
             try { await mpCall('bt_account_logout', { p_id: cloud.id, p_secret: cloud.secret }); } catch (e) {}
-            cloudRt.busy = false;
+            cloudRt.busy = false; cloudRt.out = false;
+            if (mode === 'wipe') {
+                snapshotsPaused = true;
+                try { await idb('snapshots', 'readwrite', st => st.clear()); } catch (e) {}
+                try { localStorage.clear(); } catch (e) {}
+                showToast(`🧹 ออกจากระบบและล้างข้อมูลในเครื่องแล้ว ข้อมูลของ ${user || 'บัญชีนี้'} ยังอยู่ครบบนเซิร์ฟเวอร์`, 'success');
+                setTimeout(() => location.reload(), 1000);
+                return;
+            }
+            if (user) safeSetItem('cloud_last', JSON.stringify({ user }));
             cloudForget();
             showToast('🚪 ออกจากระบบแล้ว ข้อมูลในเครื่องนี้ยังอยู่ครบ เข้าสู่ระบบใหม่เมื่อไหร่ก็ได้', 'info', { duration: 5000 });
         }
@@ -16525,7 +16621,7 @@
 
         // --- 🔄 ซิงก์ข้อมูลข้ามแท็บ กันข้อมูลเก่าจากแท็บที่ค้างอยู่ไปทับข้อมูลใหม่โดยไม่ตั้งใจ ---
         window.addEventListener('storage', (e) => {
-            if (!e.key) return; // ข้าม event ตอน localStorage.clear()
+            if (!e.key) { snapshotsPaused = true; location.reload(); return; } // แท็บอื่นล้างข้อมูลทั้งหมด: โหลดใหม่ ไม่ให้บันทึกข้อมูลเก่ากลับลงไป
             if (S2_MODE) { if (['active_break_state', 'break_logs', 'daily_quota', 'activities'].includes(e.key)) s2Render(); return; }
             if (e.key === 's2_cmd' && e.newValue) { s2Command(e.newValue); return; }
             const dataKeys = ['break_logs', 'activities', 'daily_quota', 'earned_badges', 'shift_mode', 'shift_boundary_time'];
@@ -16537,6 +16633,11 @@
             if (e.key === 'veggie_garden') { veg = loadVeg(); renderVeggies(); }
             if (e.key === 'shop_state') { shop = loadShop().st; applyShopItems(); }
             if (e.key === 'challenges') { chal = loadChallenges(); renderChallenges(); }
+            if (e.key === 'cloud_save') {
+                const next = loadCloud();
+                if ((next && next.id) !== (cloud && cloud.id)) { clearTimeout(cloudRt.timer); cloudRt.paused = true; location.reload(); return; } // ไม่ส่งข้อมูลเข้าเซฟผิดบัญชี
+                if (next && cloud) { cloud.rev = Math.max(cloud.rev, next.rev); cloud.at = Math.max(cloud.at, next.at); cloud.user = next.user; cloud.secret = next.secret; cloud.pend = next.pend; renderCloudBox(); renderAcctBtn(); }
+            }
             if (e.key === 'farm_friends') { const was = friends.room; friends = loadFriends(); if (friends.room !== was) { mp.state = null; mp.lastPush = ''; mpSchedule(500); } mpRender(); }
             if (e.key === 'active_break_state') {
                 if (e.newValue && !activeBreak) {
