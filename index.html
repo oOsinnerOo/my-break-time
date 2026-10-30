@@ -12995,6 +12995,8 @@
             if (shop.owned.includes(id)) return;
             shop.coins -= price;
             shop.owned.push(id);
+            const boughtAnimal = Object.keys(ANIMALS).find(a => ANIMALS[a].shopId === id);
+            if (boughtAnimal) { veg.animals[boughtAnimal].fedAt = 0; veg.animals[boughtAnimal].fav = false; saveVeg(); } // สัตว์ใหม่เริ่มจากหิว ป้อนอาหารเพื่อเริ่มรอบแรก
             if (it.cat === 'hat') shop.hat = id;
             if (it.cat === 'decor') shop.decor.push(id);
             saveShop(); applyShopItems(); renderShop();
