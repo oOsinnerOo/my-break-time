@@ -2416,6 +2416,13 @@
         .cloud-away-box .cloud-away-note { font-size: 12px; color: var(--ink-3); }
         .cloud-away-box .modal-btn { width: 100%; }
         .cloud-away-box small { font-size: 11.5px; color: var(--ink-3); }
+        /* 🍀 ดวง */
+        .farm-luck { font: inherit; cursor: pointer; border: 0; }
+        .farm-luck.is-lucky { background: linear-gradient(90deg, rgba(34, 197, 94, 0.22), rgba(250, 204, 21, 0.28)); box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.5); }
+        .luck-card .ach-meter > span { background: linear-gradient(90deg, #22C55E, #FACC15); }
+        .luck-card.is-lucky { border-color: rgba(34, 197, 94, 0.55); box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12); }
+        .dex-prog-bonus { font-style: normal; font-size: 10.5px; font-weight: 800; color: #16A34A; }
+        body.is-dark .dex-prog-bonus { color: #6EE7A0; }
         .acct-note { margin: 0; font-size: 11.5px; line-height: 1.45; color: var(--ink-3); font-weight: 600; }
         .acct-keep { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--ink-2); line-height: 1.45; cursor: pointer; }
         .acct-keep input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--accent, #7C5CFF); }
@@ -5839,10 +5846,24 @@
             // 🌳 ของล้ำค่าที่ลุ้นได้ตอนเก็บผลไม้จากต้น
             fruitGold: { e: '✨', name: 'ผลไม้ประกายทอง', value: 40, zone: 'fruit', rar: 'epic' }, fruitHeart: { e: '💝', name: 'ผลไม้หัวใจ', value: 90, zone: 'fruit', rar: 'legendary' },
             fruitCrystal: { e: '🔮', name: 'ผลไม้คริสตัล', value: 200, zone: 'fruit', rar: 'mythic' }, fruitRainbow: { e: '🪩', name: 'ผลไม้แสงรุ้ง', value: 500, zone: 'fruit', rar: 'immortal' },
-            fruitStar: { e: '☄️', name: 'ผลไม้ดาวตก', value: 1200, zone: 'fruit', rar: 'cosmic' } };
+            fruitStar: { e: '☄️', name: 'ผลไม้ดาวตก', value: 1200, zone: 'fruit', rar: 'cosmic' },
+            // 🗝️ สมบัติจากการสำรวจ: ลุ้นได้ทุกครั้งที่เจอของในป่า เหมือง ทะเล (zone treasure ไม่นับในห้องพิพิธภัณฑ์)
+            nestHeaven: { e: '🪺', name: 'รังนกเทวดา', value: 600, zone: 'treasure', rar: 'immortal' }, crownDeep: { e: '👑', name: 'มงกุฎใต้พิภพ', value: 600, zone: 'treasure', rar: 'immortal' },
+            nagaTrident: { e: '🔱', name: 'ตรีศูลพญานาค', value: 600, zone: 'treasure', rar: 'immortal' }, planetShard: { e: '🪐', name: 'เศษดาวเคราะห์', value: 1500, zone: 'treasure', rar: 'cosmic' } };
+        // สมบัติประจำแต่ละที่ (อมตะ) และเศษดาวเคราะห์ (จักรวาล) ที่ตกได้ทุกที่ · โอกาสต่อการเจอของหนึ่งครั้ง คูณด้วยดวง
+        const TREASURES = { forest: 'nestHeaven', mine: 'crownDeep', sea: 'nagaTrident' }, COSMIC_TREASURE = 'planetShard';
+        const TREASURE_ODDS = { cosmic: 0.0004, immortal: 0.002 };
+        const TREASURE_DESC = { nestHeaven: 'รังนกที่ซ่อนอยู่บนยอดไม้ที่สูงที่สุดในป่า ไข่ข้างในเรืองแสงเป็นสีรุ้ง', crownDeep: 'มงกุฎทองคำของราชาใต้พิภพ ฝังอัญมณีที่ไม่มีใครรู้จักชื่อ',
+            nagaTrident: 'ตรีศูลที่พญานาคทำหล่นไว้ใต้ทะเลลึก จับแล้วได้ยินเสียงคลื่นตลอดเวลา', planetShard: 'เศษหินจากดาวเคราะห์ดวงอื่นที่ตกลงมาตอนฝนดาวตก ลอยตัวได้เองเบาๆ' };
         // โอกาสต่อการเก็บผลหนึ่งครั้ง (ไล่จากหายากสุด) คูณด้วยความหายากของต้นและอายุต้น
         const FRUIT_GEMS = [['fruitStar', 0.0003], ['fruitRainbow', 0.0012], ['fruitCrystal', 0.005], ['fruitHeart', 0.015], ['fruitGold', 0.05]];
         const RARE_SAPLINGS = [['moonTree', 0.0015], ['lanternTree', 0.006]];
+        // 🍀 ดวง: ได้ของธรรมดา–แรร์ ดวงสะสมขึ้นทีละ 1% (สูงสุด 100%) ได้ของหายากขึ้นไปแล้วดวงเริ่มใหม่
+        // ดวงเพิ่มโอกาสของล้ำค่าจากไม้ผล กิ่งพันธุ์หายาก และสมบัติจากการสำรวจ · วันโชคดีสัปดาห์ละวัน: ดวงขึ้น 2 เท่า โอกาส ×1.5 · สะสมครบชุดได้โบนัสถาวร
+        const LUCK_MAX = 100, LUCK_DAYS = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
+        const SET_BONUS = { uncommon: 0.05, rare: 0.05, epic: 0.1, legendary: 0.15, mythic: 0.2, immortal: 0.25, cosmic: 0.3 };
+        function luckyWeekday(d = new Date()) { const m = new Date(d); m.setDate(d.getDate() - (d.getDay() + 6) % 7); return hashStr('lucky:' + dayKeyLocal(m)) % 7; } // 0 = จันทร์
+        const luckyDay = (d = new Date()) => typeof window.fixedLuckyDay === 'boolean' ? window.fixedLuckyDay : (d.getDay() + 6) % 7 === luckyWeekday(d);
         const TREE_LUCK = { uncommon: 1, rare: 1.2, epic: 1.5, legendary: 2, mythic: 3 };
         // 🏭 โรงแปรรูป: ซื้อเครื่องครั้งเดียว ใส่วัตถุดิบแล้วรอ ได้ของราคาสูงกว่าขายดิบๆ (ทำงานต่อแม้ปิดเว็บ)
         const MACHINES = {
@@ -6203,7 +6224,7 @@
                 hybridSeeds: (Array.isArray(v.hybridSeeds) ? v.hybridSeeds : []).filter(k => HYBRID_VEGGIES.includes(k)).slice(0, HYBRID_SEED_MAX),
                 wormDay: typeof v.wormDay === 'string' ? v.wormDay.slice(0, 10) : '',
                 compost: int(v.compost, COMPOST_PTS - 1), land: int(v.land, 6),
-                saplings: counts(v.saplings, Object.keys(TREES)), treeFinds: counts(v.treeFinds, FRUIT_GEMS.map(([k]) => k)), fruits: counts(v.fruits, Object.keys(VEGGIES)),
+                saplings: counts(v.saplings, Object.keys(TREES)), treeFinds: counts(v.treeFinds, FRUIT_GEMS.map(([k]) => k)), treasures: counts(v.treasures, [...Object.values(TREASURES), COSMIC_TREASURE]), luck: int(v.luck, LUCK_MAX), fruits: counts(v.fruits, Object.keys(VEGGIES)),
                 flowers: counts(v.flowers, Object.keys(FLOWERS)), bestQ,
                 honeyDay: typeof v.honeyDay === 'string' ? v.honeyDay.slice(0, 10) : '', pet,
                 stall: (() => {
@@ -6560,7 +6581,32 @@
             for (const [k, c] of list) { x -= c * mult; if (x < 0) return k; }
             return null;
         }
-        const treeLuck = p => (TREE_LUCK[cropRarity(TREES[p.seed].fruit)] || 1) * (1 + 0.25 * treeAge(p));
+        const treeLuck = p => (TREE_LUCK[cropRarity(TREES[p.seed].fruit)] || 1) * (1 + 0.25 * treeAge(p)) * luckMult();
+        // 🍀 ดวงสะสม · ได้ของหายากขึ้นไป = ดวงถูกใช้ไป เริ่มสะสมใหม่
+        function luckGain(r) { veg.luck = rarAtLeast(r, 'epic') ? 0 : Math.min(LUCK_MAX, (veg.luck || 0) + (luckyDay() ? 2 : 1)); }
+        // โบนัสสะสมครบชุด: เก็บผักผลไม้หรือปลาครบทุกชนิดในระดับไหน ได้ดวงถาวรเพิ่ม (รวมไม่เกิน +50%)
+        function setBonusList() {
+            const fish = Object.keys(FISH).filter(k => !FISH[k].secret), out = [];
+            Object.keys(SET_BONUS).forEach(r => {
+                const c = DEX_CROPS.filter(k => cropRarity(k) === r), f = fish.filter(k => FISH[k].r === r);
+                if (c.length && c.every(k => cropTotal(k) > 0)) out.push({ kind: 'crops', r, b: SET_BONUS[r] });
+                if (f.length && f.every(k => veg.fishCaught[k])) out.push({ kind: 'fish', r, b: SET_BONUS[r] });
+            });
+            return out;
+        }
+        const setBonus = () => Math.min(0.5, setBonusList().reduce((a, x) => a + x.b, 0));
+        const luckMult = () => (1 + (veg.luck || 0) / 100) * (luckyDay() ? 1.5 : 1) * (1 + setBonus());
+        // 🗝️ ลุ้นสมบัติตอนเจอของในป่า/เหมือง/ทะเล (window.fixedTreasure ให้เทสต์กำหนดผล)
+        function rollTreasure(zone) {
+            const fixed = window.fixedTreasure, m = luckMult(), x = Math.random();
+            const k = typeof fixed === 'string' ? fixed || null : x < TREASURE_ODDS.cosmic * m ? COSMIC_TREASURE : x < (TREASURE_ODDS.cosmic + TREASURE_ODDS.immortal) * m ? TREASURES[zone] : null;
+            if (!k || !FARM_PRODUCTS[k]) return null;
+            giveItem(k, 1); veg.treasures[k] = (veg.treasures[k] || 0) + 1; veg.luck = 0;
+            const it = FARM_PRODUCTS[k];
+            showToast(`${RARITY[it.rar].e} สมบัติระดับ${RARITY[it.rar].name}! ได้${it.e} ${it.name}`, 'success', { duration: 8000 });
+            setTimeout(() => { fireConfetti(); showBadgeCelebration({ icon: it.e, desc: `${RARITY[it.rar].e} สมบัติระดับ${RARITY[it.rar].name}: ${it.name}! ${TREASURE_DESC[k] || ''}` }); }, 700);
+            return k;
+        }
         function tapTree(i, el) {
             const p = veg.plots[i], t = TREES[p.seed];
             if (!isReady(p)) {
@@ -6582,10 +6628,11 @@
             veg.fruits[t.fruit] = (veg.fruits[t.fruit] || 0) + n;
             noteDex(t.fruit);
             veg.bestQ[t.fruit] = Math.max(veg.bestQ[t.fruit] || 0, q);
-            const gem = treeRoll(FRUIT_GEMS, treeLuck(p), window.fixedFruitGem), sap = treeRoll(RARE_SAPLINGS, p.seed === 'moonTree' ? 3 : p.seed === 'lanternTree' ? 2 : 1, window.fixedSapling);
+            const gem = treeRoll(FRUIT_GEMS, treeLuck(p), window.fixedFruitGem), sap = treeRoll(RARE_SAPLINGS, (p.seed === 'moonTree' ? 3 : p.seed === 'lanternTree' ? 2 : 1) * luckMult(), window.fixedSapling);
             p.fruitAt = Date.now(); p.picks = Math.min(99999, (p.picks || 0) + 1); p.cared = false; p.soil = Math.max(0, p.soil - 6);
             const grew = treeAge(p) > age, g = gem && FARM_PRODUCTS[gem];
             if (g) { giveItem(gem, 1); veg.treeFinds[gem] = (veg.treeFinds[gem] || 0) + 1; }
+            luckGain(g ? g.rar : cropRarity(t.fruit));
             if (sap) veg.saplings[sap] = Math.min(99, (veg.saplings[sap] || 0) + 1);
             saveVeg();
             vegFx(el, [VEGGIES[t.fruit].e, VEGGIES[t.fruit].e, g ? g.e : '✨']);
@@ -7047,6 +7094,7 @@
                 + (lvl >= FOREST_LEVEL ? `<span class="farm-energy" title="แรง ใช้เดินป่า · ${energyText()} · พักดี +${ENERGY_BREAK} · กินอาหารฟื้นแรง">⚡ ${energyNow()}/${ENERGY_MAX}</span>` : '')
                 + `<span class="farm-weather" title="${w.note}">${w.e} ${w.name}</span>`
                 + `<span class="farm-weather farm-season" title="${s.name}: ผักตามฤดูโตไวขึ้น 1 ระยะ ขายแพงขึ้น ${seasonal}">${s.e} ${s.name}</span>`
+                + `<button type="button" class="farm-weather farm-luck${luckyDay() ? ' is-lucky' : ''}" onclick="openDex('other')" title="ดวงสะสม: ได้ของธรรมดาถึงแรร์ ดวงขึ้นทีละนิด ช่วยเพิ่มโอกาสของล้ำค่าและสมบัติ · โอกาสตอนนี้ ×${luckMult().toFixed(2)}">🍀 ${veg.luck || 0}%${luckyDay() ? ' · วันโชคดี' : ''}</button>`
                 + (currentTitle() ? `<span class="farm-title" title="ฉายาชาวสวน">🎖️ ${escHtml(currentTitle())}</span>` : '');
             const ordersReady = todaysOrders().filter(o => !o.done && hasItems(o.items)).length;
             const od = document.getElementById('fa-orders');
@@ -8219,6 +8267,7 @@
                 giveItem(k); veg.fishCaught[k] = (veg.fishCaught[k] || 0) + 1; passNote('fish');
                 rmProg('fishrun', 1); rmFishReport(k, res.cm);
                 res.frags = FISH_FRAGS[f.r] || 0;
+                luckGain(f.r);
                 if (res.frags) addFrags(res.frags, true);
                 addXP(4 + Math.round(f.value / 3) + (res.trophy ? 5 : 0)); playSound('welcome');
                 if (res.trophy) addCoins(f.value);
@@ -8718,6 +8767,7 @@
             { id: 'trader10', e: '🤝', name: 'พ่อค้าแม่ค้าตลาดเพื่อน', desc: 'ซื้อขายกับเพื่อน 10 ครั้ง', goal: 10, v: () => veg.stats.trades, coins: 30, title: 'เซียนตลาดนัด' },
             { id: 'q5x3', e: '🌟', name: 'ผักระดับห้าดาว', desc: 'เก็บผัก ★★★★★ 3 ครั้ง', goal: 3, v: () => veg.stats.q5, coins: 30, title: 'เทพแห่งคุณภาพ' },
             { id: 'myth1', e: '🔴', name: 'สัมผัสพลังเทพ', desc: 'เก็บผักเทพหรือตกปลาเทพได้ครั้งแรก', goal: 1, v: () => Object.keys(MYTH_VEGGIES).filter(k => veg.harvest[k]).length + Object.keys(FISH).filter(k => rarAtLeast(FISH[k].r, 'mythic') && veg.fishCaught[k]).length, coins: 80, title: 'ผู้ถูกเลือกจากสวรรค์' },
+            { id: 'immortal1', e: '🌈', name: 'ผู้ครอบครองของอมตะ', desc: 'ได้ของระดับอมตะหรือจักรวาลครั้งแรก', goal: 1, v: () => Object.entries({ ...veg.treeFinds, ...veg.treasures }).filter(([k, n]) => n && rarAtLeast(itemRarity(k), 'immortal')).length, coins: 150, title: 'ผู้ครอบครองอมตะ' },
             { id: 'roam30', e: '🐛', name: 'นักล่าหนอนจร', desc: 'จับหนอนจรในแปลงผัก 30 ตัว', goal: 30, v: () => veg.stats.roam, coins: 20, title: 'นักล่าหนอน' },
             { id: 'haggle10', e: '💬', name: 'เซียนต่อรอง', desc: 'ต่อรองราคากับลูกค้าสำเร็จ 10 ครั้ง', goal: 10, v: () => veg.stats.haggle, coins: 25, title: 'เซียนต่อรอง' },
             { id: 'thief5', e: '🥷', name: 'นินจาสวนผัก', desc: 'แอบเก็บผักเพื่อนสำเร็จ 5 ครั้ง', goal: 5, v: () => veg.stats.steals, coins: 20, title: 'นินจาสวนผัก' },
@@ -8865,6 +8915,7 @@
         // ผลพิเศษตอนเก็บผัก: เศษเมล็ดตำนาน (ยิ่งดาวเยอะ ผักทอง จังหวะเป๊ะ ผักหายาก ยิ่งมีลุ้น) และพลังของผักตำนาน
         function rarityHarvest(key, q, golden, grade) {
             const r = cropRarity(key), out = { r, frag: false, first: noteDex(key), xpMult: key === 'starTomato' ? 3 : 1, say: '' };
+            luckGain(r);
             const chance = Math.min(0.3, 0.08 + 0.03 * (q - 1) + (golden ? 0.05 : 0) + (grade === 'perfect' ? 0.03 : 0) + ({ uncommon: 0.015, rare: 0.03, epic: 0.06 }[r] || 0));
             if (!rarAtLeast(r, 'legendary') && Math.random() < chance) { out.frag = true; addFrags(1); }
             if (key === 'dragonChili') { const n = veg.plots.filter(p => p.pest || p.worm).length; veg.plots.forEach(p => { p.pest = false; p.worm = ''; }); out.say = `🔥 พริกเพลิงมังกรไล่หนอน${n ? ` ${n} แปลง` : ''}หนีหมดสวน!`; }
@@ -8972,7 +9023,7 @@
             return `<div class="dex-progress" style="--cols:${tiers.length <= 4 ? tiers.length : Math.ceil(tiers.length / 2)}">${tiers.map(r => {
                 const all = list.filter(k => rOf(k) === r), got = all.filter(known).length;
                 return `<button type="button" class="dex-prog rar-${r}${dex.filter === r ? ' is-active' : ''}" aria-pressed="${dex.filter === r}" onclick="dexSetFilter('${r}')">
-                    <span>${RARITY[r].e} ${RARITY[r].name}</span><b>${got}/${all.length}</b><i class="dex-prog-bar"><i style="width:${all.length ? Math.round(got / all.length * 100) : 0}%"></i></i></button>`;
+                    <span>${RARITY[r].e} ${RARITY[r].name}</span><b>${got}/${all.length}${SET_BONUS[r] && got === all.length ? ` <em class="dex-prog-bonus" title="สะสมครบชุด ได้ดวงถาวร">🍀+${Math.round(SET_BONUS[r] * 100)}%</em>` : ''}</b><i class="dex-prog-bar"><i style="width:${all.length ? Math.round(got / all.length * 100) : 0}%"></i></i></button>`;
             }).join('')}</div>`;
         }
         const dexCell = (kind, k, face, name, n, extra, r, locked) => `<button type="button" class="dex-cell rar-${r}${locked ? ' locked' : ''}" onclick="dexSelect('${kind}', '${k}')" aria-label="${locked ? 'ยังไม่พบ' : name} · ${RARITY[r].name}">
@@ -9008,9 +9059,18 @@
                 + dexGroups(list, k => FISH[k].r, cell, FISH_NOTE)
                 + `<p class="shop-note">ปลาแต่ละชนิดออกมาตามเวลา อากาศ และฤดู · ยาวเกิน 90% ของขนาดสูงสุดคือตัวยักษ์ ได้เหรียญเพิ่ม · ตกปลาได้ที่ฟาร์ม แท็บ 🎣 บ่อปลา</p>`;
         }
+        function luckCardHTML() {
+            const luck = veg.luck || 0, sets = setBonusList(), day = luckyDay();
+            return `<div class="farm-card luck-card${day ? ' is-lucky' : ''}"><span class="barn-emoji" aria-hidden="true">🍀</span>
+                <div class="farm-card-main"><span class="farm-card-title">ดวงสะสม ${luck}%${day ? ' · 🌟 วันนี้วันโชคดี!' : ''}</span>
+                    <span class="farm-xp ach-meter" role="progressbar" aria-valuemin="0" aria-valuemax="${LUCK_MAX}" aria-valuenow="${luck}" aria-label="ดวงสะสม"><span style="width:${luck}%"></span></span>
+                    <span class="farm-card-sub">ได้ของธรรมดาถึงแรร์ ดวงขึ้นทีละ 1%${day ? ' (วันนี้ 2%)' : ''} · ได้ของหายากขึ้นไปดวงเริ่มใหม่ · ดวงช่วยเพิ่มโอกาสของล้ำค่าจากไม้ผล กิ่งพันธุ์หายาก และสมบัติจากการสำรวจ · ตอนนี้โอกาส <b>×${luckMult().toFixed(2)}</b></span>
+                    <span class="farm-card-sub">🌟 วันโชคดีสัปดาห์นี้: วัน${LUCK_DAYS[luckyWeekday()]} (ดวงขึ้น 2 เท่า โอกาส ×1.5) · 📚 โบนัสสะสมครบชุด ${sets.length ? `+${Math.round(setBonus() * 100)}% (${sets.map(x => `${x.kind === 'fish' ? '🎣' : '🥕'}${RARITY[x.r].e}`).join(' ')})` : 'ยังไม่มี เก็บผักผลไม้หรือปลาให้ครบทุกชนิดในระดับไหนก็ได้'}</span></div></div>`;
+        }
         function dexOtherTab() {
             const cell = (e, name, n, locked, q) => `<div class="dex-cell${locked ? ' locked' : ''}"><span class="dex-e">${e}</span><small>${name}</small><b>${n}</b>${q > 1 ? `<i class="book-stars">${'★'.repeat(q)}</i>` : ''}</div>`;
-            return `<p class="dex-group"><b>🍳 อาหาร</b> · ทำในครัวของฟาร์ม</p><div class="dex-grid">${Object.entries(RECIPES).map(([k, r]) => r.secret && !veg.cooked[k] ? cell('❔', 'เมนูลับ', 0, true) : cell(r.e, r.name, veg.cooked[k] || 0, !veg.cooked[k], veg.bestQ[k])).join('')}</div>`
+            return luckCardHTML() + `<p class="dex-group"><b>🗝️ สมบัติจากการสำรวจ</b> · ลุ้นได้ทุกครั้งที่เจอของในป่า เหมือง ทะเล ดวงยิ่งมากยิ่งมีลุ้น</p><div class="dex-grid">${[...Object.values(TREASURES), COSMIC_TREASURE].map(k => { const it = FARM_PRODUCTS[k], n = veg.treasures[k] || 0; return `<div class="dex-cell rar-${it.rar}${n ? '' : ' locked'}" title="${n ? TREASURE_DESC[k] : ''}"><span class="dex-e">${n ? it.e : '❔'}</span><small>${n ? it.name : `${RARITY[it.rar].e} ???`}</small><b>${n}</b></div>`; }).join('')}</div>`
+                + `<p class="dex-group"><b>🍳 อาหาร</b> · ทำในครัวของฟาร์ม</p><div class="dex-grid">${Object.entries(RECIPES).map(([k, r]) => r.secret && !veg.cooked[k] ? cell('❔', 'เมนูลับ', 0, true) : cell(r.e, r.name, veg.cooked[k] || 0, !veg.cooked[k], veg.bestQ[k])).join('')}</div>`
                 + `<p class="dex-group"><b>🌸 ช่อดอกไม้ที่เด็ด</b> · ปลูกดอกไม้แล้วเด็ดตอนบาน</p><div class="dex-grid">${Object.entries(FLOWERS).map(([k, f]) => cell(f.e, f.name, veg.flowers[k] || 0, !veg.flowers[k], 0)).join('')}</div>`
                 + `<p class="dex-group"><b>🌲 ของป่า</b> · เดินป่าที่ฟาร์ม (เลเวล ${FOREST_LEVEL})</p><div class="dex-grid">${FOREST_FINDS.map(k => { const it = itemInfo(k), n = veg.forest.found[k] || 0; return n ? cell(it.e, it.name, n, false, 0) : cell('❔', '???', 0, true, 0); }).join('')}</div>`
                 + `<p class="dex-group"><b>⛏️ ของจากเหมือง</b> · ทุบหินในเหมือง (เลเวล ${MINE_LEVEL})</p><div class="dex-grid">${[...MINE_FINDS, ...MINE_FOSSILS].map(k => { const it = itemInfo(k), n = veg.mine.found[k] || 0; return n ? cell(it.e, it.name, n, false, 0) : cell('❔', '???', 0, true, 0); }).join('')}</div>`
@@ -9371,6 +9431,7 @@
             giveItem(k, n);
             veg.forest.found[k] = Math.min(1e6, (veg.forest.found[k] || 0) + n);
             veg.forest.got.push([k, n]);
+            luckGain(itemRarity(k) || 'common'); rollTreasure('forest');
         }
         const forestName = k => `${itemInfo(k).e} ${itemInfo(k).name}`;
         function openBush(i) {
@@ -9555,6 +9616,7 @@
         function mineFind(k, n) {
             giveItem(k, n);
             veg.mine.found[k] = Math.min(1e6, (veg.mine.found[k] || 0) + n);
+            luckGain(itemRarity(k) || 'common'); rollTreasure('mine');
         }
         function hitRock(i) {
             const m = veg.mine, c = m.cells && m.cells[i];
@@ -9733,7 +9795,7 @@
             saveVeg(); playSound('pop'); passNote('sea');
             renderFarmPanel(); renderFarmStatus();
         }
-        function seaFind(k, n) { giveItem(k, n); veg.sea.found[k] = Math.min(1e6, (veg.sea.found[k] || 0) + n); }
+        function seaFind(k, n) { giveItem(k, n); veg.sea.found[k] = Math.min(1e6, (veg.sea.found[k] || 0) + n); luckGain(itemRarity(k) || 'common'); rollTreasure('sea'); }
         function digSand(i) {
             const s = veg.sea, c = s.cells && s.cells[i];
             if (!c || c.open) return;
@@ -16143,7 +16205,7 @@
                 <p class="cloud-away-note">1 บัญชีเล่นได้ทีละเครื่อง · กดเล่นที่เครื่องนี้ ระบบจะโหลดข้อมูลล่าสุดจากเซิร์ฟเวอร์มาให้ก่อนเสมอ</p>
                 <button type="button" class="modal-btn btn-primary" onclick="cloudTakeOver()" ${cloudRt.busy ? 'disabled' : ''}>▶️ เล่นที่เครื่องนี้</button>
                 <button type="button" class="modal-btn btn-secondary" onclick="cloudAwayLeave()" ${cloudRt.busy ? 'disabled' : ''}>🚪 ${cloud && cloud.user ? 'ออกจากระบบเครื่องนี้' : 'เลิกใช้เซฟนี้ในเครื่องนี้'}</button>
-                <small>ถ้า${escHtml(a.device)}ไม่ใช่เครื่องของคุณ ให้เปลี่ยนรหัสผ่านในหน้าตั้งค่า</small></div>`;
+                <small>ถ้า ${escHtml(a.device)} ไม่ใช่เครื่องของคุณ ให้เปลี่ยนรหัสผ่านในหน้าตั้งค่า</small></div>`;
             el.style.display = 'flex';
             renderCloudBox();
         }
