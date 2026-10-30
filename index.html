@@ -2517,7 +2517,7 @@
         @media (prefers-reduced-motion: reduce) { .sea-boat, .beach-scene .sand-spot svg { animation: none !important; } }
         /* 🐣 ลูกสัตว์ + สมุดสัตว์ */
         .baby-box { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 16px; background: rgba(255, 213, 79, 0.1); border: 1px dashed rgba(230, 160, 0, 0.45); }
-        .baby-card.rar-rare { border-color: rgba(var(--rc-rgb, 59, 130, 246), 0.5); }
+        .baby-card.rar-uncommon, .baby-card.rar-rare { border-color: rgba(var(--rc-rgb, 59, 130, 246), 0.5); }
         .baby-face { position: relative; }
         .baby-face i { position: absolute; right: -6px; bottom: -4px; font-size: 14px; font-style: normal; }
         .baby-bar > span { background: linear-gradient(90deg, #FFB74D, #FF8A65); }
@@ -2931,42 +2931,58 @@
         .mp-foot { line-height: 1.8; }
         .mp-link { font: inherit; font-weight: 700; color: var(--accent-ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
         .mp-leave.is-armed, .mp-err { color: var(--danger); font-weight: 700; }
-        /* 💎 ความหายาก: ธรรมดา · แรร์ · หายาก · ตำนาน */
+        /* 💎 ความหายาก 8 ระดับ: ธรรมดา · ไม่ธรรมดา · แรร์ · หายาก · ตำนาน · เทพ · อมตะ · จักรวาล */
         .rar-common { --rc: #8E879F; --rc-rgb: 142, 135, 159; --rc-ink: #FFFFFF; }
+        .rar-uncommon { --rc: #16A34A; --rc-rgb: 22, 163, 74; --rc-ink: #FFFFFF; }
         .rar-rare { --rc: #2563EB; --rc-rgb: 37, 99, 235; --rc-ink: #FFFFFF; }
         .rar-epic { --rc: #9333EA; --rc-rgb: 147, 51, 234; --rc-ink: #FFFFFF; }
         .rar-legendary { --rc: #F59E0B; --rc-rgb: 245, 158, 11; --rc-ink: #3B2300; }
         .rar-mythic { --rc: #E11D48; --rc-rgb: 225, 29, 72; --rc-ink: #FFFFFF; }
+        .rar-immortal { --rc: #D946EF; --rc-rgb: 217, 70, 239; --rc-ink: #FFFFFF; }
+        .rar-cosmic { --rc: #4F46E5; --rc-rgb: 79, 70, 229; --rc-ink: #FFFFFF; }
         .rar-tag { display: inline-flex; align-items: center; gap: 3px; width: fit-content; padding: 1px 8px; border-radius: 999px; font: inherit; font-size: 11px; font-weight: 800; line-height: 1.6;
             color: var(--rc-ink); background: var(--rc); border: 0; white-space: nowrap; }
         button.rar-tag { cursor: pointer; padding: 3px 10px; font-size: 12px; }
         .rar-tag.rar-legendary { color: #FCD34D; background: linear-gradient(90deg, #3B2A0A, #7A5410, #3B2A0A); background-size: 200% 100%; box-shadow: inset 0 0 0 1px #F59E0B; animation: rar-shine 2.4s linear infinite; }
         .rar-tag.rar-mythic { color: #FFE4E6; background: linear-gradient(90deg, #4C0519, #BE123C, #7C3AED, #4C0519); background-size: 300% 100%; box-shadow: inset 0 0 0 1px #FB7185; animation: rar-shine 2s linear infinite; }
+        .rar-tag.rar-immortal { color: #FFFFFF; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); background: linear-gradient(90deg, #EF4444, #F59E0B, #22C55E, #3B82F6, #A855F7, #EF4444); background-size: 300% 100%; animation: rar-shine 3s linear infinite; }
+        .rar-tag.rar-cosmic { color: #E0E7FF; box-shadow: inset 0 0 0 1px #818CF8; animation: rar-shine 3.2s linear infinite;
+            background: radial-gradient(circle at 18% 35%, #FFFFFF 0 1px, transparent 1.6px), radial-gradient(circle at 62% 70%, #C7D2FE 0 1px, transparent 1.6px), linear-gradient(90deg, #0B1026, #312E81, #581C87, #0B1026);
+            background-size: 34px 100%, 26px 100%, 300% 100%; }
         button.rar-tag:disabled { opacity: 0.55; cursor: default; animation: none; }
         @keyframes rar-shine { to { background-position: -200% 0; } }
         @keyframes rar-glow { from { box-shadow: 0 0 0 2px rgba(var(--rc-rgb), 0.55), 0 0 10px rgba(var(--rc-rgb), 0.35); } to { box-shadow: 0 0 0 2px rgba(var(--rc-rgb), 0.9), 0 0 22px rgba(var(--rc-rgb), 0.6); } }
         /* แปลงในสวน: ผักแรร์ขอบฟ้า หายากเรืองม่วง ตำนานเรืองทองมีประกาย */
-        .veg-plot.rar-rare, .veg-plot.rar-epic, .veg-plot.rar-legendary { background: radial-gradient(ellipse at 50% 70%, rgba(var(--rc-rgb), 0.18), transparent 70%); }
+        .veg-plot.rar-uncommon, .veg-plot.rar-rare, .veg-plot.rar-epic, .veg-plot.rar-legendary { background: radial-gradient(ellipse at 50% 70%, rgba(var(--rc-rgb), 0.18), transparent 70%); }
         .veg-plot.rar-epic { box-shadow: 0 0 0 1.5px rgba(var(--rc-rgb), 0.45); }
         .veg-plot.rar-legendary { animation: rar-glow 1.4s ease-in-out infinite alternate; }
         .veg-plot.rar-legendary::after { content: '✨'; position: absolute; right: 6%; top: 2%; font-size: 13px; z-index: 2; animation: dex-bob 1.1s ease-in-out infinite alternate; pointer-events: none; }
-        .veg-plot.rar-mythic { background: radial-gradient(ellipse at 50% 70%, rgba(var(--rc-rgb), 0.22), transparent 70%); animation: rar-glow 1.1s ease-in-out infinite alternate; }
-        .veg-plot.rar-mythic::after { content: '🔴'; position: absolute; right: 6%; top: 2%; font-size: 11px; z-index: 2; animation: dex-bob 0.9s ease-in-out infinite alternate; pointer-events: none; }
-        .veg-seed.rar-mythic, .barn-item.rar-mythic { border-color: rgba(var(--rc-rgb), 0.7); box-shadow: inset 3px 0 0 var(--rc); background: linear-gradient(135deg, rgba(var(--rc-rgb), 0.16), var(--surface-solid) 60%); }
-        .mp-plot.rar-mythic { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16), 0 0 0 2px var(--rc), 0 0 12px rgba(var(--rc-rgb), 0.7); }
-        .dex-cell.rar-mythic { background: linear-gradient(180deg, rgba(var(--rc-rgb), 0.16), var(--surface-2) 70%); border-color: rgba(var(--rc-rgb), 0.7); }
-        .dex-cell.rar-mythic:not(.locked), .pond-dex-item.rar-mythic:not(.locked) { animation: rar-glow 1.3s ease-in-out infinite alternate; }
-        .dex-hero.rar-mythic .dex-hero-e { animation: rar-glow 1.2s ease-in-out infinite alternate; }
+        .veg-plot.rar-mythic, .veg-plot.rar-immortal, .veg-plot.rar-cosmic { background: radial-gradient(ellipse at 50% 70%, rgba(var(--rc-rgb), 0.22), transparent 70%); animation: rar-glow 1.1s ease-in-out infinite alternate; }
+        .veg-plot.rar-mythic::after, .veg-plot.rar-immortal::after, .veg-plot.rar-cosmic::after { content: '🔴'; position: absolute; right: 6%; top: 2%; font-size: 11px; z-index: 2; animation: dex-bob 0.9s ease-in-out infinite alternate; pointer-events: none; }
+        .veg-plot.rar-immortal::after { content: '🌈'; }
+        .veg-plot.rar-cosmic::after { content: '🌌'; }
+        .veg-seed.rar-mythic, .barn-item.rar-mythic, .veg-seed.rar-immortal, .barn-item.rar-immortal, .veg-seed.rar-cosmic, .barn-item.rar-cosmic { border-color: rgba(var(--rc-rgb), 0.7); box-shadow: inset 3px 0 0 var(--rc); background: linear-gradient(135deg, rgba(var(--rc-rgb), 0.16), var(--surface-solid) 60%); }
+        .mp-plot.rar-mythic, .mp-plot.rar-immortal, .mp-plot.rar-cosmic { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16), 0 0 0 2px var(--rc), 0 0 12px rgba(var(--rc-rgb), 0.7); }
+        .dex-cell.rar-mythic, .dex-cell.rar-immortal, .dex-cell.rar-cosmic { background: linear-gradient(180deg, rgba(var(--rc-rgb), 0.16), var(--surface-2) 70%); border-color: rgba(var(--rc-rgb), 0.7); }
+        .dex-cell.rar-mythic:not(.locked), .pond-dex-item.rar-mythic:not(.locked), .dex-cell.rar-immortal:not(.locked), .dex-cell.rar-cosmic:not(.locked) { animation: rar-glow 1.3s ease-in-out infinite alternate; }
+        .dex-hero.rar-mythic .dex-hero-e, .dex-hero.rar-immortal .dex-hero-e, .dex-hero.rar-cosmic .dex-hero-e { animation: rar-glow 1.2s ease-in-out infinite alternate; }
         .dex-group.rar-mythic b { color: #BE123C; }
         body.is-dark .dex-group.rar-mythic b { color: #FDA4AF; }
-        .mk-row.rar-mythic { box-shadow: inset 3px 0 0 var(--rc); }
-        .mk-card.rar-mythic { border-color: rgba(var(--rc-rgb), 0.55); }
+        .dex-group.rar-immortal b { color: #A21CAF; }
+        .dex-group.rar-cosmic b { color: #4338CA; }
+        body.is-dark .dex-group.rar-immortal b { color: #F0ABFC; }
+        body.is-dark .dex-group.rar-cosmic b { color: #A5B4FC; }
+        .mk-row.rar-mythic, .mk-row.rar-immortal, .mk-row.rar-cosmic { box-shadow: inset 3px 0 0 var(--rc); }
+        .mk-card.rar-mythic, .mk-card.rar-immortal, .mk-card.rar-cosmic { border-color: rgba(var(--rc-rgb), 0.55); }
         body.reduce-motion .veg-plot.rar-mythic, body.reduce-motion .rar-tag.rar-mythic, body.reduce-motion .dex-cell.rar-mythic, body.reduce-motion .dex-hero.rar-mythic .dex-hero-e { animation: none; }
+        body.reduce-motion .veg-plot.rar-immortal, body.reduce-motion .veg-plot.rar-cosmic, body.reduce-motion .rar-tag.rar-immortal, body.reduce-motion .rar-tag.rar-cosmic,
+        body.reduce-motion .dex-cell.rar-immortal, body.reduce-motion .dex-cell.rar-cosmic, body.reduce-motion .dex-hero.rar-immortal .dex-hero-e, body.reduce-motion .dex-hero.rar-cosmic .dex-hero-e { animation: none; }
         @media (prefers-reduced-motion: reduce) { .veg-plot.rar-mythic, .rar-tag.rar-mythic, .dex-cell.rar-mythic, .pond-dex-item.rar-mythic { animation: none !important; } }
-        .veg-seed.rar-rare, .veg-seed.rar-epic, .veg-seed.rar-legendary { border-color: rgba(var(--rc-rgb), 0.7); box-shadow: inset 3px 0 0 var(--rc); }
+        @media (prefers-reduced-motion: reduce) { .veg-plot.rar-immortal, .veg-plot.rar-cosmic, .rar-tag.rar-immortal, .rar-tag.rar-cosmic, .dex-cell.rar-immortal, .dex-cell.rar-cosmic { animation: none !important; } }
+        .veg-seed.rar-uncommon, .veg-seed.rar-rare, .veg-seed.rar-epic, .veg-seed.rar-legendary { border-color: rgba(var(--rc-rgb), 0.7); box-shadow: inset 3px 0 0 var(--rc); }
         .veg-seed.rar-legendary { background: linear-gradient(135deg, rgba(var(--rc-rgb), 0.18), var(--surface-solid) 60%); }
         .veg-picker-sub { grid-column: 1 / -1; margin: 4px 0 0; font-size: 11.5px; font-weight: 800; color: var(--ink-2); }
-        .barn-item.rar-rare, .barn-item.rar-epic, .barn-item.rar-legendary { border-color: rgba(var(--rc-rgb), 0.6); box-shadow: inset 0 3px 0 var(--rc); }
+        .barn-item.rar-uncommon, .barn-item.rar-rare, .barn-item.rar-epic, .barn-item.rar-legendary { border-color: rgba(var(--rc-rgb), 0.6); box-shadow: inset 0 3px 0 var(--rc); }
         .barn-item .rar-tag { align-self: center; }
         .mp-plot.rar-epic { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16), 0 0 0 2px rgba(var(--rc-rgb), 0.75); }
         .mp-plot.rar-legendary { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16), 0 0 0 2px var(--rc), 0 0 10px rgba(var(--rc-rgb), 0.6); }
@@ -2976,10 +2992,10 @@
         /* 📖 สมุดสะสม */
         .dex-box { max-width: 560px; }
         .dex-tabs .report-tab { padding: 8px 2px; font-size: 11.5px; }
-        .dex-progress { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+        .dex-progress { display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); gap: 6px; }
         .dex-prog { display: flex; flex-direction: column; gap: 3px; padding: 7px 8px; border-radius: 14px; cursor: pointer; text-align: left; font: inherit; color: var(--ink-2);
             background: var(--surface-2); border: 1.5px solid rgba(var(--rc-rgb), 0.35); }
-        .dex-prog span { font-size: 11px; font-weight: 700; white-space: nowrap; }
+        .dex-prog span { font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .dex-prog b { font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums; }
         .dex-prog.is-active { background: rgba(var(--rc-rgb), 0.14); border-color: var(--rc); box-shadow: 0 0 0 3px rgba(var(--rc-rgb), 0.15); }
         .dex-prog-bar { display: block; height: 5px; border-radius: 3px; background: rgba(var(--rc-rgb), 0.15); overflow: hidden; }
@@ -2990,7 +3006,8 @@
             background: rgba(var(--rc-rgb), 0.14); box-shadow: inset 0 0 0 1.5px var(--rc); }
         .dex-group { margin: 6px 0 0; font-size: 12px; color: var(--ink-3); font-weight: 600; }
         .dex-group b { color: var(--ink); font-size: 13px; }
-        .dex-group.rar-rare b, .dex-group.rar-epic b { color: var(--rc); }
+        .dex-group.rar-uncommon b, .dex-group.rar-rare b, .dex-group.rar-epic b { color: var(--rc); }
+        body.is-dark .dex-group.rar-uncommon b { color: #6EE7A0; }
         .dex-group.rar-legendary b { color: #C27803; }
         body.is-dark .dex-group.rar-legendary b { color: #FCD34D; }
         body.is-dark .dex-group.rar-rare b { color: #7EA8FF; }
@@ -3000,7 +3017,7 @@
             background: var(--surface-2); border: 1.5px solid rgba(var(--rc-rgb, 89, 79, 110), 0.3); color: var(--ink); }
         div.dex-cell { cursor: default; border-color: var(--line); }
         .dex-cell:hover { transform: translateY(-1px); }
-        .dex-cell.rar-rare, .dex-cell.rar-epic, .dex-cell.rar-legendary { background: linear-gradient(180deg, rgba(var(--rc-rgb), 0.14), var(--surface-2) 70%); border-color: rgba(var(--rc-rgb), 0.65); }
+        .dex-cell.rar-uncommon, .dex-cell.rar-rare, .dex-cell.rar-epic, .dex-cell.rar-legendary { background: linear-gradient(180deg, rgba(var(--rc-rgb), 0.14), var(--surface-2) 70%); border-color: rgba(var(--rc-rgb), 0.65); }
         .dex-cell.rar-legendary:not(.locked) { animation: rar-glow 1.6s ease-in-out infinite alternate; }
         .dex-e { font-size: 28px; line-height: 1.15; }
         .dex-cell small { font-size: 10.5px; font-weight: 600; color: var(--ink-3); line-height: 1.3; }
@@ -3058,7 +3075,7 @@
         .mk-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto auto 54px; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border-radius: 14px; cursor: pointer;
             font: inherit; text-align: left; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); }
         .mk-row:hover, .mk-row.is-open { border-color: rgba(var(--accent-rgb), 0.45); }
-        .mk-row.rar-rare, .mk-row.rar-epic, .mk-row.rar-legendary { box-shadow: inset 3px 0 0 var(--rc); }
+        .mk-row.rar-uncommon, .mk-row.rar-rare, .mk-row.rar-epic, .mk-row.rar-legendary { box-shadow: inset 3px 0 0 var(--rc); }
         .mk-e { font-size: 22px; line-height: 1; text-align: center; }
         .mk-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 700; }
         .mk-name small { color: var(--ink-3); font-weight: 600; }
@@ -3073,7 +3090,7 @@
         .mk-detail .barn-btns { display: flex; flex-wrap: wrap; gap: 6px; }
         @media (max-width: 400px) { .mk-row { grid-template-columns: 24px minmax(0, 1fr) auto 50px; } .mk-row .mk-spark { display: none; } }
         .mk-cards { display: flex; flex-direction: column; gap: 6px; }
-        .mk-card.rar-rare, .mk-card.rar-epic, .mk-card.rar-legendary { border-color: rgba(var(--rc-rgb), 0.55); }
+        .mk-card.rar-uncommon, .mk-card.rar-rare, .mk-card.rar-epic, .mk-card.rar-legendary { border-color: rgba(var(--rc-rgb), 0.55); }
         .mk-deal { display: inline-block; margin-left: 2px; padding: 0 6px; border-radius: 999px; font-size: 10.5px; font-weight: 700; color: var(--ink-2); background: var(--surface-solid); border: 1px solid var(--line); }
         .mk-deal.is-good { color: #1F7A45; background: rgba(46, 184, 114, 0.14); border-color: rgba(46, 184, 114, 0.4); }
         body.is-dark .mk-deal.is-good { color: #7FE0A8; }
@@ -5655,19 +5672,28 @@
         const cropStages = k => CROP_STAGES[k] || 3;
         // ฤดูตามเดือนจริง: ผักตามฤดูโตเร็วขึ้น 1 ระยะ และขายได้แพงขึ้น 25%
         const FARM_SEASONS = {
-            hot: { e: '☀️', name: 'ฤดูร้อน', months: [2, 3, 4], crops: ['corn', 'chili', 'watermelon', 'pineapple', 'mango', 'cucumber', 'melon', 'coconut', 'lemon'] },
+            hot: { e: '☀️', name: 'ฤดูร้อน', months: [2, 3, 4], crops: ['corn', 'chili', 'watermelon', 'pineapple', 'mango', 'cucumber', 'melon', 'coconut', 'lemon', 'olive'] },
             rain: { e: '🌧️', name: 'ฤดูฝน', months: [5, 6, 7, 8, 9], crops: ['cabbage', 'mushroom', 'eggplant', 'bellPepper', 'pumpkin', 'banana', 'sweetPotato', 'kiwi', 'blueberry'] },
-            cool: { e: '❄️', name: 'ฤดูหนาว', months: [10, 11, 0, 1], crops: ['carrot', 'tomato', 'strawberry', 'broccoli', 'grape', 'tangerine', 'cherry', 'peach', 'avocado', 'onion', 'garlic', 'potato', 'apple', 'wheat'] }
+            cool: { e: '❄️', name: 'ฤดูหนาว', months: [10, 11, 0, 1], crops: ['carrot', 'tomato', 'strawberry', 'broccoli', 'grape', 'tangerine', 'cherry', 'peach', 'avocado', 'onion', 'garlic', 'potato', 'apple', 'wheat', 'pear', 'greenApple'] }
         };
         function farmSeason(d = new Date()) { return Object.keys(FARM_SEASONS).find(k => FARM_SEASONS[k].months.includes(d.getMonth())); }
         const inSeason = k => FARM_SEASONS[farmSeason()].crops.includes(k);
-        // ไม้ผลยืนต้น: ปลูกครั้งเดียว โตเต็มที่แล้วออกผลทุกวัน (ซื้อกิ่งพันธุ์ที่ร้านค้า)
+        // ไม้ผลยืนต้น: ปลูกครั้งเดียว โตเต็มที่แล้วออกผลเป็นรอบทุก cycle ชั่วโมง (ซื้อกิ่งพันธุ์ที่ร้านค้า)
+        // ต้นโทงเทงทอง 🟡 กับต้นผลจันทรา 🔴 ไม่มีขาย ลุ้นกิ่งพันธุ์ได้ตอนเก็บผลจากต้นอื่น · n = ผลต่อรอบพื้นฐาน
         const TREES = {
-            mangoTree: { e: '🥭', name: 'ต้นมะม่วง', fruit: 'mango', stages: 6, shopId: 'sapling-mango' },
-            bananaTree: { e: '🍌', name: 'ต้นกล้วย', fruit: 'banana', stages: 5, shopId: 'sapling-banana' },
-            coconutTree: { e: '🥥', name: 'ต้นมะพร้าว', fruit: 'coconut', stages: 7, shopId: 'sapling-coconut' },
-            appleTree: { e: '🍎', name: 'ต้นแอปเปิล', fruit: 'apple', stages: 6, shopId: 'sapling-apple' }
+            mangoTree: { e: '🥭', name: 'ต้นมะม่วง', fruit: 'mango', stages: 6, cycle: 6, shopId: 'sapling-mango' },
+            bananaTree: { e: '🍌', name: 'ต้นกล้วย', fruit: 'banana', stages: 5, cycle: 4, shopId: 'sapling-banana' },
+            coconutTree: { e: '🥥', name: 'ต้นมะพร้าว', fruit: 'coconut', stages: 7, cycle: 8, shopId: 'sapling-coconut' },
+            appleTree: { e: '🍎', name: 'ต้นแอปเปิล', fruit: 'apple', stages: 6, cycle: 6, shopId: 'sapling-apple' },
+            pearTree: { e: '🍐', name: 'ต้นสาลี่', fruit: 'pear', stages: 5, cycle: 4, shopId: 'sapling-pear' },
+            oliveTree: { e: '🫒', name: 'ต้นมะกอก', fruit: 'olive', stages: 5, cycle: 5, shopId: 'sapling-olive' },
+            greenAppleTree: { e: '🍏', name: 'ต้นแอปเปิลเขียว', fruit: 'greenApple', stages: 6, cycle: 6, shopId: 'sapling-greenapple' },
+            lanternTree: { e: '🏮', name: 'ต้นโทงเทงทอง', fruit: 'goldLantern', stages: 7, cycle: 12, top: true },
+            moonTree: { e: '🌕', name: 'ต้นผลจันทรา', fruit: 'moonFruit', stages: 8, cycle: 24, top: true }
         };
+        // ผลไม้ที่มีแต่บนต้น (ไม่มีเมล็ดให้ปลูกเป็นผัก) และความหายากของผลไม้จากต้นใหม่
+        const TREE_ONLY = ['apple', 'pear', 'olive', 'greenApple', 'goldLantern', 'moonFruit'];
+        const FRUIT_RAR = { pear: 'uncommon', olive: 'uncommon', greenApple: 'rare', goldLantern: 'legendary', moonFruit: 'mythic' };
         // ดอกไม้: บานแล้วช่วยให้ผักแปลงติดกันโตไวขึ้น 25% และให้ผึ้งเก็บน้ำหวานทำน้ำผึ้ง
         const FLOWERS = {
             sunflower: { e: '🌻', name: 'ทานตะวัน', color: '#FFC83D' }, tulip: { e: '🌷', name: 'ทิวลิป', color: '#FF7EB0' },
@@ -5675,16 +5701,22 @@
         };
         const FLOWER_STAGES = 2, FLOWER_LEVEL = 2, TREE_LEVEL = 3;
         VEGGIES.apple = { e: '🍎', name: 'แอปเปิล' }; // ผลไม้จากต้นแอปเปิล (ไม่มีเมล็ดให้ปลูกเป็นผัก)
+        Object.assign(VEGGIES, { pear: { e: '🍐', name: 'สาลี่' }, olive: { e: '🫒', name: 'มะกอก' }, greenApple: { e: '🍏', name: 'แอปเปิลเขียว' },
+            goldLantern: { e: '🏮', name: 'โทงเทงทอง' }, moonFruit: { e: '🌕', name: 'ผลจันทรา' } });
+        Object.assign(CROP_STAGES, { pear: 4, olive: 4, greenApple: 4, goldLantern: 5, moonFruit: 6 });
         VEGGIES.wheat = { e: '🌾', name: 'ข้าวสาลี' }; // ใช้ทำขนมปังและแป้ง
         // 🌲 พืชจากป่า: เมล็ดหาได้จากการเดินป่าเท่านั้น เก็บแล้วลุ้นได้เมล็ดคืน
         const FOREST_CROPS = { coffee: { e: '🫘', name: 'กาแฟ', stages: 5 }, cocoa: { e: '🌰', name: 'โกโก้', stages: 5 }, tea: { e: '🍵', name: 'ชา', stages: 4 } };
         Object.entries(FOREST_CROPS).forEach(([k, v]) => { VEGGIES[k] = { e: v.e, name: v.name }; CROP_STAGES[k] = v.stages; });
-        // 💎 ความหายาก 5 ระดับ ใช้ทั้งผักผลไม้และปลา: ธรรมดา · แรร์ · หายาก · ตำนาน · เทพ
+        // 💎 ความหายาก 8 ระดับ ใช้กับผักผลไม้ ปลา และของทุกอย่าง: ธรรมดา · ไม่ธรรมดา · แรร์ · หายาก · ตำนาน · เทพ · อมตะ · จักรวาล
         const RARITY = {
-            common: { e: '⚪', name: 'ธรรมดา' }, rare: { e: '🔵', name: 'แรร์' },
-            epic: { e: '🟣', name: 'หายาก' }, legendary: { e: '🟡', name: 'ตำนาน' }, mythic: { e: '🔴', name: 'เทพ' }
+            common: { e: '⚪', name: 'ธรรมดา' }, uncommon: { e: '🟢', name: 'ไม่ธรรมดา' }, rare: { e: '🔵', name: 'แรร์' },
+            epic: { e: '🟣', name: 'หายาก' }, legendary: { e: '🟡', name: 'ตำนาน' }, mythic: { e: '🔴', name: 'เทพ' },
+            immortal: { e: '🌈', name: 'อมตะ' }, cosmic: { e: '🌌', name: 'จักรวาล' }
         };
         const RARITY_KEYS = Object.keys(RARITY);
+        const rarRank = r => RARITY_KEYS.indexOf(r); // ไม่มีระดับ = -1
+        const rarAtLeast = (r, min) => rarRank(r) >= rarRank(min);
         const hasOwn = (o, k) => typeof k === 'string' && Object.prototype.hasOwnProperty.call(o, k);
         // 🟡 ผักตำนาน: เมล็ดได้จากกล่องเมล็ดปริศนาหรือแลกด้วยเศษเมล็ดตำนาน แต่ละชนิดมีพลังพิเศษ (ไม่กลายเป็นผักทอง ไม่ผสมพันธุ์)
         const LEGEND_VEGGIES = {
@@ -5711,9 +5743,10 @@
         };
         Object.entries(MYTH_VEGGIES).forEach(([k, v]) => { VEGGIES[k] = { e: v.e, name: v.name }; CROP_STAGES[k] = v.stages; });
         const SPECIAL_VEGGIES = { ...LEGEND_VEGGIES, ...MYTH_VEGGIES }; // ผักที่มีพลังพิเศษ ไม่กลายเป็นผักทองและไม่ผสมพันธุ์
-        const cropRarity = k => hasOwn(MYTH_VEGGIES, k) ? 'mythic' : hasOwn(LEGEND_VEGGIES, k) ? 'legendary' : HYBRID_VEGGIES.includes(k) ? 'epic' : BASE_VEGGIES.includes(k) ? 'common' : 'rare';
+        const cropRarity = k => hasOwn(MYTH_VEGGIES, k) ? 'mythic' : hasOwn(LEGEND_VEGGIES, k) ? 'legendary' : hasOwn(FRUIT_RAR, k) ? FRUIT_RAR[k] : HYBRID_VEGGIES.includes(k) ? 'epic'
+            : BASE_VEGGIES.includes(k) ? 'common' : RARE_VEGGIES.includes(k) ? 'uncommon' : 'rare';
         // ราคาผักผลไม้ = ระยะที่ต้องโต × อัตราตามความหายาก (ยิ่งปลูกนาน ยิ่งหายาก ยิ่งแพง)
-        const RARITY_RATE = { common: 0.8, rare: 1.3, epic: 1.8, legendary: 10, mythic: 20 };
+        const RARITY_RATE = { common: 0.8, uncommon: 1.3, rare: 1.5, epic: 1.8, legendary: 10, mythic: 20, immortal: 40, cosmic: 80 };
         const cropBaseValue = k => Math.max(2, Math.ceil(cropStages(k) * RARITY_RATE[cropRarity(k)]));
         // เกร็ดของผักผลไม้แต่ละชนิด (โชว์ในสมุดสะสม)
         const CROP_DESC = {
@@ -5736,6 +5769,9 @@
         };
         Object.assign(CROP_DESC, { coffee: 'ต้นกาแฟจากป่าลึก เมล็ดสุกสีแดงเข้ม คั่วแล้วหอมไปทั้งฟาร์ม', cocoa: 'ฝักสีส้มทอง ข้างในมีเมล็ดที่กลายเป็นช็อกโกแลตได้',
             tea: 'ยอดอ่อนเขียวสด เด็ดมาอบแห้งชงชาเย็นชื่นใจ' });
+        Object.assign(CROP_DESC, { pear: 'สาลี่ลูกกลมฉ่ำน้ำ กัดแล้วกรอบหวานเย็นชื่นใจ', olive: 'ลูกเล็กสีเขียวเข้ม หมักหรือบีบเป็นน้ำมันหอมกรุ่น',
+            greenApple: 'แอปเปิลเขียวเปรี้ยวอมหวาน กรอบกว่าแอปเปิลแดง', goldLantern: 'ผลกลมสีทองห่อด้วยกลีบเหมือนโคมไฟ เรืองแสงอ่อนๆ ตอนพลบค่ำ ว่ากันว่าใครได้กินโชคดีไปทั้งปี',
+            moonFruit: 'ออกผลวันละลูกบนต้นที่หายากที่สุดในสวน ผิวเงินเรืองแสงเหมือนพระจันทร์เต็มดวง' });
         const FARM_PRODUCTS = { egg: { e: '🥚', name: 'ไข่ไก่', value: 3 }, milk: { e: '🥛', name: 'นมวัว', value: 4 },
             honey: { e: '🍯', name: 'น้ำผึ้ง', value: 6 }, bouquet: { e: '💐', name: 'ช่อดอกไม้', value: 5 },
             duckEgg: { e: '🥚', name: 'ไข่เป็ด', value: 4 }, wool: { e: '🧶', name: 'ขนแกะ', value: 7 }, cheese: { e: '🧀', name: 'ชีสนมแพะ', value: 8 },
@@ -5746,8 +5782,8 @@
             jam: { e: '🫙', name: 'แยมสตรอว์เบอร์รี', value: 0, art: true }, cloth: { e: '🧵', name: 'ผ้าทอขนแกะ', value: 0, art: true },
             truffleOil: { e: '🫒', name: 'น้ำมันทรัฟเฟิล', value: 0, art: true },
             // 🌲 ของป่า (zone) · rar = ความหายาก · ของจากโต๊ะช่างไม้และเครื่องคั่วคิดราคาจากวัตถุดิบ
-            wood: { e: '🪵', name: 'ไม้', value: 2, zone: 'forest' }, resin: { e: '🔶', name: 'ยางไม้', value: 4, zone: 'forest' },
-            strawMushroom: { e: '🍄‍🟫', name: 'เห็ดฟาง', value: 4, zone: 'forest' }, shiitake: { e: '🍄', name: 'เห็ดหอม', value: 6, zone: 'forest' },
+            wood: { e: '🪵', name: 'ไม้', value: 2, zone: 'forest' }, resin: { e: '🔶', name: 'ยางไม้', value: 4, zone: 'forest', rar: 'uncommon' },
+            strawMushroom: { e: '🍄‍🟫', name: 'เห็ดฟาง', value: 4, zone: 'forest' }, shiitake: { e: '🍄', name: 'เห็ดหอม', value: 6, zone: 'forest', rar: 'uncommon' },
             lingzhi: { e: '🍂', name: 'เห็ดหลินจือ', value: 30, zone: 'forest', rar: 'epic' }, lemongrass: { e: '🌿', name: 'ตะไคร้', value: 3, zone: 'forest' },
             galangal: { e: '🫚', name: 'ข่า', value: 3, zone: 'forest' }, pandan: { e: '🍃', name: 'ใบเตย', value: 3, zone: 'forest' },
             bambooShoot: { e: '🎋', name: 'หน่อไม้', value: 4, zone: 'forest' }, wildHoney: { e: '🍯', name: 'น้ำผึ้งป่า', value: 12, zone: 'forest', rar: 'rare' },
@@ -5757,7 +5793,7 @@
             coffeePowder: { e: '☕', name: 'กาแฟคั่วบด', value: 0, art: true }, chocolate: { e: '🍫', name: 'ช็อกโกแลต', value: 0, art: true }, driedTea: { e: '🫖', name: 'ชาอบแห้ง', value: 0, art: true },
             // ⛏️ ของจากเหมือง (zone mine) · ฟอสซิล 8 ชิ้น (zone fossil) ต่อครบเป็นโครงไดโนเสาร์ในพิพิธภัณฑ์
             stone: { e: '🪨', name: 'หิน', value: 1, zone: 'mine' }, coal: { e: '⚫', name: 'ถ่านหิน', value: 3, zone: 'mine' },
-            copperOre: { e: '🟠', name: 'แร่ทองแดง', value: 4, zone: 'mine' }, ironOre: { e: '🟤', name: 'แร่เหล็ก', value: 6, zone: 'mine' },
+            copperOre: { e: '🟠', name: 'แร่ทองแดง', value: 4, zone: 'mine' }, ironOre: { e: '🟤', name: 'แร่เหล็ก', value: 6, zone: 'mine', rar: 'uncommon' },
             silverOre: { e: '⚪', name: 'แร่เงิน', value: 10, zone: 'mine', rar: 'rare' }, goldOre: { e: '🟡', name: 'แร่ทอง', value: 16, zone: 'mine', rar: 'rare' },
             ruby: { e: '❤️', name: 'ทับทิมดิบ', value: 24, zone: 'mine', rar: 'epic' }, emerald: { e: '💚', name: 'มรกตดิบ', value: 24, zone: 'mine', rar: 'epic' },
             sapphire: { e: '💙', name: 'ไพลินดิบ', value: 28, zone: 'mine', rar: 'epic' }, diamond: { e: '🤍', name: 'เพชรดิบ', value: 60, zone: 'mine', rar: 'legendary' },
@@ -5771,7 +5807,7 @@
             fLeg: { e: '🦴', name: 'ฟอสซิลขาหลัง', value: 20, zone: 'fossil', rar: 'epic' }, fTail: { e: '🦴', name: 'ฟอสซิลหาง', value: 20, zone: 'fossil', rar: 'epic' },
             // 🏖️ ของจากชายหาด (zone sea) และของจากโรงตากปลา
             conch: { e: '🐚', name: 'หอยสังข์', value: 6, zone: 'sea' }, scallop: { e: '🦪', name: 'เปลือกหอยเชลล์', value: 5, zone: 'sea' },
-            starfish: { e: '⭐', name: 'ปลาดาว', value: 7, zone: 'sea' }, seaGlass: { e: '🧊', name: 'แก้วทะเล', value: 8, zone: 'sea' },
+            starfish: { e: '⭐', name: 'ปลาดาว', value: 7, zone: 'sea', rar: 'uncommon' }, seaGlass: { e: '🧊', name: 'แก้วทะเล', value: 8, zone: 'sea', rar: 'uncommon' },
             giantClam: { e: '🐚', name: 'หอยมือเสือ', value: 35, zone: 'sea', rar: 'epic' }, seaCrab: { e: '🦀', name: 'ปูม้า', value: 9, zone: 'sea' },
             seaweed: { e: '🌿', name: 'สาหร่ายทะเล', value: 4, zone: 'sea' }, coral: { e: '🪸', name: 'ปะการังหลุด', value: 14, zone: 'sea', rar: 'rare' },
             pearl: { e: '🫧', name: 'ไข่มุก', value: 50, zone: 'sea', rar: 'legendary' }, salt: { e: '🧂', name: 'เกลือทะเล', value: 3, zone: 'sea' },
@@ -5782,7 +5818,15 @@
             chocoMilk: { e: '🥛', name: 'นมช็อกโกแลต', value: 15, rar: 'epic' }, moonMilk: { e: '🥛', name: 'นมจันทรา', value: 50, rar: 'legendary' },
             pinkWool: { e: '🧶', name: 'ขนแกะสีชมพู', value: 18, rar: 'epic' }, rainbowWool: { e: '🧶', name: 'ขนแกะสีรุ้ง', value: 55, rar: 'legendary' },
             alpineCheese: { e: '🧀', name: 'ชีสภูเขา', value: 20, rar: 'epic' }, goldCheese: { e: '🧀', name: 'ชีสทองคำ', value: 60, rar: 'legendary' },
-            whiteTruffle: { e: '🍄', name: 'ทรัฟเฟิลขาว', value: 70, rar: 'legendary' } };
+            whiteTruffle: { e: '🍄', name: 'ทรัฟเฟิลขาว', value: 70, rar: 'legendary' },
+            // 🌳 ของล้ำค่าที่ลุ้นได้ตอนเก็บผลไม้จากต้น
+            fruitGold: { e: '✨', name: 'ผลไม้ประกายทอง', value: 40, zone: 'fruit', rar: 'epic' }, fruitHeart: { e: '💝', name: 'ผลไม้หัวใจ', value: 90, zone: 'fruit', rar: 'legendary' },
+            fruitCrystal: { e: '🔮', name: 'ผลไม้คริสตัล', value: 200, zone: 'fruit', rar: 'mythic' }, fruitRainbow: { e: '🪩', name: 'ผลไม้แสงรุ้ง', value: 500, zone: 'fruit', rar: 'immortal' },
+            fruitStar: { e: '☄️', name: 'ผลไม้ดาวตก', value: 1200, zone: 'fruit', rar: 'cosmic' } };
+        // โอกาสต่อการเก็บผลหนึ่งครั้ง (ไล่จากหายากสุด) คูณด้วยความหายากของต้นและอายุต้น
+        const FRUIT_GEMS = [['fruitStar', 0.0003], ['fruitRainbow', 0.0012], ['fruitCrystal', 0.005], ['fruitHeart', 0.015], ['fruitGold', 0.05]];
+        const RARE_SAPLINGS = [['moonTree', 0.0015], ['lanternTree', 0.006]];
+        const TREE_LUCK = { uncommon: 1, rare: 1.2, epic: 1.5, legendary: 2, mythic: 3 };
         // 🏭 โรงแปรรูป: ซื้อเครื่องครั้งเดียว ใส่วัตถุดิบแล้วรอ ได้ของราคาสูงกว่าขายดิบๆ (ทำงานต่อแม้ปิดเว็บ)
         const MACHINES = {
             mill:   { e: '🪨', name: 'โรงสีข้าวสาลี', price: 60, level: 3, recipes: [{ out: 'flour', need: { wheat: 3 }, mins: 30, n: 2 }] },
@@ -5866,7 +5910,7 @@
         };
         // ลูกสัตว์ที่ห่อเป็นของขวัญ (ส่งให้เพื่อนได้ เพื่อนกดรับเลี้ยง) ชื่อคีย์เป็นตัวอักษรล้วน เช่น bbHenGold
         Object.entries(ANIMAL_VARIANTS).forEach(([a, vs]) => [{ k: '', name: ANIMALS[a].name, tier: 0 }, ...vs].forEach(v => {
-            FARM_PRODUCTS['bb' + a[0].toUpperCase() + a.slice(1) + (v.k ? v.k[0].toUpperCase() + v.k.slice(1) : 'Plain')] = { e: '🐣', name: `ลูก${v.name} (ห่อของขวัญ)`, value: 20 + v.tier * 40, zone: 'baby', ...(v.tier ? { rar: ['', 'rare', 'epic', 'legendary'][v.tier] } : {}) };
+            FARM_PRODUCTS['bb' + a[0].toUpperCase() + a.slice(1) + (v.k ? v.k[0].toUpperCase() + v.k.slice(1) : 'Plain')] = { e: '🐣', name: `ลูก${v.name} (ห่อของขวัญ)`, value: 20 + v.tier * 40, zone: 'baby', ...(v.tier ? { rar: ['', 'uncommon', 'epic', 'legendary'][v.tier] } : {}) };
         }));
         // 🏚️ คอกสัตว์: เลี้ยงสัตว์ชนิดเดียวกันได้หลายตัว ขยายคอกให้จุได้มากขึ้น
         const BARN_CAPS = [2, 3, 4, 6];
@@ -5882,9 +5926,9 @@
         const FISH = {
             fish: { e: '🐟', name: 'ปลานิล', value: 4, w: 38, r: 'common', cm: [15, 45], desc: 'ปลาน้ำจืดคู่บ่อไทย เนื้อขาวนุ่ม ทอด นึ่ง ย่าง อร่อยหมด' },
             tropical: { e: '🐠', name: 'ปลาการ์ตูน', value: 7, w: 20, r: 'common', cm: [6, 14], desc: 'ลายส้มขาวสดใส ชอบว่ายซ่อนตัวตามกอสาหร่าย' },
-            shrimp: { e: '🦐', name: 'กุ้งแม่น้ำ', value: 8, w: 13, r: 'common', cm: [10, 30], desc: 'ก้ามยาวสีฟ้า มันกุ้งเยิ้ม ย่างทีหอมไปสามบ้าน' },
-            crab: { e: '🦀', name: 'ปูนา', value: 8, w: 10, r: 'common', cm: [5, 12], desc: 'เดินข้างเก่ง ชอบมุดรูริมคันนา ใส่ส้มตำแล้วนัวสุด' },
-            oyster: { e: '🦪', name: 'หอยนางรม', value: 9, w: 8, r: 'common', cm: [6, 15], desc: 'เกาะนิ่งๆ อยู่ก้นบ่อ บางตัวแอบซ่อนไข่มุกเม็ดจิ๋วไว้ข้างใน' },
+            shrimp: { e: '🦐', name: 'กุ้งแม่น้ำ', value: 8, w: 13, r: 'uncommon', cm: [10, 30], desc: 'ก้ามยาวสีฟ้า มันกุ้งเยิ้ม ย่างทีหอมไปสามบ้าน' },
+            crab: { e: '🦀', name: 'ปูนา', value: 8, w: 10, r: 'uncommon', cm: [5, 12], desc: 'เดินข้างเก่ง ชอบมุดรูริมคันนา ใส่ส้มตำแล้วนัวสุด' },
+            oyster: { e: '🦪', name: 'หอยนางรม', value: 9, w: 8, r: 'uncommon', cm: [6, 15], desc: 'เกาะนิ่งๆ อยู่ก้นบ่อ บางตัวแอบซ่อนไข่มุกเม็ดจิ๋วไว้ข้างใน' },
             puffer: { e: '🐡', name: 'ปลาปักเป้า', value: 10, w: 6, r: 'rare', cm: [10, 35], desc: 'ตกใจทีไรพองตัวกลมเป็นลูกบอลหนาม อย่าไปแหย่นะ' },
             squid: { e: '🦑', name: 'หมึกกล้วย', value: 13, w: 5, r: 'rare', cm: [15, 40], when: { night: true }, desc: 'ชอบแสงไฟ ออกมาเล่นตอนกลางคืน ชาวประมงเลยปั่นไฟล่อ' },
             lobster: { e: '🦞', name: 'กุ้งมังกร', value: 16, w: 4, r: 'rare', cm: [20, 50], when: { weather: ['rain', 'storm'] }, desc: 'เกราะแดงแข็งแรง ออกเดินเล่นตอนฝนตกน้ำขุ่น' },
@@ -5903,8 +5947,8 @@
                 desc: 'ว่ายทวนน้ำตกขึ้นไปถึงฟ้าได้ เกล็ดเปลี่ยนสีตามท้องฟ้า ชอบเหยื่อทองที่สุดในโลก' },
             // 🌊 ปลาทะเลลึก (sea) ตกได้เฉพาะตอนออกเรือในแท็บทะเล · ต้องใช้เหยื่อ
             mackerel: { e: '🐟', name: 'ปลาทู', value: 7, w: 34, r: 'common', cm: [15, 25], sea: true, desc: 'ปลาทูหน้างอคอหัก ของคู่ครัวไทย ทอดกรอบกินกับน้ำพริกกะปิ' },
-            tuna: { e: '🐟', name: 'ปลาทูน่า', value: 12, w: 28, r: 'common', cm: [60, 180], sea: true, desc: 'ว่ายเร็วเป็นฝูงกลางทะเลเปิด เนื้อแดงแน่น ทำซาชิมิหรือใส่กระป๋องก็ได้' },
-            grouper: { e: '🐠', name: 'ปลาเก๋า', value: 14, w: 22, r: 'common', cm: [30, 90], sea: true, desc: 'ชอบซุ่มอยู่ตามซอกหินใต้น้ำ ลายจุดสวย นึ่งมะนาวอร่อยสุดๆ' },
+            tuna: { e: '🐟', name: 'ปลาทูน่า', value: 12, w: 28, r: 'uncommon', cm: [60, 180], sea: true, desc: 'ว่ายเร็วเป็นฝูงกลางทะเลเปิด เนื้อแดงแน่น ทำซาชิมิหรือใส่กระป๋องก็ได้' },
+            grouper: { e: '🐠', name: 'ปลาเก๋า', value: 14, w: 22, r: 'uncommon', cm: [30, 90], sea: true, desc: 'ชอบซุ่มอยู่ตามซอกหินใต้น้ำ ลายจุดสวย นึ่งมะนาวอร่อยสุดๆ' },
             barracuda: { e: '🐟', name: 'ปลาสาก', value: 20, w: 10, r: 'rare', cm: [50, 150], sea: true, when: { day: true }, desc: 'นักล่าฟันคม พุ่งเร็วเหมือนลูกธนู ออกล่าตอนแดดจ้า' },
             jellyfish: { e: '🪼', name: 'แมงกะพรุนเรืองแสง', value: 22, w: 8, r: 'rare', cm: [10, 40], sea: true, when: { night: true }, desc: 'ลอยเรืองแสงสีฟ้าอมม่วงกลางทะเลยามค่ำคืน สวยแต่อย่าจับด้วยมือเปล่า' },
             mantaRay: { e: '🪁', name: 'กระเบนราหู', value: 34, w: 5, r: 'epic', cm: [200, 500], sea: true, desc: 'กางครีบกว้างเหมือนว่าวกลางน้ำ ร่อนผ่านเรือไปอย่างสง่างาม' },
@@ -6080,7 +6124,7 @@
         const ROAM_MAX = 8, ROAM_BITE_MS = 2 * 3600000, ROAM_ROLL_MS = 45 * 60000;
         // จำเวลาที่ผักสุก (เพื่อนช่วยเก็บหรือแอบเก็บได้เฉพาะผักที่สุกค้างไว้นานแล้ว)
         function markRipe(p) { if (p.type === 'veg' && p.seed && p.stage >= p.need && !p.ripeAt) p.ripeAt = Date.now(); }
-        function emptyPlot(soil = SOIL_START) { return { type: 'veg', seed: null, stage: 0, need: 3, golden: false, pest: false, lastGrowAt: Date.now(), soil, cared: false, fruitDay: '', comp: false, bitten: false, worm: '', wormAt: 0, ripeAt: 0, stolen: 0 }; }
+        function emptyPlot(soil = SOIL_START) { return { type: 'veg', seed: null, stage: 0, need: 3, golden: false, pest: false, lastGrowAt: Date.now(), soil, cared: false, fruitAt: 0, picks: 0, comp: false, bitten: false, worm: '', wormAt: 0, ripeAt: 0, stolen: 0 }; }
         const plotNeed = (type, seed) => type === 'tree' ? TREES[seed].stages : type === 'flower' ? FLOWER_STAGES : cropStages(seed);
         function loadVeg() {
             let v = null;
@@ -6093,11 +6137,12 @@
                 const soil = p && p.soil !== undefined && Number.isFinite(+p.soil) ? int(p.soil, 100) : SOIL_START;
                 const type = p && (p.type === 'tree' || p.type === 'flower') ? p.type : 'veg';
                 const known = p && (type === 'tree' ? TREES : type === 'flower' ? FLOWERS : VEGGIES)[p.seed];
-                if (!known || (type === 'veg' && p.seed === 'apple')) return emptyPlot(soil);
+                if (!known || (type === 'veg' && TREE_ONLY.includes(p.seed))) return emptyPlot(soil);
                 // แปลงจากเวอร์ชันก่อน (ยังไม่มี need) ใช้กติกาเดิม 3 ระยะ จะได้ไม่เสียของที่ปลูกค้างไว้
                 const need = p.need !== undefined ? Math.min(9, Math.max(2, int(p.need, 9))) : type === 'veg' ? 3 : plotNeed(type, p.seed);
                 return { type, seed: p.seed, stage: Math.min(need, int(p.stage, need)), need, golden: type === 'veg' && !!p.golden, pest: type === 'veg' && !!p.pest,
-                    lastGrowAt: +p.lastGrowAt || Date.now(), soil, cared: !!p.cared, fruitDay: typeof p.fruitDay === 'string' ? p.fruitDay.slice(0, 10) : '',
+                    lastGrowAt: +p.lastGrowAt || Date.now(), soil, cared: !!p.cared, picks: int(p.picks, 99999),
+                    fruitAt: +p.fruitAt > 0 ? Math.min(Date.now(), +p.fruitAt) : p.fruitDay === dayKeyLocal() ? Date.now() : 0, // เซฟเก่า: เก็บไปแล้ววันนี้ = เริ่มนับรอบใหม่ตอนนี้
                     giant: type === 'veg' && !!p.giant && !!CONTEST_CROPS[p.seed], comp: !!p.comp, bitten: !!p.bitten,
                     worm: type === 'veg' && hasOwn(ROAM_WORMS, p.worm) ? p.worm : '', wormAt: Math.min(Date.now(), +p.wormAt || 0), wormHits: int(p.wormHits, 9), wormHopped: !!p.wormHopped,
                     ripeAt: Math.min(Date.now(), +p.ripeAt || 0), stolen: int(p.stolen, 9) };
@@ -6141,7 +6186,7 @@
                 hybridSeeds: (Array.isArray(v.hybridSeeds) ? v.hybridSeeds : []).filter(k => HYBRID_VEGGIES.includes(k)).slice(0, HYBRID_SEED_MAX),
                 wormDay: typeof v.wormDay === 'string' ? v.wormDay.slice(0, 10) : '',
                 compost: int(v.compost, COMPOST_PTS - 1), land: int(v.land, 6),
-                saplings: counts(v.saplings, Object.keys(TREES)), fruits: counts(v.fruits, Object.keys(VEGGIES)),
+                saplings: counts(v.saplings, Object.keys(TREES)), treeFinds: counts(v.treeFinds, FRUIT_GEMS.map(([k]) => k)), fruits: counts(v.fruits, Object.keys(VEGGIES)),
                 flowers: counts(v.flowers, Object.keys(FLOWERS)), bestQ,
                 honeyDay: typeof v.honeyDay === 'string' ? v.honeyDay.slice(0, 10) : '', pet,
                 stall: (() => {
@@ -6166,7 +6211,7 @@
                 ach: Object.fromEntries(Object.keys(v.ach && typeof v.ach === 'object' ? v.ach : {}).filter(k => /^[a-zA-Z0-9]{1,24}$/.test(k)).map(k => [k, true])),
                 title: typeof v.title === 'string' ? v.title.slice(0, 24) : '',
                 house: Math.min(5, Math.max(1, int(v.house, 5) || 1)),
-                seeds: (() => { const o = {}; Object.keys(VEGGIES).filter(k => k !== 'apple').forEach(k => { const n = int((v.seeds || {})[k], 99); if (n) o[k] = n; }); return o; })(),
+                seeds: (() => { const o = {}; Object.keys(VEGGIES).filter(k => !TREE_ONLY.includes(k)).forEach(k => { const n = int((v.seeds || {})[k], 99); if (n) o[k] = n; }); return o; })(),
                 rep: v.rep === undefined ? 50 : int(v.rep, 100),
                 haggles: (Array.isArray(v.haggles) ? v.haggles : []).slice(0, HAGGLE_MAX).filter(h => h && CR[h.who] && hasOwn(HAGGLE_TYPES, h.persona) && itemInfo(h.key) && +h.until > Date.now())
                     .map(h => ({ id: int(h.id, 1e9), who: h.who, slot: h.slot === -1 ? -1 : int(h.slot, 5), base: int(h.base, 99999), key: h.key, qty: Math.max(1, int(h.qty, 3)), persona: h.persona, offer: Math.max(1, int(h.offer, 99999)),
@@ -6278,7 +6323,8 @@
                 if (p.type !== 'tree' && p.type !== 'flower') p.type = 'veg';
                 if (!(p.need >= 2)) p.need = p.seed && p.type !== 'veg' ? plotNeed(p.type, p.seed) : 3;
                 if (!Number.isFinite(p.soil)) p.soil = SOIL_START;
-                if (typeof p.fruitDay !== 'string') p.fruitDay = '';
+                if (!Number.isFinite(p.fruitAt)) p.fruitAt = 0;
+                if (!Number.isFinite(p.picks)) p.picks = 0;
                 markRipe(p);
             });
         }
@@ -6342,7 +6388,13 @@
         const plotFace = p => p.type === 'tree' ? TREES[p.seed].e : p.type === 'flower' ? FLOWERS[p.seed].e : vegFace(p.seed);
         const plotName = p => p.type === 'tree' ? TREES[p.seed].name : p.type === 'flower' ? FLOWERS[p.seed].name : vegName(p.seed);
         const isReady = p => !!p.seed && p.stage >= p.need;
-        const fruitReady = p => p.type === 'tree' && isReady(p) && p.fruitDay !== dayKeyLocal();
+        // 🌳 อายุต้นไม้นับจากจำนวนรอบที่เก็บ: ยิ่งแก่ผลยิ่งดก ดาวยิ่งสูง และลุ้นของล้ำค่าง่ายขึ้น
+        const TREE_AGES = [[0, 'ต้นอ่อน'], [5, 'ต้นโต'], [15, 'ต้นใหญ่'], [40, 'ต้นเก่าแก่']];
+        const treeAge = p => TREE_AGES.reduce((a, [n], i) => (p.picks || 0) >= n ? i : a, 0);
+        const treeAgeName = p => TREE_AGES[treeAge(p)][1];
+        const fruitLeft = p => Math.max(0, (p.fruitAt || 0) + TREES[p.seed].cycle * 3600000 - Date.now());
+        const fruitReady = p => p.type === 'tree' && isReady(p) && fruitLeft(p) <= 0;
+        const fruitLeftShort = p => { const m = Math.max(1, Math.ceil(fruitLeft(p) / 60000)); return m >= 60 ? `${Math.ceil(m / 60)} ชม.` : `${m} นาที`; };
         const plotCols = () => veg.plots.length > 6 ? 4 : 3;
         function plotNeighbors(i) {
             const c = plotCols(), n = veg.plots.length, out = [];
@@ -6358,7 +6410,7 @@
             if (p.pest) return 'มีหนอน! แตะไล่';
             if (p.worm) return Date.now() - p.wormAt > ROAM_BITE_MS ? `${ROAM_WORMS[p.worm].e} กำลังกัดผัก!` : `${ROAM_WORMS[p.worm].e} แตะจับ!`;
             if (!p.seed) return '';
-            if (p.type === 'tree') return !isReady(p) ? `โต ${p.stage}/${p.need}` : fruitReady(p) ? 'ผลสุกแล้ว!' : 'ออกผลพรุ่งนี้';
+            if (p.type === 'tree') return !isReady(p) ? `โต ${p.stage}/${p.need}` : fruitReady(p) ? 'ผลสุกแล้ว!' : `ผลอีก ${fruitLeftShort(p)}`;
             if (p.type === 'flower') return isReady(p) ? 'บานแล้ว 🐝' : 'ดอกตูม';
             if (isReady(p)) return p.golden ? '✨ ผักทอง!' : 'พร้อมเก็บ!';
             return `${VEG_STAGE_NAMES[p.stage === 0 ? 0 : p.stage >= p.need - 1 ? 2 : 1]} ${p.stage}/${p.need}`;
@@ -6399,6 +6451,7 @@
             if (!wrap) return;
             if (timing.plot >= 0) { clearTimeout(timing.timer); timing.plot = -1; }
             ensurePlots();
+            treeSig = veg.plots.map(p => fruitReady(p) ? 1 : 0).join('');
             wrap.innerHTML = '';
             wrap.style.gridTemplateColumns = `repeat(${plotCols()}, minmax(0, 1fr))`;
             wrap.classList.toggle('is-wide', plotCols() > 3);
@@ -6410,11 +6463,12 @@
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'veg-plot' + (p.seed ? ` stage-${Math.min(p.stage, 3)} is-${p.type}` : ' is-empty') + (vegReady || fruitReady(p) ? ' is-ready' : '')
-                    + (vegReady && p.golden ? ' is-golden' : '') + (p.pest ? ' has-pest' : '') + (p.worm ? ' has-worm' : '') + (p.type === 'veg' && p.seed && !ready && nearBloom(i) ? ' is-bloomed-near' : '') + (p.giant ? ' is-giant' : '') + (p.type === 'veg' && p.seed && cropRarity(p.seed) !== 'common' ? ' rar-' + cropRarity(p.seed) : '');
+                    + (vegReady && p.golden ? ' is-golden' : '') + (p.pest ? ' has-pest' : '') + (p.worm ? ' has-worm' : '') + (p.type === 'veg' && p.seed && !ready && nearBloom(i) ? ' is-bloomed-near' : '') + (p.giant ? ' is-giant' : '') + (p.type === 'veg' && p.seed && cropRarity(p.seed) !== 'common' ? ' rar-' + cropRarity(p.seed) : '')
+                    + (p.type === 'tree' && TREES[p.seed].top ? ' rar-' + cropRarity(TREES[p.seed].fruit) : '');
                 btn.setAttribute('aria-label', p.seed ? `แปลงที่ ${i + 1}: ${plotName(p)} ${vegPlotLabel(p)} · ดิน ${p.soil}%${plotBuffs(p, i).length ? ' · ' + plotBuffs(p, i).map(([, t]) => t).join(', ') : ''}` : `แปลงที่ ${i + 1}: ว่าง แตะเพื่อปลูก · ดิน ${p.soil}%`);
                 const fruitE = p.type === 'tree' ? VEGGIES[TREES[p.seed].fruit].e : '';
                 btn.innerHTML = vegPlotSVG(p)
-                    + (p.seed && !ready ? `<span class="veg-sign">${plotFace(p)}</span>` : '')
+                    + (p.seed && (!ready || (p.type === 'tree' && !fruitReady(p))) ? `<span class="veg-sign">${plotFace(p)}</span>` : '')
                     + (vegReady ? `<span class="veg-crop">${vegFace(p.seed)}</span>` : '')
                     + (ready && p.type === 'flower' ? `<span class="veg-crop flower-bloom">${FLOWERS[p.seed].e}</span>` : '')
                     + (fruitReady(p) ? `<span class="tree-fruits">${fruitE}${fruitE}${fruitE}</span>` : '')
@@ -6482,7 +6536,14 @@
             el.classList.remove('nudge'); void el.offsetWidth; el.classList.add('nudge');
             setVegProgress(plotInfoText(i));
         }
-        // 🌳 ไม้ผล: โตเต็มที่แล้วเก็บผลได้วันละครั้ง
+        // 🌳 ไม้ผล: โตเต็มที่แล้วเก็บผลได้ทุก cycle ชั่วโมง · ลุ้นของล้ำค่าและกิ่งพันธุ์หายาก (window.fixedFruitGem / fixedSapling ให้เทสต์กำหนดผล)
+        function treeRoll(list, mult, fixed) {
+            if (typeof fixed === 'string') return fixed || null;
+            let x = Math.random();
+            for (const [k, c] of list) { x -= c * mult; if (x < 0) return k; }
+            return null;
+        }
+        const treeLuck = p => (TREE_LUCK[cropRarity(TREES[p.seed].fruit)] || 1) * (1 + 0.25 * treeAge(p));
         function tapTree(i, el) {
             const p = veg.plots[i], t = TREES[p.seed];
             if (!isReady(p)) {
@@ -6491,23 +6552,44 @@
                 return;
             }
             if (!fruitReady(p)) {
-                showToast(`${t.e} ${t.name}จะออกผลรอบใหม่พรุ่งนี้`, 'info', { duration: 5000, actionLabel: 'ตัดต้นไม้', onAction: () => removePlant(i) });
+                showToast(`${t.e} ${t.name} (${treeAgeName(p)} · เก็บแล้ว ${p.picks || 0} รอบ) จะออกผลรอบใหม่ในอีก ${animalLeftText(fruitLeft(p))}`, 'info', { duration: 5000, actionLabel: 'ตัดต้นไม้', onAction: () => removePlant(i) });
                 return;
             }
-            const q = Math.min(3, 1 + (p.soil >= 60 ? 1 : 0) + (p.cared || hasTool('sprinkler') || todayWeather() === 'rain' ? 1 : 0));
-            const n = 2 + (p.soil >= 60 ? 1 : 0);
+            // ดาว: ดิน 60+ (+1) · รดน้ำ/ฝน/สปริงเกอร์ (+1) · ต้นใหญ่ (+1) · ต้นเก่าแก่ (+1) หรือต้นโตลุ้น 30% (+1)
+            const age = treeAge(p), first = !cropTotal(t.fruit);
+            const q = Math.min(5, 1 + (p.soil >= 60 ? 1 : 0) + (p.cared || hasTool('sprinkler') || todayWeather() === 'rain' ? 1 : 0)
+                + (age >= 2 ? 1 : 0) + (age >= 3 || (age >= 1 && Math.random() < 0.3) ? 1 : 0));
+            const n = t.top ? 1 + (age >= 2 ? 1 : 0) : 1 + (p.soil >= 60 ? 1 : 0) + (age >= 1 ? 1 : 0) + (age >= 3 ? 1 : 0);
             giveItem(qKey(t.fruit, q), n);
             noteCrops(n);
             veg.fruits[t.fruit] = (veg.fruits[t.fruit] || 0) + n;
             noteDex(t.fruit);
             veg.bestQ[t.fruit] = Math.max(veg.bestQ[t.fruit] || 0, q);
-            p.fruitDay = dayKeyLocal(); p.cared = false; p.soil = Math.max(0, p.soil - 6);
+            const gem = treeRoll(FRUIT_GEMS, treeLuck(p), window.fixedFruitGem), sap = treeRoll(RARE_SAPLINGS, p.seed === 'moonTree' ? 3 : p.seed === 'lanternTree' ? 2 : 1, window.fixedSapling);
+            p.fruitAt = Date.now(); p.picks = Math.min(99999, (p.picks || 0) + 1); p.cared = false; p.soil = Math.max(0, p.soil - 6);
+            const grew = treeAge(p) > age, g = gem && FARM_PRODUCTS[gem];
+            if (g) { giveItem(gem, 1); veg.treeFinds[gem] = (veg.treeFinds[gem] || 0) + 1; }
+            if (sap) veg.saplings[sap] = Math.min(99, (veg.saplings[sap] || 0) + 1);
             saveVeg();
-            vegFx(el, [VEGGIES[t.fruit].e, VEGGIES[t.fruit].e, '✨']);
+            vegFx(el, [VEGGIES[t.fruit].e, VEGGIES[t.fruit].e, g ? g.e : '✨']);
             playSound('welcome');
-            addXP(6); bumpChallenge('harvest');
+            addXP(t.top ? 16 : 6); bumpChallenge('harvest');
             mascotSay(`เก็บ${VEGGIES[t.fruit].name} ${n} ลูก${starText(q)} เข้ายุ้งฉางแล้ว!`, 3000);
+            const news = [g ? `${RARITY[g.rar].e} โชคดี! ได้${g.e} ${g.name} (ของ${RARITY[g.rar].name})` : '', sap ? `🌱 ได้กิ่งพันธุ์หายาก ${TREES[sap].e} ${TREES[sap].name}! ปลูกได้ที่แปลงว่าง` : '',
+                grew ? `🌳 ${t.name}โตเป็น${treeAgeName(p)}แล้ว ผลดกขึ้นและดาวสูงขึ้น` : ''].filter(Boolean);
+            if (news.length) showToast(news.join(' · '), 'success', { duration: 6500 });
+            if ((g && rarAtLeast(g.rar, 'legendary')) || sap || (t.top && first)) fireConfetti();
+            if (t.top && first) setTimeout(() => showBadgeCelebration({ icon: VEGGIES[t.fruit].e, desc: `เก็บผลไม้${RARITY[cropRarity(t.fruit)].name}ได้ครั้งแรก: ${VEGGIES[t.fruit].name}!` }), 900);
             setTimeout(renderVeggies, 500);
+        }
+        // ผลไม้สุกระหว่างเปิดหน้าสวนอยู่: วาดแปลงใหม่ (ไม่วาดทับตอนกำลังเล่นเก็บผัก) และอัปเดตเวลาที่เหลือ
+        let treeSig = '';
+        function treeTick() {
+            if (!veg.plots.some(p => p.type === 'tree' && isReady(p))) return;
+            const sig = veg.plots.map(p => fruitReady(p) ? 1 : 0).join('');
+            if (sig !== treeSig && timing.plot < 0) { renderVeggies(); return; }
+            const tiles = document.querySelectorAll('#veg-plots .veg-plot');
+            veg.plots.forEach((p, i) => { const s = tiles[i] && tiles[i].querySelector('.veg-stage'); if (s && p.type === 'tree') s.textContent = vegPlotLabel(p); });
         }
         // 🌸 ดอกไม้: บานแล้วช่วยแปลงข้างๆ เด็ดเป็นช่อดอกไม้ไว้ส่งออเดอร์หรือขายได้
         function tapFlower(i, el) {
@@ -6599,7 +6681,7 @@
             } else {
                 const owned = Object.keys(TREES).filter(k => veg.saplings[k] > 0);
                 body = lvl < TREE_LEVEL ? `<p class="veg-picker-note">🔒 ปลูกไม้ผลได้ตั้งแต่เลเวล ${TREE_LEVEL}</p>`
-                    : owned.length ? owned.map(k => `<button type="button" class="veg-seed" data-type="tree" data-seed="${k}"><span>${TREES[k].e}</span>${TREES[k].name} ×${veg.saplings[k]}<small>${TREES[k].stages} ระยะ · ผลทุกวัน</small></button>`).join('')
+                    : owned.length ? owned.map(k => `<button type="button" class="veg-seed rar-${cropRarity(TREES[k].fruit)}" data-type="tree" data-seed="${k}"><span>${TREES[k].e}</span>${TREES[k].name} ×${veg.saplings[k]}<small>${TREES[k].stages} ระยะ · ผลทุก ${TREES[k].cycle} ชม.</small></button>`).join('')
                     : '<p class="veg-picker-note">ยังไม่มีกิ่งพันธุ์ ซื้อได้ที่ร้านค้า แท็บ 💎 เมล็ด <button type="button" class="chip-btn" data-shop="1">ไปร้านค้า</button></p>';
             }
             pk.innerHTML = '<span class="veg-picker-title">เลือกสิ่งที่จะปลูก 🌱</span>' + head + body;
@@ -6617,7 +6699,7 @@
             const pk = document.getElementById('veg-picker');
             const i = +pk.dataset.plot, cur = veg.plots[i];
             const known = (type === 'tree' ? TREES : type === 'flower' ? FLOWERS : VEGGIES)[key];
-            if (!known || !cur || cur.seed || (type === 'veg' && key === 'apple')) { closeVegPicker(); return; }
+            if (!known || !cur || cur.seed || (type === 'veg' && TREE_ONLY.includes(key))) { closeVegPicker(); return; }
             if (type === 'veg') {
                 const src = seedSource(key);
                 if (!src) { closeVegPicker(); return; }
@@ -6637,7 +6719,7 @@
                 cared: todayWeather() === 'rain' || hasTool('sprinkler') };
             saveVeg(); closeVegPicker(); renderVeggies(); playSound('pop');
             if (type === 'veg') checkMonoFestival();
-            setVegProgress(type === 'tree' ? `ปลูก${known.name}แล้ว! โต ${need} ระยะแล้วจะออกผลทุกวัน 🌳`
+            setVegProgress(type === 'tree' ? `ปลูก${known.name}แล้ว! โต ${need} ระยะแล้วจะออกผลทุก ${known.cycle} ชม. 🌳`
                 : type === 'flower' ? `ปลูก${known.name}แล้ว! บานแล้วช่วยให้ผักข้างๆ โตไวขึ้น 🌸`
                 : hasOwn(SPECIAL_VEGGIES, key) ? `${RARITY[cropRarity(key)].e} ปลูกผัก${RARITY[cropRarity(key)].name} ${VEGGIES[key].e} ${VEGGIES[key].name}แล้ว! พลังพิเศษ: ${SPECIAL_VEGGIES[key].trait}`
                 : `ปลูก${vegName(key)}แล้ว! พักไม่เกินลิมิต ${need} ครั้งก็เก็บได้${inSeason(key) ? ' (ผักตามฤดู 🍃)' : ''}`);
@@ -7089,7 +7171,7 @@
             if (veg.machines.furnace) pool.push('copperBar');
             if (lvl >= SEA_LEVEL && veg.sea.beach + veg.sea.boats > 0) pool.push('seaweed', 'seaCrab', 'salt'); // ของทะเล
             if (veg.machines.fishdryer) pool.push('fishSauce');
-            veg.plots.forEach(p => { if (p.type === 'tree' && isReady(p) && !pool.includes(TREES[p.seed].fruit)) pool.push(TREES[p.seed].fruit); });
+            veg.plots.forEach(p => { if (p.type === 'tree' && isReady(p) && !TREES[p.seed].top && !pool.includes(TREES[p.seed].fruit)) pool.push(TREES[p.seed].fruit); });
             const dishes = Object.keys(RECIPES).filter(k => !RECIPES[k].secret && RECIPES[k].level <= lvl && Object.keys(RECIPES[k].need).every(n => VEGGIES[n] || pool.includes(n)));
             // คนสั่งคือเพื่อนในขบวนของธีมตอนนี้ (ธีมที่มีเพื่อนตัวเดียว มีลูกเจี๊ยบกับกระต่ายมาช่วยสั่งด้วย)
             const roster = (PARADE_ROSTERS[currentTheme()] || PARADE_ROSTERS.day).map(sp => Object.keys(CR).find(k => CR[k] === sp)).filter(Boolean);
@@ -7694,7 +7776,7 @@
         // 60+ ลูกค้ามาไวขึ้น 1 นาที · 80+ ไวขึ้น 2 นาทีและลูกค้าอดทนเพิ่ม 1 รอบ · ยิ่งสูงลูกค้ายิ่งยอมจ่ายแพง (สูงสุด +5%)
         const repLevel = (r = veg.rep) => r >= 80 ? { e: '🏆', name: 'ร้านในตำนาน' } : r >= 60 ? { e: '⭐', name: 'ร้านดัง' } : r >= 30 ? { e: '🏪', name: 'ร้านทั่วไป' } : { e: '🌱', name: 'ร้านเงียบ' };
         function addRep(n) { veg.rep = Math.max(0, Math.min(100, veg.rep + n)); }
-        const collectorItem = key => itemInfo(key).q >= 4 || ['epic', 'legendary', 'mythic'].includes(itemRarity(key));
+        const collectorItem = key => itemInfo(key).q >= 4 || rarAtLeast(itemRarity(key), 'epic');
         function newHaggle(i, s, at) {
             const types = Object.keys(HAGGLE_TYPES).filter(t => !HAGGLE_TYPES[t].rare || collectorItem(s.key));
             const persona = pick(types), t = HAGGLE_TYPES[persona];
@@ -8015,7 +8097,8 @@
             veg.fish.freeDay = dayKeyLocal(); addFishTicket(veg.house >= 3 ? 2 : 1);
         }
         // ปลาแต่ละชนิดมีช่วงเวลา/อากาศ/ฤดูที่ออกมา ปลาหายากกับปลาตำนานติดเบ็ดแล้วต้องแตะ "ดึง!" รัวๆ สู้ให้ชนะ
-        const FISH_FIGHT = { epic: { taps: 5, ms: 2600 }, legendary: { taps: 8, ms: 3600 }, mythic: { taps: 10, ms: 4200 } };
+        const FISH_FIGHT = { epic: { taps: 5, ms: 2600 }, legendary: { taps: 8, ms: 3600 }, mythic: { taps: 10, ms: 4200 }, immortal: { taps: 12, ms: 4800 }, cosmic: { taps: 14, ms: 5200 } };
+        const FISH_FRAGS = { epic: 1, legendary: 3, mythic: 6, immortal: 10, cosmic: 15 };
         function fishWhenOk(f, d = new Date()) {
             const w = f.when || {}, h = d.getHours();
             if (w.night && !(h >= 19 || h < 5)) return false;
@@ -8040,8 +8123,8 @@
         const fishOpen = (k, where = 'pond') => { const f = FISH[k]; return f.w > 0 && !!f.sea === (where === 'sea') && fishWhenOk(f) && (!f.secret || !!veg.secrets[k]); };
         // เหยื่อ: 🪱 เหยื่อหนอน ปลาแรร์ขึ้นไป ×1.5 · ✨ เหยื่อทอง ปลาแรร์ขึ้นไป ×2.5 ปลาธรรมดาน้อยลง และเรียกปลาเทพได้
         const curBait = () => fishing.state !== 'idle' ? fishing.bait : veg.baitSel === 'gold' && veg.goldBait > 0 ? 'gold' : veg.baitSel === 'bait' && veg.bait > 0 ? 'bait' : '';
-        const baitMult = f => { const b = curBait(); return f.r === 'mythic' ? 1 : b === 'gold' ? (f.r === 'common' ? 0.4 : 2.5) : b === 'bait' && f.r !== 'common' ? 1.5 : 1; };
-        const fishWeight = f => f.w * (f.boost && f.boost === todayWeather() ? 3 : 1) * (f.r !== 'common' ? 1 + 0.15 * upgLv('rod') : 1) * (f.r !== 'common' && gdSetOn('beach') ? 1.1 : 1) * baitMult(f);
+        const baitMult = f => { const b = curBait(); return rarAtLeast(f.r, 'mythic') ? 1 : b === 'gold' ? (rarAtLeast(f.r, 'rare') ? 2.5 : 0.4) : b === 'bait' && rarAtLeast(f.r, 'rare') ? 1.5 : 1; };
+        const fishWeight = f => f.w * (f.boost && f.boost === todayWeather() ? 3 : 1) * (rarAtLeast(f.r, 'rare') ? 1 + 0.15 * upgLv('rod') : 1) * (rarAtLeast(f.r, 'rare') && gdSetOn('beach') ? 1.1 : 1) * baitMult(f);
         const BAIT_PRICE = 4, BAIT_BUY_MAX = 10;
         const baitBuyLeft = () => BAIT_BUY_MAX - (veg.baitBuy.day === dayKeyLocal() ? veg.baitBuy.n : 0);
         function buyBait() {
@@ -8118,12 +8201,12 @@
                 noteDex(k);
                 giveItem(k); veg.fishCaught[k] = (veg.fishCaught[k] || 0) + 1; passNote('fish');
                 rmProg('fishrun', 1); rmFishReport(k, res.cm);
-                res.frags = f.r === 'mythic' ? 6 : f.r === 'legendary' ? 3 : f.r === 'epic' ? 1 : 0;
+                res.frags = FISH_FRAGS[f.r] || 0;
                 if (res.frags) addFrags(res.frags, true);
                 addXP(4 + Math.round(f.value / 3) + (res.trophy ? 5 : 0)); playSound('welcome');
                 if (res.trophy) addCoins(f.value);
                 if (FISH_FIGHT[f.r]) fireConfetti();
-                if ((f.r === 'legendary' || f.r === 'mythic') && veg.fishCaught[k] === 1) setTimeout(() => showBadgeCelebration({ icon: f.e, desc: `ตกได้ปลา${RARITY[f.r].name}: ${f.name}!` }), 700);
+                if (rarAtLeast(f.r, 'legendary') && veg.fishCaught[k] === 1) setTimeout(() => showBadgeCelebration({ icon: f.e, desc: `ตกได้ปลา${RARITY[f.r].name}: ${f.name}!` }), 700);
             }
             res.bait = fishing.bait;
             fishing.state = 'idle'; fishing.result = res; fishing.fish = null; fishing.bait = '';
@@ -8495,6 +8578,7 @@
                 if (bar) { bar.setAttribute('aria-valuenow', Math.min(en, ENERGY_MAX)); bar.firstElementChild.style.width = `${Math.min(100, en / ENERGY_MAX * 100).toFixed(0)}%`; }
             }
             animalTick();
+            treeTick();
             renderFarmStatus();
         }
 
@@ -8609,14 +8693,14 @@
             { id: 'rare5', e: '🔵', name: 'นักสะสมของแรร์', desc: 'เก็บผักผลไม้แรร์ 5 ชนิด', goal: 5, v: () => DEX_CROPS.filter(k => cropRarity(k) === 'rare' && cropTotal(k)).length, coins: 20, title: 'นักสะสมของแรร์' },
             { id: 'legend1', e: '🟡', name: 'ตำนานบทแรก', desc: 'เก็บผักตำนานครั้งแรก', goal: 1, v: () => Object.keys(LEGEND_VEGGIES).filter(k => veg.harvest[k]).length, coins: 40, title: 'ผู้ปลุกตำนาน' },
             { id: 'legendAll', e: '👑', name: 'ราชันแห่งตำนาน', desc: 'เก็บผักตำนานครบ 6 ชนิด', goal: 6, v: () => Object.keys(LEGEND_VEGGIES).filter(k => veg.harvest[k]).length, coins: 120, title: 'ราชันตำนาน' },
-            { id: 'fishEpic', e: '🦈', name: 'นักสู้ปลายักษ์', desc: 'ตกปลาระดับหายากขึ้นไป 3 ตัว', goal: 3, v: () => Object.keys(FISH).filter(k => ['epic', 'legendary', 'mythic'].includes(FISH[k].r)).reduce((a, k) => a + (veg.fishCaught[k] || 0), 0), coins: 25, title: 'นักสู้ปลายักษ์' },
+            { id: 'fishEpic', e: '🦈', name: 'นักสู้ปลายักษ์', desc: 'ตกปลาระดับหายากขึ้นไป 3 ตัว', goal: 3, v: () => Object.keys(FISH).filter(k => rarAtLeast(FISH[k].r, 'epic')).reduce((a, k) => a + (veg.fishCaught[k] || 0), 0), coins: 25, title: 'นักสู้ปลายักษ์' },
             { id: 'fishLegend', e: '🐉', name: 'ผู้พิชิตเจ้าแห่งบ่อ', desc: 'ตกปลาตำนานได้ 1 ตัว', goal: 1, v: () => Object.keys(FISH).filter(k => FISH[k].r === 'legendary' && veg.fishCaught[k]).length, coins: 60, title: 'เจ้าแห่งบ่อ' },
             { id: 'box10', e: '🎁', name: 'มือเปิดกล่อง', desc: 'เปิดกล่องเมล็ดปริศนา 10 กล่อง', goal: 10, v: () => veg.box.n, coins: 20, title: 'นักเสี่ยงโชค' },
             { id: 'upgrade1', e: '🔧', name: 'ช่างประจำฟาร์ม', desc: 'อัปเกรดเครื่องมือครั้งแรก', goal: 1, v: () => sum(veg.upg), coins: 10, title: 'ช่างประจำฟาร์ม' },
             { id: 'upgradeMax', e: '⚙️', name: 'เครื่องมือขั้นเทพ', desc: 'อัปเกรดเครื่องมือชิ้นไหนก็ได้ถึงระดับ 5', goal: 5, v: () => Math.max(0, ...Object.values(veg.upg)), coins: 60, title: 'ช่างเทพ' },
             { id: 'trader10', e: '🤝', name: 'พ่อค้าแม่ค้าตลาดเพื่อน', desc: 'ซื้อขายกับเพื่อน 10 ครั้ง', goal: 10, v: () => veg.stats.trades, coins: 30, title: 'เซียนตลาดนัด' },
             { id: 'q5x3', e: '🌟', name: 'ผักระดับห้าดาว', desc: 'เก็บผัก ★★★★★ 3 ครั้ง', goal: 3, v: () => veg.stats.q5, coins: 30, title: 'เทพแห่งคุณภาพ' },
-            { id: 'myth1', e: '🔴', name: 'สัมผัสพลังเทพ', desc: 'เก็บผักเทพหรือตกปลาเทพได้ครั้งแรก', goal: 1, v: () => Object.keys(MYTH_VEGGIES).filter(k => veg.harvest[k]).length + Object.keys(FISH).filter(k => FISH[k].r === 'mythic' && veg.fishCaught[k]).length, coins: 80, title: 'ผู้ถูกเลือกจากสวรรค์' },
+            { id: 'myth1', e: '🔴', name: 'สัมผัสพลังเทพ', desc: 'เก็บผักเทพหรือตกปลาเทพได้ครั้งแรก', goal: 1, v: () => Object.keys(MYTH_VEGGIES).filter(k => veg.harvest[k]).length + Object.keys(FISH).filter(k => rarAtLeast(FISH[k].r, 'mythic') && veg.fishCaught[k]).length, coins: 80, title: 'ผู้ถูกเลือกจากสวรรค์' },
             { id: 'roam30', e: '🐛', name: 'นักล่าหนอนจร', desc: 'จับหนอนจรในแปลงผัก 30 ตัว', goal: 30, v: () => veg.stats.roam, coins: 20, title: 'นักล่าหนอน' },
             { id: 'haggle10', e: '💬', name: 'เซียนต่อรอง', desc: 'ต่อรองราคากับลูกค้าสำเร็จ 10 ครั้ง', goal: 10, v: () => veg.stats.haggle, coins: 25, title: 'เซียนต่อรอง' },
             { id: 'thief5', e: '🥷', name: 'นินจาสวนผัก', desc: 'แอบเก็บผักเพื่อนสำเร็จ 5 ครั้ง', goal: 5, v: () => veg.stats.steals, coins: 20, title: 'นินจาสวนผัก' },
@@ -8740,19 +8824,20 @@
         // ลุ้นเมล็ดเทพ: ใช้เศษ 6 ชิ้นต่อครั้ง โอกาสเริ่ม 10% พลาดแต่ละครั้ง +3% (ได้แล้วเริ่มนับใหม่) · เฉลี่ยราว 31 ชิ้น ใกล้เคียงแบบเดิม 30 ชิ้น
         const MYTH_ROLL = 6, MYTH_BASE = 10, MYTH_STEP = 3;
         const mythChance = () => Math.min(100, MYTH_BASE + MYTH_STEP * veg.mythPity);
-        const BOX_RATES = [['rare', 69], ['epic', 25], ['legendary', 5], ['mythic', 1]];
-        const DEX_CROPS = [...new Set([...BASE_VEGGIES, ...Object.values(SEASON_VEGGIE), ...RARE_VEGGIES, ...Object.keys(FOREST_CROPS), 'apple', ...HYBRID_VEGGIES, ...Object.keys(LEGEND_VEGGIES), ...Object.keys(MYTH_VEGGIES)])];
-        const RARITY_NOTE = { common: 'ปลูกได้ตลอด เมล็ดฟรี', rare: 'ผักเทศกาล เมล็ดจากร้านค้า ผลไม้จากต้น และเมล็ดจากป่า', epic: 'ผักลูกผสม ต้องผสมพันธุ์เองหรือลุ้นจากกล่อง', legendary: 'เมล็ดจากกล่องปริศนาหรือเศษเมล็ดตำนาน มีพลังพิเศษ', mythic: 'เมล็ดเทพ: กล่องปริศนา 1% · ลุ้นด้วยเศษเมล็ด (ครั้งละ 6 ชิ้น โอกาสค่อยๆ เพิ่ม) · ปลูกผักตำนานสองชนิดติดกันแล้วลุ้น 10%' };
-        const FISH_NOTE = { common: 'ติดเบ็ดง่าย มีทั้งวัน', rare: 'ออกมาบางเวลาหรือบางอากาศ', epic: 'ติดเบ็ดแล้วต้องดึงสู้ 5 ครั้ง', legendary: 'นานๆ โผล่ที ต้องดึงสู้ 8 ครั้ง ได้ 🧩 3 ชิ้น', mythic: 'กินเฉพาะเหยื่อทอง ✨ จากหนอนทอง ต้องดึงสู้ 10 ครั้ง ได้ 🧩 6 ชิ้น' };
+        const BOX_RATES = [['uncommon', 22], ['rare', 47], ['epic', 25], ['legendary', 5], ['mythic', 1]];
+        const DEX_CROPS = [...new Set([...BASE_VEGGIES, ...Object.values(SEASON_VEGGIE), ...RARE_VEGGIES, ...Object.keys(FOREST_CROPS), ...TREE_ONLY, ...HYBRID_VEGGIES, ...Object.keys(LEGEND_VEGGIES), ...Object.keys(MYTH_VEGGIES)])];
+        const RARITY_NOTE = { common: 'ปลูกได้ตลอด เมล็ดฟรี', uncommon: 'เมล็ดจากร้านค้า และผลจากต้นสาลี่ ต้นมะกอก', rare: 'ผักเทศกาล ผลไม้จากต้น และเมล็ดจากป่า', epic: 'ผักลูกผสม ต้องผสมพันธุ์เองหรือลุ้นจากกล่อง', legendary: 'เมล็ดจากกล่องปริศนาหรือเศษเมล็ดตำนาน มีพลังพิเศษ · ผลจากต้นโทงเทงทอง', mythic: 'เมล็ดเทพ: กล่องปริศนา 1% · ลุ้นด้วยเศษเมล็ด (ครั้งละ 6 ชิ้น โอกาสค่อยๆ เพิ่ม) · ปลูกผักตำนานสองชนิดติดกันแล้วลุ้น 10% · ผลจากต้นผลจันทรา',
+            immortal: 'ระดับอมตะ ของที่แทบไม่มีใครเคยเห็น', cosmic: 'ระดับจักรวาล หายากที่สุดในเกม' };
+        const FISH_NOTE = { common: 'ติดเบ็ดง่าย มีทั้งวัน', uncommon: 'ติดเบ็ดบ่อย ราคาดีกว่าปลาธรรมดา', rare: 'ออกมาบางเวลาหรือบางอากาศ', epic: 'ติดเบ็ดแล้วต้องดึงสู้ 5 ครั้ง', legendary: 'นานๆ โผล่ที ต้องดึงสู้ 8 ครั้ง ได้ 🧩 3 ชิ้น', mythic: 'กินเฉพาะเหยื่อทอง ✨ จากหนอนทอง ต้องดึงสู้ 10 ครั้ง ได้ 🧩 6 ชิ้น', immortal: 'ต้องดึงสู้ 12 ครั้ง ได้ 🧩 10 ชิ้น', cosmic: 'ต้องดึงสู้ 14 ครั้ง ได้ 🧩 15 ชิ้น' };
         const dex = { tab: 'crops', filter: 'all', sel: '', reveal: null };
         const itemRarity = k => { const b = baseOf(k); return hasOwn(FISH, b) ? FISH[b].r : hasOwn(VEGGIES, b) ? cropRarity(b) : hasOwn(FARM_PRODUCTS, b) ? FARM_PRODUCTS[b].rar || '' : ''; };
         const rarClass = k => { const r = itemRarity(k); return r && r !== 'common' ? ` rar-${r}` : ''; };
         const rarTag = r => r && r !== 'common' ? `<span class="rar-tag rar-${r}">${RARITY[r].e} ${RARITY[r].name}</span>` : '';
         const cropTotal = k => (veg.harvest[k] || 0) + (veg.fruits[k] || 0);
         // ผักหายาก/ตำนานที่ยังไม่เคยเก็บ ซ่อนชื่อไว้ (ยกเว้นเมล็ดตำนานที่มีในกระเป๋าแล้ว)
-        const cropHidden = k => !cropTotal(k) && (cropRarity(k) === 'epic' || ((cropRarity(k) === 'legendary' || cropRarity(k) === 'mythic') && !(veg.seeds[k] > 0)));
+        const cropHidden = k => !cropTotal(k) && (cropRarity(k) === 'epic' || (rarAtLeast(cropRarity(k), 'legendary') && !(veg.seeds[k] > 0)));
         const fishHidden = k => !veg.fishCaught[k];
-        const boxPool = r => r === 'mythic' ? Object.keys(MYTH_VEGGIES) : r === 'legendary' ? Object.keys(LEGEND_VEGGIES) : r === 'epic' ? HYBRID_VEGGIES : [...new Set([...Object.values(SEASON_VEGGIE), ...RARE_VEGGIES])];
+        const boxPool = r => r === 'mythic' ? Object.keys(MYTH_VEGGIES) : r === 'legendary' ? Object.keys(LEGEND_VEGGIES) : r === 'epic' ? HYBRID_VEGGIES : r === 'uncommon' ? RARE_VEGGIES : [...new Set(Object.values(SEASON_VEGGIE))];
         const thaiDay = d => { const [y, m, dd] = d.split('-').map(Number); return `${dd} ${THAI_MONTHS[m - 1]} ${y + 543}`; };
         function noteDex(k) { if (veg.dexDay[k]) return false; veg.dexDay[k] = dayKeyLocal(); return true; }
         function addFrags(n, quiet) {
@@ -8763,8 +8848,8 @@
         // ผลพิเศษตอนเก็บผัก: เศษเมล็ดตำนาน (ยิ่งดาวเยอะ ผักทอง จังหวะเป๊ะ ผักหายาก ยิ่งมีลุ้น) และพลังของผักตำนาน
         function rarityHarvest(key, q, golden, grade) {
             const r = cropRarity(key), out = { r, frag: false, first: noteDex(key), xpMult: key === 'starTomato' ? 3 : 1, say: '' };
-            const chance = Math.min(0.3, 0.08 + 0.03 * (q - 1) + (golden ? 0.05 : 0) + (grade === 'perfect' ? 0.03 : 0) + ({ rare: 0.03, epic: 0.06 }[r] || 0));
-            if (r !== 'legendary' && r !== 'mythic' && Math.random() < chance) { out.frag = true; addFrags(1); }
+            const chance = Math.min(0.3, 0.08 + 0.03 * (q - 1) + (golden ? 0.05 : 0) + (grade === 'perfect' ? 0.03 : 0) + ({ uncommon: 0.015, rare: 0.03, epic: 0.06 }[r] || 0));
+            if (!rarAtLeast(r, 'legendary') && Math.random() < chance) { out.frag = true; addFrags(1); }
             if (key === 'dragonChili') { const n = veg.plots.filter(p => p.pest || p.worm).length; veg.plots.forEach(p => { p.pest = false; p.worm = ''; }); out.say = `🔥 พริกเพลิงมังกรไล่หนอน${n ? ` ${n} แปลง` : ''}หนีหมดสวน!`; }
             if (key === 'lotusGod') {
                 let n = 0;
@@ -8783,7 +8868,7 @@
             if (key === 'luckyClover') out.say = '🍀 เก็บโคลเวอร์สี่แฉกแล้ว โชคดีทั้งสวน!';
             if (!out.say && r !== 'common') out.say = `${RARITY[r].e} ได้ผัก${RARITY[r].name}: ${VEGGIES[key].e} ${VEGGIES[key].name}${starText(q)}!`;
             saveVeg();
-            if (r === 'legendary' || r === 'mythic') {
+            if (rarAtLeast(r, 'legendary')) {
                 fireConfetti();
                 if (out.first) setTimeout(() => showBadgeCelebration({ icon: VEGGIES[key].e, desc: `ค้นพบผัก${RARITY[r].name}: ${VEGGIES[key].name}! ${SPECIAL_VEGGIES[key].trait}` }), 900);
             }
@@ -8805,13 +8890,13 @@
             let r = 'legendary';
             if (veg.box.pity + 1 < BOX_PITY) { let x = Math.random() * 100; r = BOX_RATES.find(([, p]) => (x -= p) < 0)[0]; }
             const pool = boxPool(r), k = pool[Math.floor(Math.random() * pool.length)];
-            veg.box.n += 1; veg.box.pity = r === 'legendary' || r === 'mythic' ? 0 : veg.box.pity + 1;
-            const got = r === 'rare' ? 2 : 1;
+            veg.box.n += 1; veg.box.pity = rarAtLeast(r, 'legendary') ? 0 : veg.box.pity + 1;
+            const got = rarAtLeast(r, 'epic') ? 1 : 2;
             veg.seeds[k] = Math.min(99, (veg.seeds[k] || 0) + got);
             saveVeg();
             dex.reveal = { k, r, from: 'box', n: got };
-            playSound(r === 'legendary' || r === 'mythic' ? 'welcome' : 'pop');
-            if (r === 'legendary' || r === 'mythic') fireConfetti();
+            playSound(rarAtLeast(r, 'legendary') ? 'welcome' : 'pop');
+            if (rarAtLeast(r, 'legendary')) fireConfetti();
             renderDex(); renderFarmStatus();
         }
         // 🧩 แลกเศษเมล็ด 10 ชิ้นเป็นเมล็ดตำนาน (สุ่มจากชนิดที่ยังไม่เคยเก็บก่อน) · หรือลุ้นเมล็ดเทพครั้งละ 6 ชิ้น
@@ -8866,7 +8951,8 @@
         }
         // แถบความคืบหน้าแต่ละระดับ แตะเพื่อกรองดูเฉพาะระดับนั้น
         function dexProgress(list, rOf, known) {
-            return `<div class="dex-progress">${RARITY_KEYS.map(r => {
+            const tiers = RARITY_KEYS.filter(r => list.some(k => rOf(k) === r)); // โชว์เฉพาะระดับที่มีของ จัดเป็น 2 แถวเท่าๆ กัน
+            return `<div class="dex-progress" style="--cols:${tiers.length <= 4 ? tiers.length : Math.ceil(tiers.length / 2)}">${tiers.map(r => {
                 const all = list.filter(k => rOf(k) === r), got = all.filter(known).length;
                 return `<button type="button" class="dex-prog rar-${r}${dex.filter === r ? ' is-active' : ''}" aria-pressed="${dex.filter === r}" onclick="dexSetFilter('${r}')">
                     <span>${RARITY[r].e} ${RARITY[r].name}</span><b>${got}/${all.length}</b><i class="dex-prog-bar"><i style="width:${all.length ? Math.round(got / all.length * 100) : 0}%"></i></i></button>`;
@@ -8912,6 +8998,7 @@
                 + `<p class="dex-group"><b>🌲 ของป่า</b> · เดินป่าที่ฟาร์ม (เลเวล ${FOREST_LEVEL})</p><div class="dex-grid">${FOREST_FINDS.map(k => { const it = itemInfo(k), n = veg.forest.found[k] || 0; return n ? cell(it.e, it.name, n, false, 0) : cell('❔', '???', 0, true, 0); }).join('')}</div>`
                 + `<p class="dex-group"><b>⛏️ ของจากเหมือง</b> · ทุบหินในเหมือง (เลเวล ${MINE_LEVEL})</p><div class="dex-grid">${[...MINE_FINDS, ...MINE_FOSSILS].map(k => { const it = itemInfo(k), n = veg.mine.found[k] || 0; return n ? cell(it.e, it.name, n, false, 0) : cell('❔', '???', 0, true, 0); }).join('')}</div>`
                 + `<p class="dex-group"><b>🏖️ ของจากชายหาด</b> · เดินชายหาด (เลเวล ${SEA_LEVEL}) · ปลาทะเลดูได้ที่แท็บปลา</p><div class="dex-grid">${BEACH_FINDS.map(k => { const it = itemInfo(k), n = veg.sea.found[k] || 0; return n ? cell(it.e, it.name, n, false, 0) : cell('❔', '???', 0, true, 0); }).join('')}</div>`
+                + `<p class="dex-group"><b>🌳 ของล้ำค่าจากไม้ผล</b> · ลุ้นได้ตอนเก็บผลไม้ ต้นยิ่งแก่หรือยิ่งหายาก ยิ่งมีลุ้น</p><div class="dex-grid">${[...FRUIT_GEMS].reverse().map(([k]) => { const it = FARM_PRODUCTS[k], n = veg.treeFinds[k] || 0; return `<div class="dex-cell rar-${it.rar}${n ? '' : ' locked'}"><span class="dex-e">${n ? it.e : '❔'}</span><small>${n ? it.name : `${RARITY[it.rar].e} ???`}</small><b>${n}</b></div>`; }).join('')}</div>`
                 + `<p class="shop-note">ของในยุ้งฉาง ${sum(veg.inv)} ชิ้น ขาย ส่งออเดอร์ ทำอาหาร หรือส่งให้เพื่อนได้</p>`;
         }
         function dexSeedsTab() {
@@ -8931,7 +9018,7 @@
                     <button type="button" class="shop-buy farm-action" ${fr >= FRAG_NEED ? '' : 'disabled'} onclick="tradeFragments()">${fr >= FRAG_NEED ? 'แลกเมล็ดตำนาน ✨' : `อีก ${FRAG_NEED - fr} ชิ้น`}</button></div>
                 <div class="farm-card dex-box-card"><span class="barn-emoji" aria-hidden="true">🎁</span>
                     <div class="farm-card-main"><span class="farm-card-title">กล่องเมล็ดปริศนา</span>
-                        <div class="farm-chips">${BOX_RATES.map(([r, p]) => `<span class="rar-tag rar-${r}">${RARITY[r].e} ${RARITY[r].name} ${p}%${r === 'rare' ? ' (ได้ 2 เมล็ด)' : ''}</span>`).join('')}</div>
+                        <div class="farm-chips">${BOX_RATES.map(([r, p]) => `<span class="rar-tag rar-${r}">${RARITY[r].e} ${RARITY[r].name} ${p}%${rarAtLeast(r, 'epic') ? '' : ' (ได้ 2 เมล็ด)'}</span>`).join('')}</div>
                         <span class="farm-card-sub">การันตีได้เมล็ดตำนานภายใน ${pity} กล่อง · เปิดไปแล้ว ${veg.box.n} กล่อง</span></div>
                     <button type="button" class="shop-buy farm-action" ${shop.coins >= BOX_PRICE ? '' : 'disabled'} onclick="openSeedBox()">เปิดกล่อง 🪙${BOX_PRICE}</button></div>
                 ${reveal}
@@ -8948,7 +9035,7 @@
             const shopId = Object.keys(SHOP_ITEMS).find(id => SHOP_ITEMS[id].veg === k);
             if (shopId) out.push(`💎 ซื้อเมล็ดที่ร้านค้า 🪙${SHOP_ITEMS[shopId].price} (ปลูกได้ไม่จำกัด)`);
             const tree = Object.values(TREES).find(t => t.fruit === k);
-            if (tree) out.push(`🌳 เก็บจาก${tree.name} (ซื้อกิ่งพันธุ์ที่ร้านค้า)`);
+            if (tree) out.push(`🌳 เก็บจาก${tree.name} ทุก ${tree.cycle} ชม. (${tree.shopId ? 'ซื้อกิ่งพันธุ์ที่ร้านค้า' : 'กิ่งพันธุ์หายาก ลุ้นได้ตอนเก็บผลไม้จากต้นอื่น'})`);
             if (hasOwn(FOREST_CROPS, k)) out.push(`🌲 เมล็ดหาได้จากการเดินป่า (เลเวล ${FOREST_LEVEL}) · เก็บแล้วลุ้นได้เมล็ดคืน 50%`);
             if (r === 'epic') {
                 const pair = Object.keys(HYBRID_PAIRS).find(p => HYBRID_PAIRS[p] === k);
@@ -8956,8 +9043,8 @@
                     : '🧬 ปลูกผักธรรมดาต่างชนิดติดกัน แล้วลุ้นเมล็ดลูกผสมตอนเก็บ (15%)');
             }
             if (boxPool(r).includes(k) && r !== 'common') out.push(`🎁 สุ่มได้จากกล่องเมล็ดปริศนา (${BOX_RATES.find(([x]) => x === r)[1]}%)`);
-            if (r === 'legendary') out.push(`🧩 แลกด้วยเศษเมล็ดตำนาน ${FRAG_NEED} ชิ้น`);
-            if (r === 'mythic') out.push(`🧩 ลุ้นด้วยเศษเมล็ดตำนาน ครั้งละ ${MYTH_ROLL} ชิ้น (เริ่ม ${MYTH_BASE}% พลาดแล้ว +${MYTH_STEP}%)`, '🟡 ปลูกผักตำนานสองชนิดติดกัน แล้วลุ้นเมล็ดผักเทพตอนเก็บ (10%)');
+            if (hasOwn(LEGEND_VEGGIES, k)) out.push(`🧩 แลกด้วยเศษเมล็ดตำนาน ${FRAG_NEED} ชิ้น`);
+            if (hasOwn(MYTH_VEGGIES, k)) out.push(`🧩 ลุ้นด้วยเศษเมล็ดตำนาน ครั้งละ ${MYTH_ROLL} ชิ้น (เริ่ม ${MYTH_BASE}% พลาดแล้ว +${MYTH_STEP}%)`, '🟡 ปลูกผักตำนานสองชนิดติดกัน แล้วลุ้นเมล็ดผักเทพตอนเก็บ (10%)');
             return out;
         }
         const recipesUsing = k => Object.entries(RECIPES).filter(([rk, rv]) => rv.need[k] && (!rv.secret || veg.cooked[rk]));
@@ -8968,12 +9055,12 @@
         }
         function cropDetail(k) {
             const r = cropRarity(k), hid = cropHidden(k), lg = SPECIAL_VEGGIES[k], n = cropTotal(k);
-            const kindLabel = r === 'mythic' ? 'ผักเทพ' : r === 'legendary' ? 'ผักตำนาน' : r === 'epic' ? 'ผักลูกผสม' : k === 'apple' ? 'ผลไม้จากต้น' : 'ผักผลไม้';
+            const kindLabel = TREE_ONLY.includes(k) ? 'ผลไม้จากต้น' : r === 'mythic' ? 'ผักเทพ' : r === 'legendary' ? 'ผักตำนาน' : r === 'epic' ? 'ผักลูกผสม' : 'ผักผลไม้';
             const src = `<p class="dex-group"><b>🔎 วิธีได้</b></p><ul class="dex-list">${cropSources(k).map(s => `<li>${s}</li>`).join('')}</ul>`;
             if (hid) return dexHead('❔', '???', r, `${kindLabel} · ยังไม่เคยพบ`) + `<p class="dex-desc">ยังไม่รู้ว่าคืออะไร ลองหาดูนะ ✨</p>` + src;
             const it = itemInfo(k), season = Object.values(FARM_SEASONS).find(s => s.crops.includes(k)), tree = Object.values(TREES).find(t => t.fruit === k);
             const uses = recipesUsing(k);
-            const grow = k === 'apple' ? `ต้นโต ${TREES.appleTree.stages} ระยะ แล้วออกผลทุกวัน` : `${cropStages(k)} ระยะ${season ? ' (ตามฤดูเร็วขึ้น 1)' : ''}${tree && k !== 'apple' ? ` · ต้นออกผลทุกวัน` : ''}`;
+            const grow = TREE_ONLY.includes(k) ? `ต้นโต ${tree.stages} ระยะ แล้วออกผลทุก ${tree.cycle} ชม.` : `${cropStages(k)} ระยะ${season ? ' (ตามฤดูเร็วขึ้น 1)' : ''}${tree ? ` · ต้นออกผลทุก ${tree.cycle} ชม.` : ''}`;
             return dexHead(VEGGIES[k].e, VEGGIES[k].name, r, kindLabel)
                 + `<p class="dex-desc">${lg ? lg.desc : CROP_DESC[k] || ''}</p>`
                 + (lg ? `<p class="dex-trait">✨ พลังพิเศษ: ${lg.trait}</p>` : '')
@@ -9307,7 +9394,7 @@
                 const extra = c.k === 'wood' && Math.random() < upgLv('axe') * 0.2 ? 1 : 0, rar = FARM_PRODUCTS[c.k].rar;
                 c.n += extra; forestFind(c.k, c.n);
                 forestMsg = `${forestName(c.k)} ×${c.n}${extra ? ' (🪓 ขวานช่วย +1)' : ''}${rar ? ` · ${RARITY[rar].e} ของ${RARITY[rar].name}!` : ''}`;
-                if (rar === 'epic') fireConfetti();
+                if (rarAtLeast(rar, 'epic')) fireConfetti();
                 if (rar) sound = 'welcome';
             }
             addXP(1);
@@ -9491,7 +9578,7 @@
                 mineFind(c.k, c.n);
                 const rar = FARM_PRODUCTS[c.k].rar;
                 mineMsg = `${name(c.k)} ×${c.n}${rar ? ` · ${RARITY[rar].e} ของ${RARITY[rar].name}!` : ''}`;
-                if (rar === 'legendary') fireConfetti();
+                if (rarAtLeast(rar, 'legendary')) fireConfetti();
                 if (rar) sound = 'welcome';
             }
             addXP(1);
@@ -9647,7 +9734,7 @@
                 seaFind(c.k, c.n);
                 const rar = FARM_PRODUCTS[c.k] && FARM_PRODUCTS[c.k].rar;
                 seaMsg = `${it.e} ${it.name} ×${c.n}${c.k === 'wood' ? ' (ไม้ลอยน้ำ)' : ''}${rar ? ` · ${RARITY[rar].e} ของ${RARITY[rar].name}!` : ''}`;
-                if (rar === 'legendary') fireConfetti();
+                if (rarAtLeast(rar, 'legendary')) fireConfetti();
                 if (rar) sound = 'welcome';
             }
             addXP(1);
@@ -9762,7 +9849,7 @@
 
         // --- 🐣 ลูกสัตว์และลายพิเศษ: สัตว์ชนิดเดียวกัน 2 ตัวขึ้นไป หัวใจ ≥ 5 จับคู่ได้ (ต้องมีที่ว่างในคอก) รอ 1 วันได้ลูก ป้อนอาหาร 3 วันถึงโต ---
         // ลาย 4 ระดับ: ปกติ → สีพิเศษ (ผลผลิต +1) → หายาก → ตำนาน (ให้ของพิเศษทุกวัน) · หัวใจเต็ม ของโปรดวันนี้ อาหารบำรุง และพ่อแม่ลายดี ช่วยให้ได้ลายดีง่ายขึ้น
-        const VARIANT_TIER = ['ปกติ', 'สีพิเศษ', 'หายาก', 'ตำนาน'], VARIANT_RAR = ['common', 'rare', 'epic', 'legendary'];
+        const VARIANT_TIER = ['ปกติ', 'สีพิเศษ', 'หายาก', 'ตำนาน'], VARIANT_RAR = ['common', 'uncommon', 'epic', 'legendary'];
         const variantOf = (a, t) => (ANIMAL_VARIANTS[a] || []).find(v => v.k === t) || null;
         const variantTier = (a, t) => (variantOf(a, t) || { tier: 0 }).tier;
         const variantName = (a, t) => variantOf(a, t) ? variantOf(a, t).name : ANIMALS[a].name;
@@ -10708,7 +10795,7 @@
             const cat = pl.type === 't' ? TREES : pl.type === 'f' ? FLOWERS : VEGGIES, info = cat[pl.seed], ready = pl.stage >= pl.need;
             const e = ready ? info.e : pl.stage === 0 ? '🌰' : pl.type === 't' ? '🌳' : '🌱';
             const tip = `${info.name}${ready ? ' พร้อมเก็บ' : ` ระยะ ${pl.stage}/${pl.need}`}${pl.pest ? ' · มีหนอน' : ''}`;
-            return `<span class="mp-plot${pl.pest ? ' has-pest' : ''}${pl.golden && ready ? ' is-golden' : ''}${pl.type === 'v' && cropRarity(pl.seed) !== 'common' ? ' rar-' + cropRarity(pl.seed) : ''}" title="${tip}">${e}</span>`;
+            return `<span class="mp-plot${pl.pest ? ' has-pest' : ''}${pl.golden && ready ? ' is-golden' : ''}${pl.type === 'v' && cropRarity(pl.seed) !== 'common' ? ' rar-' + cropRarity(pl.seed) : pl.type === 't' && TREES[pl.seed].top ? ' rar-' + cropRarity(TREES[pl.seed].fruit) : ''}" title="${tip}">${e}</span>`;
         }
         function mpFriendCard(p, isMe) {
             const f = p.farm, online = mpIsOnline(p), house = HOUSE_LEVELS[f.h - 1] || HOUSE_LEVELS[0];
@@ -11308,7 +11395,7 @@
             fish: { e: '🐟', name: 'ของจากบ่อปลา', ok: k => hasOwn(FISH, k) },
             any: { e: '🎲', name: 'อะไรก็ได้', ok: () => false }
         };
-        const DAILY_BASE = { common: 10, rare: 20, epic: 35, legendary: 60, mythic: 90 }, DAILY_PRIZES = [30, 15, 8];
+        const DAILY_BASE = { common: 10, uncommon: 15, rare: 20, epic: 35, legendary: 60, mythic: 90, immortal: 130, cosmic: 180 }, DAILY_PRIZES = [30, 15, 8];
         const dailyThemeKey = day => Object.keys(DAILY_THEMES)[hashStr('daily:' + day) % 6];
         // คะแนน = ความหายาก (ธรรมดา 10 · แรร์ 20 · หายาก 35 · ตำนาน 60 · เทพ 90) + ดาวละ 10 + ตรงธีม 20 (+5 ถ้าไม่มีใครส่งของซ้ำ ตอนประกาศผล)
         function dailyParts(k, day) {
@@ -11397,7 +11484,7 @@
         }
 
         // --- 🔨 ประมูลในห้อง ---
-        const auctionOk = k => mpItemOk(k) && (qualOf(k) >= 4 || ['epic', 'legendary', 'mythic'].includes(itemRarity(k)));
+        const auctionOk = k => mpItemOk(k) && (qualOf(k) >= 4 || rarAtLeast(itemRarity(k), 'epic'));
         const bidMin = a => a.top ? a.top + Math.max(1, Math.ceil(a.top * 0.05)) : a.start;
         function auPick(k) { if (!auctionOk(k)) return; Object.assign(rm, rm.auPick === k ? { auPick: '' } : { auPick: k, auQty: 1, auStart: Math.max(1, marketPrice(k)) }); renderFarmPanel(); }
         function auAdj(field, dir) {
@@ -12757,10 +12844,13 @@
             'seed-avocado':    { cat: 'seed', name: 'อะโวคาโด', price: 15, veg: 'avocado' },
             'seed-eggplant':   { cat: 'seed', name: 'มะเขือม่วง', price: 15, veg: 'eggplant' },
             'seed-kiwi':       { cat: 'seed', name: 'กีวี', price: 15, veg: 'kiwi' },
-            'sapling-mango':   { cat: 'seed', name: 'กิ่งมะม่วง', price: 30, tree: 'mangoTree', consumable: 'sapling', level: 3, desc: 'ไม้ผล โต 6 ระยะ แล้วออกผลทุกวัน' },
-            'sapling-banana':  { cat: 'seed', name: 'หน่อกล้วย', price: 25, tree: 'bananaTree', consumable: 'sapling', level: 3, desc: 'ไม้ผล โต 5 ระยะ แล้วออกผลทุกวัน' },
-            'sapling-coconut': { cat: 'seed', name: 'หน่อมะพร้าว', price: 35, tree: 'coconutTree', consumable: 'sapling', level: 3, desc: 'ไม้ผล โต 7 ระยะ แล้วออกผลทุกวัน' },
-            'sapling-apple':   { cat: 'seed', name: 'กิ่งแอปเปิล', price: 35, tree: 'appleTree', consumable: 'sapling', level: 3, desc: 'ไม้ผล โต 6 ระยะ แล้วออกผลทุกวัน' },
+            'sapling-mango':   { cat: 'seed', name: 'กิ่งมะม่วง', price: 30, tree: 'mangoTree', consumable: 'sapling', level: 3, desc: 'ไม้ผล 🟣 โต 6 ระยะ แล้วออกผลทุก 6 ชม.' },
+            'sapling-banana':  { cat: 'seed', name: 'หน่อกล้วย', price: 25, tree: 'bananaTree', consumable: 'sapling', level: 3, desc: 'ไม้ผล 🔵 โต 5 ระยะ แล้วออกผลทุก 4 ชม.' },
+            'sapling-coconut': { cat: 'seed', name: 'หน่อมะพร้าว', price: 35, tree: 'coconutTree', consumable: 'sapling', level: 3, desc: 'ไม้ผล 🔵 โต 7 ระยะ แล้วออกผลทุก 8 ชม.' },
+            'sapling-apple':   { cat: 'seed', name: 'กิ่งแอปเปิล', price: 35, tree: 'appleTree', consumable: 'sapling', level: 3, desc: 'ไม้ผล 🔵 โต 6 ระยะ แล้วออกผลทุก 6 ชม.' },
+            'sapling-pear':    { cat: 'seed', name: 'กิ่งสาลี่', price: 40, tree: 'pearTree', consumable: 'sapling', level: 4, desc: 'ไม้ผล 🟢 โต 5 ระยะ แล้วออกผลทุก 4 ชม.' },
+            'sapling-olive':   { cat: 'seed', name: 'กิ่งมะกอก', price: 45, tree: 'oliveTree', consumable: 'sapling', level: 5, desc: 'ไม้ผล 🟢 โต 5 ระยะ แล้วออกผลทุก 5 ชม.' },
+            'sapling-greenapple': { cat: 'seed', name: 'กิ่งแอปเปิลเขียว', price: 60, tree: 'greenAppleTree', consumable: 'sapling', level: 7, desc: 'ไม้ผล 🔵 โต 6 ระยะ แล้วออกผลทุก 6 ชม.' },
             'can-silver':  { cat: 'tool', name: 'บัวรดน้ำเงิน', price: 20, svg: canSVG('#D5DEE8', '#93A1B3'), desc: 'รดน้ำได้ทุก 20 นาที (ปกติ 30)' },
             'can-gold':    { cat: 'tool', name: 'บัวรดน้ำทอง', price: 40, svg: canSVG('#FFD45C', '#E0A526'), desc: 'รดน้ำได้ทุก 10 นาที', needs: 'can-silver', level: 3 },
             'fertilizer':  { cat: 'tool', name: 'ปุ๋ยเร่งโต ×3', price: 9, emoji: '🧪', desc: 'ใส่แล้วผักโตทันที 1 ระยะ', consumable: 'fertilizer', qty: 3 },
