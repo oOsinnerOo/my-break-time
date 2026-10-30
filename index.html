@@ -14,11 +14,30 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600;700&family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // 😀 ฟอนต์อิโมจิ Noto ทำให้รูปของในเกมหน้าตาเหมือนกันทุกเครื่อง แต่ Google ส่งฟอนต์แบบ SVG ให้ iPhone/iPad/Safari
+        // ซึ่งเครื่อง Apple วาดไม่ออก (ขึ้นเป็นช่องว่าง) เครื่อง Apple จึงใช้อิโมจิของเครื่องเสมอ และไม่ต้องโหลดฟอนต์ไฟล์ใหญ่
+        const APPLE_EMOJI = (() => {
+            const ua = navigator.userAgent;
+            if (/iPhone|iPad|iPod/.test(ua)) return true;
+            if (!/Macintosh/.test(ua)) return false;
+            return navigator.maxTouchPoints > 1 || (/Safari\//.test(ua) && !/Chrome|Chromium|Edg|OPR|Firefox/.test(ua));
+        })();
+        function loadEmojiFont() {
+            if (APPLE_EMOJI || document.getElementById('emoji-font')) return;
+            const link = document.createElement('link');
+            link.id = 'emoji-font'; link.rel = 'stylesheet';
+            link.href = 'https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap';
+            document.head.appendChild(link);
+        }
+        try { if (APPLE_EMOJI || localStorage.getItem('native_emoji') === 'true') document.documentElement.classList.add('native-emoji'); } catch (e) {}
+        if (!document.documentElement.classList.contains('native-emoji')) loadEmojiFont();
+    </script>
     <style>
         /* 🎨 โทเคนสีของแต่ละธีม — ทุกคอมโพเนนต์อ่านสีจากตัวแปรชุดนี้ เพิ่มธีมใหม่ได้แค่ประกาศโทเคนชุดใหม่ */
         :root {
-            /* อิโมจิใช้ฟอนต์ Noto Color Emoji ทุกเครื่อง รูปของในเกมจะหน้าตาเหมือนกันทั้งมือถือและคอม (ปิดได้ในตั้งค่า) */
+            /* อิโมจิใช้ฟอนต์ Noto Color Emoji รูปของในเกมจะหน้าตาเหมือนกันทั้งมือถือและคอม (ปิดได้ในตั้งค่า · เครื่อง Apple ใช้อิโมจิของเครื่อง ดู APPLE_EMOJI) */
             --font-display: 'Mitr', 'Anuphan', 'Noto Color Emoji', sans-serif;
             --font-body: 'Anuphan', 'Mitr', 'Noto Color Emoji', sans-serif;
 
@@ -3590,7 +3609,7 @@
                         <span class="toggle-switch"><input type="checkbox" id="reduce-motion-check" onchange="setEffect('reduceMotion', this.checked)"><span class="toggle-slider"></span></span>
                     </label>
                     <label class="settings-row settings-switch-row" for="native-emoji-check">
-                        <span class="settings-row-text"><span class="settings-row-label">ใช้อิโมจิของเครื่องนี้</span><span class="settings-row-sub">ปิดไว้ = รูปของในเกมหน้าตาเหมือนกันทุกเครื่อง · เปิด = ใช้แบบของมือถือ/คอมเครื่องนี้ ประหยัดเน็ตครั้งแรก</span></span>
+                        <span class="settings-row-text"><span class="settings-row-label">ใช้อิโมจิของเครื่องนี้</span><span class="settings-row-sub" id="native-emoji-sub">ปิดไว้ = รูปของในเกมหน้าตาเหมือนกันทุกเครื่อง · เปิด = ใช้แบบของมือถือ/คอมเครื่องนี้ ประหยัดเน็ตครั้งแรก</span></span>
                         <span class="toggle-switch"><input type="checkbox" id="native-emoji-check" onchange="setEffect('nativeEmoji', this.checked)"><span class="toggle-slider"></span></span>
                     </label>
                 </div>
@@ -13629,7 +13648,9 @@
             document.body.classList.toggle('no-parade', !isEffectOn('parade'));
             document.body.classList.toggle('no-stickers', !isEffectOn('stickers'));
             document.body.classList.toggle('reduce-motion', isEffectOn('reduceMotion'));
-            document.documentElement.classList.toggle('native-emoji', isEffectOn('nativeEmoji'));
+            const nativeEmoji = APPLE_EMOJI || isEffectOn('nativeEmoji');
+            document.documentElement.classList.toggle('native-emoji', nativeEmoji);
+            if (!nativeEmoji) loadEmojiFont();
             if (!isEffectOn('stickers')) toggleStickerTray(false);
         }
         function setEffect(name, on) {
@@ -13713,7 +13734,10 @@
             set('tapfx-check', isEffectOn('tapfx'));
             set('stickers-check', isEffectOn('stickers'));
             set('reduce-motion-check', isEffectOn('reduceMotion') || PREFERS_REDUCED_MOTION);
-            set('native-emoji-check', isEffectOn('nativeEmoji'));
+            set('native-emoji-check', APPLE_EMOJI || isEffectOn('nativeEmoji'));
+            const ne = document.getElementById('native-emoji-check');
+            if (ne) ne.disabled = APPLE_EMOJI;
+            if (APPLE_EMOJI) document.getElementById('native-emoji-sub').textContent = 'iPhone/iPad/Mac (Safari) ใช้อิโมจิของเครื่องเสมอ เพราะวาดฟอนต์อิโมจิกลางไม่ออก';
             const rm = document.getElementById('reduce-motion-check');
             if (rm) rm.disabled = PREFERS_REDUCED_MOTION;
             if (PREFERS_REDUCED_MOTION) document.getElementById('reduce-motion-sub').textContent = 'เปิดอยู่แล้วจากการตั้งค่า "ลดการเคลื่อนไหว" ของเครื่อง';
