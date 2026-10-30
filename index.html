@@ -10618,7 +10618,7 @@
         }
 
         // 🖼️ หน้าแท็บเพื่อน
-        function mpSetView(v) { mp.view = v; rm.panel = ''; if (bossGame) { cancelAnimationFrame(bossGame.raf); bossGame = null; } renderFarmPanel(); if (['daily', 'auction', 'league', 'boss', 'garden'].includes(v)) rmSync(); if (v === 'village') villageRefresh(); }
+        function mpSetView(v) { mp.view = v; rm.panel = ''; if (bossGame) { cancelAnimationFrame(bossGame.raf); clearInterval(bossGame.iv); bossGame = null; } renderFarmPanel(); if (['daily', 'auction', 'league', 'boss', 'garden'].includes(v)) rmSync(); if (v === 'village') villageRefresh(); }
         function mpSetBoard(b) { mp.board = mpOwn(MP_BOARDS, b) ? b : 'harvest'; renderFarmPanel(); }
         function mpToggleQR() { mp.showQR = !mp.showQR; renderFarmPanel(); }
         function mpToggleGift(id) { Object.assign(mp, { giftFor: mp.giftFor === id ? '' : id, waveFor: '', giftItem: '', giftQty: 1 }); rm.panel = ''; renderFarmPanel(); }
@@ -11892,22 +11892,24 @@
         function bossStrikeStart() {
             const d = rm.boss;
             if (!d || d.killed || d.strikes >= BOSS_STRIKES || d.today >= BOSS_DAY_CAP || bossGame) return;
-            bossGame = { t0: performance.now(), pos: 0, raf: 0, done: false };
+            bossGame = { t0: performance.now(), pos: 0, raf: 0, iv: 0, done: false };
             renderFarmPanel();
-            const step = () => {
-                if (!bossGame || bossGame.done) return;
+            const paint = () => {
+                if (!bossGame || bossGame.done) return false;
                 bossGame.pos = bossPos(bossGame);
                 const m = document.getElementById('boss-mark');
                 if (m) m.style.left = bossGame.pos.toFixed(1) + '%';
-                bossGame.raf = requestAnimationFrame(step);
+                return true;
             };
+            const step = () => { if (paint()) bossGame.raf = requestAnimationFrame(step); };
             bossGame.raf = requestAnimationFrame(step);
+            bossGame.iv = setInterval(paint, 100); // สำรองไว้ เครื่องที่หน่วงเฟรมก็ยังเห็นเข็มขยับ
             setTimeout(() => { const b = document.getElementById('boss-hit-btn'); if (b) b.focus({ preventScroll: true }); }, 50);
         }
         async function bossStrikeHit() {
             const g = bossGame;
             if (!g || g.done) return;
-            g.done = true; cancelAnimationFrame(g.raf);
+            g.done = true; cancelAnimationFrame(g.raf); clearInterval(g.iv);
             g.pos = bossPos(g);
             const m = document.getElementById('boss-mark');
             if (m) m.style.left = g.pos.toFixed(1) + '%';
@@ -16087,7 +16089,7 @@
             } catch (e) { cloudRt.busy = false; renderCloudBox(); showToast(cloudErr(e), 'warning'); return; }
             if (cloud && cloud.id !== ident.id && (cloud.pend || cloudRt.dirty) && !cloudRt.conflict && await cloudUpload(true) !== 'ok') { showToast(acctErr('pending_old'), 'warning'); return; }
             showToast('☁️ เจอเซฟของเครื่องเดิมแล้ว ดูข้อมูลก่อนโหลดมาเล่นต่อได้เลย', 'success');
-            await cloudSwitchTo(ident, '☁️ เซฟจากรหัสย้ายเครื่อง');
+            await cloudSwitchTo(ident, '☁️ เซฟบนเซิร์ฟเวอร์ (รหัสย้ายเครื่อง)');
         }
         function cloudToggleClaim() { cloudRt.claimOpen = !cloudRt.claimOpen; renderCloudBox(); if (cloudRt.claimOpen) { const i = document.querySelector('#cloud-box input'); if (i) i.focus(); } }
         function cloudOff() {
