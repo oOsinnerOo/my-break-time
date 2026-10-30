@@ -3022,6 +3022,7 @@
         .dex-stats b { font-size: 13px; color: var(--ink); line-height: 1.45; }
         .dex-list { margin: 0; padding-left: 4px; list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
         .dex-reveal { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 18px; background: linear-gradient(135deg, rgba(var(--rc-rgb), 0.22), var(--surface-2)); border: 2px solid var(--rc);
+        .dex-reveal.is-miss { --rc-rgb: 150, 146, 170; animation: none; }
             animation: dex-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .dex-reveal > div { display: flex; flex-direction: column; gap: 3px; }
         .dex-reveal small { font-size: 11px; font-weight: 700; color: var(--ink-3); }
@@ -5701,7 +5702,7 @@
                 desc: 'ผิวสีเงินเรียบเหมือนพระจันทร์เต็มดวง เนื้อในหอมหวานและบำรุงดินทั้งสวน' }
         };
         Object.entries(LEGEND_VEGGIES).forEach(([k, v]) => { VEGGIES[k] = { e: v.e, name: v.name }; CROP_STAGES[k] = v.stages; });
-        // 🔴 ผักเทพ: หายากกว่าตำนาน ได้จากกล่องปริศนา 1% แลกเศษเมล็ด 30 ชิ้น หรือปลูกผักตำนานสองชนิดติดกันแล้วลุ้นตอนเก็บ
+        // 🔴 ผักเทพ: หายากกว่าตำนาน ได้จากกล่องปริศนา 1% ลุ้นด้วยเศษเมล็ด (ครั้งละ 6 ชิ้น โอกาสค่อยๆ เพิ่ม) หรือปลูกผักตำนานสองชนิดติดกันแล้วลุ้นตอนเก็บ
         const MYTH_VEGGIES = {
             galaxyMelon: { e: '🌌', name: 'แตงโมทางช้างเผือก', stages: 7, trait: 'ได้ ★★★★★ ทุกครั้ง และได้เพิ่มอีก 1 ลูก',
                 desc: 'ผ่าออกมาเห็นดาวระยิบเต็มลูก เล่ากันว่าเมล็ดร่วงลงมาจากทางช้างเผือกในคืนเดือนมืด' },
@@ -6176,7 +6177,7 @@
                 eventDay: day(v.eventDay), eventClaim: day(v.eventClaim),
                 bait: int(v.bait, 99), goldBait: int(v.goldBait, 99), baitBuy: { day: day((v.baitBuy || {}).day), n: int((v.baitBuy || {}).n, 10) }, baitSel: v.baitSel === 'bait' || v.baitSel === 'gold' ? v.baitSel : '', cookHi: !!v.cookHi,
                 roam: { day: day((v.roam || {}).day), n: int((v.roam || {}).n, 8), at: Math.min(Date.now(), +((v.roam || {}).at) || Date.now()) }, // ครั้งแรกรอ 45 นาทีก่อนลุ้นหนอนจร
-                frags: int(v.frags, 999), box: { n: int((v.box || {}).n, 1e6), pity: int((v.box || {}).pity, BOX_PITY_MAX) },
+                frags: int(v.frags, 999), mythPity: int(v.mythPity, 30), box: { n: int((v.box || {}).n, 1e6), pity: int((v.box || {}).pity, BOX_PITY_MAX) },
                 fishRecord: (() => { const o = {}; Object.keys(FISH).forEach(k => { const x = +((v.fishRecord || {})[k]); if (x > 0 && x < 1000) o[k] = Math.round(x * 10) / 10; }); return o; })(),
                 dexDay: Object.fromEntries(Object.entries(v.dexDay && typeof v.dexDay === 'object' ? v.dexDay : {}).filter(([k, d]) => (hasOwn(VEGGIES, k) || hasOwn(FISH, k)) && typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d))),
                 upg: Object.fromEntries(UPGRADE_KEYS.map(k => [k, int((v.upg || {})[k], UPG_MAX)])),
@@ -8735,10 +8736,13 @@
         }
 
         // --- 📖 สมุดสะสม: ผักผลไม้ ปลา อาหาร ดอกไม้ และกระเป๋าเมล็ด พร้อมรายละเอียดทุกชนิด ---
-        const FRAG_NEED = 10, FRAG_MYTH = 30, BOX_PRICE = 20, BOX_PITY = 15;
+        const FRAG_NEED = 10, BOX_PRICE = 20, BOX_PITY = 15;
+        // ลุ้นเมล็ดเทพ: ใช้เศษ 6 ชิ้นต่อครั้ง โอกาสเริ่ม 10% พลาดแต่ละครั้ง +3% (ได้แล้วเริ่มนับใหม่) · เฉลี่ยราว 31 ชิ้น ใกล้เคียงแบบเดิม 30 ชิ้น
+        const MYTH_ROLL = 6, MYTH_BASE = 10, MYTH_STEP = 3;
+        const mythChance = () => Math.min(100, MYTH_BASE + MYTH_STEP * veg.mythPity);
         const BOX_RATES = [['rare', 69], ['epic', 25], ['legendary', 5], ['mythic', 1]];
         const DEX_CROPS = [...new Set([...BASE_VEGGIES, ...Object.values(SEASON_VEGGIE), ...RARE_VEGGIES, ...Object.keys(FOREST_CROPS), 'apple', ...HYBRID_VEGGIES, ...Object.keys(LEGEND_VEGGIES), ...Object.keys(MYTH_VEGGIES)])];
-        const RARITY_NOTE = { common: 'ปลูกได้ตลอด เมล็ดฟรี', rare: 'ผักเทศกาล เมล็ดจากร้านค้า ผลไม้จากต้น และเมล็ดจากป่า', epic: 'ผักลูกผสม ต้องผสมพันธุ์เองหรือลุ้นจากกล่อง', legendary: 'เมล็ดจากกล่องปริศนาหรือเศษเมล็ดตำนาน มีพลังพิเศษ', mythic: 'เมล็ดเทพ: กล่องปริศนา 1% · แลกเศษ 30 ชิ้น · ปลูกผักตำนานสองชนิดติดกันแล้วลุ้น 10%' };
+        const RARITY_NOTE = { common: 'ปลูกได้ตลอด เมล็ดฟรี', rare: 'ผักเทศกาล เมล็ดจากร้านค้า ผลไม้จากต้น และเมล็ดจากป่า', epic: 'ผักลูกผสม ต้องผสมพันธุ์เองหรือลุ้นจากกล่อง', legendary: 'เมล็ดจากกล่องปริศนาหรือเศษเมล็ดตำนาน มีพลังพิเศษ', mythic: 'เมล็ดเทพ: กล่องปริศนา 1% · ลุ้นด้วยเศษเมล็ด (ครั้งละ 6 ชิ้น โอกาสค่อยๆ เพิ่ม) · ปลูกผักตำนานสองชนิดติดกันแล้วลุ้น 10%' };
         const FISH_NOTE = { common: 'ติดเบ็ดง่าย มีทั้งวัน', rare: 'ออกมาบางเวลาหรือบางอากาศ', epic: 'ติดเบ็ดแล้วต้องดึงสู้ 5 ครั้ง', legendary: 'นานๆ โผล่ที ต้องดึงสู้ 8 ครั้ง ได้ 🧩 3 ชิ้น', mythic: 'กินเฉพาะเหยื่อทอง ✨ จากหนอนทอง ต้องดึงสู้ 10 ครั้ง ได้ 🧩 6 ชิ้น' };
         const dex = { tab: 'crops', filter: 'all', sel: '', reveal: null };
         const itemRarity = k => { const b = baseOf(k); return hasOwn(FISH, b) ? FISH[b].r : hasOwn(VEGGIES, b) ? cropRarity(b) : hasOwn(FARM_PRODUCTS, b) ? FARM_PRODUCTS[b].rar || '' : ''; };
@@ -8810,11 +8814,22 @@
             if (r === 'legendary' || r === 'mythic') fireConfetti();
             renderDex(); renderFarmStatus();
         }
-        // 🧩 แลกเศษเมล็ด 10 ชิ้นเป็นเมล็ดตำนาน (สุ่มจากชนิดที่ยังไม่เคยเก็บก่อน)
+        // 🧩 แลกเศษเมล็ด 10 ชิ้นเป็นเมล็ดตำนาน (สุ่มจากชนิดที่ยังไม่เคยเก็บก่อน) · หรือลุ้นเมล็ดเทพครั้งละ 6 ชิ้น
         function tradeFragments(myth) {
-            const need = myth ? FRAG_MYTH : FRAG_NEED;
+            const need = myth ? MYTH_ROLL : FRAG_NEED;
             if (veg.frags < need) return;
             veg.frags -= need;
+            if (myth) {
+                const chance = mythChance(), roll = typeof window.fixedMyth === 'number' ? window.fixedMyth : Math.random() * 100; // ให้เทสต์กำหนดผลได้
+                if (roll >= chance) {
+                    veg.mythPity = Math.min(30, veg.mythPity + 1); saveVeg();
+                    dex.reveal = { miss: true, chance, next: mythChance() };
+                    playSound('boing');
+                    renderDex(); renderFarmStatus();
+                    return;
+                }
+                veg.mythPity = 0;
+            }
             const all = Object.keys(myth ? MYTH_VEGGIES : LEGEND_VEGGIES), fresh = all.filter(k => !cropTotal(k) && !(veg.seeds[k] > 0)), pool = fresh.length ? fresh : all;
             const k = pool[Math.floor(Math.random() * pool.length)];
             veg.seeds[k] = Math.min(99, (veg.seeds[k] || 0) + 1);
@@ -8903,14 +8918,16 @@
             const fr = veg.frags, pity = BOX_PITY - veg.box.pity;
             const bag = Object.keys(veg.seeds).filter(k => veg.seeds[k] > 0).sort((a, b) => RARITY_KEYS.indexOf(cropRarity(b)) - RARITY_KEYS.indexOf(cropRarity(a)));
             const rv = dex.reveal;
-            const reveal = rv ? `<div class="dex-reveal rar-${rv.r}" role="status"><span class="dex-reveal-e">${rv.r === 'epic' && !cropTotal(rv.k) ? '🧬' : VEGGIES[rv.k].e}</span>
+            const reveal = rv && rv.miss ? `<div class="dex-reveal is-miss" role="status"><span class="dex-reveal-e">🎲</span>
+                    <div><small>ลุ้นเมล็ดเทพ (โอกาส ${rv.chance}%)</small><b>ครั้งนี้ยังไม่ติด</b><span class="farm-card-sub">ครั้งหน้าโอกาสเพิ่มเป็น ${rv.next}% · ยิ่งพลาดยิ่งมีลุ้น</span></div></div>`
+                : rv ? `<div class="dex-reveal rar-${rv.r}" role="status"><span class="dex-reveal-e">${rv.r === 'epic' && !cropTotal(rv.k) ? '🧬' : VEGGIES[rv.k].e}</span>
                     <div><small>${rv.from === 'frag' ? 'แลกเศษเมล็ดได้' : 'เปิดกล่องได้'}</small><b>${rv.r === 'epic' && !cropTotal(rv.k) ? 'เมล็ดลูกผสมลับ' : 'เมล็ด' + VEGGIES[rv.k].name}${rv.n > 1 ? ' ×' + rv.n : ''}</b>${rarTag(rv.r)}
                     ${SPECIAL_VEGGIES[rv.k] ? `<span class="farm-card-sub">✨ ${SPECIAL_VEGGIES[rv.k].trait}</span>` : ''}</div></div>` : '';
             return `<div class="farm-card dex-frag"><span class="barn-emoji" aria-hidden="true">🧩</span>
                     <div class="farm-card-main"><span class="farm-card-title">เศษเมล็ดตำนาน ${fr}/${FRAG_NEED}</span>
                         <span class="farm-xp ach-meter" role="progressbar" aria-valuemin="0" aria-valuemax="${FRAG_NEED}" aria-valuenow="${Math.min(fr, FRAG_NEED)}" aria-label="เศษเมล็ดตำนาน"><span style="width:${Math.min(100, fr / FRAG_NEED * 100)}%"></span></span>
                         <span class="farm-card-sub">ได้จากเก็บผัก (ยิ่งดาวเยอะ ผักทอง เก็บเป๊ะ หรือผักหายาก ยิ่งมีลุ้น) · ปลาหายาก 🧩1 · ปลาตำนาน 🧩3 · ยูนิคอร์นและฝนดาวตก 🧩1</span>
-                    <span class="barn-btns"><button type="button" class="chip-btn rar-tag rar-mythic" ${fr >= FRAG_MYTH ? '' : 'disabled'} onclick="tradeFragments(true)">🔴 แลกเมล็ดเทพ ${Math.min(fr, FRAG_MYTH)}/${FRAG_MYTH}</button></span></div>
+                    <span class="barn-btns"><button type="button" class="chip-btn rar-tag rar-mythic" ${fr >= MYTH_ROLL ? '' : 'disabled'} onclick="tradeFragments(true)" title="ใช้เศษ ${MYTH_ROLL} ชิ้นต่อครั้ง พลาดแล้วโอกาสครั้งหน้าเพิ่ม +${MYTH_STEP}%">🔴 ลุ้นเมล็ดเทพ ${mythChance()}% · 🧩${MYTH_ROLL}</button></span></div>
                     <button type="button" class="shop-buy farm-action" ${fr >= FRAG_NEED ? '' : 'disabled'} onclick="tradeFragments()">${fr >= FRAG_NEED ? 'แลกเมล็ดตำนาน ✨' : `อีก ${FRAG_NEED - fr} ชิ้น`}</button></div>
                 <div class="farm-card dex-box-card"><span class="barn-emoji" aria-hidden="true">🎁</span>
                     <div class="farm-card-main"><span class="farm-card-title">กล่องเมล็ดปริศนา</span>
@@ -8940,7 +8957,7 @@
             }
             if (boxPool(r).includes(k) && r !== 'common') out.push(`🎁 สุ่มได้จากกล่องเมล็ดปริศนา (${BOX_RATES.find(([x]) => x === r)[1]}%)`);
             if (r === 'legendary') out.push(`🧩 แลกด้วยเศษเมล็ดตำนาน ${FRAG_NEED} ชิ้น`);
-            if (r === 'mythic') out.push(`🧩 แลกด้วยเศษเมล็ดตำนาน ${FRAG_MYTH} ชิ้น`, '🟡 ปลูกผักตำนานสองชนิดติดกัน แล้วลุ้นเมล็ดผักเทพตอนเก็บ (10%)');
+            if (r === 'mythic') out.push(`🧩 ลุ้นด้วยเศษเมล็ดตำนาน ครั้งละ ${MYTH_ROLL} ชิ้น (เริ่ม ${MYTH_BASE}% พลาดแล้ว +${MYTH_STEP}%)`, '🟡 ปลูกผักตำนานสองชนิดติดกัน แล้วลุ้นเมล็ดผักเทพตอนเก็บ (10%)');
             return out;
         }
         const recipesUsing = k => Object.entries(RECIPES).filter(([rk, rv]) => rv.need[k] && (!rv.secret || veg.cooked[rk]));
