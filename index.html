@@ -6047,7 +6047,7 @@
             { e: '🪙', text: '5 เหรียญ' }, { e: '🧪', text: 'ปุ๋ยเร่งโต 1 ขวด' }, { e: '🪙', text: '10 เหรียญ' }, { e: '🪱', text: 'ปุ๋ยหมัก 2 ถุง + เหยื่อ 3 ตัว' },
             { e: '🎣', text: 'ตั๋วตกปลา 2 ใบ' }, { e: '🧬', text: 'เมล็ดลูกผสมลับ' }, { e: '🎁', text: '30 เหรียญ + ปุ๋ย 2 ขวด' }
         ];
-        const STALL_SLOTS = 3, STALL_MS = 10 * 60 * 1000, FISH_TICKET_MAX = 5;
+        const STALL_SLOTS = 3, STALL_MS = 10 * 60 * 1000, FISH_TICKET_MAX = 8;
         const ORDER_COUNT = 6, ORDER_RESETS = 2; // ออเดอร์วันละ 6 ใบ รีเซ็ตเป็นชุดใหม่ได้วันละ 2 ครั้ง (ต้องประกาศก่อนโหลดเซฟ)
         // 💬 ลูกค้าขอต่อราคา: ราว 1 ใน 4 ของลูกค้าที่แผง (รอได้ 30 นาที ค้างได้ไม่เกิน 2 คน) · นิสัย 4 แบบ ดูได้แค่จากสีหน้า
         // 🎃 อีเวนต์ฟาร์มตามเทศกาล (ช่วงเดียวกับธีมเทศกาล ต่อท้ายอีก 1 วันให้แลกของทัน)
@@ -6077,7 +6077,7 @@
         const HOUSE_LEVELS = [
             { e: '🛖', name: 'กระท่อมน้อย', perk: 'จุดเริ่มต้นของชาวสวน' },
             { e: '🏠', name: 'บ้านไม้', perk: 'แผงขายช่องที่ 4', coins: 60, items: { wheat: 5 }, level: 3 },
-            { e: '🏡', name: 'บ้านสวนมีระเบียง', perk: 'ตั๋วตกปลาฟรีวันละ 2 ใบ', coins: 120, items: { egg: 5, bouquet: 2 }, level: 4 },
+            { e: '🏡', name: 'บ้านสวนมีระเบียง', perk: 'ตั๋วตกปลาฟรีวันละ 3 ใบ', coins: 120, items: { egg: 5, bouquet: 2 }, level: 4 },
             { e: '🏘️', name: 'บ้านไร่สองหลัง', perk: 'โอกาสได้ผักทอง +5%', coins: 200, items: { honey: 4, wool: 2 }, level: 6 },
             { e: '🏰', name: 'คฤหาสน์ชาวไร่', perk: 'XP จากทุกอย่าง +20%', coins: 350, items: { cheese: 3, carrotCake: 1 }, level: 8 }
         ];
@@ -7346,8 +7346,11 @@
             const bonus = o.bonus && !shop.owned.includes(o.bonus) ? o.bonus : null;
             if (bonus) { shop.owned.push(bonus); saveShop(); applyShopItems(); }
             bumpChallenge('order');
+            // ลุ้นตั๋วตกปลาเป็นค่าขนม 20% (window.fixedTicket ให้เทสต์กำหนดผล)
+            const ticket = veg.fish.tickets < FISH_TICKET_MAX && (typeof window.fixedTicket === 'boolean' ? window.fixedTicket : Math.random() < 0.2);
+            if (ticket) addFishTicket(1);
             const who = CR[o.who];
-            showToast(`📦 ส่งให้${who.name}แล้ว! ได้ 🪙${o.coins} · ${o.xp} XP${bonus ? ` · 🎁 ${SHOP_ITEMS[bonus].name}` : ''}`, 'success', { duration: 5000 });
+            showToast(`📦 ส่งให้${who.name}แล้ว! ได้ 🪙${o.coins} · ${o.xp} XP${bonus ? ` · 🎁 ${SHOP_ITEMS[bonus].name}` : ''}${ticket ? ' · 🎣 แถมตั๋วตกปลา 1 ใบ' : ''}`, 'success', { duration: 5000 });
             const c = parade.critters.find(x => x.spec === who);
             if (c) critterSay(c, 'ขอบคุณนะ! 💖', 2200);
             playSound('welcome'); if (bonus) fireConfetti();
@@ -8226,12 +8229,12 @@
                 <p class="shop-note">${friends.room ? `ชนะเพื่อนทุกคนในห้องได้โบนัส 👑 แชมป์ห้อง 🪙${ROOM_CHAMP_BONUS} · รางวัลอันดับนับเทียบกับคู่แข่งในขบวน (มีเพื่อนแข่งด้วยรางวัลไม่ลดลง) · ` : ''}รางวัล: อันดับ 1 🪙40 + 🏆 ถ้วยทอง · อันดับ 2 🪙25 + 🥈 · อันดับ 3 🪙15 + 🥉 · อันดับ 4 🪙5 (ถ้วยตั้งในสวนได้)</p>`;
         }
 
-        // 🎣 บ่อตกปลา: ได้ตั๋วฟรีวันละใบ + พักดี 1 ครั้ง = 1 ใบ (เก็บได้สูงสุด 5) · เหวี่ยงเบ็ด รอปลากิน แล้วกด "ดึง!" ให้ทัน
+        // 🎣 บ่อตกปลา: ได้ตั๋วฟรีวันละ 2 ใบ + พักดี 1 ครั้ง = 1 ใบ + ส่งออเดอร์ลุ้น 20% (เก็บได้สูงสุด 8) · เหวี่ยงเบ็ด รอปลากิน แล้วกด "ดึง!" ให้ทัน
         const fishing = { state: 'idle', timer: 0, result: null, bait: '' };
         function addFishTicket(n = 1) { veg.fish.tickets = Math.min(FISH_TICKET_MAX, veg.fish.tickets + n); saveVeg(); renderFarmStatus(); }
         function freeFishTicket() {
             if (veg.fish.freeDay === dayKeyLocal()) return;
-            veg.fish.freeDay = dayKeyLocal(); addFishTicket(veg.house >= 3 ? 2 : 1);
+            veg.fish.freeDay = dayKeyLocal(); addFishTicket(veg.house >= 3 ? 3 : 2);
         }
         // ปลาแต่ละชนิดมีช่วงเวลา/อากาศ/ฤดูที่ออกมา ปลาหายากกับปลาตำนานติดเบ็ดแล้วต้องแตะ "ดึง!" รัวๆ สู้ให้ชนะ
         const FISH_FIGHT = { epic: { taps: 5, ms: 2600 }, legendary: { taps: 8, ms: 3600 }, mythic: { taps: 10, ms: 4200 }, immortal: { taps: 12, ms: 4800 }, cosmic: { taps: 14, ms: 5200 } };
@@ -8404,7 +8407,7 @@
                 <div class="modal-btn-group">${action}</div>
                 <div class="pond-now"><span>ตอนนี้ในบ่อมี:</span>${now.map(k => `<span class="pond-now-fish rar-${FISH[k].r}" title="${veg.fishCaught[k] ? FISH[k].name : '???'} · ${RARITY[FISH[k].r].name}">${veg.fishCaught[k] ? FISH[k].e : '❔'}</span>`).join('')}</div>
                 <div class="pond-dex">${listed.map(([k, x]) => `<button type="button" class="pond-dex-item rar-${x.r}${veg.fishCaught[k] ? '' : ' locked'}" title="${veg.fishCaught[k] ? x.name : '???'}" onclick="openDex('fish', '${k}')">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></button>`).join('')}</div>
-                <p class="shop-note">สะสมปลาแล้ว ${caught}/${listed.length} ชนิด · แตะปลาเพื่อดูรายละเอียด · ตั๋วฟรีวันละใบ และได้เพิ่มทุกครั้งที่พักไม่เกินลิมิต (เก็บได้สูงสุด ${FISH_TICKET_MAX}) · ปลาขายหรือทำอาหารได้<br>🪱 เหยื่อได้จากจับหนอนจรในแปลงผัก ใช้แล้วปลาหายากติดเบ็ดง่ายขึ้น · ✨ เหยื่อทองจากหนอนทองเท่านั้นที่เรียกปลาเทพ 🔴 ได้</p>`;
+                <p class="shop-note">สะสมปลาแล้ว ${caught}/${listed.length} ชนิด · แตะปลาเพื่อดูรายละเอียด · ตั๋วฟรีวันละ 2 ใบ ได้เพิ่มทุกครั้งที่พักไม่เกินลิมิต และลุ้นได้ตอนส่งออเดอร์ (เก็บได้สูงสุด ${FISH_TICKET_MAX}) · ปลาขายหรือทำอาหารได้<br>🪱 เหยื่อได้จากจับหนอนจรในแปลงผัก ใช้แล้วปลาหายากติดเบ็ดง่ายขึ้น · ✨ เหยื่อทองจากหนอนทองเท่านั้นที่เรียกปลาเทพ 🔴 ได้</p>`;
         }
 
         // ✨ แขกพิเศษ: สุ่มแวะมาในสวน (วันละไม่เกิน 2 ตัว อยู่ 3 นาที) แตะเพื่อรับของขวัญ
@@ -10360,7 +10363,7 @@
             { id: 'cook', e: '🍳', text: 'ทำอาหาร 1 จาน', how: 'เลือกเมนูที่วัตถุดิบครบในครัว แล้วกด "ผัด!" ตอนเข็มอยู่ในโซนเขียว', tab: 'kitchen', done: () => sum(veg.cooked) >= 1, r: { coins: 10 } },
             { id: 'stall', e: '🏪', text: 'ขายของที่แผงหน้าฟาร์ม', how: 'วางของบนแผง ลูกค้าจะทยอยมาซื้อ บางคนขอต่อราคา', tab: 'stall', done: () => veg.stats.stallSold >= 1, r: { coins: 10 } },
             { id: 'animal', e: '🐔', text: 'เลี้ยงสัตว์ตัวแรก', how: 'เลเวล 3 ซื้อแม่ไก่ที่ร้านค้า (🔧 อุปกรณ์) แล้วเก็บไข่ทุกวัน', tab: 'animals', done: () => Object.keys(ANIMALS).some(a => animalCount(a)), r: { coins: 15 } },
-            { id: 'fish', e: '🎣', text: 'ตกปลาได้ 1 ตัว', how: 'มีตั๋วฟรีวันละใบ และได้เพิ่มทุกครั้งที่พักไม่เกินลิมิต', tab: 'pond', done: () => sum(veg.fishCaught) >= 1, r: { ticket: 1 } },
+            { id: 'fish', e: '🎣', text: 'ตกปลาได้ 1 ตัว', how: 'มีตั๋วฟรีวันละ 2 ใบ ได้เพิ่มทุกครั้งที่พักไม่เกินลิมิต และลุ้นได้ตอนส่งออเดอร์', tab: 'pond', done: () => sum(veg.fishCaught) >= 1, r: { ticket: 1 } },
             { id: 'craft', e: '🏭', text: 'แปรรูปของ 1 ครั้ง', how: 'ซื้อเครื่องที่โรงแปรรูป ใส่วัตถุดิบแล้วรอ ได้ของราคาดีขึ้น', tab: 'craft', done: () => Object.values(veg.machines).some(m => m.made > 0), r: { coins: 15 } },
             { id: 'friends', e: '👥', text: 'เล่นกับเพื่อน', how: 'สร้างห้องแล้วส่งรหัสให้เพื่อน ช่วยกันรดน้ำ ส่งของ แข่งกัน', tab: 'friends', done: () => !!friends.room, r: { coins: 10 } }
         ];
@@ -11809,8 +11812,11 @@
                 if (list.length < 2) { giveItem(mine.item, 1); lines.push(`🏅 ประกวดวันที่ ${thaiDay(day)} มีคนส่งคนเดียว ${itemInfo(mine.item).name}คืนเข้ายุ้งฉาง`); return; }
                 const rank = dailyRank(list).findIndex(e => e.id === d.me) + 1, prize = (DAILY_PRIZES[rank - 1] || 0) + 3;
                 addCoins(prize); addXP(5);
+                // ของที่ทุกคนส่งเข้าประกวดคือของเดิมพัน ที่ 1 ได้ไปทั้งกอง (รวมของตัวเองคืน)
+                const pot = rank === 1 ? list.filter(e => mpItemOk(e.item)) : [];
+                pot.forEach(e => giveItem(e.item, 1));
                 if (rank === 1) veg.stats.dailyWins = Math.min(1e5, veg.stats.dailyWins + 1);
-                lines.push(`${['🥇', '🥈', '🥉'][rank - 1] || '🏅'} ประกวดวันที่ ${thaiDay(day)} ได้อันดับ ${rank}/${list.length} รับ 🪙${prize}`);
+                lines.push(`${['🥇', '🥈', '🥉'][rank - 1] || '🏅'} ประกวดวันที่ ${thaiDay(day)} ได้อันดับ ${rank}/${list.length} รับ 🪙${prize}${pot.length ? ` + ของเดิมพันทั้งกอง ${pot.map(e => `${itemInfo(e.item).e}${starText(itemInfo(e.item).q)}`).join(' ')}` : ''}`);
                 if (rank === 1) fireConfetti();
             });
             const keep = Object.keys(veg.dailyPaid).sort().slice(-20);
@@ -11825,7 +11831,8 @@
             const head = `<div class="farm-card rm-daily-head"><span class="barn-emoji">🏅</span><div class="farm-card-main">
                 <span class="farm-card-title">ประกวดประจำวัน · ธีม ${th.e} ${th.name}</span>
                 <span class="farm-card-sub">ส่งของ 1 ชิ้นก่อน 20:00 · เพื่อนไม่เห็นว่าเราส่งอะไรจนประกาศผล · ${d.open ? `⏳ ปิดรับใน ${closes > 0 ? thaiLeft(d.closes).replace('เหลือ ', '') : 'ไม่กี่วินาที'}` : '📣 ประกาศผลวันนี้แล้ว'}</span>
-                <span class="farm-card-sub">คะแนน: ⚪10 · 🔵20 · 🟣35 · 🟡60 · 🔴90 + ดาวละ 10${dailyThemeKey(d.day) !== 'any' ? ' + ตรงธีม 20' : ''} + ไม่ซ้ำใคร 5 · รางวัล 🥇🪙30 🥈🪙15 🥉🪙8 · ส่งได้ 🪙3</span></div></div>`;
+                <span class="farm-card-sub">คะแนน: ⚪10 · 🔵20 · 🟣35 · 🟡60 · 🔴90 + ดาวละ 10${dailyThemeKey(d.day) !== 'any' ? ' + ตรงธีม 20' : ''} + ไม่ซ้ำใคร 5 · รางวัล 🥇🪙30 🥈🪙15 🥉🪙8 · ส่งได้ 🪙3</span>
+                <span class="farm-card-sub haggle-good">🎁 ของที่ส่งคือของเดิมพัน: ที่ 1 ได้ของทุกชิ้นที่เพื่อนส่งมาทั้งกอง${d.open && d.today.length ? ` · ตอนนี้ในกองมี ${d.today.length} ชิ้น` : ''}</span></div></div>`;
             const row = (e, i, show) => { const it = e.item && itemInfo(e.item); return `<div class="contest-row${e.id === d.me ? ' is-me' : ''}"><span>${show ? (['🥇', '🥈', '🥉'][i] || i + 1) : '📩'}</span>
                 <span class="contest-who">${escHtml(e.avatar)} ${escHtml(e.name)}${e.id === d.me ? ' (คุณ)' : ''}${show && it ? ` · ${it.e} ${it.name}${starText(it.q)}` : ''}</span>
                 <b>${show ? `${e.total}${e.uniq ? ' ✨' : ''}` : e.id === d.me && it ? `${it.e} ${e.score}` : 'ปิดซอง'}</b></div>`; };
@@ -11837,7 +11844,8 @@
                     ${keys.length ? `<div class="mp-gift-items">${keys.map(x => { const it = itemInfo(x); return `<button type="button" class="chip-btn${x === k ? ' is-active' : ''}${rarClass(x)}" onclick="dailyPick('${x}')">${it.e} ${it.name}${starText(it.q)} · ${dailyScore(x, d.day)}</button>`; }).join('')}</div>` : '<p class="rp-empty">ยุ้งฉางว่าง เก็บผักหรือตกปลามาประกวดก่อนนะ</p>'}
                     ${k ? `<div class="mk-form"><span class="farm-card-sub">${itemInfo(k).e} ${itemInfo(k).name}${starText(itemInfo(k).q)}: ความหายาก ${parts.rar} + ดาว ${parts.stars}${parts.theme ? ' + ตรงธีม 20' : ''} = <b>${dailyScore(k, d.day)} คะแนน</b> (ของที่ส่งจะถูกใช้ไป)</span>
                         <button type="button" class="shop-buy farm-action" ${rm.busy ? 'disabled' : ''} onclick="dailySubmit()">${mine ? 'เปลี่ยนเป็นชิ้นนี้ 🔁' : 'ส่งเข้าประกวด 📩'}</button></div>` : ''}`;
-            } else body = `<p class="dex-group"><b>📣 ผลวันนี้</b> · ${d.today.length} คน</p><div class="contest-board">${dailyRank(d.today).map((e, i) => row(e, i, true)).join('') || '<p class="farm-card-sub">วันนี้ไม่มีใครส่ง</p>'}</div>`;
+            } else body = `<p class="dex-group"><b>📣 ผลวันนี้</b> · ${d.today.length} คน</p><div class="contest-board">${dailyRank(d.today).map((e, i) => row(e, i, true)).join('') || '<p class="farm-card-sub">วันนี้ไม่มีใครส่ง</p>'}</div>`
+                + (d.today.length >= 2 ? `<p class="farm-news">🎁 กองเดิมพันวันนี้ ${d.today.filter(e => mpItemOk(e.item)).map(e => `${itemInfo(e.item).e}${starText(itemInfo(e.item).q)}`).join(' ')} → ${escHtml(dailyRank(d.today)[0].avatar)} ${escHtml(dailyRank(d.today)[0].name)} ได้ไปทั้งหมด</p>` : '');
             const days = {};
             d.past.forEach(e => { (days[e.day] = days[e.day] || []).push(e); });
             const wk = weekStartKey(), wins = {};
