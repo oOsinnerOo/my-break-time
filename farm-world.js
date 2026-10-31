@@ -4,7 +4,7 @@
     const G=root.FarmSystems,A=root.FarmPixelArt,T=32,NS='http://www.w3.org/2000/svg';
     let api,host,map,view,world,route=[],position={x:9,y:6},target=null,placement=null,editing=false,overview=false;
     let running=0,last=0,visible=true,dirty=true,lastSignature='',lastAvatar='',direction='down',walkFrame=0,moveTime=0;
-    let cols=16,rows=11,keys=new Set(),pendingRefresh=false,settingsOpen=false;
+    let cols=16,rows=11,keys=new Set(),pendingRefresh=false,settingsOpen=false,meeting=false;
     const $=s=>host.querySelector(s),icon=k=>A.ui(k),escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const rect=(x,y,w,h,fill,extra='')=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" ${extra}/>`;
     const sprite=(svg,x,y,w,h,vb='0 0 64 64')=>`<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="${vb}" overflow="visible">${svg}</svg>`;
@@ -29,7 +29,7 @@
         if(api)return;
         api=adapter;const card=document.getElementById('garden-card');if(!card)return;
         host=document.createElement('section');host.id='farm-world';host.className='farm-world';
-        host.innerHTML=`<div class="fw-heading"><div><span class="fw-eyebrow">ชีวิตในฟาร์ม</span><h3>บ้านเล็ก ฟาร์มของเรา</h3></div><div class="fw-modes" role="group" aria-label="มุมมองสวน"><button type="button" data-mode="world">เดินเล่น</button><button type="button" data-mode="garden">สวนพักใจ</button></div></div>
+        host.innerHTML=`<div class="fw-heading"><div><span class="fw-eyebrow">ชีวิตในฟาร์ม</span><h3>บ้านเล็ก ฟาร์มของเรา</h3></div><div class="fw-modes" role="group" aria-label="มุมมองสวน"><button type="button" data-mode="world">เดินเล่น</button><button type="button" data-mode="garden">สวนพักใจ</button><button type="button" data-mode="room">ห้องเพื่อน</button></div></div>
             <div class="fw-play"><div class="fw-toolbar"><button type="button" data-command="overview">${icon('map')} แผนที่</button><button type="button" data-command="edit">${icon('hammer')} จัดพื้นที่</button><button type="button" data-command="look">${icon('farmer')} ตัวละคร</button><button type="button" data-command="land">${icon('plus')} ขยายที่ดิน</button></div>
             <div class="fw-look" hidden><label>เสื้อ <select data-look="shirt" aria-label="สีเสื้อตัวละคร"><option value="0">ใบไม้</option><option value="1">ท้องฟ้า</option><option value="2">อิฐแดง</option><option value="3">ลาเวนเดอร์</option><option value="4">น้ำผึ้ง</option><option value="5">ชมพู</option></select></label><label>ผม <select data-look="hair" aria-label="สีผมตัวละคร"><option value="0">น้ำตาล</option><option value="1">ดำ</option><option value="2">ทองแดง</option><option value="3">ทอง</option></select></label><label>หมวก <select data-look="hat" aria-label="หมวกตัวละคร"><option value="0">ไม่ใส่</option><option value="1">หมวกฟาง</option><option value="2">หมวกแก๊ป</option></select></label></div>
             <div class="fw-editor" hidden><b>เลือกของแล้วแตะช่องที่จะวาง</b><div class="fw-decor-tools">${Object.entries(G.DECOR).map(([k,d])=>`<button type="button" data-decor="${k}">${sprite(A.decor('decor-'+k),0,0,24,24)}<span>${d.name}</span></button>`).join('')}</div><p class="fw-edit-help">แตะอาคารเพื่อย้าย · แตะของตกแต่งเพื่อเก็บคืน · แปลงเพาะปลูกมีตำแหน่งประจำ</p><span class="fw-placement" role="status"></span><details class="fw-grid-input"><summary>เลือกตำแหน่งด้วยช่องตาราง</summary><label>แนวนอน <input type="number" data-grid="x" min="1" max="22" value="4" aria-label="ช่องแนวนอน"></label><label>แนวตั้ง <input type="number" data-grid="y" min="1" max="16" value="8" aria-label="ช่องแนวตั้ง"></label><button type="button" data-command="place-grid">วางตำแหน่งนี้</button></details></div>
@@ -52,11 +52,11 @@
         refresh();
     }
     function setMode(mode,save=true){
-        world.mode=mode;document.getElementById('garden-card').dataset.worldMode=mode;
+        meeting=mode==='room';world.mode=meeting?'world':mode;document.getElementById('garden-card').dataset.worldMode=meeting?'world':mode;
         $('.fw-play').hidden=mode!=='world';host.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
         const picker=document.getElementById('veg-picker');
-        if(mode==='world')$('.fw-picker-slot').append(picker);else document.getElementById('veg-plots').before(picker);
-        api.closePicker();route=[];keys.clear();if(save)api.save();dirty=true;wake();
+        if(mode==='world'||mode==='room')$('.fw-picker-slot').append(picker);else document.getElementById('veg-plots').before(picker);
+        api.closePicker();route=[];keys.clear();if(root.FarmRoom)root.FarmRoom.setActive(meeting);if(meeting)stop();if(save)api.save();dirty=true;wake();
     }
     function terrain(d){
         let s=rect(0,0,G.W*T,G.H*T,'#365943')+rect(T,T,(G.W-2)*T,(G.H-2)*T,'#95b66d');
@@ -122,10 +122,10 @@
             $('.fw-destinations div').innerHTML=d.plots.map((p,i)=>`<button type="button" data-destination="plot:${i}">แปลง ${i+1}: ${escape(api.describe(i))}</button>`).join('')+Object.entries(G.BUILDINGS).filter(([id])=>id!=='sea'||d.land>=4).map(([id,b])=>`<button type="button" data-destination="building:${id}">${b.name}</button>`).join('')+nodes().filter(e=>e.type==='resource'||editing&&e.type==='decor').map(e=>`<button type="button" data-destination="${e.type}:${e.id}">${e.type==='resource'?(e.kind==='tree'?'เคลียร์ต้นไม้':'ทุบกองหิน')+' ('+e.x+','+e.y+')':G.DECOR[e.kind].name}</button>`).join('');
         }
     }
-    function wake(){if(!running&&api&&(visible||route.length||data().timing>=0)&&!document.hidden&&world.mode==='world'){last=0;running=requestAnimationFrame(frame);}}
+    function wake(){if(!meeting&&!running&&api&&(visible||route.length||data().timing>=0)&&!document.hidden&&world.mode==='world'){last=0;running=requestAnimationFrame(frame);}}
     function stop(){if(running)cancelAnimationFrame(running);running=0;last=0;}
     function frame(time){
-        running=0;if(document.hidden||world.mode!=='world'||!visible&&!route.length&&data().timing<0)return;
+        running=0;if(meeting||document.hidden||world.mode!=='world'||!visible&&!route.length&&data().timing<0)return;
         const dt=last?Math.min(.06,(time-last)/1000):0;last=time;
         if(!route.length&&keys.size){const k=[...keys].at(-1),delta=({arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]})[k];if(delta)step(...delta);}
         if(route.length){
@@ -242,5 +242,5 @@
             case 'goal':{const d=data(),ready=Object.values(d.machines).some(m=>m.ready.length);if(ready){walkTo(find('building','craft'));break;}let i=d.plots.findIndex(p=>p.seed&&p.stage>=p.need);if(i<0)i=d.plots.findIndex(p=>!p.seed);walkTo(find(i>=0?'plot':'building',i>=0?i:'board'));break;}
         }
     }
-    root.FarmWorld=Object.freeze({start,refresh});
+    root.FarmWorld=Object.freeze({start,refresh,enterRoom:()=>{if(api)setMode('room');}});
 })(window);
