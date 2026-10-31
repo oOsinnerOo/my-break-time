@@ -1,9 +1,9 @@
 // Service worker ของ Break Recorder: เก็บหน้าเว็บไว้ในเครื่อง เปิดใช้ได้แม้ไม่มีอินเทอร์เน็ต
 // เปลี่ยนเลขเวอร์ชันเมื่อเปลี่ยนรายการไฟล์ที่ต้องเก็บ (ตัวหน้าเว็บเองจะอัปเดตทุกครั้งที่ออนไลน์อยู่แล้ว)
-const CACHE = 'break-time-v4-pixel-ui';
+const CACHE = 'break-time-v5-living-farm';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png',
     './farm.webmanifest', './farm-icon.svg', './farm-192.png', './farm-512.png', './farm-maskable-512.png', './farm-180.png',
-    './farm-pixel-art.js?v=20261031-ui2', './farm-pixel-art.css?v=20261031-ui2', './farm-pixel-ui.js?v=20261031-ui2'];
+    './farm-pixel-art.js?v=20261031-world1', './farm-pixel-art.css?v=20261031-ui2', './farm-pixel-ui.js?v=20261031-ui2', './farm-systems.js?v=20261031-world1', './farm-world.js?v=20261031-world1', './farm-world.css?v=20261031-world1'];
 const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 
 self.addEventListener('install', (event) => {

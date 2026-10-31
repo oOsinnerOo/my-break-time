@@ -15,8 +15,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="farm-pixel-art.js?v=20261031-ui2"></script>
+    <script src="farm-pixel-art.js?v=20261031-world1"></script>
     <script src="farm-pixel-ui.js?v=20261031-ui2"></script>
+    <script src="farm-systems.js?v=20261031-world1"></script>
+    <script src="farm-world.js?v=20261031-world1"></script>
     <script>
         // 😀 ฟอนต์อิโมจิ Noto ทำให้รูปของในเกมหน้าตาเหมือนกันทุกเครื่อง แต่ Google ส่งฟอนต์แบบ SVG ให้ iPhone/iPad/Safari
         // ซึ่งเครื่อง Apple วาดไม่ออก (ขึ้นเป็นช่องว่าง) เครื่อง Apple จึงใช้อิโมจิของเครื่องเสมอ และไม่ต้องโหลดฟอนต์ไฟล์ใหญ่
@@ -3175,6 +3177,7 @@
         .upg-next { color: var(--accent-ink); }
     </style>
     <link rel="stylesheet" href="farm-pixel-art.css?v=20261031-ui2">
+    <link rel="stylesheet" href="farm-world.css?v=20261031-world1">
 </head>
 <body>
     <script>
@@ -6297,7 +6300,7 @@
                 xp: Math.min(1e7, v.xp !== undefined && Number.isFinite(+v.xp) && +v.xp >= 0 ? Math.floor(+v.xp) : totalHarvest * 10),
                 hybridSeeds: (Array.isArray(v.hybridSeeds) ? v.hybridSeeds : []).filter(k => HYBRID_VEGGIES.includes(k)).slice(0, HYBRID_SEED_MAX),
                 wormDay: typeof v.wormDay === 'string' ? v.wormDay.slice(0, 10) : '',
-                compost: int(v.compost, COMPOST_PTS - 1), land: int(v.land, 6),
+                compost: int(v.compost, COMPOST_PTS - 1), land: int(v.land, 6), world: FarmSystems.cleanWorld(v.world),
                 saplings: counts(v.saplings, Object.keys(TREES)), treeFinds: counts(v.treeFinds, FRUIT_GEMS.map(([k]) => k)), treasures: counts(v.treasures, [...Object.values(TREASURES), COSMIC_TREASURE]), luck: int(v.luck, LUCK_MAX), fruits: counts(v.fruits, Object.keys(VEGGIES)),
                 flowers: counts(v.flowers, Object.keys(FLOWERS)), bestQ,
                 honeyDay: typeof v.honeyDay === 'string' ? v.honeyDay.slice(0, 10) : '', pet,
@@ -6365,14 +6368,9 @@
         const BOX_PITY_MAX = 14; // ต้องน้อยกว่า BOX_PITY ในสมุดสะสม
         const SHOP_ITEMS_SPECIAL = ['hat-straw', 'pack-farm', 'decor-tractor']; // ของรางวัลจากออเดอร์พิเศษ (ซื้อไม่ได้)
         function loadMachines(m) {
-            m = m && typeof m === 'object' && !Array.isArray(m) ? m : {};
-            const out = {}, int = (n, max) => Math.min(max, Math.max(0, Math.floor(+n) || 0));
-            Object.keys(MACHINES).forEach(id => {
-                const x = m[id];
-                if (!x || typeof x !== 'object') return;
-                const rs = MACHINES[id].recipes, j = x.job && typeof x.job === 'object' ? x.job : null;
-                out[id] = { made: int(x.made, 1e6), job: j && Number.isFinite(+j.end) && int(j.r, 9) < rs.length ? { r: int(j.r, 9), end: Math.min(+j.end, Date.now() + rs[int(j.r, 9)].mins * 60000) } : null };
-            });
+            const out = {};
+            if (!m || typeof m !== 'object' || Array.isArray(m)) return out;
+            for (const id of Object.keys(MACHINES)) if (m[id] && typeof m[id] === 'object') out[id] = FarmSystems.cleanMachine(m[id], MACHINES[id].recipes);
             return out;
         }
         function loadForest(f) {
@@ -6429,7 +6427,7 @@
                 spooky: Math.min(+e.spooky || 0, now + SPOOKY_MS), lanterns: int(e.lanterns, LANTERN_MAX), carved: int(e.carved, 1e4) };
         }
         let veg = loadVeg();
-        function saveVeg() { safeSetItem('veggie_garden', JSON.stringify(veg)); }
+        function saveVeg() { safeSetItem('veggie_garden', JSON.stringify(veg)); if (window.FarmWorld) FarmWorld.refresh(); }
         function farmLevel(xp = veg.xp) { let l = 1; while (xp >= xpForLevel(l + 1)) l++; return l; }
         function ensurePlots() {
             const n = Math.min(FARM_MAX_PLOTS, plotsForLevel(farmLevel()) + veg.land);
@@ -9394,68 +9392,95 @@
         }
 
         // --- 🏭 โรงแปรรูป ---
-        const machineReady = id => !!veg.machines[id] && !!veg.machines[id].job && veg.machines[id].job.end <= Date.now();
+        const machineReady = id => !!veg.machines[id] && (veg.machines[id].ready.length > 0 || !!veg.machines[id].job && veg.machines[id].job.end <= Date.now());
         const craftNotified = {};
         function buyMachine(id) {
             const M = MACHINES[id];
             if (!M || veg.machines[id] || farmLevel() < M.level || shop.coins < M.price) return;
             shop.coins -= M.price; saveShop(); updateCoinUI();
-            veg.machines[id] = { job: null, made: 0 };
+            veg.machines[id] = FarmSystems.cleanMachine({}, M.recipes);
             saveVeg(); playSound('welcome');
-            showToast(`🏭 ได้${M.name}แล้ว! ใส่วัตถุดิบแล้วรอ ได้ของราคาดีกว่าขายดิบๆ`, 'success', { duration: 5000 });
+            showToast(`🏭 ได้${M.name}แล้ว! เพิ่มคิวได้สูงสุด ${FarmSystems.CAP} งาน`, 'success');
             renderFarmPanel(); renderFarmStatus();
         }
-        function startCraft(id, r) {
-            const m = veg.machines[id], rec = MACHINES[id] && MACHINES[id].recipes[r];
-            if (!m || m.job || !rec || !hasItems(rec.need)) return;
-            takeItems(rec.need);
-            m.job = { r, end: Date.now() + rec.mins * 60000 };
-            saveVeg(); playSound('pop');
-            const it = itemInfo(rec.out);
-            showToast(`${MACHINES[id].e} เริ่มทำ${it.name} ${it.e} อีก ${rec.mins} นาทีเสร็จ (ปิดเว็บไว้ก็ทำต่อ)`, 'success');
-            renderFarmPanel(); renderFarmStatus(); updateBasketFood();
-        }
-        function collectCraft(id) {
-            if (!machineReady(id)) return;
-            const m = veg.machines[id], rec = MACHINES[id].recipes[m.job.r], n = rec.n || 1, it = itemInfo(rec.out);
-            giveItem(rec.out, n); m.made = Math.min(1e6, m.made + n); m.job = null; passNote('craft');
-            saveVeg(); addXP(6); playSound('welcome');
-            showToast(`${it.e} ได้${it.name} ×${n} เข้ายุ้งฉางแล้ว · ขายได้ชิ้นละราว 🪙${sellPrice(rec.out)}`, 'success');
+        function startCraft(id, r, quantity = 1) {
+            const m = veg.machines[id], M = MACHINES[id], rec = M && M.recipes[r];
+            if (!m || !rec || !Number.isInteger(quantity) || quantity < 1 || quantity > FarmSystems.CAP) return;
+            FarmSystems.settle(m,M.recipes);
+            if (quantity > FarmSystems.CAP - FarmSystems.occupied(m)) { showToast('คิวเต็มแล้ว รับของที่เสร็จหรือยกเลิกงานที่รอก่อนนะ', 'info'); return; }
+            const total = Object.fromEntries(Object.entries(rec.need).map(([k,n])=>[k,n*quantity]));
+            if (!hasItems(total)) { showToast('วัตถุดิบไม่พอสำหรับจำนวนที่เลือก', 'warning'); return; }
+            const reservations = [];
+            for (let i=0;i<quantity;i++) {
+                const before = {...veg.inv}; takeItems(rec.need);
+                reservations.push(Object.fromEntries(Object.entries(before).map(([k,n])=>[k,n-(veg.inv[k]||0)]).filter(([,n])=>n>0)));
+            }
+            FarmSystems.enqueue(m,M.recipes,r,reservations);
+            saveVeg(); playSound('pop'); updateBasketFood();
+            showToast(`🏭 เพิ่ม ${itemInfo(rec.out).name} ${quantity} งาน · เครื่องทำต่อเองแม้ปิดเกม`, 'success');
             renderFarmPanel(); renderFarmStatus();
+        }
+        function cancelCraftQueue(id, token) {
+            const m = veg.machines[id], M = MACHINES[id]; if (!m || !M) return;
+            FarmSystems.settle(m,M.recipes);
+            const q=m.queue.find(q=>q.id===token); if (!q) { saveVeg(); renderFarmPanel(); showToast('งานนี้เริ่มผลิตไปแล้ว จึงยกเลิกไม่ได้', 'info'); return; }
+            if (Object.entries(q.paid).some(([k,n])=>(veg.inv[k]||0)+n>999)) { showToast('คลังเต็ม เก็บของให้มีที่ว่างก่อนรับวัตถุดิบคืน', 'warning'); return; }
+            const paid=FarmSystems.cancel(m,token); if (!paid) return;
+            Object.entries(paid).forEach(([k,n])=>giveItem(k,n));
+            saveVeg(); updateBasketFood(); renderFarmPanel(); renderFarmStatus();
+            showToast('ยกเลิกงานที่รอแล้ว ได้วัตถุดิบและดาวเดิมคืนครบ', 'success');
+        }
+        function drainCraft(id) {
+            const m=veg.machines[id], M=MACHINES[id]; if(!m||!M)return {jobs:0,items:0};
+            FarmSystems.settle(m,M.recipes);
+            const keep=[]; let jobs=0,items=0;
+            for(const r of m.ready){const rec=M.recipes[r],n=rec.n||1;if((veg.inv[rec.out]||0)+n>999){keep.push(r);continue;}giveItem(rec.out,n);jobs++;items+=n;}
+            m.ready=keep;m.made=Math.min(1e6,m.made+items);craftNotified[id]=m.ready.length;
+            if(jobs)passNote('craft',jobs);
+            return {jobs,items};
+        }
+        function collectCraft(id) { collectAllCraft(id); }
+        function collectAllCraft(only) {
+            let jobs=0,items=0;
+            for(const id of only?[only]:Object.keys(veg.machines)){const got=drainCraft(id);jobs+=got.jobs;items+=got.items;}
+            saveVeg(); if(jobs){addXP(6*jobs);playSound('welcome');}
+            renderFarmPanel();renderFarmStatus();updateBasketFood();
+            showToast(jobs?`🧺 รับของ ${items} ชิ้นจาก ${jobs} งานเข้ายุ้งฉางแล้ว`:'คลังเต็มหรือยังไม่มีของที่เสร็จ งานที่เหลือยังเก็บไว้ในเครื่อง',jobs?'success':'info');
         }
         function craftTick() {
-            const done = Object.keys(veg.machines).filter(id => machineReady(id) && craftNotified[id] !== veg.machines[id].job.end);
-            if (!done.length) return;
-            done.forEach(id => { craftNotified[id] = veg.machines[id].job.end; });
-            const names = done.map(id => { const rec = MACHINES[id].recipes[veg.machines[id].job.r]; return `${itemInfo(rec.out).e} ${itemInfo(rec.out).name}`; }).join(', ');
-            if (farmTabIs('craft')) renderFarmPanel();
-            farmNotify('craft', '🏭 แปรรูปเสร็จแล้ว', `${names} พร้อมเก็บที่โรงแปรรูป`);
+            let changed=false; const done=[];
+            for(const [id,m] of Object.entries(veg.machines)){
+                const result=FarmSystems.settle(m,MACHINES[id].recipes); changed=changed||result.changed;
+                if(m.ready.length>(craftNotified[id]||0))done.push(MACHINES[id].name);
+                craftNotified[id]=m.ready.length;
+            }
+            if(changed)saveVeg();
+            if(done.length){if(farmTabIs('craft'))renderFarmPanel();renderFarmStatus();farmNotify('craft','🏭 คิวผลิตเสร็จแล้ว',done.join(' · ')+' พร้อมรับของ');}
+            document.querySelectorAll('[data-craft-eta]').forEach(el=>{
+                const m=veg.machines[el.dataset.craftEta];if(!m||!m.job)return;
+                const seconds=Math.max(0,Math.ceil((m.job.end-Date.now())/1000));
+                el.textContent=Math.floor(seconds/60)+' นาที '+seconds%60+' วินาที';
+            });
         }
         function renderCraftTab() {
-            const lvl = farmLevel(), now = Date.now();
-            return '<p class="farm-news">🏭 โรงแปรรูป: เอาผลผลิตมาแปรรูปเป็นของราคาสูงขึ้น · เครื่องละ 1 งาน · ปิดเว็บไว้ก็ทำต่อ</p>' + Object.entries(MACHINES).map(([id, M]) => {
-                const m = veg.machines[id];
-                if (!m) {
-                    const can = lvl >= M.level && shop.coins >= M.price, outs = M.recipes.map(r => `${itemInfo(r.out).e} ${itemInfo(r.out).name}`).join(' · ');
-                    return `<div class="farm-card is-locked craft-card"><span class="barn-emoji" aria-hidden="true">${farmMachineIcon(id, M.e)}</span>
-                        <div class="farm-card-main"><span class="farm-card-title">${M.name}</span><span class="farm-card-sub">ทำได้: ${outs}</span></div>
-                        ${lvl < M.level ? `<button type="button" class="shop-buy farm-action" disabled>🔒 เลเวล ${M.level}</button>` : `<button type="button" class="shop-buy farm-action" ${can ? '' : 'disabled'} onclick="buyMachine('${id}')">🪙 ${M.price}${can ? '' : `<small>ขาดอีก ${M.price - shop.coins}</small>`}</button>`}</div>`;
-                }
-                if (m.job) {
-                    const rec = M.recipes[m.job.r], it = itemInfo(rec.out), ready = m.job.end <= now, total = rec.mins * 60000, pct = ready ? 100 : Math.max(2, Math.min(99, Math.round((1 - (m.job.end - now) / total) * 100)));
-                    return `<div class="farm-card craft-card${ready ? ' is-ready' : ''}"><span class="barn-emoji${ready ? '' : ' animal-bob'}" aria-hidden="true">${farmMachineIcon(id, M.e)}</span>
-                        <div class="farm-card-main"><span class="farm-card-title">${M.name}</span>
-                            <span class="farm-card-sub">${ready ? `✅ ${it.e} ${it.name} ×${rec.n || 1} เสร็จแล้ว` : `⏳ กำลังทำ ${it.e} ${it.name} ×${rec.n || 1} · อีกราว ${Math.max(1, Math.ceil((m.job.end - now) / 60000))} นาที`}</span>
-                            ${ready ? '' : `<span class="farm-xp craft-bar" role="progressbar" aria-label="ความคืบหน้า" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><span style="width:${pct}%"></span></span>`}</div>
-                        ${ready ? `<button type="button" class="shop-buy farm-action" onclick="collectCraft('${id}')">เก็บ ${it.e}</button>` : '<span class="farm-done">กำลังทำ…</span>'}</div>`;
-                }
-                return `<div class="farm-card craft-card"><span class="barn-emoji" aria-hidden="true">${farmMachineIcon(id, M.e)}</span>
-                    <div class="farm-card-main"><span class="farm-card-title">${M.name} <small class="farm-card-sub">ทำไปแล้ว ${m.made} ชิ้น</small></span>
-                        ${M.recipes.map((rec, i) => { const it = itemInfo(rec.out), ok = hasItems(rec.need);
-                            return `<div class="craft-recipe"><div class="farm-chips">${Object.entries(rec.need).map(([k, n]) => itemChip(k, n)).join('')}<span class="craft-arrow" aria-hidden="true">→</span><span class="farm-chip">${it.e} ${it.name} ×${rec.n || 1}</span></div>
-                                <span class="farm-card-sub">${rec.mins} นาที · ขายได้ชิ้นละราว 🪙${sellPrice(rec.out)}</span>
-                                <button type="button" class="chip-btn${ok ? ' is-active' : ''}" ${ok ? '' : 'disabled'} onclick="startCraft('${id}', ${i})">${ok ? 'เริ่มทำ ▶️' : 'วัตถุดิบไม่พอ'}</button></div>`; }).join('')}</div></div>`;
-            }).join('') + '<p class="shop-note">ของแปรรูปขายที่ตลาดหรือวางแผงได้ บางอย่างมีในออเดอร์ · เห็ดทรัฟเฟิลได้จากหมูน้อย 🐖</p>';
+            const lvl=farmLevel(), now=Date.now();
+            const ready=Object.values(veg.machines).reduce((n,m)=>n+m.ready.length,0);
+            return `<div class="cq-summary"><div><b>โรงแปรรูปของคุณ</b><span>เครื่องทำต่อทีละงาน แม้ปิดเกม · รับของแล้วคิวจะมีที่ว่าง</span></div><button type="button" class="chip-btn" onclick="collectAllCraft()" ${ready?'':'disabled'}>รับทั้งหมด (${ready} งาน)</button></div>`+Object.entries(MACHINES).map(([id,M])=>{
+                const m=veg.machines[id];
+                if(!m)return `<div class="farm-card craft-card is-locked"><span class="barn-emoji">${farmMachineIcon(id,M.e)}</span><div class="farm-card-main"><b>${M.name}</b><span class="farm-card-sub">คิว ${FarmSystems.CAP} งาน · ${M.recipes.map(r=>itemInfo(r.out).name).join(' / ')}</span></div><button type="button" class="shop-buy farm-action" onclick="buyMachine('${id}')" ${lvl<M.level||shop.coins<M.price?'disabled':''}>${lvl<M.level?'เลเวล '+M.level:'🪙 '+M.price}</button></div>`;
+                const slots=FarmSystems.CAP-FarmSystems.occupied(m),job=m.job;
+                const current=job?M.recipes[job.r]:null;
+                const progress=job?Math.max(0,Math.min(100,100*(1-(job.end-now)/(current.mins*60000)))):0;
+                return `<section class="cq-machine"><div class="cq-head"><span class="barn-emoji">${farmMachineIcon(id,M.e)}</span><div><b>${M.name}</b><span class="farm-card-sub">คิว ${FarmSystems.occupied(m)}/${FarmSystems.CAP} · ผลิตสะสม ${m.made} ชิ้น</span></div>${m.ready.length?`<button type="button" class="chip-btn" onclick="collectCraft('${id}')">รับ ${m.ready.length} งาน</button>`:''}</div>
+                    ${job?`<div class="cq-current"><span>${farmIcon(current.out)} กำลังทำ ${itemInfo(current.out).name} · <b data-craft-eta="${id}">${Math.max(1,Math.ceil((job.end-now)/60000))} นาที</b></span><progress value="${progress}" max="100" aria-label="ความคืบหน้า ${M.name}"></progress></div>`:'<p class="farm-card-sub">เครื่องว่าง เลือกสูตรด้านล่างเพื่อเริ่มผลิต</p>'}
+                    ${m.ready.length?`<p class="cq-ready">✅ เสร็จแล้ว ${m.ready.map(r=>farmIcon(M.recipes[r].out)).join(' ')} · เก็บไว้ในเครื่องจนกว่าจะรับ</p>`:''}
+                    ${m.queue.length?`<ol class="cq-list">${m.queue.map((q,i)=>`<li><span>${farmIcon(M.recipes[q.r].out)} ${itemInfo(M.recipes[q.r].out).name}</span><button type="button" class="chip-btn" onclick="cancelCraftQueue('${id}',${q.id})" aria-label="ยกเลิกคิวที่ ${i+1} ของ ${M.name}">คืนวัตถุดิบ</button></li>`).join('')}</ol>`:''}
+                    <div class="cq-recipes">${M.recipes.map((rec,r)=>{
+                        const it=itemInfo(rec.out),afford=Math.max(0,Math.min(slots,...Object.entries(rec.need).map(([k,n])=>Math.floor(countBase(k)/n))));
+                        const counts=[...new Set([1,3,5,10,afford].filter(n=>n>0&&n<=afford))].sort((a,b)=>a-b);
+                        return `<div class="cq-recipe"><div class="farm-chips">${Object.entries(rec.need).map(([k,n])=>itemChip(k,n)).join('')}<span>→ ${farmIcon(rec.out)} ${it.name} ×${rec.n||1}</span></div><span class="farm-card-sub">${rec.mins} นาที/งาน · ทำได้อีก ${afford} งาน</span><div class="cq-add"><label>จำนวนงาน <select id="cq-${id}-${r}" aria-label="จำนวนงาน ${M.name} ${it.name}" ${afford?'':'disabled'}>${(counts.length?counts:[1]).map(n=>`<option value="${n}">${n} งาน${n>1?' · '+rec.mins*n+' นาที':''}</option>`).join('')}</select></label><button type="button" class="chip-btn" ${afford?'':'disabled'} onclick="startCraft('${id}',${r},Number(document.getElementById('cq-${id}-${r}').value))">${!slots?'คิวเต็ม':!afford?'วัตถุดิบไม่พอ':'เพิ่มคิว'}</button></div></div>`;
+                    }).join('')}</div></section>`;
+            }).join('');
         }
 
         // --- ⚡ แรง: ใช้ออกไปสำรวจ (ป่าตอนนี้ เหมืองกับทะเลรอบหน้า) · เต็ม 30 ฟื้น 1 หน่วยทุก 6 นาที ปิดเว็บไว้ก็ฟื้น ---
@@ -17361,7 +17386,7 @@
         function toggleGardenEnabled(enabled) {
             safeSetItem('garden_enabled', enabled ? 'true' : 'false');
             applyGardenVisibility(enabled);
-            if (enabled) { renderDashboardAndLogs(); showToast('🌱 เปิดแสดงสวนพักผ่อนแล้ว', 'success'); }
+            if (enabled) { renderDashboardAndLogs(); initLivingFarm(); showToast('🌱 เปิดแสดงสวนพักผ่อนแล้ว', 'success'); }
         }
 
         window.onload = () => {
@@ -17405,7 +17430,29 @@
             initDataSafety();
             if (FARM_APP) initFarmApp();
             if (window.FarmPixelUI) FarmPixelUI.start([VEGGIES, FLOWERS, FARM_PRODUCTS, FISH, RECIPES, ANIMALS, PETS, MACHINES]);
+            initLivingFarm();
         };
+        let livingFarmStarted = false;
+        function initLivingFarm() {
+            if (livingFarmStarted || !window.FarmWorld) return;
+            livingFarmStarted = true;
+            FarmWorld.start({
+                read: () => ({world:veg.world,plots:veg.plots,land:veg.land,level:farmLevel(),coins:shop.coins,energy:energyNow(),house:veg.house,pet:veg.pet,
+                    machines:veg.machines,weather:todayWeather(),season:farmSeason(),landPrice:LAND_PRICES[Math.min(veg.land,5)],landLevel:LAND_LEVELS[Math.min(veg.land,5)],timing:timing.plot,timingAt:timing.t0}),
+                save: saveVeg, icon: farmIcon, name: k => itemInfo(k)?.name || k,
+                describe: i => {const p=veg.plots[i];return p.seed?plotName(p)+' · '+vegPlotLabel(p)+' · ดิน '+p.soil+'%':'แปลงว่าง · ดิน '+p.soil+'%';},
+                plot: i => {const el=document.querySelectorAll('#veg-plots .veg-plot')[i];if(el&&veg.plots[i])onVegPlotTap(i,el);},
+                open: openFarm, water: waterVeggies, expand: () => buyShopItem('land'),
+                has: hasItems, take: items => {takeItems(items);updateBasketFood();},
+                give: items => {if(Object.entries(items).some(([k,n])=>(veg.inv[k]||0)+n>999))return false;Object.entries(items).forEach(([k,n])=>giveItem(k,n));return true;},
+                clear: resource => {const goods=resource.kind==='tree'?{wood:2}:{stone:2};if(Object.entries(goods).some(([k,n])=>(veg.inv[k]||0)+n>999)||!useEnergy(1))return false;Object.entries(goods).forEach(([k,n])=>giveItem(k,n));return true;},
+                toast: (text,type='info')=>showToast(text,type), closePicker: closeVegPicker
+            });
+            craftTick();
+            setInterval(()=>{if(!document.hidden && Object.values(veg.machines).some(m=>m.job))craftTick();},1000);
+            document.addEventListener('visibilitychange',()=>{if(!document.hidden){craftTick();FarmWorld.refresh();}});
+        }
+
         // ครั้งแรกที่เปิดฟาร์มแบบแยก: บอกวิธีเพิ่มเป็นไอคอนแยกบนหน้าจอ (ข้อมูลชุดเดียวกับหน้าบันทึกพัก)
         function initFarmApp() {
             updateInstallUI(); renderFarmAppBreak();
