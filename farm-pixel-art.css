@@ -1,0 +1,49 @@
+/* The shared grid artwork stays sharp in the garden, shop and inventory. */
+.farm-pixel-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -.15em;
+    flex: 0 0 auto;
+    overflow: visible;
+    image-rendering: pixelated;
+    shape-rendering: crispEdges;
+}
+.garden-scene {
+    background: #b6d6d7;
+    border: 3px solid #80543f;
+    border-radius: 6px;
+    box-shadow: 0 3px 0 #60443e, 0 0 0 2px #ecc38b;
+}
+.garden-decor-item { filter: none; }
+.garden-decor-item svg, .garden-bg, .garden-svg, .farm-pixel-plot,
+.gd-prev svg, .gd-mini svg, .shop-preview svg {
+    image-rendering: pixelated;
+    shape-rendering: crispEdges;
+}
+.garden-stem-group { animation: pixel-tree-breeze 4.5s steps(2, end) infinite; }
+.garden-stem-group.interacting, .garden-stem-group.wilted { animation: none; }
+.veg-sway { animation: none; }
+.veg-crop { font-size: 36px; filter: none; animation: pixel-crop-bob 1.8s steps(2, end) infinite; }
+.veg-sign { border-radius: 2px; background: #fff0c7; border-color: #ab7349; box-shadow: 0 2px 0 #80543f; }
+.veg-sign .farm-pixel-icon { width: 16px; height: 16px; }
+.tree-fruits .farm-pixel-icon { width: 1em; height: 1em; }
+.farm-chip .farm-pixel-icon { width: 18px; height: 18px; }
+.veg-book-item .farm-pixel-icon { display: inline-block; }
+.barn-emoji .farm-pixel-icon, .mk-e .farm-pixel-icon { width: 40px; height: 40px; }
+.house-big .farm-pixel-icon { width: 96px; height: 96px; }
+.shop-preview .farm-pixel-icon { width: 48px; height: 48px; }
+.veg-seed .farm-pixel-icon { width: 32px; height: 32px; }
+.dex-e .farm-pixel-icon { width: 40px; height: 40px; }
+.dex-hero-e .farm-pixel-icon { width: 72px; height: 72px; }
+.garden-pet-face .farm-pixel-icon { width: 40px; height: 40px; }
+.garden-decor-item.is-bob { animation: pixel-decor-bob 3.2s steps(2, end) infinite; }
+.gd-ff, .gd-snow { border-radius: 0; }
+@keyframes pixel-tree-breeze { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(1px); } }
+@keyframes pixel-crop-bob { 0%, 100% { transform: translateX(-50%); } 50% { transform: translate(-50%, -2px); } }
+@keyframes pixel-decor-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@media (prefers-reduced-motion: reduce) {
+    .garden-stem-group, .veg-crop, .garden-decor-item.is-bob { animation: none; }
+}
+body.reduce-motion .garden-stem-group, body.reduce-motion .veg-crop,
+body.reduce-motion .garden-decor-item.is-bob { animation: none; }
