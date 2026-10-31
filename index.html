@@ -11785,14 +11785,16 @@
         function dailyPick(k) { rm.dailyPick = rm.dailyPick === k ? '' : k; renderFarmPanel(); }
         async function dailySubmit() {
             const d = rm.daily, k = rm.dailyPick;
-            if (rm.busy || !d || !d.open || !mpItemOk(k) || !veg.inv[k]) return;
+            if (rm.busy || !d || !mpItemOk(k)) return;
+            if (!d.open) { showToast('ประกวดวันนี้ปิดรับแล้ว (20:00) พรุ่งนี้ส่งใหม่นะ', 'info'); return; }
+            if (!veg.inv[k]) { showToast(`${itemInfo(k).name}${starText(itemInfo(k).q)} ในยุ้งฉางหมดแล้ว เลือกชิ้นอื่นนะ`, 'warning'); rm.dailyPick = ''; renderFarmPanel(); return; }
             rm.busy = true;
             takeExact(k, 1); saveVeg();
             try {
                 const r = await mpCall('bt_daily_submit', { ...mpAuth(), p_item: k, p_score: dailyScore(k, d.day) });
                 if (mpItemOk(r.prev)) giveItem(r.prev, 1);
                 const it = itemInfo(k);
-                showToast(`📩 ส่ง ${it.e} ${it.name}${starText(it.q)} เข้าประกวดแล้ว! เพื่อนจะเห็นตอนประกาศผล 20:00${mpItemOk(r.prev) ? ` · ${itemInfo(r.prev).name}ชิ้นเดิมคืนเข้ายุ้งฉาง` : ''}`, 'success', { duration: 5500 });
+                showToast(`📩 ส่ง ${it.e} ${it.name}${starText(it.q)} เข้าประกวดแล้ว! ออกจากยุ้งฉางไปอยู่ในกองเดิมพัน (เหลือ ${veg.inv[k] || 0} ชิ้น) · ที่ 1 ตอน 20:00 ได้ทั้งกอง${mpItemOk(r.prev) ? ` · ${itemInfo(r.prev).name}ชิ้นเดิมคืนเข้ายุ้งฉาง` : ''}`, 'success', { duration: 6500 });
                 rm.dailyPick = ''; playSound('pop');
             } catch (e) { giveItem(k, 1); showToast(MP_ERRORS['daily_' + e.message] || mpErr(e), 'warning'); }
             saveVeg(); rm.busy = false;
@@ -11840,8 +11842,8 @@
             if (d.open) {
                 const keys = barnKeys().filter(mpItemOk), k = keys.includes(rm.dailyPick) ? rm.dailyPick : '', parts = k ? dailyParts(k, d.day) : null;
                 body = `<p class="dex-group"><b>📩 ส่งแล้ว ${d.today.length} คน</b></p><div class="contest-board">${d.today.map(e => row(e, 0, false)).join('') || '<p class="farm-card-sub">ยังไม่มีใครส่ง เป็นคนแรกเลย!</p>'}</div>
-                    <p class="dex-group"><b>${mine ? '🔁 เปลี่ยนของที่ส่ง' : '🎁 เลือกของจากยุ้งฉาง'}</b>${mine ? ` · ตอนนี้ส่ง ${itemInfo(mine.item).e} ${itemInfo(mine.item).name}${starText(itemInfo(mine.item).q)} (${mine.score} คะแนน)` : ''}</p>
-                    ${keys.length ? `<div class="mp-gift-items">${keys.map(x => { const it = itemInfo(x); return `<button type="button" class="chip-btn${x === k ? ' is-active' : ''}${rarClass(x)}" onclick="dailyPick('${x}')">${it.e} ${it.name}${starText(it.q)} · ${dailyScore(x, d.day)}</button>`; }).join('')}</div>` : '<p class="rp-empty">ยุ้งฉางว่าง เก็บผักหรือตกปลามาประกวดก่อนนะ</p>'}
+                    <p class="dex-group"><b>${mine ? '🔁 เปลี่ยนของที่ส่ง' : '🎁 เลือกของจากยุ้งฉาง'}</b>${mine ? ` · 🎁 ของเดิมพันของคุณ ${itemInfo(mine.item).e} ${itemInfo(mine.item).name}${starText(itemInfo(mine.item).q)} (${mine.score} คะแนน · ออกจากยุ้งฉางแล้ว)` : ''}</p>
+                    ${keys.length ? `<div class="mp-gift-items">${keys.map(x => { const it = itemInfo(x); return `<button type="button" class="chip-btn${x === k ? ' is-active' : ''}${rarClass(x)}" onclick="dailyPick('${x}')">${it.e} ${it.name}${starText(it.q)} ×${veg.inv[x]} · ${dailyScore(x, d.day)} คะแนน</button>`; }).join('')}</div>` : '<p class="rp-empty">ยุ้งฉางว่าง เก็บผักหรือตกปลามาประกวดก่อนนะ</p>'}
                     ${k ? `<div class="mk-form"><span class="farm-card-sub">${itemInfo(k).e} ${itemInfo(k).name}${starText(itemInfo(k).q)}: ความหายาก ${parts.rar} + ดาว ${parts.stars}${parts.theme ? ' + ตรงธีม 20' : ''} = <b>${dailyScore(k, d.day)} คะแนน</b> (ของที่ส่งจะถูกใช้ไป)</span>
                         <button type="button" class="shop-buy farm-action" ${rm.busy ? 'disabled' : ''} onclick="dailySubmit()">${mine ? 'เปลี่ยนเป็นชิ้นนี้ 🔁' : 'ส่งเข้าประกวด 📩'}</button></div>` : ''}`;
             } else body = `<p class="dex-group"><b>📣 ผลวันนี้</b> · ${d.today.length} คน</p><div class="contest-board">${dailyRank(d.today).map((e, i) => row(e, i, true)).join('') || '<p class="farm-card-sub">วันนี้ไม่มีใครส่ง</p>'}</div>`
