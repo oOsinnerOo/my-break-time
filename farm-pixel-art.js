@@ -869,6 +869,302 @@
             return '<svg class="farm-pixel-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">' + p.svg() + '</svg>';
         });
     }
+    // Interface sprites use the same 24 px grid and palette as farm goods.
+    function uiPixels(k) {
+        const p = new Pixels(24, 24);
+        const book = (color = C.red) => {
+            box(p, 3, 3, 18, 19, color); p.rect(5, 4, 2, 16, C.light).rect(8, 6, 10, 12, C.cream);
+            p.rect(10, 8, 6, 1, C.tan).rect(10, 11, 6, 1, C.tan).rect(10, 14, 4, 1, C.tan);
+        };
+        const star = (x = 12, y = 11, c = C.yellow) => {
+            p.poly([[x,y-8],[x+3,y-3],[x+9,y-2],[x+5,y+2],[x+6,y+8],[x,y+5],[x-6,y+8],[x-5,y+2],[x-9,y-2],[x-3,y-3]], C.ink);
+            p.poly([[x,y-6],[x+2,y-2],[x+7,y-1],[x+3,y+2],[x+4,y+5],[x,y+3],[x-4,y+5],[x-3,y+1],[x-6,y-1],[x-2,y-2]], c);
+            p.dot(x-1,y-3,C.cream);
+        };
+        switch (k) {
+            case 'orders': case 'quest': case 'note':
+                box(p, 5, 3, 15, 19, C.tan); box(p, 6, 4, 13, 17, C.cream);
+                if (k === 'orders') { box(p, 9, 1, 7, 5, C.gold); p.rect(11,2,3,1,C.cream); }
+                else if (k === 'quest') p.rect(3,2,5,3,C.light).rect(17,19,5,3,C.light);
+                [9,13,17].forEach(y => p.rect(9,y,7,1,C.wood)); p.rect(8,6,7,1,C.light); break;
+            case 'barn': case 'house': case 'stall': case 'museum': case 'castle':
+                box(p, 4, 10, 17, 12, k === 'barn' ? C.red : C.light);
+                if (k === 'museum') {
+                    p.poly([[2,9],[12,2],[22,9]],C.ink).poly([[5,8],[12,4],[19,8]],C.stoneLight);
+                    p.rect(3,10,19,2,C.stone).rect(3,20,19,2,C.stone0);
+                    [5,11,17].forEach(x => p.rect(x,12,3,8,C.cream).rect(x+1,12,1,8,C.white));
+                } else if (k === 'stall') {
+                    p.rect(3,5,19,7,C.cream); [3,11,19].forEach(x=>p.rect(x,5,3,7,C.green2));
+                    p.rect(2,11,21,2,C.ink).rect(6,14,13,5,C.bark).rect(4,19,17,2,C.wood);
+                    p.rect(7,14,3,3,C.red).rect(12,15,3,2,C.yellow).rect(16,14,2,3,C.green3);
+                } else {
+                    roof(p, 2, 2, 21, 9, k === 'barn' ? C.red : C.red0, C.bark);
+                    box(p, 9, 14, 7, 8, C.bark); p.line(10,15,14,20,C.light);
+                    if (k !== 'barn') windowPane(p,5,12,4,5); else p.rect(6,12,1,9,C.coral).rect(18,12,1,9,C.coral);
+                    p.rect(11,8,4,3,C.cream);
+                }
+                break;
+            case 'auction': case 'hammer': case 'pickaxe': case 'axe': case 'wrench':
+                p.line(5,20,17,5,C.ink,3).line(6,19,18,5,C.wood,2).dot(7,18,C.light);
+                if (k === 'pickaxe') p.poly([[4,5],[11,2],[18,4],[22,10],[17,8],[11,6],[4,8]],C.ink).line(6,5,14,4,C.stoneLight,2).line(14,4,20,8,C.stone,2);
+                else if (k === 'axe') p.poly([[6,4],[12,2],[19,6],[14,13],[7,10]],C.stone0).poly([[7,4],[12,3],[17,6],[13,10],[8,9]],C.stoneLight);
+                else if (k === 'wrench') p.line(7,18,17,8,C.stone,4).poly([[15,2],[15,7],[20,8],[22,4],[22,10],[17,13],[12,8],[12,4]],C.stoneLight);
+                else { p.poly([[6,4],[10,1],[21,10],[17,15]],C.ink).poly([[8,4],[10,3],[19,10],[17,12]],C.tan).line(10,4,18,10,C.light); p.rect(2,21,14,2,C.bark); }
+                break;
+            case 'kitchen':
+                p.line(1,5,9,13,C.ink,4).line(2,5,10,13,C.wood,2);
+                p.oval(15,15,8,7,C.ink).oval(15,14,6,5,C.stone0).oval(14,13,4,3,C.white).oval(15,13,2,2,C.yellow); break;
+            case 'craft': return null;
+            case 'pond':
+                p.line(3,21,16,3,C.ink,3).line(4,20,17,3,C.wood).line(17,3,22,10,C.cream).line(22,10,22,17,C.cream);
+                p.rect(20,16,3,4,C.red).rect(20,19,3,2,C.cream); p.rect(1,22,22,1,C.aqua); break;
+            case 'forest': drawTree(p,12,23,22,8,'pine'); break;
+            case 'sprout': sprout(p,12,21); p.rect(6,22,14,2,C.soil0);break;
+            case 'sea':
+                p.rect(2,20,20,3,C.light).rect(1,22,9,1,C.aqua).rect(14,11,1,11,C.bark);
+                p.poly([[2,12],[5,6],[12,3],[19,6],[22,12]],C.ink).poly([[4,11],[7,6],[12,4],[12,11]],C.coral).poly([[12,4],[18,6],[20,11],[12,11]],C.cream);
+                p.line(3,18,9,20,C.blue0,2).rect(4,21,7,1,C.blue); break;
+            case 'trophy': case 'medal':
+                if (k === 'trophy') {
+                    box(p,3,4,6,8,C.gold); box(p,16,4,6,8,C.gold); p.rect(5,6,3,4,C.ink).rect(17,6,3,4,C.ink);
+                    p.poly([[7,2],[18,2],[17,13],[14,17],[14,20],[19,20],[19,23],[6,23],[6,20],[11,20],[11,17],[8,13]],C.ink);
+                    p.poly([[8,3],[17,3],[16,12],[13,15],[11,14],[9,11]],C.gold).rect(9,4,2,6,C.cream).rect(11,16,3,5,C.gold).rect(7,21,11,1,C.tan);
+                } else {
+                    p.poly([[5,2],[11,2],[14,11],[9,13]],C.blue).poly([[13,2],[19,2],[15,13],[10,11]],C.red);
+                    ball(p,12,15,7,7,C.yellow,C.gold0,C.cream); p.rect(11,11,2,7,C.gold0).rect(9,13,6,2,C.gold0);
+                } break;
+            case 'compost':
+                box(p,3,9,19,14,C.wood); p.rect(2,7,21,3,C.bark).rect(4,8,17,1,C.light);
+                [7,12,17].forEach(x=>p.rect(x,12,1,9,C.tan));
+                p.line(7,5,11,3,C.green2,2).line(12,5,17,2,C.green3,2);
+                p.line(8,16,12,18,C.pink,2).line(12,18,17,15,C.pink,2).dot(17,15,C.ink); break;
+            case 'wormUp':
+                [20,15,10,6].forEach((y,i)=>ball(p,12,y,4+i%2,4,C.green3,C.green1));
+                p.line(10,2,8,0,C.ink).line(15,2,17,0,C.ink).dot(10,5,C.ink).dot(14,5,C.ink).rect(11,8,3,1,C.cream);break;
+            case 'worm': case 'pest':
+                [5,9,13,17].forEach((x,i)=>ball(p,x,16-i%2,4,4,k==='pest'?C.green3:C.pink,k==='pest'?C.green1:C.red0));
+                p.line(17,10,16,7,C.ink).line(20,10,22,7,C.ink).dot(17,13,C.ink).dot(20,13,C.ink).rect(18,17,2,1,C.cream); break;
+            case 'skills':
+                [10,7,4].forEach((r,i)=>p.oval(11,12,r,r,[C.ink,C.red,C.cream][i])); p.oval(11,12,2,2,C.red);
+                p.line(11,12,21,2,C.bark,2).line(12,11,21,2,C.light).rect(18,1,5,2,C.blue).rect(21,1,2,5,C.blue); break;
+            case 'pass': case 'ticket':
+                box(p,2,6,21,13,C.gold); p.rect(1,10,3,5,C.cream).rect(21,10,3,5,C.cream).rect(5,8,1,9,C.gold0).rect(18,8,1,9,C.gold0);
+                p.rect(10,9,5,2,C.cream).rect(9,11,7,3,C.cream).rect(11,14,3,2,C.cream); break;
+            case 'book': case 'calendar':
+                if (k === 'book') {
+                    p.poly([[1,4],[10,3],[12,5],[15,3],[23,4],[23,22],[14,21],[12,23],[10,21],[1,22]],C.ink);
+                    p.rect(2,5,8,15,C.cream).rect(14,5,8,15,C.light).rect(11,6,2,15,C.wood);
+                    [8,12,16].forEach(y=>p.rect(4,y,5,1,C.tan).rect(16,y,4,1,C.wood));
+                } else { book(C.blue); p.rect(3,7,18,2,C.ink); [8,12,16].forEach(x=>[12,16].forEach(y=>p.rect(x,y,2,2,C.red))); }
+                break;
+            case 'gift':
+                box(p,3,10,19,13,C.red); p.rect(2,8,21,4,C.coral).rect(11,8,3,14,C.yellow);
+                box(p,5,2,7,6,C.gold); box(p,13,2,7,6,C.gold); p.rect(7,4,3,2,C.cream).rect(15,4,3,2,C.cream).rect(11,6,3,3,C.yellow); break;
+            case 'farmer': case 'friends': case 'chef': case 'ninja': case 'person':
+                if (k === 'friends') {
+                    ball(p,6,8,4,4,C.light,C.tan); ball(p,18,8,4,4,C.light,C.tan);
+                    p.rect(1,14,10,8,C.green1).rect(14,14,9,8,C.red).rect(3,15,2,6,C.green3).rect(17,15,2,6,C.coral);
+                    p.dot(5,8,C.ink).dot(8,8,C.ink).dot(17,8,C.ink).dot(20,8,C.ink);
+                } else {
+                    p.rect(5,14,15,9,k==='ninja'?C.purple0:C.blue0).rect(7,15,3,7,C.blue).rect(16,15,2,7,C.blue);
+                    ball(p,12,10,7,7,k==='ninja'?C.purple0:C.light,C.tan);
+                    if(k==='ninja')p.rect(6,8,13,4,C.light);
+                    p.dot(9,9,C.ink).dot(15,9,C.ink).rect(11,13,3,1,C.bark);
+                    if(k==='farmer')p.rect(6,2,13,4,C.gold).rect(2,6,21,2,C.tan).rect(7,3,10,1,C.yellow);
+                    if(k==='chef'){p.oval(7,4,4,3,C.cream).oval(12,3,4,3,C.cream).oval(17,4,4,3,C.cream).rect(7,4,11,3,C.cream);}
+                } break;
+            case 'water':
+                p.poly([[12,1],[5,11],[3,16],[5,21],[10,23],[16,23],[21,18],[20,12]],C.ink)
+                    .poly([[12,3],[6,12],[5,17],[8,20],[15,21],[19,17],[18,12]],C.blue).rect(7,13,2,5,C.foam).rect(10,19,5,1,C.aqua); break;
+            case 'fertilizer': case 'potion':
+                p.rect(8,2,9,3,C.ink).rect(10,3,5,7,C.foam).poly([[9,8],[16,8],[21,18],[19,23],[6,23],[3,18]],C.ink)
+                    .poly([[9,10],[16,10],[19,18],[17,21],[7,21],[5,18]],k==='potion'?C.purple:C.aqua).rect(6,16,12,3,k==='potion'?C.lavender:C.green2).rect(7,13,2,6,C.white); break;
+            case 'coin':
+                ball(p,12,12,10,10,C.yellow,C.gold0,C.cream); p.oval(12,12,6,7,C.gold).rect(11,6,2,12,C.cream).rect(9,9,6,2,C.cream).rect(9,14,6,2,C.cream); break;
+            case 'energy':
+                p.poly([[12,1],[3,14],[10,14],[8,23],[21,9],[14,9],[18,1]],C.ink)
+                    .poly([[13,3],[6,12],[13,12],[11,18],[18,11],[12,11],[15,3]],C.yellow); break;
+            case 'heart':
+                p.poly([[2,4],[6,2],[10,3],[12,6],[15,3],[19,2],[23,6],[23,12],[12,23],[1,12],[1,7]],C.ink)
+                    .poly([[3,6],[6,4],[9,5],[12,9],[16,5],[19,4],[21,7],[21,11],[12,20],[3,11]],C.red).rect(5,6,3,3,C.pinkLight).line(5,13,11,18,C.coral,2); break;
+            case 'star': case 'sparkle': star(); break;
+            case 'lock':
+                p.oval(12,9,7,8,C.ink).oval(12,9,5,6,C.stoneLight).rect(9,6,7,8,C.ink);
+                box(p,3,11,19,12,C.gold); p.rect(11,14,3,3,C.ink).rect(12,16,1,4,C.ink).rect(5,12,2,8,C.yellow); break;
+            case 'check': case 'close': case 'plus': case 'up': case 'back': case 'next': case 'play':
+                if(k==='check')p.line(3,12,9,19,C.green0,4).line(9,19,21,5,C.green0,4).line(4,12,9,17,C.green3,2).line(9,17,20,5,C.green3,2);
+                else if(k==='close')p.line(5,5,19,19,C.red0,4).line(19,5,5,19,C.red0,4).line(5,5,18,18,C.coral,2).line(18,5,5,18,C.coral,2);
+                else if(k==='plus')p.rect(9,2,6,21,C.green0).rect(2,9,21,6,C.green0).rect(11,4,2,17,C.green3).rect(4,11,17,2,C.green3);
+                else if(k==='play')p.poly([[5,2],[22,12],[5,23]],C.ink).poly([[7,5],[18,12],[7,19]],C.green3);
+                else {const pts=k==='up'?[[12,2],[22,12],[17,12],[17,22],[7,22],[7,12],[2,12]]:k==='back'?[[2,12],[12,2],[12,7],[22,7],[22,17],[12,17],[12,22]]:[[22,12],[12,2],[12,7],[2,7],[2,17],[12,17],[12,22]];p.poly(pts,C.ink);p.line(k==='up'?12:5,k==='up'?7:12,k==='up'?12:18,k==='up'?19:12,C.gold,4);} break;
+            case 'help': case 'warning': case 'info':
+                if(k==='warning')p.poly([[12,1],[24,23],[0,23]],C.ink).poly([[12,5],[21,21],[3,21]],C.yellow);
+                else ball(p,12,12,10,10,k==='help'?C.blue:C.gold,C.blue0,C.foam);
+                if(k==='help')p.line(8,7,14,7,C.cream,2).line(15,8,15,11,C.cream,2).line(12,12,15,11,C.cream,2).rect(11,13,2,2,C.cream).rect(11,18,2,2,C.cream);
+                else p.rect(11,8,3,7,C.ink).rect(11,18,3,2,C.ink); break;
+            case 'clock': case 'hourglass':
+                if(k==='clock'){ball(p,12,13,10,10,C.cream,C.tan,C.white);p.line(12,6,12,13,C.bark,2).line(12,13,17,15,C.bark,2).rect(9,1,7,2,C.bark);}
+                else {p.rect(5,1,15,3,C.bark).rect(5,21,15,3,C.bark).line(7,4,17,20,C.aqua,2).line(17,4,7,20,C.aqua,2).poly([[8,5],[17,5],[12,11]],C.gold).poly([[7,20],[12,14],[18,20]],C.gold);} break;
+            case 'basket': case 'bag': case 'chest':
+                if(k==='bag'){p.oval(12,7,6,6,C.ink).oval(12,7,4,4,C.light);box(p,3,8,19,15,C.tan);p.rect(6,12,13,8,C.light).rect(11,12,3,8,C.green2);}
+                else if(k==='chest'){box(p,2,6,21,17,C.wood);p.rect(4,7,17,6,C.tan).rect(3,13,19,3,C.bark).rect(5,6,2,15,C.gold).rect(18,6,2,15,C.gold);box(p,10,12,5,6,C.yellow);}
+                else {p.oval(12,9,8,7,C.bark).oval(12,9,6,5,C.light);p.poly([[1,10],[23,10],[20,23],[4,23]],C.ink).poly([[3,12],[21,12],[18,21],[6,21]],C.tan);[7,12,17].forEach(x=>p.rect(x,13,1,7,C.wood));p.rect(5,16,15,1,C.light);} break;
+            case 'chat': case 'mail':
+                if(k==='chat'){box(p,1,3,22,15,C.cream);p.poly([[4,17],[10,17],[4,23]],C.ink).rect(5,17,2,2,C.cream);[6,11,16].forEach(x=>p.rect(x,9,2,2,C.bark));}
+                else{box(p,1,5,22,16,C.cream);p.line(2,6,12,14,C.tan).line(12,14,22,6,C.tan).line(2,19,8,13,C.light).line(22,19,16,13,C.light);}break;
+            case 'sun': case 'moon': case 'cloud': case 'rain': case 'storm': case 'snow': case 'wind': case 'wave':
+                if(k==='sun'){[0,1,2,3].forEach(i=>{const x=[12,3,12,21][i],y=[2,12,21,12][i];p.rect(x-1,y-1,3,3,C.gold);});ball(p,12,12,7,7,C.yellow,C.gold,C.cream);}
+                else if(k==='moon'){p.oval(12,12,10,10,C.gold0).oval(11,11,9,9,C.yellow);p.poly([[13,1],[24,1],[24,24],[15,24],[19,18],[20,10]],'none');p.oval(17,8,7,9,'none');}
+                else if(k==='wave'||k==='wind'){[7,12,17].forEach((y,i)=>{p.line(2,y,16-i*3,y,C.blue0,2).line(3,y-1,19-i*2,y-1,C.aqua);p.rect(18-i*2,y-3,3,3,C.blue);});}
+                else{p.oval(8,10,7,5,C.blue0).oval(14,7,7,6,C.blue0).oval(19,11,5,4,C.blue0).rect(5,10,16,6,C.foam).oval(8,9,5,4,C.foam).oval(14,6,5,4,C.cream);
+                    if(k==='rain'||k==='storm')[5,11,18].forEach(x=>p.line(x+1,18,x,21,C.blue,2));
+                    if(k==='storm')p.poly([[12,13],[8,20],[12,20],[10,24],[17,17],[13,17],[15,13]],C.yellow);
+                    if(k==='snow')[5,12,19].forEach(x=>p.rect(x,18,1,5,C.white).rect(x-2,20,5,1,C.white));}
+                break;
+            case 'fire': case 'candle':
+                if(k==='candle'){box(p,7,9,11,14,C.cream);p.rect(8,11,2,9,C.yellow);p.rect(11,7,2,3,C.bark);}
+                p.poly(k==='fire'?[[11,1],[14,8],[18,5],[22,15],[20,21],[12,24],[3,21],[1,15],[6,7],[7,12]]:[[12,0],[17,6],[15,9],[10,9],[8,6]],C.red0);
+                p.poly(k==='fire'?[[11,4],[14,12],[18,10],[20,16],[17,21],[7,21],[4,17],[8,10],[9,15]]:[[12,2],[15,6],[13,8],[10,6]],C.coral);
+                if(k==='fire')p.poly([[12,12],[16,20],[13,22],[9,21],[8,18]],C.yellow);break;
+            case 'palette':
+                ball(p,12,12,11,9,C.light,C.wood,C.cream);[[6,8,C.red],[11,5,C.yellow],[17,7,C.blue],[19,12,C.green2],[6,15,C.purple]].forEach(([x,y,c])=>p.rect(x,y,3,3,c));p.oval(13,17,3,2,C.ink);break;
+            case 'fountain':
+                p.rect(11,7,3,13,C.stone0).rect(8,8,9,3,C.stoneLight).rect(9,17,7,4,C.stoneLight).rect(3,20,19,3,C.stone0).rect(4,20,17,1,C.aqua);
+                p.line(12,6,6,13,C.blue,2).line(12,6,18,13,C.blue,2).rect(11,2,3,6,C.aqua);break;
+            case 'slots':
+                box(p,2,4,19,19,C.red0);p.rect(4,6,15,12,C.gold).rect(5,8,13,8,C.cream);[6,10,14].forEach((x,i)=>p.rect(x,11,3,3,[C.red,C.green2,C.gold][i]).dot(x+1,10,C.green1));p.rect(6,20,10,1,C.gold).rect(22,8,2,8,C.wood).rect(21,6,3,3,C.red);break;
+            case 'restroom':
+                box(p,2,1,21,23,C.blue0);p.rect(12,4,1,17,C.aqua);[7,17].forEach(x=>{p.rect(x-1,4,3,3,C.cream).rect(x-2,9,5,6,C.cream).rect(x-2,15,2,6,C.cream).rect(x+1,15,2,6,C.cream);});break;
+            case 'gear':
+                p.rect(9,1,6,22,C.stone0).rect(1,9,22,6,C.stone0).line(4,4,20,20,C.stone0,4).line(20,4,4,20,C.stone0,4);ball(p,12,12,8,8,C.stoneLight,C.stone);p.oval(12,12,3,3,C.ink);break;
+            case 'shield':
+                p.poly([[2,3],[12,1],[23,3],[21,14],[17,20],[12,24],[6,20],[3,14]],C.ink).poly([[4,5],[12,3],[21,5],[19,14],[16,18],[12,21],[8,18],[5,13]],C.blue0).poly([[6,6],[12,5],[12,18],[8,15]],C.aqua);break;
+            case 'puzzle':
+                p.rect(3,8,18,14,C.ink).oval(12,6,4,4,C.ink).rect(4,9,16,12,C.green2).oval(12,6,3,3,C.green3).oval(21,15,3,3,C.green2).oval(3,15,3,3,C.cream).rect(6,10,2,3,C.green4);break;
+            case 'dna':
+                p.line(5,2,19,22,C.purple,2).line(19,2,5,22,C.blue,2);[4,9,14,19].forEach((y,i)=>p.line(6+i%2*3,y,18-i%2*3,y,C.cream,2));break;
+            case 'rainbow':
+                [C.ink,C.red,C.gold,C.green2,C.blue,C.purple].forEach((c,i)=>p.oval(12,21,12-i,18-i*2,c));p.rect(10,15,5,9,'none');break;
+            case 'ladder':
+                p.rect(4,1,4,23,C.bark).rect(17,1,4,23,C.bark).rect(5,2,1,20,C.tan).rect(18,2,1,20,C.tan);[4,10,16,21].forEach(y=>p.rect(8,y,9,2,C.light));break;
+            case 'bat':
+                p.poly([[1,3],[8,7],[12,10],[17,7],[23,3],[23,18],[18,15],[15,19],[9,19],[6,15],[1,18]],C.ink).poly([[3,7],[8,10],[8,15],[5,12],[3,14]],C.purple).poly([[15,10],[21,7],[21,14],[18,12],[16,15]],C.purple).rect(9,7,7,13,C.purple0).dot(10,10,C.cream).dot(14,10,C.cream);break;
+            case 'ghost':
+                p.oval(12,10,8,8,C.ink).rect(4,10,17,12,C.ink).oval(12,10,6,6,C.cream).rect(6,10,13,10,C.cream).rect(7,20,3,3,C.cream).rect(15,20,3,3,C.cream).rect(8,10,2,3,C.ink).rect(15,10,2,3,C.ink).rect(11,15,3,2,C.pink);break;
+            case 'candy':
+                p.poly([[1,7],[7,9],[7,16],[1,19],[3,13]],C.pink).poly([[23,7],[17,9],[17,16],[23,19],[21,13]],C.pink);box(p,6,6,13,14,C.coral);p.line(8,7,17,16,C.cream,2).line(7,13,12,18,C.cream,2);break;
+            case 'boat':
+                p.poly([[1,14],[23,14],[18,22],[6,22]],C.ink).poly([[4,16],[21,16],[17,20],[7,20]],C.wood).rect(11,1,2,15,C.bark).poly([[10,2],[10,13],[2,13]],C.cream).poly([[14,3],[22,13],[14,13]],C.red);p.rect(1,23,22,1,C.aqua);break;
+            case 'key':
+                p.oval(8,8,6,6,C.gold0).oval(8,8,4,4,C.yellow).oval(8,8,2,2,C.ink).line(11,11,21,21,C.gold0,4).line(12,12,21,21,C.yellow,2).rect(18,16,4,2,C.yellow).rect(16,19,2,4,C.yellow);break;
+            case 'flag':
+                p.rect(4,1,3,23,C.bark).rect(5,1,1,23,C.light).poly([[7,2],[23,2],[19,7],[23,12],[7,12]],C.red0).rect(8,3,11,7,C.coral);break;
+            case 'camera': case 'phone': case 'computer':
+                if(k==='camera'){box(p,1,7,22,15,C.stone0);p.rect(4,3,7,4,C.stone0);ball(p,13,14,6,6,C.blue,C.ink,C.foam);p.rect(3,9,3,2,C.red);}
+                else if(k==='phone'){box(p,6,1,13,23,C.ink);p.rect(8,4,9,15,C.aqua).rect(11,21,3,1,C.light);sprout(p,12,16);}
+                else{box(p,1,2,22,16,C.bark);p.rect(3,4,18,12,C.aqua).rect(10,18,5,3,C.stone0).rect(5,21,15,2,C.stone);sprout(p,12,14);}break;
+            case 'search':
+                p.oval(10,10,8,8,C.bark).oval(10,10,6,6,C.aqua).rect(6,6,2,4,C.foam).line(15,15,22,22,C.ink,3).line(16,16,21,21,C.tan,2);break;
+            case 'map':
+                p.poly([[1,4],[8,1],[16,4],[23,1],[23,21],[16,24],[8,21],[1,24]],C.ink).poly([[3,5],[8,3],[15,6],[21,4],[21,20],[16,22],[8,19],[3,21]],C.light);p.line(8,4,8,18,C.tan).line(16,6,16,20,C.tan).line(4,13,19,10,C.green2,2).rect(14,12,3,3,C.red);break;
+            case 'link': case 'refresh':
+                if(k==='link'){p.oval(8,15,6,7,C.blue0).oval(8,15,3,4,'none').oval(17,8,6,7,C.blue).oval(17,8,3,4,'none').line(8,15,17,8,C.cream,3);}
+                else{p.oval(12,12,10,10,C.green1).oval(12,12,7,7,'none').rect(1,1,12,8,'none').poly([[21,1],[23,10],[14,8]],C.green3).poly([[3,23],[1,14],[10,16]],C.green3);}break;
+            case 'chart':
+                p.rect(2,2,2,21,C.bark).rect(2,21,21,2,C.bark);[[6,13,4,C.blue],[12,8,4,C.green2],[18,3,4,C.gold]].forEach(([x,y,w,c])=>p.rect(x,y,w,21-y,c).rect(x,y,1,21-y,C.cream));break;
+            case 'scale':
+                p.rect(11,2,3,19,C.bark).rect(5,21,15,2,C.wood).rect(2,5,21,2,C.gold);[5,19].forEach(x=>{p.line(x,7,x-3,14,C.tan).line(x,7,x+3,14,C.tan).rect(x-4,14,9,2,C.gold).rect(x-2,16,5,2,C.gold0);});break;
+            case 'scarecrow':
+                p.rect(11,9,2,15,C.bark).rect(1,13,22,2,C.wood).rect(7,13,11,8,C.red).rect(8,14,3,3,C.light);ball(p,12,8,5,5,C.light,C.tan);p.rect(8,1,9,4,C.gold).rect(4,5,17,2,C.tan).dot(10,8,C.ink).dot(14,8,C.ink).rect(11,10,3,1,C.bark);break;
+            case 'bee':
+                p.oval(7,6,5,4,C.foam).oval(18,6,5,4,C.foam);ball(p,12,14,9,6,C.yellow,C.gold);[8,13].forEach(x=>p.rect(x,10,3,10,C.bark));p.dot(19,13,C.ink).line(18,8,20,5,C.ink);break;
+            case 'snake':
+                p.line(4,20,17,20,C.green0,5).line(17,20,8,11,C.green0,5).line(8,11,18,6,C.green0,5).line(4,19,17,19,C.green3,3).line(17,19,8,10,C.green3,3).line(8,10,18,5,C.green3,3).dot(19,4,C.ink).rect(21,6,3,1,C.red);break;
+            case 'trap':
+                p.rect(1,18,22,4,C.stone0).line(3,16,10,5,C.stone,3).line(21,16,14,5,C.stone,3).rect(9,16,7,3,C.red).rect(11,7,3,11,C.bark);break;
+            case 'sword':
+                p.poly([[19,1],[23,1],[23,5],[9,19],[5,15]],C.ink).poly([[20,3],[21,3],[21,5],[8,17],[7,15]],C.stoneLight).line(7,14,12,19,C.gold,3).line(6,19,3,22,C.bark,3);break;
+            case 'hat':
+                p.rect(5,3,15,12,C.gold0).rect(6,4,13,10,C.light).rect(5,12,15,3,C.red0).rect(1,15,23,5,C.gold).rect(2,15,21,2,C.yellow);break;
+            case 'lantern':
+                p.line(12,1,12,5,C.bark).oval(12,12,8,9,C.red0).oval(11,11,6,7,C.red).rect(7,4,11,2,C.gold).rect(7,19,11,2,C.gold).rect(11,6,2,13,C.yellow).rect(11,21,2,3,C.red);break;
+            case 'balloon':
+                ball(p,12,9,8,8,C.pink,C.red0,C.pinkLight);p.rect(11,16,3,2,C.red).line(12,18,9,23,C.cream);break;
+            case 'krathong':
+                p.poly([[1,14],[6,10],[12,13],[19,10],[23,14],[19,22],[5,22]],C.green0).rect(5,16,15,5,C.green2).rect(7,19,11,1,C.green3);flower(p,12,13,C.pink);p.rect(11,6,2,6,C.cream).poly([[12,1],[15,5],[12,8],[10,5]],C.gold);break;
+            case 'tree':
+                drawTree(p,12,23,22,9,'pine');[[7,12],[16,15],[12,8]].forEach(([x,y])=>p.rect(x,y,2,2,C.red));star(12,4);break;
+            case 'snowman':
+                ball(p,12,17,8,6,C.cream,C.stoneLight);ball(p,12,8,6,5,C.white,C.stoneLight);p.rect(7,1,11,3,C.ink).rect(4,4,17,2,C.ink).dot(10,8,C.ink).dot(15,8,C.ink).rect(12,10,4,1,C.coral).rect(6,12,13,2,C.red);break;
+            case 'smile': case 'sleep': case 'sad': case 'surprise':
+                ball(p,12,12,10,10,C.yellow,C.gold,C.cream);p.rect(7,9,k==='sleep'?4:2,2,C.ink).rect(15,9,k==='sleep'?4:2,2,C.ink);
+                if(k==='surprise')p.oval(12,16,2,3,C.ink);else if(k==='sad')p.line(8,18,12,15,C.bark).line(12,15,16,18,C.bark);else p.line(8,15,11,18,C.bark).line(11,18,16,15,C.bark);
+                break;
+            default: return null;
+        }
+        return p;
+    }
+    const UI_ITEMS = { animals:'hen', pumpkin:'pumpkin', flower:'daisy', lotus:'lotusGod', leaf:'tea', wood:'wood', stone:'stone', gem:'diamond', crown:'crownDeep', shell:'oyster', bone:'fArm', dragon:'dragonFish', cat:'cat', dog:'dog', rabbit:'rabbit', bear:'woolDoll', mushroom:'mushroom', wheat:'wheat' };
+    function ui(k, fallback = '') {
+        if (UI_ITEMS[k]) return icon(UI_ITEMS[k], fallback);
+        if (k === 'craft') return machine('mill', fallback);
+        return memo('ui:' + k, () => { const p = uiPixels(k); return p ? '<svg class="farm-pixel-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">'+p.svg()+'</svg>' : null; }) || fallback;
+    }
+    function bush(i) {
+        return memo('bush:'+i%4,()=>{
+            const p=new Pixels(32,23); shadow(p,16,22,14); canopy(p,16,14,10); canopy(p,7,17,5); canopy(p,25,17,5);
+            if(i%2)[[8,15],[15,11],[23,16]].forEach(([x,y])=>p.rect(x,y,2,2,i%4===1?C.red:C.cream));
+            return '<svg viewBox="0 0 64 46" aria-hidden="true">'+p.svg(2)+'</svg>';
+        });
+    }
+    function rock(c,f,i) {
+        return memo('rock:'+Math.floor(f/10)+':'+i%3+':'+(c.hp>1)+':'+!!c.cracked,()=>{
+            const p=new Pixels(20,17),tone=f<10?[C.bark,C.stone,C.stoneLight]:f<20?[C.blue0,C.stone,C.foam]:[C.purple0,C.purple,C.lavender];
+            p.oval(10,16,9,1,C.ink).poly([[1,10],[4,4],[10,1],[16,3],[19,9],[17,15],[5,16],[2,14]],tone[0]).poly([[3,9],[5,4],[10,2],[15,4],[17,9],[15,14],[5,14]],tone[1]).poly([[5,4],[10,2],[15,4],[13,7],[6,8]],tone[2]);
+            if(c.hp>1||c.cracked)p.rect(6,9,2,2,C.gold).rect(13,11,2,2,C.light);
+            if(c.cracked)p.line(10,2,8,7,C.ink).line(8,7,12,10,C.ink).line(12,10,9,15,C.ink);
+            return '<svg viewBox="0 0 40 34" aria-hidden="true">'+p.svg(2)+'</svg>';
+        });
+    }
+    function festival(theme,top) {
+        const at=(key,x,y,w,h)=>ui(key).replace('<svg ','<svg x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" ').replace('width="24" height="24"','');
+        const keys={halloween:['pumpkin','bat'],christmas:['gift','star'],loykrathong:['lotus','candle'],newyear:['gift','sparkle'],songkran:['animals','water'],valentine:['heart','heart'],cny:['gift','candy'],mothersday:['flower','heart'],fathersday:['flower','star'],okphansa:['candle','moon']};
+        const a=keys[theme];return a?at(a[0],37,134,30,30)+at(a[1],151,Math.max(12,top-10),26,26):'';
+    }
+    function scene(kind) {
+        return memo('scene:'+kind,()=>{
+            const p=new Pixels(160,kind==='mine'?75:100);
+            if(kind==='mine'){
+                p.rect(0,0,160,75,C.light).poly([[0,38],[20,18],[45,10],[79,14],[106,9],[140,27],[160,35],[160,75],[0,75]],C.bark)
+                    .poly([[0,48],[29,29],[54,24],[88,32],[112,24],[150,40],[160,42],[160,75],[0,75]],C.tan);
+                p.rect(61,37,39,38,C.ink).poly([[61,38],[68,27],[92,27],[100,38]],C.ink);
+                plank(p,56,33,49,6);plank(p,58,39,5,36);plank(p,98,39,5,36);
+                p.line(73,75,77,47,C.stone,2).line(88,75,84,47,C.stone,2);[56,63,71].forEach(y=>p.rect(73,y,15,2,C.wood));
+                p.rect(79,40,3,5,C.gold).rect(80,41,1,3,C.cream);
+                p.poly([[113,58],[136,58],[132,68],[117,68]],C.stone0).rect(117,59,15,5,C.stone).rect(117,69,3,3,C.ink).rect(130,69,3,3,C.ink);
+                [[119,56],[125,54],[131,56]].forEach(([x,y],i)=>p.rect(x,y,4,4,[C.coral,C.gold,C.aqua][i]));
+                for(let i=0;i<35;i++)p.rect(i*29%160,40+i*13%34,2,1,C.wood);
+            }else{
+                p.rect(0,0,160,100,C.aqua).rect(0,20,160,30,C.foam).rect(0,50,160,50,kind==='beach'?C.light:C.green3);
+                p.oval(132,16,7,7,C.yellow).rect(11,14,22,4,C.white).rect(18,11,12,3,C.white);
+                if(kind==='forest'){
+                    for(let i=0;i<12;i++)drawTree(p,i*15-3,65,34+i%3*8,10,'pine');
+                    p.poly([[69,59],[82,59],[78,74],[92,91],[101,100],[72,100],[67,87],[62,75]],C.light);
+                    [7,29,132,154].forEach((x,i)=>drawTree(p,x,85+i%2*5,64,15,'classic'));
+                    for(let i=0;i<45;i++)p.rect(i*37%160,67+i*13%32,2,1,i%2?C.green2:C.green4);
+                }else{
+                    p.rect(0,39,160,29,C.blue).rect(0,40,160,2,C.aqua);
+                    for(let i=0;i<24;i++)p.rect(i*19%160,43+i*7%24,6+i%3,1,i%2?C.foam:C.aqua);
+                    p.rect(0,68,160,2,C.cream).poly([[0,69],[50,67],[97,74],[160,68],[160,72],[95,78],[49,71],[0,73]],C.cream);
+                    p.line(12,81,23,22,C.bark,4).line(13,80,24,22,C.wood,2);
+                    [[-1,14],[0,30],[19,11],[38,14],[48,29]].forEach(([x,y])=>p.line(23,22,x,y,C.green0,4).line(23,21,x,y,C.green2,2));
+                    for(let i=0;i<35;i++)p.dot(i*37%160,75+i*11%24,C.tan);
+                    flower(p,146,89,C.pink);
+                }
+            }
+            return '<svg class="'+(kind==='mine'?'mine-entrance':'forest-bg')+'" viewBox="0 0 320 '+(kind==='mine'?150:200)+'" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+p.svg(2)+'</svg>';
+        });
+    }
     function plot(state, opts = {}) {
         const soil = state.soil < 30 ? 0 : state.soil < 60 ? 1 : 2;
         const stage = !state.seed ? -1 : state.stage === 0 ? 0 : state.stage >= state.need - 1 ? 2 : 1;
@@ -962,6 +1258,7 @@
     }
     root.FarmPixelArt = Object.freeze({
         palette: C, decorIds: Object.freeze(DECOR_IDS.map(k => k.startsWith('trophy-') ? k : 'decor-' + k)),
-        cropIds: Object.freeze(CROPS), icon, machine, decor, house, pot, tree, plot, backdrop
+        cropIds: Object.freeze(CROPS), icon, machine, decor, house, pot, tree, plot, backdrop,
+        ui, bush, rock, festival, scene
     });
 })(typeof window === 'undefined' ? globalThis : window);

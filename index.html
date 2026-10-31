@@ -15,7 +15,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="farm-pixel-art.js?v=20261031"></script>
+    <script src="farm-pixel-art.js?v=20261031-ui2"></script>
+    <script src="farm-pixel-ui.js?v=20261031-ui2"></script>
     <script>
         // 😀 ฟอนต์อิโมจิ Noto ทำให้รูปของในเกมหน้าตาเหมือนกันทุกเครื่อง แต่ Google ส่งฟอนต์แบบ SVG ให้ iPhone/iPad/Safari
         // ซึ่งเครื่อง Apple วาดไม่ออก (ขึ้นเป็นช่องว่าง) เครื่อง Apple จึงใช้อิโมจิของเครื่องเสมอ และไม่ต้องโหลดฟอนต์ไฟล์ใหญ่
@@ -3173,7 +3174,7 @@
         .upg-pips i.is-on { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
         .upg-next { color: var(--accent-ink); }
     </style>
-    <link rel="stylesheet" href="farm-pixel-art.css?v=20261031">
+    <link rel="stylesheet" href="farm-pixel-art.css?v=20261031-ui2">
 </head>
 <body>
     <script>
@@ -3356,28 +3357,28 @@
                         <span class="veg-progress" id="veg-progress" aria-live="polite"></span>
                     </div>
                     <div class="farm-actions">
-                        <button type="button" class="farm-act" onclick="openFarm('orders')"><span class="farm-act-icon">📋</span>ออเดอร์<b class="farm-dot" id="fa-orders" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('barn')"><span class="farm-act-icon">🏠</span>ยุ้งฉาง<b class="farm-dot" id="fa-barn" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('stall')"><span class="farm-act-icon">🏪</span>แผงขาย<b class="farm-dot" id="fa-stall" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('auction')"><span class="farm-act-icon">🔨</span>ประมูล<b class="farm-dot" id="fa-auction" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('kitchen')"><span class="farm-act-icon">🍳</span>ครัว</button>
-                        <button type="button" class="farm-act" onclick="openFarm('animals')"><span class="farm-act-icon">🐔</span>สัตว์<b class="farm-dot" id="fa-animals" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('craft')"><span class="farm-act-icon">🏭</span>แปรรูป<b class="farm-dot" id="fa-craft" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('pond')"><span class="farm-act-icon">🎣</span>บ่อปลา<b class="farm-dot" id="fa-pond" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('forest')"><span class="farm-act-icon">🌲</span>ป่า<b class="farm-dot" id="fa-forest" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('mine')"><span class="farm-act-icon">⛏️</span>เหมือง<b class="farm-dot" id="fa-mine" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('sea')"><span class="farm-act-icon">🏖️</span>ทะเล<b class="farm-dot" id="fa-sea" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('contest')"><span class="farm-act-icon">🏆</span>ประกวด<b class="farm-dot" id="fa-contest" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('compost')"><span class="farm-act-icon">🪱</span>ปุ๋ยหมัก</button>
-                        <button type="button" class="farm-act" onclick="openFarm('skills')"><span class="farm-act-icon">🎯</span>สกิล<b class="farm-dot" id="fa-skills" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('house')"><span class="farm-act-icon">🏡</span>บ้านไร่<b class="farm-dot" id="fa-house" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('ach')"><span class="farm-act-icon">🎖️</span>ภารกิจ<b class="farm-dot" id="fa-ach" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('quest')"><span class="farm-act-icon">📜</span>เควสต์<b class="farm-dot" id="fa-quest" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('museum')"><span class="farm-act-icon">🏛️</span>พิพิธภัณฑ์<b class="farm-dot" id="fa-museum" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('pass')"><span class="farm-act-icon">🎫</span>บัตรสะสม<b class="farm-dot" id="fa-pass" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openVegBook()"><span class="farm-act-icon">📖</span>สมุดสะสม<b class="farm-dot" id="fa-book" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openCheckin()"><span class="farm-act-icon">🎁</span>เช็กอิน<b class="farm-dot" id="fa-checkin" hidden></b></button>
-                        <button type="button" class="farm-act farm-friends-btn" onclick="openFarm('friends')"><span class="farm-act-icon">👥</span><span class="farm-friends-text" id="farm-friends-text">เล่นกับเพื่อน</span><b class="farm-dot" id="fa-friends" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('orders')"><span class="farm-act-icon" data-pixel-icon="orders">📋</span>ออเดอร์<b class="farm-dot" id="fa-orders" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('barn')"><span class="farm-act-icon" data-pixel-icon="barn">🏠</span>ยุ้งฉาง<b class="farm-dot" id="fa-barn" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('stall')"><span class="farm-act-icon" data-pixel-icon="stall">🏪</span>แผงขาย<b class="farm-dot" id="fa-stall" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('auction')"><span class="farm-act-icon" data-pixel-icon="auction">🔨</span>ประมูล<b class="farm-dot" id="fa-auction" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('kitchen')"><span class="farm-act-icon" data-pixel-icon="kitchen">🍳</span>ครัว</button>
+                        <button type="button" class="farm-act" onclick="openFarm('animals')"><span class="farm-act-icon" data-pixel-icon="animals">🐔</span>สัตว์<b class="farm-dot" id="fa-animals" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('craft')"><span class="farm-act-icon" data-pixel-icon="craft">🏭</span>แปรรูป<b class="farm-dot" id="fa-craft" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('pond')"><span class="farm-act-icon" data-pixel-icon="pond">🎣</span>บ่อปลา<b class="farm-dot" id="fa-pond" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('forest')"><span class="farm-act-icon" data-pixel-icon="forest">🌲</span>ป่า<b class="farm-dot" id="fa-forest" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('mine')"><span class="farm-act-icon" data-pixel-icon="pickaxe">⛏️</span>เหมือง<b class="farm-dot" id="fa-mine" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('sea')"><span class="farm-act-icon" data-pixel-icon="sea">🏖️</span>ทะเล<b class="farm-dot" id="fa-sea" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('contest')"><span class="farm-act-icon" data-pixel-icon="trophy">🏆</span>ประกวด<b class="farm-dot" id="fa-contest" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('compost')"><span class="farm-act-icon" data-pixel-icon="compost">🪱</span>ปุ๋ยหมัก</button>
+                        <button type="button" class="farm-act" onclick="openFarm('skills')"><span class="farm-act-icon" data-pixel-icon="skills">🎯</span>สกิล<b class="farm-dot" id="fa-skills" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('house')"><span class="farm-act-icon" data-pixel-icon="house">🏡</span>บ้านไร่<b class="farm-dot" id="fa-house" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('ach')"><span class="farm-act-icon" data-pixel-icon="medal">🎖️</span>ภารกิจ<b class="farm-dot" id="fa-ach" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('quest')"><span class="farm-act-icon" data-pixel-icon="quest">📜</span>เควสต์<b class="farm-dot" id="fa-quest" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('museum')"><span class="farm-act-icon" data-pixel-icon="museum">🏛️</span>พิพิธภัณฑ์<b class="farm-dot" id="fa-museum" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('pass')"><span class="farm-act-icon" data-pixel-icon="pass">🎫</span>บัตรสะสม<b class="farm-dot" id="fa-pass" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openVegBook()"><span class="farm-act-icon" data-pixel-icon="book">📖</span>สมุดสะสม<b class="farm-dot" id="fa-book" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openCheckin()"><span class="farm-act-icon" data-pixel-icon="gift">🎁</span>เช็กอิน<b class="farm-dot" id="fa-checkin" hidden></b></button>
+                        <button type="button" class="farm-act farm-friends-btn" onclick="openFarm('friends')"><span class="farm-act-icon" data-pixel-icon="friends">👥</span><span class="farm-friends-text" id="farm-friends-text">เล่นกับเพื่อน</span><b class="farm-dot" id="fa-friends" hidden></b></button>
                         <button type="button" class="farm-act farm-event-btn" id="fa-event-btn" onclick="openFarm('event')" hidden><span class="farm-act-icon">🎃</span><span id="fa-event-name">เทศกาล</span><b class="farm-dot" id="fa-event" hidden></b></button>
                     </div>
                     <a class="farm-app-link" href="./?farm"><span>📱 เล่นฟาร์มแบบแอปแยก</span><small>ลื่นกว่าบนมือถือ · ข้อมูลชุดเดียวกัน</small></a>
@@ -5515,6 +5516,7 @@
         // --- 🌱 ของตกแต่งสวนตามเทศกาล + บัวรดน้ำ ---
         const nestSvg = (svg, x, y, w, h, cls = '') => svg.replace('<svg ', `<svg x="${x}" y="${y}" width="${w}" height="${h}" ${cls ? `class="${cls}" ` : ''}`);
         function gardenFestivalDecor(stemTopY) {
+            if (window.FarmPixelArt) return FarmPixelArt.festival(currentTheme(), stemTopY);
             switch (currentTheme()) {
                 case 'halloween': return nestSvg(HW_PUMPKIN, 40, 136, 34, 31) + nestSvg(HW_BAT, 150, stemTopY - 12, 30, 16, 'garden-float');
                 case 'christmas': return `<path d="M76 143Q78 136 86 138Q92 134 100 138Q108 134 116 138Q124 134 132 138Q140 135 144 142Z" fill="#FFFFFF"/>`
@@ -6166,7 +6168,7 @@
         const trapBits = (c, z) => ({ ...(c.risk ? { risk: 1 } : {}), ...(hasOwn(TRAPS[z], c.trap) ? { trap: c.trap } : {}), ...(c.skip ? { skip: 1 } : {}), ...(c.hit ? { hit: 1 } : {}) });
         const MINE_LEVEL = 8, MINE_FLOORS = 30, UPG_MAX = 7; // ⛏️ เหมือง และเครื่องมือ 7 ระดับ (ขั้น 6–7 ใช้แท่งโลหะ)
         const VEG_STAGE_NAMES = ['เมล็ด', 'ต้นอ่อน', 'กำลังโต'];
-        const VEG_PEST = `<svg viewBox="0 0 40 20"><path d="M29 4.5l-1.5-3M33 4.5l1.5-3" stroke="#6BA84A" stroke-width="1.2" stroke-linecap="round"/>
+        const VEG_PEST = window.FarmPixelArt ? FarmPixelArt.ui('pest') : `<svg viewBox="0 0 40 20"><path d="M29 4.5l-1.5-3M33 4.5l1.5-3" stroke="#6BA84A" stroke-width="1.2" stroke-linecap="round"/>
             <circle cx="8" cy="13" r="5" fill="#9BDB6A"/><circle cx="15" cy="12" r="5.5" fill="#8BD45A"/><circle cx="22.5" cy="12" r="5.5" fill="#9BDB6A"/>
             <circle cx="31" cy="10.5" r="6.5" fill="#B5E77F"/><circle cx="29.5" cy="9.5" r="1.3" fill="#2B2140"/><circle cx="33.5" cy="9.5" r="1.3" fill="#2B2140"/>
             <ellipse cx="27.6" cy="12.6" rx="1.6" ry="1" fill="#FF9DB8"/><path d="M30 13q1.5 1.3 3 0" stroke="#2B2140" stroke-width="1" fill="none" stroke-linecap="round"/></svg>`;
@@ -7078,7 +7080,7 @@
         }
         // 🐛 มินิเกมจับหนอน 15 วินาที: หนอนโผล่จากหลุม แตะให้ทัน จับได้เยอะได้เหรียญและ XP เยอะ
         const WORM_SECS = 15;
-        const WORM_UP = `<svg viewBox="0 0 30 46" aria-hidden="true"><path d="M11 6L8.5 1.5M19 6l2.5-4.5" stroke="#6BA84A" stroke-width="1.4" stroke-linecap="round"/>
+        const WORM_UP = window.FarmPixelArt ? FarmPixelArt.ui('wormUp') : `<svg viewBox="0 0 30 46" aria-hidden="true"><path d="M11 6L8.5 1.5M19 6l2.5-4.5" stroke="#6BA84A" stroke-width="1.4" stroke-linecap="round"/>
             <circle cx="15" cy="40" r="6" fill="#9BDB6A"/><circle cx="15" cy="31" r="6.5" fill="#8BD45A"/><circle cx="15" cy="22" r="7" fill="#9BDB6A"/>
             <circle cx="15" cy="12" r="8" fill="#B5E77F"/><circle cx="12" cy="11" r="1.5" fill="#2B2140"/><circle cx="18" cy="11" r="1.5" fill="#2B2140"/>
             <ellipse cx="9.8" cy="14.4" rx="1.8" ry="1.1" fill="#FF9DB8"/><ellipse cx="20.2" cy="14.4" rx="1.8" ry="1.1" fill="#FF9DB8"/>
@@ -9336,7 +9338,7 @@
         }
 
         // --- 🛡️ กันเพื่อนแอบเก็บ: หุ่นไล่กา (เพื่อนต้องรอนานขึ้น + ยามหันไวขึ้น) และหมาเฝ้าสวน (ผู้เฝ้าคนที่สองในมินิเกมย่อง) ---
-        const SCARE_SVG = '<svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><path d="M20 15v24" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"/><path d="M5 19.5h30" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"/>'
+        const SCARE_SVG = window.FarmPixelArt ? FarmPixelArt.ui('scarecrow') : '<svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><path d="M20 15v24" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"/><path d="M5 19.5h30" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"/>'
             + '<path d="M5 19.5l-2.6 2.6M5 19.5l-2.6-2M35 19.5l2.6 2.6M35 19.5l2.6-2" stroke="#E9C46A" stroke-width="1.5" stroke-linecap="round"/><path d="M12.5 17h15l-2.2 13.5h-10.6z" fill="#E07A5F"/><path d="M15.5 21.5h3.4v3.4h-3.4z" fill="#F2CC8F"/>'
             + '<circle cx="20" cy="11.5" r="5.4" fill="#F2CC8F"/><path d="M14.4 8.6q5.6-9.4 11.2 0z" fill="#E9C46A"/><path d="M10.5 8.8h19" stroke="#D4A017" stroke-width="2.6" stroke-linecap="round"/>'
             + '<circle cx="18" cy="11.8" r="0.9" fill="#5A3B1A"/><circle cx="22" cy="11.8" r="0.9" fill="#5A3B1A"/><path d="M17.6 14.4q2.4 1.4 4.8 0" stroke="#5A3B1A" stroke-width="0.9" fill="none"/></svg>';
@@ -9768,6 +9770,7 @@
         }
         const BUSH_POS = [[17, 47], [50, 43], [83, 48], [24, 68], [57, 66], [86, 71], [12, 90], [45, 89], [77, 92]];
         function forestBushSVG(i) {
+            if (window.FarmPixelArt) return FarmPixelArt.bush(i);
             const g = [['#3E8E41', '#5FB35F', '#8FD176'], ['#2F7D4F', '#4FA36B', '#80C995'], ['#4C8F2E', '#6DB04A', '#A3D772']][i % 3];
             const dots = i % 4 === 1 ? ['#E5484D', [[20, 27], [26, 32], [44, 26], [38, 33]]] : i % 4 === 3 ? ['#FFF4C2', [[36, 13], [48, 29], [17, 33]]] : null;
             return `<svg viewBox="0 0 64 46" aria-hidden="true"><ellipse cx="32" cy="43" rx="27" ry="3" fill="#1E3B1E" opacity="0.2"/>`
@@ -9777,7 +9780,7 @@
         }
         const f1 = n => +n.toFixed(1);
         const forestPine = (x, y, h, c) => `<path d="M${x} ${f1(y - h)}l${f1(h * 0.32)} ${f1(h * 0.42)}h${f1(-h * 0.12)}l${f1(h * 0.22)} ${f1(h * 0.3)}h${f1(-h * 0.12)}l${f1(h * 0.24)} ${f1(h * 0.28)}h${f1(-h * 1.08)}l${f1(h * 0.24)} ${f1(-h * 0.28)}h${f1(-h * 0.12)}l${f1(h * 0.22)} ${f1(-h * 0.3)}h${f1(-h * 0.12)}z" fill="${c}"/>`;
-        const FOREST_BG = `<svg class="forest-bg" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs>`
+        const FOREST_BG = window.FarmPixelArt ? FarmPixelArt.scene('forest') : `<svg class="forest-bg" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs>`
             + '<linearGradient id="fo-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFE6D2"/><stop offset="1" stop-color="#E8F6DD"/></linearGradient>'
             + '<linearGradient id="fo-gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#86C463"/><stop offset="1" stop-color="#5E9E46"/></linearGradient></defs>'
             + '<rect width="320" height="200" fill="url(#fo-sky)"/>'
@@ -9964,6 +9967,7 @@
         // ภาพหินแต่ละก้อน: สีตามความลึก หินแข็งมีลายแร่ ทุบแล้วมีรอยร้าว
         const mineTone = f => f < 10 ? ['#8E837A', '#ABA096', '#C9BFB4'] : f < 20 ? ['#6F7884', '#8E98A5', '#B1BAC5'] : ['#5F5A80', '#7F79A2', '#A49FC4'];
         function mineRockSVG(c, f, i) {
+            if (window.FarmPixelArt) return FarmPixelArt.rock(c, f, i);
             const [c0, c1, c2] = mineTone(f), shape = ['M6 31L2 19l6-12 11-5 12 3 7 11-2 12-8 4H13z', 'M4 30L3 17l8-11 12-3 10 6 5 12-3 10-10 3H12z', 'M5 31L3 21l4-12 9-6 14 1 7 10v13l-7 5H11z'][i % 3];
             return `<svg viewBox="0 0 40 34" aria-hidden="true"><ellipse cx="20" cy="32" rx="16" ry="2" fill="#000" opacity="0.25"/><path d="${shape}" fill="${c.hp > 1 || c.cracked ? c0 : c1}"/>`
                 + `<path d="M9 9l10-6 12 3 6 9-8-3-9-2z" fill="${c2}" opacity="0.7"/><path d="M6 29l7 3h16l7-4" stroke="${c0}" stroke-width="2" fill="none" opacity="0.7"/>`
@@ -9984,7 +9988,7 @@
             return itemInfo(c.k) ? `${itemInfo(c.k).e}${c.n > 1 ? `<b>×${c.n}</b>` : ''}` : '❔';
         }
         const mineLabel = c => c.hit && c.risk ? `โดน${TRAPS.mine[c.trap][1]}` : ({ ladder: 'บันไดลงชั้นถัดไป', chest: 'หีบสมบัติ', dust: 'ฝุ่น', bat: 'ค้างคาว', cavein: 'หินถล่ม' })[c.k] || (itemInfo(c.k) ? `${itemInfo(c.k).name} ×${c.n}` : '');
-        const MINE_ENTRANCE = '<svg class="mine-entrance" viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="mi-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7D9A8"/><stop offset="1" stop-color="#F4E7CF"/></linearGradient></defs>'
+        const MINE_ENTRANCE = window.FarmPixelArt ? FarmPixelArt.scene('mine') : '<svg class="mine-entrance" viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="mi-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7D9A8"/><stop offset="1" stop-color="#F4E7CF"/></linearGradient></defs>'
             + '<rect width="320" height="150" fill="url(#mi-sky)"/><path d="M0 70Q70 20 160 26T320 64V150H0z" fill="#9C7B5C"/><path d="M0 92Q90 60 170 72T320 86V150H0z" fill="#B48F6A"/>'
             + '<path d="M118 150V86q0-34 42-34t42 34v64z" fill="#2B2033"/><path d="M112 150V82h8v68zM200 150V82h8v68zM106 78h108v10H106z" fill="#7A4E2D"/><path d="M118 80l84 0" stroke="#5A3A20" stroke-width="2"/>'
             + '<path d="M140 150l10-46M180 150l-10-46" stroke="#8C8C9E" stroke-width="3"/><path d="M142 140h36M145 128h30M148 117h24" stroke="#7A4E2D" stroke-width="3"/>'
@@ -10169,7 +10173,7 @@
         const BEACH_POS = [[14, 60], [38, 57], [63, 59], [87, 62], [22, 80], [49, 78], [74, 82], [92, 90]];
         const sandSVG = i => `<svg viewBox="0 0 50 30" aria-hidden="true"><ellipse cx="25" cy="25" rx="23" ry="5" fill="#C9A86F" opacity="0.5"/><ellipse cx="25" cy="21" rx="19" ry="8" fill="#E8C98E"/><ellipse cx="22" cy="18" rx="11" ry="4" fill="#F4DDAA"/>`
             + `<path d="M${30 + (i % 3) * 3} 9l1 2.6 2.6 1-2.6 1-1 2.6-1-2.6-2.6-1 2.6-1z" fill="#FFFFFF"/><circle cx="${14 + (i % 4) * 4}" cy="20" r="1" fill="#B48F5A"/></svg>`;
-        const BEACH_BG = '<svg class="forest-bg" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs>'
+        const BEACH_BG = window.FarmPixelArt ? FarmPixelArt.scene('beach') : '<svg class="forest-bg" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs>'
             + '<linearGradient id="be-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ED3F5"/><stop offset="1" stop-color="#D8F1FB"/></linearGradient>'
             + '<linearGradient id="be-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E9CCA"/><stop offset="1" stop-color="#5FD0D6"/></linearGradient></defs>'
             + '<rect width="320" height="200" fill="url(#be-sky)"/><circle cx="262" cy="34" r="16" fill="#FFE27A"/><circle cx="262" cy="34" r="26" fill="#FFE27A" opacity="0.25"/>'
@@ -17400,6 +17404,7 @@
             initReportPage();
             initDataSafety();
             if (FARM_APP) initFarmApp();
+            if (window.FarmPixelUI) FarmPixelUI.start([VEGGIES, FLOWERS, FARM_PRODUCTS, FISH, RECIPES, ANIMALS, PETS, MACHINES]);
         };
         // ครั้งแรกที่เปิดฟาร์มแบบแยก: บอกวิธีเพิ่มเป็นไอคอนแยกบนหน้าจอ (ข้อมูลชุดเดียวกับหน้าบันทึกพัก)
         function initFarmApp() {
