@@ -17439,7 +17439,7 @@
             FarmWorld.start({
                 read: () => ({world:veg.world,plots:veg.plots,land:veg.land,level:farmLevel(),coins:shop.coins,energy:energyNow(),house:veg.house,pet:veg.pet,
                     machines:veg.machines,weather:todayWeather(),season:farmSeason(),landPrice:LAND_PRICES[Math.min(veg.land,5)],landLevel:LAND_LEVELS[Math.min(veg.land,5)],timing:timing.plot,timingAt:timing.t0}),
-                save: saveVeg, icon: farmIcon, name: k => itemInfo(k)?.name || k,
+                save: saveVeg, icon: k => isSecretHybrid(k) ? FarmPixelArt.ui('help') : farmIcon(k), name: k => itemInfo(k)?.name || k,
                 describe: i => {const p=veg.plots[i];return p.seed?plotName(p)+' · '+vegPlotLabel(p)+' · ดิน '+p.soil+'%':'แปลงว่าง · ดิน '+p.soil+'%';},
                 plot: i => {const el=document.querySelectorAll('#veg-plots .veg-plot')[i];if(el&&veg.plots[i])onVegPlotTap(i,el);},
                 open: openFarm, water: waterVeggies, expand: () => buyShopItem('land'),

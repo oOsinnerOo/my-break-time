@@ -87,6 +87,14 @@ test('world saves normalize invalid avatar values, resource IDs and unknown obje
     assert.equal(s.avatar.shirt,5);assert.equal(s.avatar.hair,0);assert.equal(s.avatar.hat,1);assert.equal(s.decor.length,0);assert.deepEqual(plain(s.cleared),[1]);
     assert.deepEqual(plain(G.cleanWorld(plain(s))),plain(s));
 });
+test('the world adapter preserves undiscovered hybrid crop identities',()=>{
+    const source=read('index.html'),start=source.indexOf('        let livingFarmStarted = false;'),end=source.indexOf('        // ครั้งแรกที่เปิดฟาร์มแบบแยก:',start);
+    let adapter;const world={start:a=>{adapter=a;},refresh(){}};
+    const c={window:{FarmWorld:world},FarmWorld:world,FarmPixelArt:{ui:k=>'pixel:'+k},farmIcon:k=>'known:'+k,
+        isSecretHybrid:k=>k==='starTomato',saveVeg(){},openFarm(){},waterVeggies(){},hasItems(){},closeVegPicker(){},craftTick(){},setInterval(){},document:{addEventListener(){}}};
+    vm.createContext(c);vm.runInContext(source.slice(start,end)+'\ninitLivingFarm();',c);
+    assert.equal(adapter.icon('starTomato'),'pixel:help');assert.equal(adapter.icon('carrot'),'known:carrot');
+});
 test('scripts compile, all avatar variants are native pixels, and offline assets exist',()=>{
     for(const file of ['farm-systems.js','farm-world.js','farm-pixel-art.js','farm-pixel-ui.js','sw.js'])new vm.Script(read(file),{filename:file});
     for(const m of read('index.html').matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))new vm.Script(m[1]);
