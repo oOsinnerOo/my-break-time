@@ -60,7 +60,7 @@ function game(){
   localStorage:storage(),friends:{room:'ABC234',player:'00000000-0000-4000-8000-000000000001',secret:'qa'},
   shop:{coins:100},veg:{inv:{wood:5},overflow:{},hp:100,wanted:{received:{},pending:null},adventure:A.cleanAdventure({}),forest:{cells:null},mine:{floor:0},sea:{cells:null}},
   itemInfo:k=>/^(wood|carrot|resin|shiitake|coal|ironOre|seaweed)(~[2-5])?$/.test(k)?{name:k,value:4,q:+k.split('~')[1]||1}:null,
-  starText:q=>q>1?' stars':'',qualOf:k=>+String(k).split('~')[1]||1,showToast(){},updateCoinUI(){},renderFarmStatus(){},updateBasketFood(){},renderFarmPanel(){},renderShop(){},farmNotify(){},mpCleanName:s=>String(s||''),
+  baseOf:k=>String(k).split('~')[0],starText:q=>q>1?' stars':'',qualOf:k=>+String(k).split('~')[1]||1,showToast(){},updateCoinUI(){},renderFarmStatus(){},updateBasketFood(){},renderFarmPanel(){},renderShop(){},farmNotify(){},mpCleanName:s=>String(s||''),
   mpItemOk:k=>!!c.itemInfo(k),mpCall:async()=>{},mkOpen:()=>false,MP_UUID_RE:/^[0-9a-f-]{36}$/,
   farmLevel:()=>12,hasItems:()=>true,takeItems(){},hpNow:()=>c.veg.hp,hpMax:()=>100,heal:n=>{c.veg.hp=Math.min(100,c.veg.hp+n);},saveVeg(){},marketPrice:()=>4};
  c.window=c;vm.createContext(c);

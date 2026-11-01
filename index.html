@@ -22,6 +22,9 @@
     <script src="farm-wanted.js?v=20261101-adventure3"></script>
     <link rel="stylesheet" href="farm-adventure.css?v=20261101-adventure3">
     <script src="farm-systems.js?v=20261031-world1"></script>
+    <script src="farm-ecology.js?v=20261101-ecology3"></script>
+    <script src="farm-ecology-ui.js?v=20261101-ecology3"></script>
+    <link rel="stylesheet" href="farm-ecology.css?v=20261101-ecology3">
     <script src="farm-villagers.js?v=20261101-npc1"></script>
     <script src="farm-room.js?v=20261101-room1"></script>
     <script src="farm-world.js?v=20261101-npc1"></script>
@@ -5808,7 +5811,7 @@
                 desc: 'ผิวสีเงินเรียบเหมือนพระจันทร์เต็มดวง เนื้อในหอมหวานและบำรุงดินทั้งสวน' }
         };
         Object.entries(LEGEND_VEGGIES).forEach(([k, v]) => { VEGGIES[k] = { e: v.e, name: v.name }; CROP_STAGES[k] = v.stages; });
-        // 🔴 ผักเทพ: หายากกว่าตำนาน ได้จากกล่องปริศนา 1% ลุ้นด้วยเศษเมล็ด (ครั้งละ 6 ชิ้น โอกาสค่อยๆ เพิ่ม) หรือปลูกผักตำนานสองชนิดติดกันแล้วลุ้นตอนเก็บ
+        // 🔴 ผักเทพ: หายากกว่าตำนาน ได้จากกล่องปริศนา 1% ลุ้นด้วยเศษเมล็ด (ครั้งละ 18 ชิ้น โอกาสค่อยๆ เพิ่ม) หรือปลูกผักตำนานสองชนิดติดกันแล้วลุ้นตอนเก็บ
         const MYTH_VEGGIES = {
             galaxyMelon: { e: '🌌', name: 'แตงโมทางช้างเผือก', stages: 7, trait: 'ได้ ★★★★★ ทุกครั้ง และได้เพิ่มอีก 1 ลูก',
                 desc: 'ผ่าออกมาเห็นดาวระยิบเต็มลูก เล่ากันว่าเมล็ดร่วงลงมาจากทางช้างเผือกในคืนเดือนมืด' },
@@ -6103,7 +6106,7 @@
             { id: 'rainbowGold', e: '🌈', name: 'ผักทองใต้สายรุ้ง', hint: 'วันที่ฟ้ามีรุ้ง ลองเก็บของที่เปล่งประกาย', reward: '20 เหรียญ' },
             { id: 'wormKing', e: '🐛', name: 'ราชันนักจับหนอน', hint: 'จับหนอนให้ได้เยอะมากๆ ในเกมเดียว', reward: '25 เหรียญ' },
             { id: 'mono', e: '🎪', name: 'เทศกาลผักเหมือนกันทั้งสวน', hint: 'ถ้าทุกแปลงปลูกผักชนิดเดียวกัน อาจมีงานรื่นเริง', reward: '30 เหรียญ' },
-            { id: 'ghostFish', e: '👻', name: 'ปลาผีเที่ยงคืน', hint: 'บ่อปลาตอนดึกมากๆ อาจมีอะไรแปลกๆ ติดเบ็ด', reward: 'ปลาผี 👻' },
+            { id: 'ghostFish', e: '👻', name: 'ปลาผีเที่ยงคืน', hint: 'บ่อปลาตอนเวลาหมู่บ้าน 00:00–01:00 อาจมีอะไรแปลกๆ ติดเบ็ด', reward: 'ปลาผี 👻' },
             { id: 'petDance', e: '💃', name: 'สัตว์เลี้ยงเต้นระบำ', hint: 'สัตว์เลี้ยงชอบให้ลูบหัวรัวๆ', reward: '15 เหรียญ' },
             { id: 'lucky777', e: '🎰', name: 'เลขมงคล 777', hint: 'คอยดูจำนวนเหรียญของคุณให้ดี', reward: '77 เหรียญ' },
             { id: 'secretRecipe', e: '🧋', name: 'เมนูลับชานมฟาร์ม', hint: 'นม น้ำผึ้ง ข้าวสาลี… ถ้ามีครบในยุ้งฉาง ลองเข้าครัวดู', reward: 'สูตรลับ + 25 XP' }
@@ -6303,7 +6306,7 @@
             return {
                 plots, harvest, golden: int(v.golden, 99999), lastWaterAt: +v.lastWaterAt || 0,
                 pestDay: typeof v.pestDay === 'string' ? v.pestDay : '', badge: !!v.badge,
-                adventure: FarmAdventure.cleanAdventure(v.adventure), wanted: cleanWantedSave(v.wanted),
+                ecology: readEcology(v.ecology, inv), adventure: FarmAdventure.cleanAdventure(v.adventure), wanted: cleanWantedSave(v.wanted),
                 overflow: Object.fromEntries(Object.entries(v.overflow && typeof v.overflow === 'object' ? v.overflow : {}).filter(([k]) => itemInfo(k)).map(([k,n]) => [k,int(n,1e9)]).filter(([,n])=>n>0)),
                 inv, cooked: counts(v.cooked, Object.keys(RECIPES)), animals, tools, orders,
                 // ชาวสวนเดิมได้ XP ย้อนหลังจากผักที่เคยเก็บ (ผักละ 10 XP)
@@ -6456,6 +6459,7 @@
         // ยุ้งฉาง: เก็บแยกตามดาว เวลาส่งออเดอร์/ทำอาหารนับรวมทุกดาว และใช้ของดาวน้อยก่อน (เก็บของดีไว้ขายแพง)
         function giveItem(k, n = 1) {
             n = Math.max(0, Math.floor(+n) || 0); if (!itemInfo(k) || !n) return;
+            veg.ecology ||= {seen:{},target:'',calm:false}; veg.ecology.seen[baseOf(k)] = true;
             const before = veg.inv[k] || 0, fit = Math.min(n, 999 - before);
             veg.inv[k] = before + fit;
             if (fit < n) { veg.overflow ||= {}; veg.overflow[k] = (veg.overflow[k] || 0) + n - fit; }
@@ -6947,7 +6951,7 @@
             }
             // ผักตำนานสองชนิดปลูกติดกัน ลุ้นได้เมล็ดผักเทพ 3%
             let mythSeed = null;
-            if (hasOwn(LEGEND_VEGGIES, key) && plotNeighbors(i).some(j => veg.plots[j].type === 'veg' && hasOwn(LEGEND_VEGGIES, veg.plots[j].seed) && veg.plots[j].seed !== key) && Math.random() < 0.03) {
+            if (hasOwn(LEGEND_VEGGIES, key) && plotNeighbors(i).some(j => veg.plots[j].type === 'veg' && hasOwn(LEGEND_VEGGIES, veg.plots[j].seed) && veg.plots[j].seed !== key) && Math.random() < HARVEST_MYTH_CHANCE) {
                 mythSeed = pick(Object.keys(MYTH_VEGGIES));
                 veg.seeds[mythSeed] = Math.min(99, (veg.seeds[mythSeed] || 0) + 1);
             }
@@ -7804,8 +7808,8 @@
             if (farmTab === 'stall' && stallView === 'friends') mkOnOpen();
             if (farmTab === 'contest') contestOnOpen();
         }
-        function closeFarm() { cancelFishing(); document.getElementById('farm-modal').style.display = 'none'; }
-        function setFarmTab(tab) { if (tab !== (fishing.where === 'sea' ? 'sea' : 'pond')) cancelFishing(); farmTab = tab; renderFarmPanel(); if (tab === 'friends') mpOnOpen(); if (tab === 'stall' && stallView === 'friends') mkOnOpen(); if (tab === 'contest') contestOnOpen(); }
+        function closeFarm() { if(cancelFishing()===false)return; document.getElementById('farm-modal').style.display = 'none'; }
+        function setFarmTab(tab) { if (tab !== (fishing.where === 'sea' ? 'sea' : 'pond') && cancelFishing()===false)return; farmTab = tab; renderFarmPanel(); if (tab === 'friends') mpOnOpen(); if (tab === 'stall' && stallView === 'friends') mkOnOpen(); if (tab === 'contest') contestOnOpen(); }
         const itemChip = (k, need) => {
             const it = itemInfo(k), have = countBase(k);
             return `<span class="farm-chip${need !== undefined && have < need ? ' is-short' : ''}">${it.icon || it.e} ${it.name}${need !== undefined ? ` <b>${Math.min(have, need)}/${need}</b>` : ''}</span>`;
@@ -7857,7 +7861,7 @@
                     return `<div class="barn-item${it.q > 1 ? ' q' + it.q : ''}${rarClass(k)}"><span class="barn-emoji">${it.icon || it.e}</span><span class="farm-card-title">${it.name} ×${veg.inv[k]}</span>${rarTag(itemRarity(k))}
                         ${it.q > 1 ? `<span class="barn-stars q${it.q}" title="${QUALITY_NAME[it.q]}" aria-label="คุณภาพ${QUALITY_NAME[it.q]} ${it.q} ดาว">${'★'.repeat(it.q)}</span>` : ''}
                         <span class="barn-price${m > 1 ? ' is-up' : m < 1 ? ' is-down' : ''}">🪙${price}/ชิ้น ${m > 1 ? '▲' : m < 1 ? '▼' : ''}${it.kind === 'crop' && inSeason(it.base) ? ' 🍃' : ''}</span>${pressureNote(k) ? `<span class="farm-card-sub">${pressureNote(k)}</span>` : ''}
-                        <span class="barn-btns"><button type="button" class="chip-btn" onclick="sellItem('${k}')">ขาย 1</button><button type="button" class="chip-btn" onclick="sellItem('${k}', true)">ขายหมด</button>${foodEn(k) || foodHp(k) ? `<button type="button" class="chip-btn eat-btn" onclick="eatDish('${k}')">😋 กิน${foodEn(k) ? ` ⚡+${foodEn(k)}` : ''}${foodHp(k) ? ` ❤️+${foodHp(k)}` : ''}</button>` : ''}</span></div>`;
+                        <span class="barn-btns"><button type="button" class="chip-btn eco-guide-btn" onclick="openItemGuide('${k}')">ใช้ทำอะไร</button><button type="button" class="chip-btn" onclick="sellItem('${k}')">ขาย 1</button><button type="button" class="chip-btn" onclick="sellItem('${k}', true)">ขายหมด</button>${foodEn(k) || foodHp(k) ? `<button type="button" class="chip-btn eat-btn" onclick="eatDish('${k}')">😋 กิน${foodEn(k) ? ` ⚡+${foodEn(k)}` : ''}${foodHp(k) ? ` ❤️+${foodHp(k)}` : ''}</button>` : ''}</span></div>`;
                 }).join('')}</div>` : '<p class="rp-empty">ยุ้งฉางยังว่างอยู่ เก็บผักก่อนนะ 🌱</p>')
                     + `<p class="shop-note">ราคาตลาดเปลี่ยนทุกวัน ▲ แพงกว่าปกติ · ▼ ถูกกว่าปกติ · 🍃 ผักตามฤดูแพงขึ้น · ★ ยิ่งดาวเยอะยิ่งแพง${veg.hybridSeeds.length ? ` · 🧬 เมล็ดลูกผสมรอปลูก ${veg.hybridSeeds.length} เมล็ด` : ''}<br>ตะกร้าขนมท้ายหน้าก็หยิบผักจากยุ้งฉางนี้</p>`;
             } else if (farmTab === 'kitchen') {
@@ -8266,7 +8270,7 @@
         }
 
         // 🎣 บ่อตกปลา: ได้ตั๋วฟรีวันละ 2 ใบ + พักดี 1 ครั้ง = 1 ใบ + ส่งออเดอร์ลุ้น 20% (เก็บได้สูงสุด 8) · เหวี่ยงเบ็ด รอปลากิน แล้วกด "ดึง!" ให้ทัน
-        const fishing = { state: 'idle', timer: 0, result: null, bait: '' };
+        const fishing = { state:'idle', timer:0, result:null, bait:'', where:'pond', seq:0, context:null, paused:null, pendingReward:null };
         function addFishTicket(n = 1) { veg.fish.tickets = Math.min(FISH_TICKET_MAX, veg.fish.tickets + n); saveVeg(); renderFarmStatus(); }
         function freeFishTicket() {
             if (veg.fish.freeDay === dayKeyLocal()) return;
@@ -8275,89 +8279,75 @@
         // ปลาแต่ละชนิดมีช่วงเวลา/อากาศ/ฤดูที่ออกมา ปลาหายากกับปลาตำนานติดเบ็ดแล้วต้องแตะ "ดึง!" รัวๆ สู้ให้ชนะ
         const FISH_FIGHT = { epic: { taps: 5, ms: 2600 }, legendary: { taps: 8, ms: 3600 }, mythic: { taps: 10, ms: 4200 }, immortal: { taps: 12, ms: 4800 }, cosmic: { taps: 14, ms: 5200 } };
         const FISH_FRAGS = { epic: 1, legendary: 3, mythic: 6, immortal: 10, cosmic: 15 };
-        function fishWhenOk(f, d = new Date()) {
-            const w = f.when || {}, h = d.getHours();
-            if (w.night && !(h >= 19 || h < 5)) return false;
-            if (w.day && !(h >= 6 && h < 18)) return false;
-            if (w.hour !== undefined && h !== w.hour) return false;
-            if (w.weather && !w.weather.includes(todayWeather())) return false;
-            if (w.season && farmSeason(d) !== w.season) return false;
-            if (w.bait && curBait() !== w.bait) return false;
-            return true;
+        function fishWhenOk(f, d = new Date(), where = f.sea ? 'sea' : 'pond') {
+            return FarmEcology.reasons(f,ecologyFishContext(where,d)).every(r=>['place','secret','unavailable'].includes(r));
         }
         function fishWhenText(f) {
             const w = f.when || {}, out = [];
-            if (w.night) out.push('🌙 กลางคืน (1 ทุ่ม–ตี 5)');
-            if (w.day) out.push('☀️ กลางวัน (6 โมงเช้า–6 โมงเย็น)');
-            if (w.hour === 0) out.push('🕛 เที่ยงคืน–ตีหนึ่ง');
+            if (w.night) out.push('🌙 เวลาหมู่บ้าน 19:00–05:00');
+            if (w.day) out.push('☀️ เวลาหมู่บ้าน 06:00–18:00');
+            if (w.hour === 0) out.push('🕛 เวลาหมู่บ้าน 00:00–01:00');
             if (w.weather) out.push(w.weather.map(x => `${WEATHERS[x].e} ${WEATHERS[x].name}`).join(' หรือ '));
             if (w.season) out.push(`${FARM_SEASONS[w.season].e} ${FARM_SEASONS[w.season].name}`);
-            if (w.bait === 'gold') out.push('✨ ต้องใช้เหยื่อทอง (จากหนอนทองในสวน)');
+            if (w.bait === 'gold') out.push('✨ เหยื่อทอง: หนอนทอง หรือทำจากเหยื่อหนอน 3 + น้ำผึ้ง 1');
             if (f.sea) out.unshift('🌊 ทะเลลึก (ออกเรือที่แท็บทะเล)');
-            return out.join(' · ') || '🕒 ได้ตลอดเวลา';
+            return out.join(' · ') || '🕒 ได้ตลอดเวลาหมู่บ้าน';
         }
-        const fishOpen = (k, where = 'pond') => { const f = FISH[k]; return f.w > 0 && !!f.sea === (where === 'sea') && fishWhenOk(f) && (!f.secret || !!veg.secrets[k]); };
-        // เหยื่อ: 🪱 เหยื่อหนอน ปลาแรร์ขึ้นไป ×1.5 · ✨ เหยื่อทอง ปลาแรร์ขึ้นไป ×2.5 ปลาธรรมดาน้อยลง และเรียกปลาเทพได้
-        const curBait = () => fishing.state !== 'idle' ? fishing.bait : veg.baitSel === 'gold' && veg.goldBait > 0 ? 'gold' : veg.baitSel === 'bait' && veg.bait > 0 ? 'bait' : '';
-        const baitMult = f => { const b = curBait(); return rarAtLeast(f.r, 'mythic') ? 1 : b === 'gold' ? (rarAtLeast(f.r, 'rare') ? 2.5 : 0.4) : b === 'bait' && rarAtLeast(f.r, 'rare') ? 1.5 : 1; };
-        const fishWeight = f => f.w * (f.boost && f.boost === todayWeather() ? 3 : 1) * (rarAtLeast(f.r, 'rare') ? 1 + 0.15 * upgLv('rod') : 1) * (rarAtLeast(f.r, 'rare') && gdSetOn('beach') ? 1.1 : 1) * baitMult(f) * (rarAtLeast(f.r, 'rare') ? 1 + 0.1 * sk('fish') : 1);
+        const fishOpen = (k, where = 'pond') => !!FISH[k] && !FarmEcology.reasons(FISH[k],{...ecologyFishContext(where),key:k}).length;
+        const curBait = (where = 'pond') => selectedFishBait(where);
+        const fishWeight = (f, where = f.sea ? 'sea' : 'pond') => FarmEcology.weight(f,ecologyFishContext(where));
         const BAIT_PRICE = 4, BAIT_BUY_MAX = 10;
         const baitBuyLeft = () => BAIT_BUY_MAX - (veg.baitBuy.day === dayKeyLocal() ? veg.baitBuy.n : 0);
         function buyBait() {
             if (fishing.state !== 'idle' || baitBuyLeft() <= 0 || shop.coins < BAIT_PRICE || veg.bait >= 99) return;
-            if (veg.baitBuy.day !== dayKeyLocal()) veg.baitBuy = { day: dayKeyLocal(), n: 0 };
-            veg.baitBuy.n += 1; veg.bait += 1; shop.coins -= BAIT_PRICE;
-            saveShop(); saveVeg(); updateCoinUI(); playSound('pop'); renderFarmPanel();
+            if(!farmTrade(()=>{
+                if (veg.baitBuy.day !== dayKeyLocal()) veg.baitBuy = { day: dayKeyLocal(), n: 0 };
+                veg.baitBuy.n += 1; veg.bait += 1; shop.coins -= BAIT_PRICE;
+            })) return;
+            updateCoinUI(); playSound('pop'); renderFarmPanel();
         }
         function craftGoldBait() {
             if (fishing.state !== 'idle' || veg.bait < 3 || countBase('honey') < 1 || veg.goldBait >= 99) return;
-            veg.bait -= 3; takeItems({ honey: 1 }); veg.goldBait += 1;
+            if(!farmTrade(()=>{veg.bait -= 3; takeItems({ honey: 1 }); veg.goldBait += 1;}))return;
             saveVeg(); playSound('welcome'); renderFarmPanel();
             showToast('✨ ทำเหยื่อทองได้ 1 ตัว เอาไปตกปลาเทพได้เลย', 'success');
         }
         function setBait(b) { if (fishing.state !== 'idle') return; veg.baitSel = b; saveVeg(); renderFarmPanel(); }
-        function rollFish() {
-            const pool = Object.keys(FISH).filter(k => fishOpen(k, fishing.where));
-            let r = Math.random() * pool.reduce((s, k) => s + fishWeight(FISH[k]), 0);
-            for (const k of pool) { r -= fishWeight(FISH[k]); if (r <= 0) return k; }
-            return fishing.where === 'sea' ? 'mackerel' : 'fish';
+        function rollFish(where = fishing.where) { return FarmEcology.choose(ecologyFishTable(where),Math.random()); }
+        // Rebate is rolled only after a resolved cast, never before a refundable wait.
+        function baitSave(bait) { return !!bait && sk('fish') >= SKILL_MAX && Math.random() < .3; }
+        function fishSchedule(phase, ms, callback) {
+            const seq=fishing.seq; fishing.until=Date.now()+ms;
+            fishing.timer=setTimeout(()=>{if(fishing.seq===seq&&fishing.state===phase&&!fishing.paused)callback(seq);},ms);
         }
-        // 🎣 นักตกปลาขั้น 5: ลุ้นเหยื่อไม่หลุด ใช้ซ้ำได้
-        function baitSave(bait) {
-            if (!bait || sk('fish') < SKILL_MAX || Math.random() >= 0.3) return;
-            if (bait === 'gold') veg.goldBait += 1; else veg.bait += 1;
-            showToast('🎣 สกิลนักตกปลา: เหยื่อไม่หลุด ใช้ซ้ำได้อีก', 'info');
+        function beginFishCast(where) {
+            if(fishing.state!=='idle')return;
+            const sea=where==='sea',context=ecologyFishContext(where),bait=context.bait;
+            if(sea ? veg.sea.casts<1||!bait : veg.fish.tickets<1)return;
+            const chosen=FarmEcology.choose(FarmEcology.table(FISH,context),Math.random());
+            if(!chosen){showToast('ยังไม่มีปลาที่เข้ากับเงื่อนไขตอนนี้ ลองเปลี่ยนเหยื่อหรือหมายปลา','info');return;}
+            if(!farmTrade(()=>{if(bait==='gold')veg.goldBait--;else if(bait==='bait')veg.bait--;if(sea)veg.sea.casts--;else veg.fish.tickets--;}))return;
+            Object.assign(fishing,{seq:fishing.seq+1,state:'waiting',result:null,fish:chosen,bait,where,context,calm:veg.ecology.calm,paused:null,pendingReward:null});
+            fishSchedule('waiting',rnd(1200,4000),fishBite);playSound('pop');renderFarmPanel();renderFarmStatus();
         }
-        function castLine() {
-            if (fishing.state !== 'idle' || veg.fish.tickets < 1) return;
-            const bait = curBait();
-            if (bait === 'gold') veg.goldBait -= 1; else if (bait === 'bait') veg.bait -= 1;
-            baitSave(bait);
-            veg.fish.tickets -= 1; saveVeg();
-            fishing.state = 'waiting'; fishing.result = null; fishing.fish = null; fishing.bait = bait; fishing.where = 'pond';
-            playSound('pop');
-            fishing.timer = setTimeout(fishBite, rnd(1200, 4000));
-            renderFarmPanel(); renderFarmStatus();
-        }
-        function fishBite() {
-            if (fishing.state !== 'waiting') return;
-            // เที่ยงคืนถึงตีหนึ่ง: ปลาผีมาติดเบ็ดแน่นอนในครั้งแรก (อีเวนต์ลับ)
-            fishing.fish = fishing.where !== 'sea' && new Date().getHours() === 0 && !veg.secrets.ghostFish ? 'ghostFish' : rollFish();
-            fishing.state = 'bite';
-            const big = !!FISH_FIGHT[FISH[fishing.fish].r];
-            try { if (navigator.vibrate) navigator.vibrate(big ? [120, 60, 160] : 120); } catch (e) {}
-            playSound('pop');
-            fishing.timer = setTimeout(() => endFishing('late'), 900 + 120 * upgLv('rod'));
-            renderFarmPanel();
+        function castLine() { beginFishCast('pond'); }
+        function fishBite(seq = fishing.seq) {
+            if(fishing.state!=='waiting'||fishing.seq!==seq||fishing.paused||!FISH[fishing.fish])return;
+            fishing.state='bite';
+            const big=!!FISH_FIGHT[FISH[fishing.fish].r];
+            try{if(navigator.vibrate)navigator.vibrate(big?[120,60,160]:120);}catch(e){}
+            playSound('pop');fishSchedule('bite',FarmEcology.timing(upgLv('rod'),fishing.calm).bite,()=>endFishing('late'));renderFarmPanel();
         }
         function reelIn() {
+            if(fishing.paused)return;
             if (fishing.state === 'waiting') endFishing('early');
             else if (fishing.state === 'bite') {
                 const fight = FISH_FIGHT[FISH[fishing.fish].r];
                 if (!fight) { endFishing('catch'); return; }
                 clearTimeout(fishing.timer);
-                Object.assign(fishing, { state: 'fight', taps: 0, need: fightTaps(fight), until: Date.now() + fight.ms });
-                fishing.timer = setTimeout(() => endFishing('escape'), fight.ms);
+                const timing=FarmEcology.timing(upgLv('rod'),fishing.calm,fight);
+                Object.assign(fishing, { state:'fight',taps:0,need:timing.taps });
+                fishSchedule('fight',timing.ms,()=>endFishing('escape'));
                 renderFarmPanel();
             } else if (fishing.state === 'fight') {
                 fishing.taps += 1;
@@ -8370,39 +8360,53 @@
             }
         }
         function endFishing(how) {
-            clearTimeout(fishing.timer);
-            const res = { how, fish: fishing.fish, caught: null, cm: 0, record: false, trophy: false, frags: 0 };
-            if (how === 'catch') {
-                const k = fishing.fish || rollFish(), f = FISH[k];
-                if (k === 'ghostFish') setTimeout(() => unlockSecret('ghostFish'), 700);
-                // ตัวใหญ่หายากกว่าตัวเล็ก · ยาวเกิน 90% ของขนาดสูงสุด = ตัวยักษ์ ได้เหรียญเพิ่มเท่าราคาปลา
-                res.caught = k;
-                res.cm = Math.round((f.cm[0] + (f.cm[1] - f.cm[0]) * Math.pow(Math.random(), 1.6 - 0.1 * sk('fish'))) * 10) / 10;
-                res.trophy = res.cm >= f.cm[0] + (f.cm[1] - f.cm[0]) * 0.9;
-                res.record = res.cm > (veg.fishRecord[k] || 0);
-                if (res.record) veg.fishRecord[k] = res.cm;
-                noteDex(k);
-                giveItem(k); veg.fishCaught[k] = (veg.fishCaught[k] || 0) + 1; passNote('fish');
-                rmProg('fishrun', 1); rmFishReport(k, res.cm);
-                res.frags = FISH_FRAGS[f.r] || 0;
-                luckGain(f.r);
-                if (res.frags) addFrags(res.frags, true);
-                addXP(4 + Math.round(f.value / 3) + (res.trophy ? 5 : 0)); playSound('welcome');
-                if (res.trophy) addCoins(f.value);
-                if (FISH_FIGHT[f.r]) fireConfetti();
-                if (rarAtLeast(f.r, 'legendary') && veg.fishCaught[k] === 1) setTimeout(() => showBadgeCelebration({ icon: f.e, desc: `ตกได้ปลา${RARITY[f.r].name}: ${f.name}!` }), 700);
+            if(!['waiting','bite','fight'].includes(fishing.state))return;
+            const phase=fishing.state, bait=fishing.bait, target=veg.ecology.target, before=farmLevel();
+            clearTimeout(fishing.timer);fishing.state='settling';fishing.seq++;
+            const res=fishing.pendingReward||{how,fish:fishing.fish,caught:null,cm:0,record:false,trophy:false,frags:0,savedBait:baitSave(bait)};
+            if(how==='catch'&&!FISH[fishing.fish])how=res.how='escape';
+            if(how==='catch'&&!res.caught){
+                const k=fishing.fish,f=FISH[k];res.caught=k;
+                res.cm=Math.round((f.cm[0]+(f.cm[1]-f.cm[0])*Math.pow(Math.random(),1.6-.1*sk('fish')))*10)/10;
+                res.trophy=res.cm>=f.cm[0]+(f.cm[1]-f.cm[0])*.9;res.record=res.cm>(veg.fishRecord[k]||0);res.frags=FISH_FRAGS[f.r]||0;
             }
-            res.bait = fishing.bait;
-            fishing.state = 'idle'; fishing.result = res; fishing.fish = null; fishing.bait = '';
-            saveVeg(); renderFarmPanel(); renderFarmStatus();
+            const ok=farmTrade(()=>{
+                if(how==='catch'){
+                    const k=res.caught,f=FISH[k];
+                    if(res.record)veg.fishRecord[k]=res.cm;
+                    noteDex(k);giveItem(k);veg.fishCaught[k]=(veg.fishCaught[k]||0)+1;
+                    luckGain(f.r);veg.frags=Math.min(999,veg.frags+res.frags);
+                    veg.xp+=Math.round((4+Math.round(f.value/3)+(res.trophy?5:0))*(veg.house>=5?1.2:1)*(gdSetOn('japan')?1.05:1));
+                    if(res.trophy){shop.coins+=f.value;veg.stats.earned=Math.min(1e9,veg.stats.earned+f.value);statDay().coins+=f.value;}
+                    if(farmLevel()>before)ensurePlots();
+                }
+                if(res.savedBait){if(bait==='gold')veg.goldBait=Math.min(99,veg.goldBait+1);else veg.bait=Math.min(99,veg.bait+1);}
+            });
+            if(!ok){fishing.state=phase;fishing.pendingReward=res;renderFarmPanel();return;}
+            res.bait=bait;
+            Object.assign(fishing,{state:'idle',result:res,fish:null,bait:'',context:null,paused:null,pendingReward:null});
+            if(how==='catch'){
+                const k=res.caught,f=FISH[k];passNote('fish');rmProg('fishrun',1);rmFishReport(k,res.cm);
+                if(k==='ghostFish')setTimeout(()=>unlockSecret('ghostFish'),700);
+                if(farmLevel()>before){renderVeggies();showToast(`เลเวล ${farmLevel()}! แต้มสกิล +${farmLevel()-before}`,'success');}
+                playSound('welcome');if(FISH_FIGHT[f.r])fireConfetti();
+                if(target===k)showToast(`ตกได้ปลาเป้าหมายแล้ว: ${f.name} · ${res.cm} ซม.`,'success');
+                if(rarAtLeast(f.r,'legendary')&&veg.fishCaught[k]===1)setTimeout(()=>showBadgeCelebration({icon:f.e,desc:`ตกได้ปลา${RARITY[f.r].name}: ${f.name}!`}),700);
+                if(res.trophy&&shop.coins===777)setTimeout(()=>unlockSecret('lucky777'),500);
+            }
+            if(res.savedBait)showToast('สกิลนักตกปลา: เหยื่อไม่หลุด ใช้ซ้ำได้อีก','info');
+            saveVeg();renderFarmPanel();renderFarmStatus();
         }
-        // ปิดหน้าต่างระหว่างรอปลา/สู้ปลา ไม่เสียตั๋ว
+        // Only an unrevealed, waiting cast can be refunded. A hooked fish is a resolved attempt.
         function cancelFishing() {
-            if (fishing.state === 'idle') return;
-            if (fishing.bait === 'gold') veg.goldBait += 1; else if (fishing.bait === 'bait') veg.bait += 1; // ปิดกลางคันคืนเหยื่อด้วย
-            clearTimeout(fishing.timer); fishing.state = 'idle'; fishing.result = null; fishing.fish = null; fishing.bait = '';
-            if (fishing.where === 'sea') veg.sea.casts += 1; else veg.fish.tickets = Math.min(FISH_TICKET_MAX, veg.fish.tickets + 1); // คืนครั้งที่เหวี่ยงไป
-            saveVeg();
+            if(!['waiting','bite','fight'].includes(fishing.state))return;
+            if(fishing.pendingReward){showToast('ยังมีปลาที่รอบันทึก กดดึงอีกครั้งเพื่อรับให้ครบก่อนนะ','warning');return false;}
+            if(fishing.state!=='waiting'){endFishing('cancel');return;}
+            if(!farmTrade(()=>{
+                if(fishing.bait==='gold')veg.goldBait=Math.min(99,veg.goldBait+1);else if(fishing.bait==='bait')veg.bait=Math.min(99,veg.bait+1);
+                if(fishing.where==='sea')veg.sea.casts++;else veg.fish.tickets=Math.min(FISH_TICKET_MAX,veg.fish.tickets+1);
+            }))return false;
+            clearTimeout(fishing.timer);Object.assign(fishing,{seq:fishing.seq+1,state:'idle',result:null,fish:null,bait:'',context:null,paused:null,pendingReward:null});
         }
         function fishResultText(r) {
             if (r.how === 'catch') {
@@ -8412,6 +8416,7 @@
             }
             const rr = r.fish ? FISH[r.fish].r : 'common';
             if (r.how === 'escape') return `💦 ${RARITY[rr].e} ปลา${RARITY[rr].name}ดิ้นหลุดไปได้! ครั้งหน้าแตะให้ไวกว่านี้นะ`;
+            if (r.how === 'cancel') return 'เก็บเบ็ดหลังปลากินแล้ว ปลาหลุดไป ใช้ตั๋ว/ครั้งตกและเหยื่อของรอบนี้';
             if (r.how === 'early') return 'ดึงเร็วไป ปลาตกใจหนีไปแล้ว 💦';
             return rr !== 'common' ? `ช้าไปนิด เงาปลาระดับ ${RARITY[rr].e} ${RARITY[rr].name} หลุดไปแล้ว 😢` : 'ช้าไปนิด ปลาแย่งเหยื่อแล้วหนีไป 🐟💨';
         }
@@ -8429,9 +8434,9 @@
                 : `<button type="button" class="modal-btn btn-primary pond-reel${f.state === 'bite' || f.state === 'fight' ? ' is-bite' : ''}" onclick="reelIn()">ดึง! 💪</button>`;
             const fight = f.state === 'fight' ? `<div class="fish-fight rar-${hooked.r}"><span class="fish-fight-bar"><i style="width:${Math.round(f.taps / f.need * 100)}%"></i></span>
                     <b class="fish-fight-left">อีก ${f.need - f.taps} ครั้ง</b><span class="fish-fight-time"><i style="animation-duration:${Math.max(0, f.until - Date.now())}ms"></i></span></div>` : '';
-            const caught = Object.keys(FISH).filter(k => veg.fishCaught[k]).length;
+            const caught = Object.keys(FISH).filter(k => !FISH[k].sea && veg.fishCaught[k]).length;
             const listed = Object.entries(FISH).filter(([k, x]) => !x.sea && (!x.secret || veg.fishCaught[k]));
-            const now = Object.keys(FISH).filter(fishOpen);
+            const now = ecologyFishTable('pond').filter(r=>r.p>0).map(r=>r.key);
             return `<div class="pond is-${f.state}${big ? ' is-big' : ''}" aria-hidden="true"><span class="pond-ripple"></span><span class="pond-float">${f.state === 'bite' ? (big ? '‼️' : '❗') : ''}</span>
                     ${r && r.how === 'catch' && f.state === 'idle' ? `<span class="pond-catch">${FISH[r.caught].e}</span>` : ''}</div>
                 <p class="pond-msg" aria-live="polite">${msg}</p>
@@ -8441,9 +8446,10 @@
                 <div class="pond-bait pond-bait-shop"><button type="button" class="chip-btn" ${f.state !== 'idle' || baitBuyLeft() <= 0 || shop.coins < BAIT_PRICE || veg.bait >= 99 ? 'disabled' : ''} onclick="buyBait()">🛒 ซื้อเหยื่อ 🪙${BAIT_PRICE} <small>(วันนี้อีก ${baitBuyLeft()})</small></button>
                     <button type="button" class="chip-btn" ${f.state !== 'idle' || veg.bait < 3 || countBase('honey') < 1 || veg.goldBait >= 99 ? 'disabled' : ''} onclick="craftGoldBait()">✨ ทำเหยื่อทอง <small>(🪱3 + 🍯1)</small></button></div>
                 <div class="modal-btn-group">${action}</div>
+                ${ecologyFishPlanHTML('pond')}
                 <div class="pond-now"><span>ตอนนี้ในบ่อมี:</span>${now.map(k => `<span class="pond-now-fish rar-${FISH[k].r}" title="${veg.fishCaught[k] ? FISH[k].name : '???'} · ${RARITY[FISH[k].r].name}">${veg.fishCaught[k] ? FISH[k].e : '❔'}</span>`).join('')}</div>
-                <div class="pond-dex">${listed.map(([k, x]) => `<button type="button" class="pond-dex-item rar-${x.r}${veg.fishCaught[k] ? '' : ' locked'}" title="${veg.fishCaught[k] ? x.name : '???'}" onclick="openDex('fish', '${k}')">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></button>`).join('')}</div>
-                <p class="shop-note">สะสมปลาแล้ว ${caught}/${listed.length} ชนิด · แตะปลาเพื่อดูรายละเอียด · ตั๋วฟรีวันละ 2 ใบ ได้เพิ่มทุกครั้งที่พักไม่เกินลิมิต และลุ้นได้ตอนส่งออเดอร์ (เก็บได้สูงสุด ${FISH_TICKET_MAX}) · ปลาขายหรือทำอาหารได้<br>🪱 เหยื่อได้จากจับหนอนจรในแปลงผัก ใช้แล้วปลาหายากติดเบ็ดง่ายขึ้น · ✨ เหยื่อทองจากหนอนทองเท่านั้นที่เรียกปลาเทพ 🔴 ได้</p>`;
+                <div class="pond-dex">${listed.map(([k, x]) => `<button type="button" class="pond-dex-item rar-${x.r}${veg.fishCaught[k] ? '' : ' locked'}" title="${veg.fishCaught[k] ? x.name : '???'}"  ${f.state !== 'idle' ? 'disabled' : ''} onclick="openDex('fish', '${k}')">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></button>`).join('')}</div>
+                <p class="shop-note">สะสมปลาแล้ว ${caught}/${listed.length} ชนิด · แตะปลาเพื่อดูรายละเอียด · ตั๋วฟรีวันละ 2 ใบ ได้เพิ่มทุกครั้งที่พักไม่เกินลิมิต และลุ้นได้ตอนส่งออเดอร์ (เก็บได้สูงสุด ${FISH_TICKET_MAX}) · ปลาขายหรือทำอาหารได้<br>🪱 เหยื่อได้จากจับหนอนจรในแปลงผัก ใช้แล้วปลาหายากติดเบ็ดง่ายขึ้น · ✨ เหยื่อทองได้จากหนอนทอง หรือทำด้วยเหยื่อหนอน 3 + น้ำผึ้ง 1 · ต้องใช้เหยื่อทองเพื่อเรียกปลาเทพ 🔴</p>`;
         }
 
         // ✨ แขกพิเศษ: สุ่มแวะมาในสวน (วันละไม่เกิน 2 ตัว อยู่ 3 นาที) แตะเพื่อรับของขวัญ
@@ -9009,13 +9015,13 @@
         // --- 📖 สมุดสะสม: ผักผลไม้ ปลา อาหาร ดอกไม้ และกระเป๋าเมล็ด พร้อมรายละเอียดทุกชนิด ---
         const FRAG_NEED = 60, BOX_PRICE = 20, BOX_PITY = 15; // ของหายากต้องได้ยาก: เมล็ดตำนานใช้เศษ 60 ชิ้น
         // ลุ้นเมล็ดเทพ: ใช้เศษ 18 ชิ้นต่อครั้ง โอกาสเริ่ม 2% พลาดแต่ละครั้ง +1% (ได้แล้วเริ่มนับใหม่) · เฉลี่ยราว 200 ชิ้น (ราว 3 เท่าของเมล็ดตำนาน)
-        const MYTH_ROLL = 18, MYTH_BASE = 2, MYTH_STEP = 1, MYTH_PITY_MAX = 98;
+        const MYTH_ROLL = 18, MYTH_BASE = 2, MYTH_STEP = 1, MYTH_PITY_MAX = 98, HARVEST_MYTH_CHANCE = .03;
         const mythChance = () => Math.min(100, MYTH_BASE + MYTH_STEP * veg.mythPity);
         const BOX_RATES = [['uncommon', 22], ['rare', 47], ['epic', 25], ['legendary', 5], ['mythic', 1]];
         const DEX_CROPS = [...new Set([...BASE_VEGGIES, ...Object.values(SEASON_VEGGIE), ...RARE_VEGGIES, ...Object.keys(FOREST_CROPS), 'apple', 'pear', 'olive', 'greenApple', ...HYBRID_VEGGIES, ...Object.keys(LEGEND_VEGGIES), 'goldLantern', ...Object.keys(MYTH_VEGGIES), 'moonFruit'])];
-        const RARITY_NOTE = { common: 'ปลูกได้ตลอด เมล็ดฟรี', uncommon: 'เมล็ดจากร้านค้า และผลจากต้นสาลี่ ต้นมะกอก', rare: 'ผักเทศกาล ผลไม้จากต้น และเมล็ดจากป่า', epic: 'ผักลูกผสม ต้องผสมพันธุ์เองหรือลุ้นจากกล่อง', legendary: 'เมล็ดจากกล่องปริศนาหรือเศษเมล็ดตำนาน มีพลังพิเศษ · ผลจากต้นโทงเทงทอง', mythic: 'เมล็ดเทพ: กล่องปริศนา 1% · ลุ้นด้วยเศษเมล็ด (ครั้งละ 6 ชิ้น โอกาสค่อยๆ เพิ่ม) · ปลูกผักตำนานสองชนิดติดกันแล้วลุ้น 3% · ผลจากต้นผลจันทรา',
+        const RARITY_NOTE = { common: 'ปลูกได้ตลอด เมล็ดฟรี', uncommon: 'เมล็ดจากร้านค้า และผลจากต้นสาลี่ ต้นมะกอก', rare: 'ผักเทศกาล ผลไม้จากต้น และเมล็ดจากป่า', epic: 'ผักลูกผสม ต้องผสมพันธุ์เองหรือลุ้นจากกล่อง', legendary: 'เมล็ดจากกล่องปริศนาหรือเศษเมล็ดตำนาน มีพลังพิเศษ · ผลจากต้นโทงเทงทอง', mythic: `เมล็ดเทพ: กล่องปริศนา 1% · ลุ้นด้วยเศษเมล็ดครั้งละ ${MYTH_ROLL} ชิ้น · ผักตำนานต่างชนิดติดกันลุ้น ${Math.round(HARVEST_MYTH_CHANCE*100)}% · ผลจากต้นผลจันทรา`,
             immortal: 'ระดับอมตะ ของที่แทบไม่มีใครเคยเห็น', cosmic: 'ระดับจักรวาล หายากที่สุดในเกม' };
-        const FISH_NOTE = { common: 'ติดเบ็ดง่าย มีทั้งวัน', uncommon: 'ติดเบ็ดบ่อย ราคาดีกว่าปลาธรรมดา', rare: 'ออกมาบางเวลาหรือบางอากาศ', epic: 'ติดเบ็ดแล้วต้องดึงสู้ 5 ครั้ง', legendary: 'นานๆ โผล่ที ต้องดึงสู้ 8 ครั้ง ได้ 🧩 3 ชิ้น', mythic: 'กินเฉพาะเหยื่อทอง ✨ จากหนอนทอง ต้องดึงสู้ 10 ครั้ง ได้ 🧩 6 ชิ้น', immortal: 'ต้องดึงสู้ 12 ครั้ง ได้ 🧩 10 ชิ้น', cosmic: 'ต้องดึงสู้ 14 ครั้ง ได้ 🧩 15 ชิ้น' };
+        const FISH_NOTE = { common: 'ติดเบ็ดง่าย มีทั้งวัน', uncommon: 'ติดเบ็ดบ่อย ราคาดีกว่าปลาธรรมดา', rare: 'ออกมาบางเวลาหรือบางอากาศ', epic: 'ติดเบ็ดแล้วพื้นฐานดึงสู้ 5 ครั้ง', legendary: 'นานๆ โผล่ที พื้นฐานดึงสู้ 8 ครั้ง ได้ 🧩 3 ชิ้น', mythic: 'กินเฉพาะเหยื่อทอง ✨ จากหนอนทองหรือทำเอง พื้นฐานดึงสู้ 10 ครั้ง ได้ 🧩 6 ชิ้น', immortal: 'พื้นฐานดึงสู้ 12 ครั้ง ได้ 🧩 10 ชิ้น', cosmic: 'พื้นฐานดึงสู้ 14 ครั้ง ได้ 🧩 15 ชิ้น' };
         const dex = { tab: 'crops', filter: 'all', sel: '', reveal: null };
         const itemRarity = k => { const b = baseOf(k); return hasOwn(FISH, b) ? FISH[b].r : hasOwn(VEGGIES, b) ? cropRarity(b) : hasOwn(FARM_PRODUCTS, b) ? FARM_PRODUCTS[b].rar || '' : ''; };
         const rarClass = k => { const r = itemRarity(k); return r && r !== 'common' ? ` rar-${r}` : ''; };
@@ -9087,7 +9093,7 @@
             if (rarAtLeast(r, 'legendary')) fireConfetti();
             renderDex(); renderFarmStatus();
         }
-        // 🧩 แลกเศษเมล็ด 60 ชิ้นเป็นเมล็ดตำนาน (สุ่มจากชนิดที่ยังไม่เคยเก็บก่อน) · หรือลุ้นเมล็ดเทพครั้งละ 6 ชิ้น
+        // 🧩 แลกเศษเมล็ด 60 ชิ้นเป็นเมล็ดตำนาน (สุ่มจากชนิดที่ยังไม่เคยเก็บก่อน) · หรือลุ้นเมล็ดเทพครั้งละ 18 ชิ้น
         function tradeFragments(myth) {
             const need = myth ? MYTH_ROLL : FRAG_NEED;
             if (veg.frags < need) return;
@@ -9116,7 +9122,8 @@
         function openVegBook() { openDex(); }
         function openDex(tab, key) {
             if (tab) dex.tab = tab;
-            dex.sel = key ? `${dex.tab === 'fish' ? 'fish' : 'crop'}:${key}` : '';
+            dex.sel = key ? `${dex.tab === 'fish' ? 'fish' : dex.tab === 'items' ? 'item' : 'crop'}:${key}` : '';
+            if(key) dex.filter='all';
             dex.reveal = null;
             document.getElementById('veg-book').style.display = 'flex';
             renderDex();
@@ -9127,13 +9134,13 @@
         function dexSelect(kind, k) { dex.sel = `${kind}:${k}`; renderDex(); }
         function dexBack() { dex.sel = ''; renderDex(); }
         function renderDex() {
-            const tabs = [['crops', '🥕', 'ผักผลไม้'], ['fish', '🎣', 'ปลา'], ['other', '🍳', 'อาหาร·ดอกไม้'], ['seeds', '🌱', 'เมล็ดพันธุ์']];
+            const tabs = [['crops', '🥕', 'ผักผลไม้'], ['fish', '🎣', 'ปลา'], ['other', '🍳', 'อาหาร·ดอกไม้'], ['seeds', '🌱', 'เมล็ดพันธุ์'], ['items', '📦', 'ไอเทม']];
             document.getElementById('dex-tabs').innerHTML = tabs.map(([k, icon, label]) =>
                 `<button type="button" class="report-tab${k === dex.tab ? ' active' : ''}" role="tab" aria-selected="${k === dex.tab}" onclick="dexSetTab('${k}')"><span>${icon}</span>${label}${k === 'seeds' && veg.frags >= FRAG_NEED ? ' 🧩' : ''}</button>`).join('');
             const body = document.getElementById('dex-body');
             const [kind, key] = dex.sel.split(':');
-            body.innerHTML = kind === 'crop' && hasOwn(VEGGIES, key) ? cropDetail(key) : kind === 'fish' && hasOwn(FISH, key) ? fishDetail(key)
-                : dex.tab === 'fish' ? dexFishTab() : dex.tab === 'other' ? dexOtherTab() : dex.tab === 'seeds' ? dexSeedsTab() : dexCropsTab();
+            body.innerHTML = kind === 'item' && itemInfo(key) ? ecologyItemDetail(key) : kind === 'crop' && hasOwn(VEGGIES, key) ? cropDetail(key) : kind === 'fish' && hasOwn(FISH, key) ? fishDetail(key)
+                : dex.tab === 'items' ? ecologyItemsTab() : dex.tab === 'fish' ? dexFishTab() : dex.tab === 'other' ? dexOtherTab() : dex.tab === 'seeds' ? dexSeedsTab() : dexCropsTab();
             body.scrollTop = 0;
             updateCoinUI();
         }
@@ -9161,7 +9168,7 @@
                 return dexCell('crop', k, hid ? '❔' : VEGGIES[k].e, hid ? '???' : VEGGIES[k].name, n, veg.bestQ[k] > 1 ? `<i class="book-stars">${'★'.repeat(veg.bestQ[k])}</i>` : '', cropRarity(k), !n);
             };
             const total = DEX_CROPS.filter(known).length;
-            return dexProgress(DEX_CROPS, cropRarity, known)
+            return ecologyRarityHTML() + dexProgress(DEX_CROPS, cropRarity, known)
                 + `<p class="dex-sum">สะสมแล้ว <b>${total}/${DEX_CROPS.length}</b> ชนิด · เก็บไปแล้ว <b>${sum(veg.harvest) + sum(veg.fruits)}</b> ชิ้น · ผักทอง ✨ <b>${veg.golden}</b>${dex.filter !== 'all' ? ` · <button type="button" class="mp-link" onclick="dexSetFilter('${dex.filter}')">ดูทั้งหมด</button>` : ''}</p>`
                 + dexGroups(DEX_CROPS, cropRarity, cell, RARITY_NOTE)
                 + `<p class="shop-note">แตะแต่ละชนิดเพื่อดูรายละเอียด วิธีได้ ราคา ฤดู และเมนูที่ใช้ · ★ คือคุณภาพสูงสุดที่เคยเก็บได้</p>`;
@@ -9173,8 +9180,8 @@
                 const f = FISH[k], hid = fishHidden(k);
                 return dexCell('fish', k, hid ? '❔' : f.e, hid ? '???' : f.name, veg.fishCaught[k] || 0, veg.fishRecord[k] ? `<i class="dex-rec">${veg.fishRecord[k]} ซม.</i>` : '', f.r, hid);
             };
-            const now = Object.keys(FISH).filter(fishOpen);
-            return dexProgress(list, k => FISH[k].r, known)
+            const now = ecologyFishTable('pond').filter(r=>r.p>0).map(r=>r.key);
+            return ecologyRarityHTML() + dexProgress(list, k => FISH[k].r, known)
                 + `<p class="dex-sum">ตอนนี้ในบ่อมี ${now.map(k => `<span class="rar-dot rar-${FISH[k].r}" title="${RARITY[FISH[k].r].name}">${veg.fishCaught[k] ? FISH[k].e : '❔'}</span>`).join('')}${dex.filter !== 'all' ? ` · <button type="button" class="mp-link" onclick="dexSetFilter('${dex.filter}')">ดูทั้งหมด</button>` : ''}</p>`
                 + dexGroups(list, k => FISH[k].r, cell, FISH_NOTE)
                 + `<p class="shop-note">ปลาแต่ละชนิดออกมาตามเวลา อากาศ และฤดู · ยาวเกิน 90% ของขนาดสูงสุดคือตัวยักษ์ ได้เหรียญเพิ่ม · ตกปลาได้ที่ฟาร์ม แท็บ 🎣 บ่อปลา</p>`;
@@ -9241,7 +9248,7 @@
             }
             if (boxPool(r).includes(k) && r !== 'common') out.push(`🎁 สุ่มได้จากกล่องเมล็ดปริศนา (${BOX_RATES.find(([x]) => x === r)[1]}%)`);
             if (hasOwn(LEGEND_VEGGIES, k)) out.push(`🧩 แลกด้วยเศษเมล็ดตำนาน ${FRAG_NEED} ชิ้น`);
-            if (hasOwn(MYTH_VEGGIES, k)) out.push(`🧩 ลุ้นด้วยเศษเมล็ดตำนาน ครั้งละ ${MYTH_ROLL} ชิ้น (เริ่ม ${MYTH_BASE}% พลาดแล้ว +${MYTH_STEP}%)`, '🟡 ปลูกผักตำนานสองชนิดติดกัน แล้วลุ้นเมล็ดผักเทพตอนเก็บ (10%)');
+            if (hasOwn(MYTH_VEGGIES, k)) out.push(`🧩 ลุ้นด้วยเศษเมล็ดตำนาน ครั้งละ ${MYTH_ROLL} ชิ้น (เริ่ม ${MYTH_BASE}% พลาดแล้ว +${MYTH_STEP}%)`, `🟡 ปลูกผักตำนานต่างชนิดติดกัน ลุ้นเมล็ดเทพตอนเก็บ ${Math.round(HARVEST_MYTH_CHANCE*100)}%`);
             return out;
         }
         const recipesUsing = k => Object.entries(RECIPES).filter(([rk, rv]) => rv.need[k] && (!rv.secret || veg.cooked[rk]));
@@ -9256,7 +9263,6 @@
             const src = `<p class="dex-group"><b>🔎 วิธีได้</b></p><ul class="dex-list">${cropSources(k).map(s => `<li>${s}</li>`).join('')}</ul>`;
             if (hid) return dexHead('❔', '???', r, `${kindLabel} · ยังไม่เคยพบ`) + `<p class="dex-desc">ยังไม่รู้ว่าคืออะไร ลองหาดูนะ ✨</p>` + src;
             const it = itemInfo(k), season = Object.values(FARM_SEASONS).find(s => s.crops.includes(k)), tree = Object.values(TREES).find(t => t.fruit === k);
-            const uses = recipesUsing(k);
             const grow = TREE_ONLY.includes(k) ? `ต้นโต ${tree.stages} ระยะ แล้วออกผลทุก ${tree.cycle} ชม.` : `${cropStages(k)} ระยะ${season ? ' (ตามฤดูเร็วขึ้น 1)' : ''}${tree ? ` · ต้นออกผลทุก ${tree.cycle} ชม.` : ''}`;
             return dexHead(farmIcon(k, VEGGIES[k].e), VEGGIES[k].name, r, kindLabel)
                 + `<p class="dex-desc">${lg ? lg.desc : CROP_DESC[k] || ''}</p>`
@@ -9268,28 +9274,27 @@
                     ['🧺', 'เก็บแล้ว', `${n} ชิ้น`],
                     ['⭐', 'ดีที่สุด', veg.bestQ[k] ? '★'.repeat(veg.bestQ[k]) : 'ยังไม่เคยเก็บ'],
                     ['📦', 'ในยุ้งฉาง', `${countBase(k)} ชิ้น`],
+                    ...(foodEn(k)||foodHp(k)?[['🍽️','กินระดับ 1 ดาว',`แรง +${foodEn(k)} · เลือด +${foodHp(k)}`]]:[]),
                     ...(veg.seeds[k] ? [['🎒', 'เมล็ดในกระเป๋า', `${veg.seeds[k]} เมล็ด`]] : []),
                     ['📅', 'พบครั้งแรก', veg.dexDay[k] ? thaiDay(veg.dexDay[k]) : n ? 'ก่อนมีสมุดสะสม' : 'ยังไม่เคยเก็บ']
                 ])
-                + (uses.length ? `<p class="dex-group"><b>🍳 ใช้ทำ</b></p><div class="farm-chips">${uses.map(([, rv]) => `<span class="farm-chip">${rv.e} ${rv.name}</span>`).join('')}</div>` : '')
-                + src;
+                + ecologyUsesHTML(k) + src;
         }
         function fishDetail(k) {
-            const f = FISH[k], hid = fishHidden(k), fight = FISH_FIGHT[f.r];
+            const f = FISH[k], hid = fishHidden(k), fight = FISH_FIGHT[f.r], chance = ecologyFishTable(f.sea?'sea':'pond').find(r=>r.key===k), timing = FarmEcology.timing(upgLv('rod'),veg.ecology.calm,fight);
             const clue = dexStats([['⏰', 'ออกมาตอน', f.secret && !veg.secrets[k] ? '🔮 อีเวนต์ลับ ลองดูคำใบ้ในแท็บความสำเร็จ' : fishWhenText(f)], ['🎣', 'ตอนนี้', fishOpen(k, f.sea ? 'sea' : 'pond') ? `✅ อยู่ใน${f.sea ? 'ทะเล' : 'บ่อ'} ลองตกดู!` : '💤 ยังไม่ออกมา'],
-                ...(fight ? [['💪', 'ต้องสู้', `แตะดึง ${fightTaps(fight)} ครั้งใน ${fight.ms / 1000} วินาที`]] : [])]);
-            if (hid) return dexHead('❔', '???', f.r, 'ปลาที่ยังไม่เคยตกได้') + '<p class="dex-desc">เบาะแสของปลาตัวนี้ 👇</p>' + clue;
-            const uses = recipesUsing(k);
-            return dexHead(f.e, f.name, f.r, 'ปลาในบ่อ')
+                ...(fight ? [['💪', 'ต้องสู้', `แตะดึง ${timing.taps} ครั้งใน ${timing.ms / 1000} วินาที`]] : [])]);
+            if (hid) return dexHead('❔', '???', f.r, 'ปลาที่ยังไม่เคยตกได้') + '<p class="dex-desc">เบาะแสของปลาตัวนี้ 👇</p>' + clue + ecologyFishTargetHTML(k);
+            return dexHead(farmIcon(k,f.e), f.name, f.r, f.sea?'ปลาในทะเล':'ปลาในบ่อ')
                 + `<p class="dex-desc">${f.desc}</p>`
                 + dexStats([
-                    ['🪙', 'ราคา', `${f.value} เหรียญ`],
+                    ['🪙', 'ราคาพื้นฐาน', `${f.value} เหรียญ`], ['🏷️','ขายตอนนี้',`${sellPrice(k)} เหรียญ`], ['🎯','โอกาสติดเบ็ดตอนนี้',ecologyPercent(chance.p)],
                     ['📏', 'ขนาด', `${f.cm[0]}–${f.cm[1]} ซม.`],
                     ['🏅', 'ตัวใหญ่สุดของคุณ', veg.fishRecord[k] ? `${veg.fishRecord[k]} ซม.${veg.fishRecord[k] >= f.cm[0] + (f.cm[1] - f.cm[0]) * 0.9 ? ' 🏆' : ''}` : '-'],
                     ['🎣', 'ตกได้', `${veg.fishCaught[k]} ตัว`],
                     ['📅', 'ตกได้ครั้งแรก', veg.dexDay[k] ? thaiDay(veg.dexDay[k]) : 'ก่อนมีสมุดสะสม']
                 ]) + clue
-                + (uses.length ? `<p class="dex-group"><b>🍳 ใช้ทำ</b></p><div class="farm-chips">${uses.map(([, rv]) => `<span class="farm-chip">${rv.e} ${rv.name}</span>`).join('')}</div>` : '');
+                + ecologyFishTargetHTML(k) + ecologyUsesHTML(k);
         }
 
         // --- 🔧 โรงอัปเกรด: เครื่องมือ 6 อย่าง อย่างละ 5 ระดับ ใช้เหรียญ + ผลผลิตในฟาร์ม (ระดับสูงต้องมีเลเวลฟาร์มถึง) ---
@@ -10180,7 +10185,7 @@
             addXP(4); seaMsg += ' · 🏝️ เดินครบหาดแล้ว +4 XP'; veg.trip = { z: '', got: [] };
         }
         // 🚤 ออกเรือ: ใช้แรงครั้งเดียวได้เหวี่ยงเบ็ด 3 ครั้ง (ชุดสวนท้องทะเล +1) ทุกครั้งต้องมีเหยื่อ
-        const seaBait = () => veg.baitSel === 'gold' && veg.goldBait > 0 ? 'gold' : veg.bait > 0 ? 'bait' : veg.goldBait > 0 ? 'gold' : '';
+        const seaBait = () => selectedFishBait('sea');
         function startBoat() {
             const s = veg.sea;
             if (farmLevel() < SEA_LEVEL || s.casts > 0 || fishing.state !== 'idle') return;
@@ -10192,18 +10197,7 @@
             saveVeg(); playSound('pop'); passNote('sea');
             renderFarmPanel(); renderFarmStatus();
         }
-        function castSea() {
-            const s = veg.sea, bait = seaBait();
-            if (fishing.state !== 'idle' || s.casts < 1 || !bait) return;
-            if (bait === 'gold') veg.goldBait -= 1; else veg.bait -= 1;
-            baitSave(bait);
-            s.casts -= 1; saveVeg();
-            Object.assign(fishing, { state: 'waiting', result: null, fish: null, bait, where: 'sea' });
-            seaMsg = '';
-            playSound('pop');
-            fishing.timer = setTimeout(fishBite, rnd(1200, 4000));
-            renderFarmPanel(); renderFarmStatus();
-        }
+        function castSea() { seaMsg='';beginFishCast('sea'); }
         // 🧂 นาเกลือ: ตากน้ำทะเลครั้งละ 2 ชั่วโมง ได้เกลือ 3 ถุง (ปิดเว็บไว้ก็ตากต่อ)
         const saltReady = () => !!(veg.sea.salt && veg.sea.salt <= Date.now());
         function startSalt() {
@@ -10260,15 +10254,16 @@
                     : `<button type="button" class="modal-btn btn-primary" ${en >= SEA_COST ? '' : 'disabled'} onclick="startBoat()">🚤 ออกเรือ (ใช้ ⚡${SEA_COST} · ตกได้ ${boatCasts()} ครั้ง)</button>`;
                 const fight = busy && f.state === 'fight' ? `<div class="fish-fight rar-${hooked.r}"><span class="fish-fight-bar"><i style="width:${Math.round(f.taps / f.need * 100)}%"></i></span>
                     <b class="fish-fight-left">อีก ${f.need - f.taps} ครั้ง</b><span class="fish-fight-time"><i style="animation-duration:${Math.max(0, f.until - Date.now())}ms"></i></span></div>` : '';
-                const seaFish = Object.keys(FISH).filter(k => FISH[k].sea), now = seaFish.filter(k => fishOpen(k, 'sea'));
+                const seaFish = Object.keys(FISH).filter(k => FISH[k].sea), now = ecologyFishTable('sea').filter(r=>r.p>0).map(r=>r.key);
                 main = `<div class="pond sea-pond${busy ? ' is-' + f.state : ''}${big ? ' is-big' : ''}" aria-hidden="true"><span class="sea-boat">🚤</span><span class="pond-ripple"></span><span class="pond-float">${busy && f.state === 'bite' ? (big ? '‼️' : '❗') : ''}</span>
                         ${r && r.how === 'catch' && !busy ? `<span class="pond-catch">${FISH[r.caught].e}</span>` : ''}</div>
                     <p class="pond-msg" aria-live="polite">${escHtml(msg)}</p>${fight}
                     <div class="pond-bait" role="radiogroup" aria-label="เหยื่อ">${[['bait', '🪱 เหยื่อหนอน', veg.bait], ['gold', '✨ เหยื่อทอง', veg.goldBait]].map(([k, l, n]) =>
                         `<button type="button" class="chip-btn${bait === k ? ' is-active' : ''}" role="radio" aria-checked="${bait === k}" ${n === 0 || busy ? 'disabled' : ''} onclick="setBait('${k}')">${l} ×${n}</button>`).join('')}</div>
                     <div class="modal-btn-group">${action}</div>
+                    ${ecologyFishPlanHTML('sea')}
                     <div class="pond-now"><span>ตอนนี้ในทะเลมี:</span>${now.map(k => `<span class="pond-now-fish rar-${FISH[k].r}" title="${veg.fishCaught[k] ? FISH[k].name : '???'} · ${RARITY[FISH[k].r].name}">${veg.fishCaught[k] ? FISH[k].e : '❔'}</span>`).join('')}</div>
-                    <div class="pond-dex">${seaFish.map(k => { const x = FISH[k]; return `<button type="button" class="pond-dex-item rar-${x.r}${veg.fishCaught[k] ? '' : ' locked'}" title="${veg.fishCaught[k] ? x.name : '???'}" onclick="openDex('fish', '${k}')">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></button>`; }).join('')}</div>`;
+                    <div class="pond-dex">${seaFish.map(k => { const x = FISH[k]; return `<button type="button" class="pond-dex-item rar-${x.r}${veg.fishCaught[k] ? '' : ' locked'}" title="${veg.fishCaught[k] ? x.name : '???'}" ${busy ? 'disabled' : ''} onclick="openDex('fish', '${k}')">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></button>`; }).join('')}</div>`;
             } else {
                 const t = s.salt, ready = saltReady(), pct = t && !ready ? Math.max(2, Math.min(99, Math.round((1 - (t - Date.now()) / SALT_MS) * 100))) : 100;
                 main = `<div class="farm-card salt-card${ready ? ' is-ready' : ''}"><span class="barn-emoji" aria-hidden="true">🧂</span>
