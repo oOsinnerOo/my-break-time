@@ -18,8 +18,9 @@
     <script src="farm-pixel-art.js?v=20261031-world1"></script>
     <script src="farm-pixel-ui.js?v=20261031-ui2"></script>
     <script src="farm-systems.js?v=20261031-world1"></script>
+    <script src="farm-villagers.js?v=20261101-npc1"></script>
     <script src="farm-room.js?v=20261101-room1"></script>
-    <script src="farm-world.js?v=20261101-room1"></script>
+    <script src="farm-world.js?v=20261101-npc1"></script>
     <script>
         // 😀 ฟอนต์อิโมจิ Noto ทำให้รูปของในเกมหน้าตาเหมือนกันทุกเครื่อง แต่ Google ส่งฟอนต์แบบ SVG ให้ iPhone/iPad/Safari
         // ซึ่งเครื่อง Apple วาดไม่ออก (ขึ้นเป็นช่องว่าง) เครื่อง Apple จึงใช้อิโมจิของเครื่องเสมอ และไม่ต้องโหลดฟอนต์ไฟล์ใหญ่
@@ -3180,6 +3181,7 @@
     <link rel="stylesheet" href="farm-pixel-art.css?v=20261031-ui2">
     <link rel="stylesheet" href="farm-world.css?v=20261101-room1">
     <link rel="stylesheet" href="farm-room.css?v=20261101-room1">
+    <link rel="stylesheet" href="farm-villagers.css?v=20261101-npc1">
 </head>
 <body>
     <script>
@@ -6346,7 +6348,7 @@
                 market: { day: day((v.market || {}).day), sold: Object.fromEntries(Object.entries((v.market || {}).sold && typeof v.market.sold === 'object' ? v.market.sold : {}).filter(([k, n]) => itemInfo(k) && !String(k).includes('~') && int(n, 999)).map(([k, n]) => [k, int(n, 999)])) },
                 barnLv: Math.max(1, int(v.barnLv, BARN_CAPS.length)), machines: loadMachines(v.machines),
                 guide: Object.fromEntries(Object.keys(v.guide && typeof v.guide === 'object' ? v.guide : {}).filter(k => /^[a-z]{1,12}$/.test(k)).map(k => [k, true])),
-                quest: { ch: int((v.quest || {}).ch, 99), daily: day((v.quest || {}).daily) }, museum: loadMuseum(v.museum), pass: loadPass(v.pass),
+                quest: { ch: int((v.quest || {}).ch, 99), daily: day((v.quest || {}).daily) }, villagers: FarmVillagers.cleanState(v.villagers), museum: loadMuseum(v.museum), pass: loadPass(v.pass),
                 ev: loadEvState(v.ev), guards: { sc: int((v.guards || {}).sc, SCARE_MAX), dog: !!(v.guards || {}).dog },
                 secrets: Object.fromEntries(Object.entries(v.secrets && typeof v.secrets === 'object' ? v.secrets : {}).filter(([k]) => SECRETS.some(x => x.id === k)).map(([k, d]) => [k, day(d) || '?'])),
                 energy: { n: v.energy && Number.isFinite(+v.energy.n) ? int(v.energy.n, ENERGY_OVER) : ENERGY_MAX, at: Math.min(Date.now(), +((v.energy || {}).at) || Date.now()) },
@@ -6429,7 +6431,7 @@
                 spooky: Math.min(+e.spooky || 0, now + SPOOKY_MS), lanterns: int(e.lanterns, LANTERN_MAX), carved: int(e.carved, 1e4) };
         }
         let veg = loadVeg();
-        function saveVeg() { safeSetItem('veggie_garden', JSON.stringify(veg)); if (window.FarmWorld) FarmWorld.refresh(); }
+        function saveVeg() { safeSetItem('veggie_garden', JSON.stringify(veg)); if (window.FarmWorld) FarmWorld.refresh(); if (window.FarmVillagers) FarmVillagers.refresh(); }
         function farmLevel(xp = veg.xp) { let l = 1; while (xp >= xpForLevel(l + 1)) l++; return l; }
         function ensurePlots() {
             const n = Math.min(FARM_MAX_PLOTS, plotsForLevel(farmLevel()) + veg.land);
@@ -10518,10 +10520,12 @@
             return { who, need, r: { coins: Math.round(val * 1.4) + 5, xp: 15 } };
         }
         const questCurrent = () => veg.quest.ch < QUESTS.length ? QUESTS[veg.quest.ch] : (veg.quest.daily === dayKeyLocal() ? null : questDaily());
+        const questToken = () => questCurrent() ? (veg.quest.ch < QUESTS.length ? 'main:' + veg.quest.ch : 'daily:' + dayKeyLocal()) : '';
         const questReady = () => { const q = questCurrent(); return !!q && hasItems(q.need); };
-        function deliverQuest() {
+        function deliverQuest(expected) {
+            if (expected !== undefined && expected !== questToken()) return false;
             const q = questCurrent();
-            if (!q || !hasItems(q.need)) return;
+            if (!q || !hasItems(q.need)) return false;
             takeItems(q.need);
             const story = veg.quest.ch < QUESTS.length;
             if (story) veg.quest.ch += 1; else veg.quest.daily = dayKeyLocal();
@@ -10530,11 +10534,12 @@
             if (end) fireConfetti();
             showToast(end ? `🏘️ จบเนื้อเรื่องหมู่บ้านแล้ว! ได้ ${rewardText(q.r)} · ต่อจากนี้มีคำขอประจำวันทุกวัน` : `📜 ${CR[q.who].name}ขอบคุณมาก! ได้ ${rewardText(q.r)}`, 'success', { duration: 5000 });
             renderFarmPanel(); renderFarmStatus(); updateBasketFood();
+            return true;
         }
         function renderQuestTab() {
             const ch = veg.quest.ch, q = questCurrent(), story = ch < QUESTS.length;
             const dots = `<div class="quest-dots" aria-label="บทที่ ${Math.min(ch + 1, QUESTS.length)} จาก ${QUESTS.length}">${QUESTS.map((x, i) => `<i class="${i < ch ? 'is-done' : i === ch ? 'is-now' : ''}"></i>`).join('')}</div>`;
-            let html = `<p class="farm-news">📜 หมู่บ้านข้างฟาร์มกำลังเตรียมงานเทศกาลเก็บเกี่ยว ช่วยชาวบ้านทีละบท ${story ? `(บทที่ ${ch + 1}/${QUESTS.length})` : '· จบเนื้อเรื่องแล้ว 🎉'}</p>${dots}`;
+            let html = `<button type="button" class="chip-btn" onclick="closeFarm(); FarmVillagers.openBook()">สมุดชาวบ้าน · ภารกิจและความสนิท</button><p class="farm-news">📜 หมู่บ้านข้างฟาร์มกำลังเตรียมงานเทศกาลเก็บเกี่ยว ช่วยชาวบ้านทีละบท ${story ? `(บทที่ ${ch + 1}/${QUESTS.length})` : '· จบเนื้อเรื่องแล้ว 🎉'}</p>${dots}`;
             if (q) {
                 const ok = hasItems(q.need), c = CR[q.who];
                 html += `<div class="farm-card order-card quest-card${ok ? ' is-ready' : ''}"><div class="order-who">${c.svg}</div>
@@ -10542,7 +10547,7 @@
                         <span class="farm-card-sub quest-text">${story ? q.text : `${c.name}แวะมาขอของใช้ในหมู่บ้านวันนี้ ช่วยหน่อยนะ`}</span>
                         <div class="farm-chips">${Object.entries(q.need).map(([k, n]) => itemChip(k, n)).join('')}</div>
                         <span class="farm-card-sub">รางวัล: ${rewardText(q.r)}</span></div>
-                    <button type="button" class="shop-buy farm-action" ${ok ? '' : 'disabled'} onclick="deliverQuest()">${ok ? 'ส่งของ ✉️' : 'ของยังไม่ครบ'}</button></div>`;
+                    <button type="button" class="shop-buy farm-action" ${ok ? '' : 'disabled'} onclick="deliverQuest('${questToken()}')">${ok ? 'ส่งของ ✉️' : 'ของยังไม่ครบ'}</button><button type="button" class="chip-btn" onclick="closeFarm(); FarmWorld.meetVillager('${q.who}')">เดินไปหา${c.name}</button></div>`;
             } else html += '<p class="rp-empty">ส่งคำขอประจำวันแล้ว พรุ่งนี้ชาวบ้านจะแวะมาใหม่ 🏘️</p>';
             if (ch > 0) html += `<p class="veg-book-head">บทที่ผ่านมาแล้ว</p><div class="quest-done">${QUESTS.slice(0, ch).map((x, i) => `<span>✅ ${i + 1}. ${x.title}</span>`).join('')}</div>`;
             return html;
@@ -17458,6 +17463,17 @@
                 give: items => {if(Object.entries(items).some(([k,n])=>(veg.inv[k]||0)+n>999))return false;Object.entries(items).forEach(([k,n])=>giveItem(k,n));return true;},
                 clear: resource => {const goods=resource.kind==='tree'?{wood:2}:{stone:2};if(Object.entries(goods).some(([k,n])=>(veg.inv[k]||0)+n>999)||!useEnergy(1))return false;Object.entries(goods).forEach(([k,n])=>giveItem(k,n));return true;},
                 toast: (text,type='info')=>showToast(text,type), closePicker: closeVegPicker
+            });
+            if (window.FarmVillagers) FarmVillagers.start({
+                now: () => Date.now(),
+                read: () => ({state:veg.villagers,day:dayKeyLocal(),level:farmLevel(),weather:todayWeather()}),
+                item: k => ({name:itemInfo(k)?.name||k}),count:countBase,has:hasItems,take:takeItems,reward:giveReward,
+                giftable: k => typeof k==='string' && /^[A-Za-z]+$/.test(k) && !!itemInfo(k) && !isSecretHybrid(k) && !RECIPES[k]?.secret && !k.startsWith('bb'),
+                gifts: () => [...new Set(Object.keys(veg.inv).filter(k=>veg.inv[k]>0).map(baseOf))].filter(k=>/^[A-Za-z]+$/.test(k) && itemInfo(k) && !isSecretHybrid(k) && !RECIPES[k]?.secret && !k.startsWith('bb')),
+                main: () => {const q=questCurrent();return q?{who:q.who,token:questToken(),title:q.title||'คำขอประจำวันของหมู่บ้าน',text:q.text||'ชาวบ้านกำลังเตรียมของใช้สำหรับวันนี้',need:q.need,reward:rewardText(q.r)}:null;},
+                deliverMain: (token,who) => {const q=questCurrent();return !!q&&q.who===who&&token===questToken()&&deliverQuest(token);},
+                save: () => {saveVeg();renderFarmStatus();updateBasketFood();if(farmTabIs('quest'))renderFarmPanel();},
+                toast: (text,type='info') => showToast(text,type)
             });
             if (window.FarmRoom) FarmRoom.start({
                 origin: new URL(MP_API).origin, apiKey: MP_KEY,
