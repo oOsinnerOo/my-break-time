@@ -104,7 +104,7 @@ const deferred=()=>{let resolve,reject;const promise=new Promise((a,b)=>{resolve
 function roomRpcGame(){
     const source=read('index.html'),calls=new Map(),events=[];
     const c={friends:{room:ROOM,player:ME,secret:'test-a',roomName:''},mp:{state:null,at:0,skew:0,loading:false,refreshId:0},Date,
-        mpPush:async()=>{},mpAuth:()=>({p_player:c.friends.player,p_secret:c.friends.secret}),mpCleanState:s=>s,
+        mpPush:async()=>{},wantedSync:async()=>true,mpAuth:()=>({p_player:c.friends.player,p_secret:c.friends.secret}),mpCleanState:s=>s,
         mpCall:(fn,args)=>{if(fn==='bt_claim_events')return Promise.resolve({events:[args.p_player]});const d=deferred();calls.set(args.p_player,d);return d.promise;},
         mpApplyInbox:e=>events.push(...e),mkApplySales(){},saveFriends(){},mpErr:()=>'',mpForget:()=>{c.forgotten=true;},mpTabOpen:()=>false,mpMarkSeen(){},mpRender(){}};
     vm.createContext(c);vm.runInContext(source.slice(source.indexOf('        async function mpRefresh() {'),source.indexOf('        function mpSchedule(')),c);

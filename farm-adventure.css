@@ -1,0 +1,11 @@
+.ad-icon{width:36px;height:36px;flex:0 0 36px;image-rendering:pixelated;shape-rendering:crispEdges;vertical-align:middle}
+.chip-btn .ad-icon{width:20px;height:20px;min-width:20px}
+.ad-route{border:2px solid #8d7666;background:var(--card-bg,#39294e);padding:12px;margin:12px 0;box-shadow:3px 3px 0 #201c36;color:inherit;border-radius:4px}
+.ad-route>.farm-chips{margin:8px 0;gap:7px;flex-wrap:wrap}
+.ad-route .chip-btn:disabled{opacity:.65}
+.ad-route .chip-btn.is-active{border-color:#c6d8a3;background:#567060;color:#fff}
+.ad-bid-log{font-size:12px;margin-top:7px;max-width:100%}.ad-bid-log summary{cursor:pointer;color:#c7dcaf}.ad-bid-log span{display:block;padding:3px 0}
+.ad-store{grid-column:1/-1}.ad-store .farm-card{margin:8px 0}.ad-gear{align-items:center}
+.ad-hint{display:block;font-size:12px;color:#f4dfab;background:#342c44;padding:1px 4px;position:absolute;bottom:0;max-width:100%;white-space:normal;pointer-events:none}
+.ad-wanted{margin:14px 0;padding:12px;border:2px solid #aa8965;border-radius:4px;background:#30253f}.ad-wanted h3{font-size:15px;margin:0 0 10px}.ad-wanted label{display:grid;gap:5px;margin:8px 0}.ad-wanted input,.ad-wanted select{min-width:0;max-width:100%;padding:10px;background:#f6ebd2;color:#392f3d;border:2px solid #aa8965;font:inherit;border-radius:3px}.ad-wanted .mk-form-row{flex-wrap:wrap}.ad-wanted .farm-card{margin:8px 0}.ad-wanted select{width:100%}
+@media(max-width:480px){.ad-route{padding:9px}.ad-gear .farm-chip{font-size:11px}.ad-wanted .shop-buy{white-space:normal}}

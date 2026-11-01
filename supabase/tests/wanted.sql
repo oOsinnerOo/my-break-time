@@ -1,0 +1,55 @@
+begin;
+do $test$
+declare
+  a uuid:=gen_random_uuid(); b uuid:=gen_random_uuid(); c uuid:=gen_random_uuid();
+  room_a text; room_b text; s text:=repeat('a',36); op uuid:=gen_random_uuid(); id bigint; id2 bigint;
+  r jsonb; r2 jsonb; receipt_ids bigint[];
+begin
+  room_a:=translate(upper(substr(md5(a::text),1,6)),'01','23');
+  room_b:=translate(upper(substr(md5(b::text),1,6)),'01','23');
+  insert into breaktime.rooms(code,name,hidden) values(room_a,'QA wanted rollback',true),(room_b,'QA other rollback',true);
+  insert into breaktime.players(id,room_code,secret_hash,name) values
+    (a,room_a,breaktime.hash(s),'QA buyer'),(b,room_a,breaktime.hash(s),'QA seller'),(c,room_b,breaktime.hash(s),'QA other');
+  r:=public.bt_wanted_mutate(a,s,op,'create',null,'carrot',5,7);
+  if not coalesce((r->>'ok')::boolean,false) then raise exception 'create failed: %',r; end if;
+  id:=(r->>'id')::bigint;
+  r2:=public.bt_wanted_mutate(a,s,op,'create',null,'carrot',5,7);
+  if r<>r2 or (select count(*) from breaktime.wanted_orders where buyer_id=a)<>1 then raise exception 'create replay duplicated escrow'; end if;
+  r:=public.bt_wanted_mutate(a,s,op,'create',null,'carrot',6,7);
+  if r->>'error'<>'op_mismatch' then raise exception 'operation key was reused with different goods'; end if;
+  r:=public.bt_wanted_mutate(a,s,gen_random_uuid(),'fill',id,'carrot',1,7);
+  if r->>'error'<>'own' then raise exception 'self fill allowed'; end if;
+  r:=public.bt_wanted_mutate(c,s,gen_random_uuid(),'fill',id,'carrot',1,7);
+  if r->>'error'<>'gone' then raise exception 'cross room fill allowed'; end if;
+  begin perform public.bt_wanted_state(a,'wrong');raise exception 'bad secret allowed';
+  exception when others then if sqlerrm<>'bad_player' then raise;end if;end;
+  op:=gen_random_uuid();r:=public.bt_wanted_mutate(b,s,op,'fill',id,'carrot',2,7);
+  if r->>'total'<>'14' then raise exception 'partial fill total wrong: %',r;end if;
+  perform public.bt_wanted_mutate(b,s,op,'fill',id,'carrot',2,7);
+  if (select sum(coins) from breaktime.wanted_receipts where player_id=b)<>14 then raise exception 'seller double paid';end if;
+  if (select sum(qty) from breaktime.wanted_receipts where player_id=a)<>2 then raise exception 'buyer double delivered';end if;
+  r:=public.bt_wanted_mutate(b,s,gen_random_uuid(),'fill',id,'carrot',4,7);
+  if r->>'error'<>'quantity_changed' then raise exception 'oversell allowed';end if;
+  op:=gen_random_uuid();perform public.bt_wanted_mutate(a,s,op,'cancel',id);
+  perform public.bt_wanted_mutate(a,s,op,'cancel',id);
+  if (select sum(coins) from breaktime.wanted_receipts where player_id=a)<>21 then raise exception 'cancel refund wrong';end if;
+  if (select count(*) from breaktime.events where room_code=room_a and kind='wanted')<>1 then raise exception 'announcement missing or duplicated';end if;
+  r:=public.bt_wanted_mutate(a,s,gen_random_uuid(),'create',null,'wood',3,4);id2:=(r->>'id')::bigint;
+  update breaktime.wanted_orders w set expires_at=now()-interval '1 second' where w.id=id2;
+  perform public.bt_wanted_state(b,s);perform public.bt_wanted_state(a,s);
+  if (select sum(coins) from breaktime.wanted_receipts where player_id=a)<>33 then raise exception 'expiry refund wrong';end if;
+  select array_agg(x.id) into receipt_ids from breaktime.wanted_receipts x where x.player_id=a;
+  perform public.bt_wanted_ack(b,s,receipt_ids);
+  if exists(select 1 from breaktime.wanted_receipts x where x.player_id=a and x.acked) then raise exception 'another actor acked receipts';end if;
+  perform public.bt_wanted_ack(a,s,receipt_ids);
+  if jsonb_array_length(public.bt_wanted_state(a,s)->'receipts')<>0 then raise exception 'acknowledged receipts returned';end if;
+  r:=public.bt_wanted_mutate(a,s,gen_random_uuid(),'create',null,'stone',2,5);
+  update breaktime.players p set left_at=now() where p.id=a;
+  r:=public.bt_wanted_state(a,s);
+  if r->>'active'<>'false' or jsonb_array_length(r->'open')<>0 then raise exception 'left member can see room';end if;
+  if (select sum(coins) from breaktime.wanted_receipts x where x.player_id=a and not x.acked)<>10 then raise exception 'leaving did not refund open requests';end if;
+  if not has_function_privilege('anon','public.bt_wanted_mutate(uuid,text,uuid,text,bigint,text,integer,integer)','EXECUTE') then raise exception 'RPC grant missing';end if;
+  if has_table_privilege('anon','breaktime.wanted_orders','SELECT') or has_table_privilege('anon','breaktime.wanted_receipts','SELECT') then raise exception 'private tables exposed';end if;
+end $test$;
+rollback;
+select 'passed: create, replay, mismatch, auth, room isolation, partial fill, stock race, cancel, expiry, announcement, explicit receipt ACK and leave recovery' as wanted_checks;

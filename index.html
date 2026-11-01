@@ -17,6 +17,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="farm-pixel-art.js?v=20261031-world1"></script>
     <script src="farm-pixel-ui.js?v=20261031-ui2"></script>
+    <script src="farm-adventure.js?v=20261101-adventure3"></script>
+    <script src="farm-adventure-ui.js?v=20261101-adventure3"></script>
+    <script src="farm-wanted.js?v=20261101-adventure3"></script>
+    <link rel="stylesheet" href="farm-adventure.css?v=20261101-adventure3">
     <script src="farm-systems.js?v=20261031-world1"></script>
     <script src="farm-villagers.js?v=20261101-npc1"></script>
     <script src="farm-room.js?v=20261101-room1"></script>
@@ -6299,6 +6303,8 @@
             return {
                 plots, harvest, golden: int(v.golden, 99999), lastWaterAt: +v.lastWaterAt || 0,
                 pestDay: typeof v.pestDay === 'string' ? v.pestDay : '', badge: !!v.badge,
+                adventure: FarmAdventure.cleanAdventure(v.adventure), wanted: cleanWantedSave(v.wanted),
+                overflow: Object.fromEntries(Object.entries(v.overflow && typeof v.overflow === 'object' ? v.overflow : {}).filter(([k]) => itemInfo(k)).map(([k,n]) => [k,int(n,1e9)]).filter(([,n])=>n>0)),
                 inv, cooked: counts(v.cooked, Object.keys(RECIPES)), animals, tools, orders,
                 // ชาวสวนเดิมได้ XP ย้อนหลังจากผักที่เคยเก็บ (ผักละ 10 XP)
                 xp: Math.min(1e7, v.xp !== undefined && Number.isFinite(+v.xp) && +v.xp >= 0 ? Math.floor(+v.xp) : totalHarvest * 10),
@@ -6311,7 +6317,7 @@
                 stall: (() => {
                     const st = v.stall && typeof v.stall === 'object' ? v.stall : {}, sl = Array.isArray(st.slots) ? st.slots : [];
                     return { slots: [0, 1, 2, 3, 4, 5].map(i => { const x = sl[i]; return x && itemInfo(x.key) && int(x.qty, 99) > 0 ? { key: x.key, qty: int(x.qty, 99), price: Math.max(1, int(x.price, 9999)) } : null; }),
-                        cash: int(st.cash, 99999), lastTick: Math.min(Date.now(), +st.lastTick || Date.now()),
+                        cash: int(st.cash, 1e9), lastTick: Math.min(Date.now(), +st.lastTick || Date.now()),
                         log: (Array.isArray(st.log) ? st.log : []).filter(l => l && typeof l.t === 'string').slice(-6).map(l => ({ t: l.t.slice(0, 80) })) };
                 })(),
                 contest: v.contest && typeof v.contest === 'object' && typeof v.contest.week === 'string'
@@ -6393,7 +6399,7 @@
             const okKey = k => typeof k === 'string' && (hasOwn(FARM_PRODUCTS, k) || ['fossil', 'dust', 'bat', 'cavein', 'ladder', 'chest'].includes(k));
             const floor = Math.max(0, int(m.floor, MINE_FLOORS)), deepest = int(m.deepest, MINE_FLOORS);
             const cells = floor && Array.isArray(m.cells) && m.cells.length === 25 && m.cells.every(c => c && okKey(c.k))
-                ? m.cells.map(c => ({ k: c.k, n: Math.max(1, int(c.n, 9)), hp: int(c.hp, 2), open: !!c.open, ...(c.cracked ? { cracked: true } : {}), ...trapBits(c, 'mine') })) : null;
+                ? m.cells.map(c => ({ k: c.k, n: Math.max(1, int(c.n, 9)), hp: int(c.hp, 2), open: !!c.open, hint: !!c.hint, ...(c.cracked ? { cracked: true } : {}), ...trapBits(c, 'mine') })) : null;
             return { floor: cells ? floor : 0, cells, deepest: Math.max(deepest, cells ? floor : 0), lift: Math.min(Math.floor(int(m.lift, MINE_FLOORS) / 5) * 5, Math.floor(deepest / 5) * 5),
                 rocks: int(m.rocks, 1e7), chests: int(m.chests, 1e5),
                 found: Object.fromEntries(Object.entries(m.found && typeof m.found === 'object' ? m.found : {}).filter(([k]) => hasOwn(FARM_PRODUCTS, k)).map(([k, n]) => [k, int(n, 1e6)]).filter(([, n]) => n > 0)) };
@@ -6402,7 +6408,7 @@
             s = s && typeof s === 'object' && !Array.isArray(s) ? s : {};
             const int = (n, max) => Math.min(max, Math.max(0, Math.floor(+n) || 0)), ok = k => typeof k === 'string' && (hasOwn(FARM_PRODUCTS, k) || k === 'trash' || k === 'bottle');
             const cells = Array.isArray(s.cells) && s.cells.length === 8 && s.cells.every(c => c && ok(c.k)) ? s.cells.map(c => ({ k: c.k, n: Math.max(1, int(c.n, 99)), open: !!c.open, ...trapBits(c, 'beach') })) : null;
-            return { cells, beach: int(s.beach, 1e6), boats: int(s.boats, 1e6), casts: int(s.casts, BOAT_CASTS + 2), clean: int(s.clean, 1e6),
+            return { cells, beach: int(s.beach, 1e6), boats: int(s.boats, 1e6), casts: int(s.casts, BOAT_CASTS + 3), clean: int(s.clean, 1e6),
                 salt: Number.isFinite(+s.salt) && +s.salt > 0 ? Math.min(+s.salt, Date.now() + SALT_MS) : 0,
                 found: Object.fromEntries(Object.entries(s.found && typeof s.found === 'object' ? s.found : {}).filter(([k]) => hasOwn(FARM_PRODUCTS, k)).map(([k, n]) => [k, int(n, 1e6)]).filter(([, n]) => n > 0)) };
         }
@@ -6430,8 +6436,9 @@
                 trick: t ? { kid: t.kid, want: t.want, until: Math.min(+t.until, now + TRICK_MS) } : null,
                 spooky: Math.min(+e.spooky || 0, now + SPOOKY_MS), lanterns: int(e.lanterns, LANTERN_MAX), carved: int(e.carved, 1e4) };
         }
+        try { FarmAdventure.recover(localStorage); } catch (e) { window.farmEconomyBlocked = true; }
         let veg = loadVeg();
-        function saveVeg() { safeSetItem('veggie_garden', JSON.stringify(veg)); if (window.FarmWorld) FarmWorld.refresh(); if (window.FarmVillagers) FarmVillagers.refresh(); }
+        function saveVeg() { const saved = !window.farmEconomyBlocked && safeSetItem('veggie_garden', JSON.stringify(veg)); if (window.FarmWorld) FarmWorld.refresh(); if (window.FarmVillagers) FarmVillagers.refresh(); return !!saved; }
         function farmLevel(xp = veg.xp) { let l = 1; while (xp >= xpForLevel(l + 1)) l++; return l; }
         function ensurePlots() {
             const n = Math.min(FARM_MAX_PLOTS, plotsForLevel(farmLevel()) + veg.land);
@@ -6447,10 +6454,20 @@
             });
         }
         // ยุ้งฉาง: เก็บแยกตามดาว เวลาส่งออเดอร์/ทำอาหารนับรวมทุกดาว และใช้ของดาวน้อยก่อน (เก็บของดีไว้ขายแพง)
-        function giveItem(k, n = 1) { veg.inv[k] = Math.min(999, (veg.inv[k] || 0) + n); }
+        function giveItem(k, n = 1) {
+            n = Math.max(0, Math.floor(+n) || 0); if (!itemInfo(k) || !n) return;
+            const before = veg.inv[k] || 0, fit = Math.min(n, 999 - before);
+            veg.inv[k] = before + fit;
+            if (fit < n) { veg.overflow ||= {}; veg.overflow[k] = (veg.overflow[k] || 0) + n - fit; }
+        }
         const countBase = b => Object.keys(veg.inv).reduce((s, k) => s + (baseOf(k) === b ? veg.inv[k] : 0), 0);
         function hasItems(items) { return Object.entries(items).every(([k, n]) => countBase(k) >= n); }
-        function takeExact(k, n = 1) { veg.inv[k] = (veg.inv[k] || 0) - n; if (veg.inv[k] <= 0) delete veg.inv[k]; }
+        function takeExact(k, n = 1) {
+            veg.inv[k] = Math.max(0, (veg.inv[k] || 0) - n);
+            const extra = Math.min(999 - veg.inv[k], (veg.overflow || {})[k] || 0);
+            if (extra) { veg.inv[k] += extra; veg.overflow[k] -= extra; if (!veg.overflow[k]) delete veg.overflow[k]; }
+            if (!veg.inv[k]) delete veg.inv[k];
+        }
         function takeItems(items, hi) {
             const used = [];
             Object.entries(items).forEach(([b, n]) => {
@@ -7800,6 +7817,7 @@
             return KIND_ORDER[A.kind] - KIND_ORDER[B.kind] || A.base.localeCompare(B.base) || A.q - B.q;
         });
         function renderFarmPanel() {
+            if (farmTab === 'stall' && !wanted.busy && !veg.wanted.pending && wantedTyping()) return;
             if (farmTab === 'event' && !activeFarmEvent()) farmTab = 'orders';
             const lvl = farmLevel(), w = WEATHERS[todayWeather()], s = FARM_SEASONS[farmSeason()];
             document.getElementById('farm-meta').innerHTML = `🧑‍🌾 เลเวล ${lvl}${lvl >= FOREST_LEVEL ? ` · ⚡ ${energyNow()}/${ENERGY_MAX} · ❤️ ${hpNow()}/${hpMax()}` : ''} · ${w.e} ${w.name}: ${w.note} · ${s.e} ${s.name} · 🔮 ${forecastDays().map(x => WEATHERS[x.w].e).join('')}`;
@@ -7834,7 +7852,7 @@
                 }).join('') + '<p class="shop-note">ออเดอร์ใหม่มาทุกวันวันละ 6 ใบ รีเซ็ตเป็นชุดใหม่ได้วันละ 2 ครั้ง 🎁 บางใบมีของรางวัลพิเศษที่ซื้อในร้านไม่ได้ · ส่งของจะใช้ของดาวน้อยก่อน · 💬 ขอค่าจ้างเพิ่มได้ใบละครั้ง (ชื่อเสียงร้านสูง ลูกค้ายอมง่ายขึ้น)</p>';
             } else if (farmTab === 'barn') {
                 const keys = barnKeys();
-                body.innerHTML = `<p class="farm-news">${escHtml(newsLine())}</p>` + (keys.length ? `<div class="barn-grid">${keys.map(k => {
+                body.innerHTML = renderOverflow() + `<p class="farm-news">${escHtml(newsLine())}</p>` + (keys.length ? `<div class="barn-grid">${keys.map(k => {
                     const it = itemInfo(k), m = priceMult(k), price = sellPrice(k);
                     return `<div class="barn-item${it.q > 1 ? ' q' + it.q : ''}${rarClass(k)}"><span class="barn-emoji">${it.icon || it.e}</span><span class="farm-card-title">${it.name} ×${veg.inv[k]}</span>${rarTag(itemRarity(k))}
                         ${it.q > 1 ? `<span class="barn-stars q${it.q}" title="${QUALITY_NAME[it.q]}" aria-label="คุณภาพ${QUALITY_NAME[it.q]} ${it.q} ดาว">${'★'.repeat(it.q)}</span>` : ''}
@@ -7938,12 +7956,9 @@
         function addRep(n) { veg.rep = Math.max(0, Math.min(100, veg.rep + n)); }
         const collectorItem = key => itemInfo(key).q >= 4 || rarAtLeast(itemRarity(key), 'epic');
         function newHaggle(i, s, at) {
-            const types = Object.keys(HAGGLE_TYPES).filter(t => !HAGGLE_TYPES[t].rare || collectorItem(s.key));
-            const persona = pick(types), t = HAGGLE_TYPES[persona];
-            const maxMult = (Array.isArray(t.max) ? rnd(t.max[0], t.max[1]) : t.max) * (0.95 + veg.rep / 1000);
-            return { id: Math.floor(at / 1000) % 1e8 * 10 + i, who: pick(Object.keys(CR)), slot: i, key: s.key, qty: Math.min(s.qty, 1 + Math.floor(Math.random() * 3)), persona,
-                offer: Math.max(1, Math.round(s.price * rnd(t.open[0], t.open[1]))), max: Math.max(2, Math.round(s.price * maxMult)),
-                left: t.patience + (veg.rep >= 80 ? 1 : 0), mood: 0, until: at + HAGGLE_MS, note: '' };
+            const deal = FarmAdventure.haggle({ key: s.key, price: s.price, ref: marketPrice(s.key), rep: veg.rep, rare: collectorItem(s.key) });
+            return { id: Math.floor(at / 1000) % 1e8 * 10 + i, ...deal, slot: i, key: s.key,
+                qty: Math.min(s.qty, 1 + Math.floor(Math.random() * 3)), mood: 0, until: at + HAGGLE_MS };
         }
         // ราคาที่ขอเพิ่ม 3 ขั้น (+5% · +10% · +20%) ของถูกๆ ปัดแล้วไม่ซ้ำกัน อย่างน้อยขั้นละ 1 เหรียญ
         function haggleAsks(h) { const out = []; [5, 10, 20].forEach(p => out.push(Math.max((out[out.length - 1] || h.offer) + 1, Math.round(h.offer * (1 + p / 100))))); return out; }
@@ -7953,28 +7968,29 @@
         function haggleAct(id, act) {
             const h = veg.haggles.find(x => x.id === id);
             if (!h) return;
+            if (h.until <= Date.now()) { dropHaggle(h); saveVeg(); showToast('ลูกค้ากลับไปแล้ว รอคนถัดไปนะ', 'info'); renderFarmPanel(); return; }
             const s = haggleSrc(h), c = CR[h.who], t = HAGGLE_TYPES[h.persona];
             if (!haggleAlive(h)) { dropHaggle(h); saveVeg(); renderFarmPanel(); renderFarmStatus(); return; }
             if (act === 'no') { dropHaggle(h); saveVeg(); showToast(`👋 บอก${c.name}ว่าไม่ขายราคานี้ ของยังอยู่${h.slot < 0 ? 'ในยุ้งฉาง' : 'บนแผง'}`, 'info'); renderFarmPanel(); renderFarmStatus(); return; }
             if (act === 'yes') { sellHaggle(h, h.offer, false); return; }
             const ask = haggleAsks(h)[[5, 10, 20].indexOf(+act)] || haggleAsks(h)[0];
             if (ask <= h.max) { sellHaggle(h, ask, true); return; }
-            h.left -= 1; h.mood += 1;
+            h.left -= 1; h.mood += ask > h.max * 1.25 ? 2 : 1;
             if (h.left <= 0) {
-                dropHaggle(h); addRep(-3); saveVeg(); playSound('pop');
-                showToast(`😤 ${c.name}ว่าแพงเกินไปแล้วเดินหนีไป · เขาคือ${t.e} ${t.name} · ชื่อเสียงร้าน −3`, 'info', { duration: 5000 });
+                dropHaggle(h); addRep(ask > h.max * 1.5 ? -1 : 0); saveVeg(); playSound('pop');
+                showToast(`💬 ${c.name}: วันนี้งบไม่ถึงจริง ๆ ไว้แวะมาใหม่นะ`, 'info', { duration: 5000 });
                 renderFarmPanel(); return;
             }
             const before = h.offer;
             h.offer = Math.max(h.offer, Math.min(h.max, Math.round(h.offer + (h.max - h.offer) * 0.5)));
-            h.note = `ขอ 🪙${ask} แพงไป! ${h.offer > before ? `${c.name}ขยับให้เป็น 🪙${h.offer}` : `${c.name}ยืนราคาเดิม`}`;
+            h.note = h.offer > before ? `ขยับให้ได้ถึง 🪙${h.offer} ต่อชิ้น รวม 🪙${h.offer * Math.min(h.qty,s.qty)} ไหวไหม?` : `งบสุดท้ายได้ 🪙${h.offer} ต่อชิ้นจริง ๆ นะ ถ้าไม่สะดวกก็ไม่เป็นไร`;
             saveVeg(); playSound('pop'); renderFarmPanel();
         }
         function sellHaggle(h, price, haggled) {
             const st = veg.stall, s = haggleSrc(h), qty = Math.min(h.qty, s.qty), it = itemInfo(h.key), c = CR[h.who], t = HAGGLE_TYPES[h.persona];
             if (h.slot < 0) takeExact(h.key, qty);
             else { s.qty -= qty; if (!s.qty) st.slots[h.slot] = null; }
-            st.cash = Math.min(99999, st.cash + qty * price); veg.stats.stallSold += qty; passNote('stall', qty);
+            st.cash = st.cash + qty * price; veg.stats.stallSold += qty; passNote('stall', qty);
             if (haggled) veg.stats.haggle += 1;
             st.log.push({ t: `💬 ${c.name}ต่อรองซื้อ${it.name}${starText(it.q)} ×${qty} · 🪙${qty * price}` }); st.log = st.log.slice(-6);
             dropHaggle(h); veg.haggles = veg.haggles.filter(haggleAlive);
@@ -9312,9 +9328,7 @@
             if (!u || lv >= UPG_MAX) return;
             const coins = UPG_COINS[lv], need = upgNeed(k, lv), mats = u.mats[lv];
             if (farmLevel() < need || shop.coins < coins || !hasItems(mats)) return;
-            shop.coins -= coins; saveShop(); updateCoinUI();
-            takeItems(mats);
-            veg.upg[k] = lv + 1; saveVeg();
+            if (!farmTrade(()=> { shop.coins -= coins; takeItems(mats); veg.upg[k] = lv + 1; })) return;
             addXP(10 + lv * 5); playSound('welcome');
             if (lv + 1 === UPG_MAX) fireConfetti();
             showToast(`${u.e} อัปเกรด${u.name}เป็นระดับ ${lv + 1} แล้ว! ${u.perk(lv + 1)[0]}`, 'success', { duration: 5000 });
@@ -9336,7 +9350,7 @@
                         <div class="farm-chips"><span class="farm-chip${shop.coins < coins ? ' is-short' : ''}">🪙 <b>${Math.min(shop.coins, coins)}/${coins}</b></span>${Object.entries(mats).map(([m, n]) => itemChip(m, n)).join('')}</div>`}</div>
                     ${max ? '<span class="farm-done">สูงสุดแล้ว ✨</span>' : lvl < need ? `<button type="button" class="shop-buy farm-action" disabled>🔒 เลเวล ${need}</button>`
                         : `<button type="button" class="shop-buy farm-action" ${ok ? '' : 'disabled'} onclick="upgradeTool('${k}')">${ok ? 'อัปเกรด ⬆️' : 'ของยังไม่ครบ'}</button>`}</div>`;
-            }).join('') + '<p class="shop-note">วัตถุดิบใช้ของดาวน้อยก่อน · อาหารอย่างขนมปังกับสลัดทำได้ในครัว</p>' + renderGuardSection();
+            }).join('') + '<p class="shop-note">วัตถุดิบใช้ของดาวน้อยก่อน · อาหารอย่างขนมปังกับสลัดทำได้ในครัว</p>' + renderAdventureGear() + renderGuardSection();
         }
 
         // --- 🛡️ กันเพื่อนแอบเก็บ: หุ่นไล่กา (เพื่อนต้องรอนานขึ้น + ยามหันไวขึ้น) และหมาเฝ้าสวน (ผู้เฝ้าคนที่สองในมินิเกมย่อง) ---
@@ -9624,7 +9638,7 @@
             if (!c.trap || c.hit) return null;
             const [e, name, lo, hi] = TRAPS[z][c.trap];
             c.hit = 1;
-            const d = hurt(Math.round((lo + Math.random() * (hi - lo)) * (c.risk ? 1 : 0.6)));
+            const d = hurt(Math.round((lo + Math.random() * (hi - lo)) * (c.risk ? 1 : 0.6) * (1 - .15 * adGear('gloves'))));
             return { lost: !!c.risk, down: veg.hp <= 0, msg: c.risk ? `${e} โดน${name}! เลือด −${d} (❤️ ${hpNow()}/${hpMax()}) ของตรงนี้หลุดมือไป` : `${e} มี${name}ซ่อนอยู่! เลือด −${d} (❤️ ${hpNow()}/${hpMax()})` };
         }
         const riskMsg = z => `⚠️ ตรงนี้ดูน่าสงสัย ของน่าจะดีกว่าที่อื่น แต่อาจมี${Object.values(TRAPS[z]).map(t => t[1]).join(' ')} · เสี่ยงดู หรือเดินอ้อม?`;
@@ -9646,6 +9660,7 @@
         function tripNote(z, k, n) { if (veg.trip.z === z && n > 0) { veg.trip.got.push([k, n]); veg.trip.got = veg.trip.got.slice(-60); } }
         // 😵 เลือดหมด: สลบ ถูกหามกลับบ้าน รอบนี้จบ ของที่เก็บได้รอบนี้หายไปราว 30% (สกิลเอาตัวรอดขั้น 5 ของไม่หาย)
         function faint(z) {
+            delete veg.adventure.active[z];
             let lost = [];
             if (veg.trip.z === z && sk('survive') < SKILL_MAX) {
                 const tot = {};
@@ -9689,6 +9704,7 @@
             return { k, n: lo + Math.floor(Math.random() * (hi - lo + 1)), open: false };
         }
         function startForest() {
+            if (!adCanStart('forest')) return;
             const f = veg.forest, cost = forestCost();
             if (farmLevel() < FOREST_LEVEL || (f.cells && f.cells.some(c => !c.open))) return;
             if (hpNow() < HP_TRIP) { forestMsg = hpLowMsg(); renderFarmPanel(); return; }
@@ -9701,6 +9717,7 @@
                 if (!cells.some(c => c.k === 'wood')) cells[Math.floor(Math.random() * 9)] = { k: 'wood', n: 1, open: false }; // ทุกรอบได้ไม้อย่างน้อย 1
                 armTraps('forest', cells, () => { const x = rollForestCell(['squirrel', 'monkey', 'leaves'], 6); return { k: x.k, n: x.n + 1 }; }, 1 + (Math.random() < 0.5 ? 1 : 0), 0.04);
             }
+            cells = adStart('forest', cells);
             Object.assign(f, { cells, got: [], trips: Math.min(1e6, f.trips + 1) });
             veg.trip = { z: 'forest', got: [] }; riskAsk = '';
             forestMsg = `🌲 เข้าป่าแล้ว แตะพุ่มไม้ให้ครบ 9 จุด มีอะไรซ่อนอยู่บ้างนะ${cells.some(c => c.risk) ? ' · ระวังพุ่มที่มีป้าย ⚠️' : ''}${free ? ' · สกิลนักสำรวจป่า: รอบนี้ไม่เสียแรง!' : ''}`; forestNew = -1;
@@ -9764,7 +9781,7 @@
             else if (c.risk && !tr) forestMsg = `⚠️ เสี่ยงแล้วคุ้ม! ${forestMsg}`;
             addXP(1);
             if (tr && tr.down) { faint('forest'); return; }
-            forestDone();
+            adProgress('forest',c,'find'); forestDone();
             saveVeg(); playSound(sound);
             renderFarmPanel(); renderFarmStatus(); updateBasketFood();
         }
@@ -9850,7 +9867,7 @@
             const seeds = Object.keys(FOREST_CROPS);
             const dexCells = [...FOREST_FINDS.map(k => [k, f.found[k] || 0, itemInfo(k)]), ...seeds.map(s => [s, f.found['seed:' + s] || 0, { e: VEGGIES[s].e, name: 'เมล็ด' + VEGGIES[s].name }])]
                 .map(([k, n, it]) => n ? `<div class="museum-cell is-have"><span>${it.icon || it.e}</span><small>${it.name}</small><b class="forest-n">${n}</b></div>` : `<div class="museum-cell"><span>❔</span><small>???</small></div>`).join('');
-            const html = `${bar}${scene}<p class="pond-msg forest-msg" aria-live="polite">${escHtml(forestMsg || 'เดินป่ารอบละ 9 พุ่ม แต่ละพุ่มซ่อนของไว้ บางพุ่มมีกระรอกใจดี บางพุ่มมีลิงจอมซน 🐒')}</p>`
+            const html = `${bar}${renderAdventureRoute('forest')}${scene}<p class="pond-msg forest-msg" aria-live="polite">${escHtml(forestMsg || 'เดินป่ารอบละ 9 พุ่ม แต่ละพุ่มซ่อนของไว้ บางพุ่มมีกระรอกใจดี บางพุ่มมีลิงจอมซน 🐒')}</p>`
                 + `${riskAskHTML('forest', 'openBush')}${eat}<div class="modal-btn-group">${action}</div>`
                 + `<p class="veg-book-head">🪚 งานไม้: ทำของแต่งสวนจากไม้ป่า (วางในสวนให้เลย)</p>${craft}`
                 + `<p class="veg-book-head">🌲 ของป่าที่เคยเจอ · เดินป่าแล้ว ${f.trips} รอบ</p><div class="museum-grid">${dexCells}</div>`
@@ -9898,15 +9915,16 @@
             const deep = mineTable(Math.min(MINE_FLOORS, f + 6)).filter(x => !['dust', 'bat', 'cavein'].includes(x[0])), wd = x => x[1] * (x[4] ? luck * 4 : 1), wt = deep.reduce((s, x) => s + wd(x), 0);
             if (f >= 2) armTraps('mine', cells, () => { let r = Math.random() * wt; const [k, , lo, hi] = deep.find(x => (r -= wd(x)) <= 0) || deep[0]; return { k, n: lo + Math.floor(Math.random() * (hi - lo + 1)) }; },
                 1 + Math.floor(Math.random() * 2) + (f >= 15 ? 1 : 0), 0.025);
-            return cells;
+            return adPrepare('mine', cells, f);
         }
         let mineMsg = '', mineNew = -1;
         function enterMine(start) {
+            if (!adCanStart('mine')) return;
             const m = veg.mine;
             if (farmLevel() < MINE_LEVEL || m.floor) return;
             if (hpNow() < HP_TRIP) { mineMsg = hpLowMsg(); renderFarmPanel(); return; }
             start = start === 1 || (start % 5 === 0 && start <= m.lift) ? start : 1;
-            Object.assign(m, { floor: start, cells: mineFloorCells(start) });
+            Object.assign(m, { floor: start, cells: adStart('mine', mineFloorCells(start), start) });
             veg.trip = { z: 'mine', got: [] }; riskAsk = '';
             mineMsg = start > 1 ? `🛗 ลงลิฟต์มาชั้น ${start} แล้ว ทุบหินหาบันไดลงต่อ` : '⛏️ เข้าเหมืองแล้ว ทุบหินก้อนละ 1 ⚡ หาบันไดลงชั้นถัดไป';
             mineNew = -1; saveVeg(); playSound('pop');
@@ -9975,13 +9993,14 @@
             else if (c.risk && !tr) mineMsg = `⚠️ เสี่ยงแล้วคุ้ม! ${mineMsg}`;
             addXP(1);
             if (tr && tr.down) { faint('mine'); return; }
+            adProgress('mine',c,'rock');
             saveVeg(); playSound(sound);
             renderFarmPanel(); renderFarmStatus(); updateBasketFood();
         }
         function mineDown() {
             const m = veg.mine;
             if (!m.floor || m.floor >= MINE_FLOORS || !m.cells.some(c => c.k === 'ladder' && c.open)) return;
-            m.floor += 1; bossAdd('mine', 1);
+            m.floor += 1; adProgress('mine',null,'down'); bossAdd('mine', 1);
             const first = m.floor > m.deepest;
             if (first) { m.deepest = m.floor; addXP(3); }
             const lift = m.floor % 5 === 0 && m.floor > m.lift;
@@ -10057,7 +10076,7 @@
                     + `<div class="mine-scene" style="--depth:${Math.min(1, m.floor / MINE_FLOORS).toFixed(2)}">${m.cells.map((c, i) => {
                         const go = c.open && c.k === 'ladder';
                         return `<button type="button" class="mine-rock${c.open ? ' is-open' : ''}${c.hp > 1 ? ' is-hard' : ''}${!c.open && c.risk ? ' is-risk' : ''}${c.open && i === mineNew ? ' is-new' : ''}${go ? ' is-ladder' : ''}" ${!c.open || go ? '' : 'disabled'} onclick="hitRock(${i})"`
-                            + ` aria-label="${c.open ? (go ? 'ลงบันได' : 'เจอแล้ว: ' + mineLabel(c)) : `หินก้อนที่ ${i + 1}${c.hp > 1 ? ' (แข็ง)' : ''}${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${c.open ? `<span class="mr-rubble"></span><span class="fb-find">${mineFace(c)}</span>` : mineRockSVG(c, m.floor, i) + (c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : '')}</button>`;
+                            + ` aria-label="${c.open ? (go ? 'ลงบันได' : 'เจอแล้ว: ' + mineLabel(c)) : `หินก้อนที่ ${i + 1}${c.hp > 1 ? ' (แข็ง)' : ''}${c.hint ? ' (เบาะแส: '+mineLabel(c)+')' : ''}${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${c.open ? `<span class="mr-rubble"></span><span class="fb-find">${mineFace(c)}</span>` : mineRockSVG(c, m.floor, i) + (c.hint ? `<small class="ad-hint">${escHtml(mineLabel(c))}</small>` : '') + (c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : '')}</button>`;
                     }).join('')}</div>`
                     + `<p class="pond-msg forest-msg" aria-live="polite">${escHtml(mineMsg)}</p>` + riskAskHTML('mine', 'hitRock')
                     + `<div class="modal-btn-group">${ladder && m.floor < MINE_FLOORS ? `<button type="button" class="modal-btn btn-primary" onclick="mineDown()">🪜 ลงชั้น ${m.floor + 1}</button>` : ''}<button type="button" class="modal-btn btn-secondary" onclick="leaveMine()">🏃 ขึ้นจากเหมือง</button></div>`;
@@ -10067,7 +10086,7 @@
                 }
             }
             const cells = [...MINE_FINDS, ...MINE_FOSSILS].map(k => { const n = m.found[k] || 0, it = itemInfo(k); return n ? `<div class="museum-cell is-have"><span>${it.icon || it.e}</span><small>${it.name}</small><b class="forest-n">${n}</b></div>` : '<div class="museum-cell"><span>❔</span><small>???</small></div>'; }).join('');
-            const html = energyBoxHTML() + main
+            const html = energyBoxHTML() + renderAdventureRoute('mine') + main
                 + `<p class="veg-book-head">🔨 งานหินและโลหะ: ทำของแต่งสวน (วางในสวนให้เลย)</p>${zoneCraftHTML(MINE_DECOR)}`
                 + `<p class="veg-book-head">💎 ของจากเหมืองที่เคยเจอ · ทุบหินไปแล้ว ${m.rocks} ก้อน${m.chests ? ` · เปิดหีบสมบัติ ${m.chests} ครั้ง` : ''}</p><div class="museum-grid">${cells}</div>`
                 + '<p class="shop-note">หินก้อนละ 1 ⚡ (หินแข็ง 2 ที) · แร่ใส่เตาถลุงที่โรงแปรรูปได้แท่งโลหะ ใช้อัปเกรดเครื่องมือขั้น 6–7 · อัญมณีดิบเจียระไนแล้วราคา ×3 · ฟอสซิลครบ 8 ชิ้นต่อเป็นโครงไดโนเสาร์ในพิพิธภัณฑ์ · ⛏️ อัปเกรดอีเต้อที่แท็บอัปเกรด</p>';
@@ -10093,10 +10112,11 @@
             ['seaweed', 12, 1, 3], ['coral', 4, 1, 1, true], ['pearl', 1, 1, 1, true], ['wood', 5, 1, 2], ['trash', 7, 1, 1], ['bottle', 2.5, 1, 1]];
         const BEACH_FINDS = ['conch', 'scallop', 'starfish', 'seaGlass', 'giantClam', 'seaCrab', 'seaweed', 'coral', 'pearl'];
         const BOTTLE_NOTES = ['"ใครเก็บได้ ขอให้วันนี้ได้พักครบทุกเบรกนะ"', '"ฉันอยู่เกาะข้างๆ ปลูกมะพร้าวเยอะมาก มาเที่ยวสิ"', '"แผนที่สมบัติ… ล้อเล่น ข้างในมีแค่เหรียญ"', '"อย่าลืมดื่มน้ำ อย่าลืมยืดเส้น"', '"จากนางเงือกที่เบื่อปลาทู"'];
-        const boatCasts = () => BOAT_CASTS + (gdSetOn('ocean') ? 1 : 0) + (sk('sea') >= SKILL_MAX ? 1 : 0);
+        const boatCasts = () => BOAT_CASTS + (gdSetOn('ocean') ? 1 : 0) + (sk('sea') >= SKILL_MAX ? 1 : 0) + (adGear('tidechart')>=2 ? 1 : 0);
         let seaView = 'beach', seaMsg = '', seaNew = -1;
         function setSeaView(v) { if (fishing.state !== 'idle' && fishing.where === 'sea') return; seaView = v; seaMsg = ''; renderFarmPanel(); }
         function startBeach() {
+            if (!adCanStart('beach')) return;
             const s = veg.sea;
             if (farmLevel() < SEA_LEVEL || (s.cells && s.cells.some(c => !c.open))) return;
             if (hpNow() < HP_TRIP) { seaMsg = hpLowMsg(); renderFarmPanel(); return; }
@@ -10114,6 +10134,7 @@
                 const good = BEACH_LOOT.filter(x => !['trash', 'bottle'].includes(x[0])), w5 = x => w(x) * (x[4] ? 5 : 1), gt = good.reduce((a, x) => a + w5(x), 0);
                 armTraps('beach', cells, () => { let r = Math.random() * gt; const [k, , lo, hi] = good.find(x => (r -= w5(x)) <= 0) || good[0]; return { k, n: lo + Math.floor(Math.random() * (hi - lo + 1)) }; }, 1 + (Math.random() < 0.4 ? 1 : 0), 0.04);
             }
+            cells = adStart('beach', cells);
             Object.assign(s, { cells, beach: Math.min(1e6, s.beach + 1) });
             veg.trip = { z: 'beach', got: [] }; riskAsk = '';
             seaMsg = `🏝️ น้ำลงแล้ว! แตะกองทรายที่มีประกายวิบวับให้ครบ 8 จุด${cells.some(c => c.risk) ? ' · ระวังกองที่มีป้าย ⚠️' : ''}${free ? ' · สกิลชาวเล: รอบนี้ไม่เสียแรง!' : ''}`; seaNew = -1;
@@ -10149,7 +10170,7 @@
             else if (c.risk && !tr) seaMsg = `⚠️ เสี่ยงแล้วคุ้ม! ${seaMsg}`;
             addXP(1);
             if (tr && tr.down) { faint('beach'); return; }
-            beachDone();
+            adProgress('beach',c,'find'); beachDone();
             saveVeg(); playSound(sound);
             renderFarmPanel(); renderFarmStatus(); updateBasketFood();
         }
@@ -10225,7 +10246,7 @@
                 main = `<div class="forest-scene beach-scene${open ? ' is-trip' : ''}">${BEACH_BG}${cells.map((c, i) => {
                     const [x, y] = BEACH_POS[i], done = !!(c && c.open), face = !done ? '' : c.skip ? '↪️' : c.hit && c.risk ? TRAPS.beach[c.trap][0] : c.k === 'trash' ? '🧴' : c.k === 'bottle' ? '🍾' : `${itemInfo(c.k).e}${c.n > 1 ? `<b>×${c.n}</b>` : ''}`;
                     return `<button type="button" class="forest-bush sand-spot${done ? ' is-open' : ''}${done && i === seaNew ? ' is-new' : ''}${c && !done && c.risk ? ' is-risk' : ''}" style="left:${x}%;top:${y}%;z-index:${y}" ${c && !done ? '' : 'disabled'} onclick="digSand(${i})"`
-                        + ` aria-label="${!c ? 'กองทราย (เริ่มเดินชายหาดก่อน)' : done ? 'เจอแล้ว' : `กองทรายที่ ${i + 1} แตะเพื่อขุด${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${sandSVG(i)}${c && !done && c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : ''}${done ? `<span class="fb-find">${face}</span>` : ''}</button>`;
+                        + ` aria-label="${!c ? 'กองทราย (เริ่มเดินชายหาดก่อน)' : done ? 'เจอแล้ว' : `กองทรายที่ ${i + 1} แตะเพื่อขุด${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${sandSVG(i)}${c && !done && i < adGear('tidechart') ? `<small class="ad-hint">${c.k === 'trash' ? 'ขยะเกยหาด' : c.k === 'bottle' ? 'ขวดจดหมาย' : escHtml(itemInfo(c.k).name)}</small>` : ''}${c && !done && c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : ''}${done ? `<span class="fb-find">${face}</span>` : ''}</button>`;
                 }).join('')}${!open ? `<span class="forest-hint">${s.cells ? 'เดินครบหาดแล้ว 🐚' : 'กดเดินชายหาดเพื่อเริ่ม'}</span>` : ''}</div>`
                     + `<p class="pond-msg forest-msg" aria-live="polite">${escHtml(seaMsg || 'น้ำลงทีไรมีของขึ้นมาเกยหาด เปลือกหอย ปู สาหร่าย ปะการัง บางทีมีไข่มุกด้วย 🫧')}</p>`
                     + riskAskHTML('beach', 'digSand') + `<div class="modal-btn-group">${open ? `<span class="farm-done">ขุดทรายที่เหลืออีก ${s.cells.filter(c => !c.open).length} จุด</span>` : `<button type="button" class="modal-btn btn-primary" ${en >= SEA_COST ? '' : 'disabled'} onclick="startBeach()">🏝️ เดินชายหาด (ใช้ ⚡${SEA_COST})</button>`}</div>`;
@@ -10258,7 +10279,7 @@
                     + `<p class="pond-msg forest-msg" aria-live="polite">${escHtml(seaMsg)}</p><p class="shop-note">เกลือใช้ที่โรงตากปลา (ปลาทูเค็ม ทูน่ากระป๋อง น้ำปลา) และเมนูทะเลในครัว</p>`;
             }
             const finds = BEACH_FINDS.map(k => { const n = s.found[k] || 0, it = itemInfo(k); return n ? `<div class="museum-cell is-have"><span>${it.icon || it.e}</span><small>${it.name}</small><b class="forest-n">${n}</b></div>` : '<div class="museum-cell"><span>❔</span><small>???</small></div>'; }).join('');
-            const html = energyBoxHTML() + seg + main
+            const html = energyBoxHTML() + seg + (seaView === 'beach' ? renderAdventureRoute('beach') : '') + main
                 + `<p class="veg-book-head">🐚 งานเปลือกหอย: ทำของแต่งสวน (วางในสวนให้เลย)</p>${zoneCraftHTML(SEA_DECOR)}`
                 + `<p class="veg-book-head">🌊 ของจากชายหาด · เดินหาด ${s.beach} รอบ · ออกเรือ ${s.boats} รอบ${s.clean ? ` · เก็บขยะ ${s.clean} ชิ้น 💙` : ''}</p><div class="museum-grid">${finds}</div>`
                 + '<p class="shop-note">เดินชายหาด/ออกเรือ ครั้งละ 3 ⚡ · ออกเรือตกได้ 3 ครั้ง ต้องใช้เหยื่อทุกครั้ง (ซื้อที่บ่อปลา หรือได้จากถังหมัก) · ปลาทะเลเข้าตู้ปลาในพิพิธภัณฑ์ได้ · คันเบ็ดที่อัปเกรดแล้วใช้ในทะเลได้ด้วย</p>';
@@ -10846,7 +10867,7 @@
                 id: p.id, name: mpCleanName(p.name) || 'เพื่อน', avatar: mpCleanName(p.avatar, 8) || MP_AVATARS[0], farm: cleanFriendFarm(p.farm),
                 seen: Date.parse(p.seen) || 0, helps: int(p.helps, 9999), gifts: int(p.gifts, 9999)
             }));
-            const kinds = ['join', 'leave', 'water', 'pest', 'gift', 'wave'];
+            const kinds = ['join', 'leave', 'water', 'pest', 'gift', 'wave', 'wanted', 'wanted_fill'];
             const feed = (Array.isArray(s.feed) ? s.feed : []).filter(e => e && kinds.includes(e.kind)).slice(0, 30).map(e => ({
                 id: int(e.id, Number.MAX_SAFE_INTEGER), kind: e.kind, from: str(e.from, 36), fromName: mpCleanName(e.from_name) || 'เพื่อน',
                 to: str(e.to, 36), toName: mpCleanName(e.to_name), data: e.data && typeof e.data === 'object' ? e.data : {}, at: Date.parse(e.at) || 0
@@ -10887,11 +10908,13 @@
                 if (mp.state.roomName && mp.state.roomName !== friends.roomName) { friends.roomName = mp.state.roomName; saveFriends(); }
             } catch (e) {
                 if (!current()) return;
-                if (e.message === 'bad_player') { mpForget('คุณไม่ได้อยู่ในห้องนี้แล้ว เข้าห้องใหม่ได้ด้วยรหัสห้อง'); return; }
+                if (e.message === 'bad_player') { await wantedSync(); mpForget('คุณไม่ได้อยู่ในห้องนี้แล้ว เข้าห้องใหม่ได้ด้วยรหัสห้อง'); return; }
                 mp.error = mpErr(e);
             } finally {
                 if (request===mp.refreshId) mp.loading = false;
             }
+            if (!current()) return;
+            await wantedSync();
             if (!current()) return;
             if (mpTabOpen()) mpMarkSeen();
             mpRender();
@@ -11081,6 +11104,7 @@
         async function mpLeave() {
             if (mp.leaveArmed < Date.now()) { mp.leaveArmed = Date.now() + 4000; mpRender(); setTimeout(mpRender, 4100); return; }
             mp.leaveArmed = 0;
+            if (!await wantedBeforeLeave()) return;
             await rmSync(); // รับผลข้อเสนอ/ประมูลที่จบแล้วก่อนออก
             const pend = rm.offers ? rm.offers.mine.reduce((s, o) => s + o.price * o.qty, 0) : 0;
             try { const r = await mpCall('bt_leave_room', mpAuth());
@@ -11089,6 +11113,7 @@
             mpForget('ออกจากห้องแล้ว กลับเข้ามาใหม่ได้ด้วยรหัสห้องเดิมนะ');
         }
         function mpForget(msg) {
+            wanted.data=null; wanted.seen=null; wanted.error='';
             Object.assign(friends, { room: '', player: '', secret: '', roomName: '', seenFeed: 0 });
             saveFriends();
             Object.assign(mp, { state: null, at: 0, error: '', refreshId: mp.refreshId + 1, loading: false, giftFor: '', waveFor: '', showQR: false, leaveArmed: 0, lastPush: '', rooms: null, roomsAt: 0 });
@@ -11287,6 +11312,10 @@
         }
         function mpFeedText(e, me) {
             const a = escHtml(e.from && e.from === me ? 'คุณ' : e.fromName), b = escHtml(e.to === me ? 'คุณ' : e.toName);
+            if (e.kind === 'wanted' || e.kind === 'wanted_fill') {
+                const it=itemInfo(e.data.item), qty=Math.max(1,Math.min(99,Math.floor(+e.data.qty)||1)), price=Math.max(1,Math.min(9999,Math.floor(+e.data.price)||1));
+                return `${a} ${e.kind==='wanted'?'ประกาศรับซื้อ':'ขายเข้าป้ายรับซื้อ'} ${it?escHtml(it.name)+starText(it.q):'ไอเทม'} ×${qty} · 🪙${price}/ชิ้น`;
+            }
             if (e.kind === 'join') return `🎉 ${a} เข้าห้องมาแล้ว`;
             if (e.kind === 'leave') return `🚪 ${a} ออกจากห้อง`;
             if (e.kind === 'water') return `💧 ${a} รดน้ำให้ฟาร์มของ ${b}`;
@@ -11298,10 +11327,11 @@
             return `${MP_WAVES.includes(e.data.e) ? e.data.e : '👋'} ${a} ทักทาย ${b}`;
         }
         function mpFeedView(s) {
+            const shortcut = '<div class="modal-btn-group"><button type="button" class="chip-btn" onclick="openWantedMarket()">เปิดป้ายรับซื้อในตลาดเพื่อน</button></div>';
             const items = [...s.feed.map(e => ({ at: e.at, html: mpFeedText(e, s.me), mine: e.to === s.me && e.from !== s.me })),
                 ...(rm.steal ? rm.steal.feed.map(e => ({ at: e.at, html: rmFeedText(e, s.me), mine: e.to === s.me })) : [])].sort((a, b) => b.at - a.at).slice(0, 40);
-            if (!items.length) return '<p class="rp-empty">ยังไม่มีความเคลื่อนไหว ลองช่วยเพื่อนรดน้ำดูสิ 💧</p>';
-            return `<ul class="mp-feed">${items.map(e => `<li${e.mine ? ' class="is-mine"' : ''}><span>${e.html}</span><small>${mpAgo(e.at)}</small></li>`).join('')}</ul>`;
+            if (!items.length) return shortcut + '<p class="rp-empty">ยังไม่มีความเคลื่อนไหว ลองช่วยเพื่อนรดน้ำดูสิ 💧</p>';
+            return shortcut + `<ul class="mp-feed">${items.map(e => `<li${e.mine ? ' class="is-mine"' : ''}><span>${e.html}</span><small>${mpAgo(e.at)}</small></li>`).join('')}</ul>`;
         }
         function mpInit() {
             const m = /^#join=([A-Za-z0-9]{6})$/.exec(location.hash);
@@ -11339,6 +11369,7 @@
                 if (e.message === 'bad_player') { mpForget('คุณไม่ได้อยู่ในห้องนี้แล้ว เข้าห้องใหม่ได้ด้วยรหัสห้อง'); return; }
                 mk.error = mpErr(e);
             }
+            await wantedSync();
             if (mkOpen()) renderFarmPanel();
         }
         function mkOnOpen() { if (!friends.room) return; if (Date.now() - mk.at > 8000) { mkRefresh(); rmSync(); } mpSchedule(15000); }
@@ -11468,7 +11499,7 @@
                         <span class="farm-card-sub">ราคาตลาดวันนี้ 🪙${r.base} · ตั้งได้ ${r.min}–${r.max} · รวม 🪙${mk.qty * mk.price} · ขายไม่ออกใน ${MK_DAYS} วันของคืนเข้ายุ้งฉาง</span>
                         <button type="button" class="shop-buy farm-action" ${mk.busy ? 'disabled' : ''} onclick="mkList()">วางขายให้เพื่อน 🏷️</button></div>` : '');
             }
-            return `${renderOffersBlock()}${others.length ? `<p class="dex-group"><b>🛒 ของที่เพื่อนวางขาย</b> · ${others.length} รายการ</p><div class="mk-cards">${others.map(l => card(l, false)).join('')}</div>`
+            return `${renderWantedBoard()}${renderOffersBlock()}${others.length ? `<p class="dex-group"><b>🛒 ของที่เพื่อนวางขาย</b> · ${others.length} รายการ</p><div class="mk-cards">${others.map(l => card(l, false)).join('')}</div>`
                     : '<p class="farm-news">ยังไม่มีเพื่อนวางของขาย ลองวางของของคุณให้เพื่อนซื้อดูสิ</p>'}
                 <p class="dex-group"><b>📦 ของที่ฉันวางขาย</b> · ${mine.length}/${MK_MAX_OPEN}</p>
                 ${mine.length ? `<div class="mk-cards">${mine.map(l => card(l, true)).join('')}</div>` : ''}
@@ -11931,7 +11962,7 @@
         const AUC_DUR_F = { 1: 0.85, 3: 0.95, 6: 1, 12: 1.1, 24: 1.2 };
         const aucR = (a, b) => a + (typeof window.aucRoll === 'number' ? window.aucRoll : Math.random()) * (b - a);
         const aucPick = list => { let r = aucR(0, list.reduce((s, x) => s + x[1], 0)); return (list.find(x => (r -= x[1]) < 0) || list[list.length - 1])[0]; };
-        const aucNpcs = () => Object.keys(CR);
+        const aucNpcs = () => Object.keys(FarmAdventure.personalities).filter(k => CR[k]);
         function loadAuc(a) {
             a = a && typeof a === 'object' && !Array.isArray(a) ? a : {};
             const int = (n, max) => Math.min(max, Math.max(0, Math.floor(+n) || 0)), ts = n => Math.min(Date.now() + 25 * 36e5, Math.max(0, +n || 0));
@@ -11939,20 +11970,35 @@
             const base = x => ({ id: int(x.id, 1e9), k: x.k, n: Math.max(1, int(x.n, 99)), start: Math.max(1, int(x.start, 1e7)), at: ts(x.at), ends: ts(x.ends), h: AUC_HOURS.includes(+x.h) ? +x.h : 12 });
             const arr = v => Array.isArray(v) ? v : [];
             return { day: day(a.day), seen: day(a.seen), seq: int(a.seq, 1e9), wins: int(a.wins, 1e6), sold: int(a.sold, 1e6), made: { day: day((a.made || {}).day), n: int((a.made || {}).n, 99) },
-                lots: arr(a.lots).filter(x => x && ok(x.k)).slice(-12).map(x => ({ ...base(x), max: int(x.max, 1e7), top: int(x.top, 1e7), my: int(x.my, 1e7), bids: int(x.bids, 999), seller: npc(x.seller), who: x.who === 'me' ? 'me' : npc(x.who) })),
-                mine: arr(a.mine).filter(x => x && ok(x.k)).slice(-AUC_OPEN).map(x => ({ ...base(x), fin: int(x.fin, 1e7), by: npc(x.by) })),
+                lots: arr(a.lots).filter(x => x && ok(x.k)).slice(-24).map(x => ({ ...base(x), ...FarmAdventure.cleanLot(x, npc), max: int(x.max, 1e7), top: int(x.top, 1e7), my: int(x.my, 1e7), bids: int(x.bids, 999), seller: npc(x.seller), who: x.who === 'me' ? 'me' : x.v === 2 && !x.who ? '' : npc(x.who) })),
+                mine: arr(a.mine).filter(x => x && ok(x.k)).slice(-AUC_OPEN).map(x => ({ ...base(x), ...FarmAdventure.cleanLot(x, npc), fin: int(x.fin, 1e7), by: npc(x.by) })),
                 log: arr(a.log).filter(x => x && typeof x.t === 'string').slice(-10).map(x => ({ t: x.t.slice(0, 200), at: ts(x.at) })) };
         }
         const leftText = ms => { if (ms <= 0) return 'หมดเวลา'; const t = Math.ceil(ms / 6e4), h = Math.floor(t / 60), m = t % 60; return h ? `เหลือ ${h} ชม.${m ? ` ${m} นาที` : ''}` : `เหลือ ${m} นาที`; };
         const aucLeft = ts => leftText(ts - Date.now());
-        const aucProg = x => Math.min(1, Math.max(0, (Date.now() - x.at) / Math.max(1, x.ends - x.at)));
-        // ของชาวบ้าน: ราคาค่อยๆ ขึ้นตามเวลา (ชาวบ้านเสนอกันเอง) แต่ไม่เกิน 80% ของที่คนจ่ายสูงสุดพร้อมจ่าย
-        const lotCur = l => l.who === 'me' ? l.top : Math.max(l.top, Math.round(l.start + Math.max(0, l.max * 0.8 - l.start) * Math.pow(aucProg(l), 1.3)));
-        const lotBids = l => l.bids + (l.who === 'me' ? 0 : Math.floor(aucProg(l) * 5));
-        const lotMin = l => { const c = lotCur(l); return lotBids(l) ? c + Math.max(1, Math.ceil(c * 0.05)) : l.start; };
-        // ของเรา: ราคาปิดถูกกำหนดตอนลง ราคาที่เห็นค่อยๆ ไต่ขึ้นจนถึงตอนจบ
-        const mineCur = x => x.fin ? Math.round(x.start + (x.fin - x.start) * Math.pow(aucProg(x), 0.8)) : x.start;
-        const mineBids = x => x.fin && aucProg(x) > 0.03 ? 1 + Math.floor(aucProg(x) * (2 + x.h / 3)) : 0;
+        const lotCur = l => l.top || l.start;
+        const lotBids = l => l.bids || 0;
+        const lotMin = l => FarmAdventure.minimum(l);
+        const mineCur = x => x.top || x.start;
+        const mineBids = x => x.bids || 0;
+        function auctionAdvance(now = Date.now()) {
+            if (window.farmEconomyBlocked) return false;
+            const pending = [...veg.auc.lots, ...veg.auc.mine].some(l => l.v !== 2 || l.nextAt <= Math.min(now,l.ends));
+            if (!pending) return false;
+            let refunds = 0;
+            const ok = farmTrade(() => {
+                [...veg.auc.lots, ...veg.auc.mine].forEach(l => {
+                    FarmAdventure.initLot(l, veg.auc.mine.includes(l), Math.max(1, marketPrice(l.k) * l.n), aucNpcs());
+                    refunds += FarmAdventure.advance(l, now).refund;
+                });
+                shop.coins += refunds;
+            });
+            if (ok && refunds) showToast(`มีชาวบ้านเสนอแซง คืนเหรียญประมูล 🪙${refunds} แล้ว`, 'info');
+            return ok;
+        }
+        function auctionHistory(l) {
+            return (l.history || []).length ? `<details class="ad-bid-log"><summary>ดูการเสนอราคา ${l.bids} ครั้ง</summary>${l.history.slice().reverse().map(h=>`<span>${h.who === 'me' ? 'คุณ' : escHtml((CR[h.who] || CR.chick).name)} · 🪙${h.amount}</span>`).join('')}</details>` : '';
+        }
         function newNpcLot() {
             const a = veg.auc, r = aucPick(AUC_RAR_W), pool = aucPool().filter(k => (itemRarity(k) || 'common') === r);
             let k = pool.length ? pool[Math.floor(aucR(0, pool.length))] : 'carrot';
@@ -11964,7 +12010,7 @@
         }
         function aucPool() {
             return [...new Set([...DEX_CROPS, ...Object.keys(FISH).filter(k => !FISH[k].secret), ...Object.keys(FARM_PRODUCTS).filter(k => !['treasure', 'baby'].includes(FARM_PRODUCTS[k].zone))])]
-                .filter(k => itemInfo(k) && itemInfo(k).value > 0 && !rarAtLeast(itemRarity(k) || 'common', 'immortal'));
+                .filter(k => itemInfo(k) && !isSecretHybrid(k) && itemInfo(k).value > 0 && !rarAtLeast(itemRarity(k) || 'common', 'immortal'));
         }
         // วันใหม่ ชาวบ้านเอาของมาลงใหม่ 3–5 ชิ้น
         function aucDaily() {
@@ -11973,36 +12019,32 @@
             a.day = today;
             const n = 3 + Math.min(2, Math.floor(aucR(0, 3)));
             for (let i = 0; i < n; i++) a.lots.push(newNpcLot());
-            a.lots = a.lots.slice(-12);
+            a.lots = [...a.lots.filter(l => l.my > 0), ...a.lots.filter(l => !l.my).slice(-Math.max(0, 12 - a.lots.filter(l => l.my > 0).length))];
             saveVeg();
             return true;
         }
         const aucLog = t => { veg.auc.log.push({ t, at: Date.now() }); veg.auc.log = veg.auc.log.slice(-10); };
         // ปิดประมูลที่หมดเวลา: ชนะได้ของ · ของเราขายได้เหรียญ หรือไม่มีคนประมูลได้ของคืน
         function aucSettle() {
-            const a = veg.auc, now = Date.now(), lines = [];
-            a.lots = a.lots.filter(l => {
-                if (l.ends > now) return true;
-                const it = itemInfo(l.k), price = lotCur(l);
-                if (l.who === 'me') {
-                    giveItem(l.k, l.n); a.wins = Math.min(1e6, a.wins + 1);
-                    lines.push(`🏆 ชนะประมูล ${it.e} ${it.name}${starText(it.q)} ×${l.n} ที่ 🪙${price}! เข้ายุ้งฉางแล้ว`); aucLog(lines[lines.length - 1]);
-                } else aucLog(`${CR[l.seller].name}ปิดประมูล ${it.e} ${it.name}${starText(it.q)} ×${l.n} · ${CR[l.who].name}ได้ไปที่ 🪙${price}`);
-                return false;
-            });
-            a.mine = a.mine.filter(x => {
-                if (x.ends > now) return true;
-                const it = itemInfo(x.k);
-                if (x.fin) { addCoins(x.fin); a.sold = Math.min(1e6, a.sold + 1); lines.push(`🔨 ประมูล ${it.e} ${it.name}${starText(it.q)} ×${x.n} ขายได้ 🪙${x.fin} ให้${CR[x.by].name}`); }
-                else { giveItem(x.k, x.n); lines.push(`📦 ไม่มีใครประมูล ${it.e} ${it.name} ×${x.n} (ราคาเริ่มสูงไป) ของคืนเข้ายุ้งฉาง`); }
-                aucLog(lines[lines.length - 1]);
-                return false;
-            });
-            if (!lines.length) return false;
-            saveVeg(); renderFarmStatus(); updateBasketFood();
-            farmNotify('stall', '🔨 ข่าวจากลานประมูล', lines[0]);
-            lines.slice(0, 3).forEach((l, i) => setTimeout(() => showToast(l, 'success', { duration: 5500 }), i * 400));
-            playSound('welcome');
+            auctionAdvance();
+            const now = Date.now(), a = veg.auc;
+            if (![...a.lots,...a.mine].some(l => l.ends <= now)) return false;
+            const lines = [];
+            if (!farmTrade(() => {
+                const lots = a.lots.filter(l=>l.ends<=now), mine = a.mine.filter(l=>l.ends<=now);
+                a.lots = a.lots.filter(l=>l.ends>now); a.mine = a.mine.filter(l=>l.ends>now);
+                lots.forEach(l=> {
+                    const it=itemInfo(l.k);
+                    if(l.who==='me') { giveItem(l.k,l.n); a.wins++; lines.push(`ชนะประมูล ${it.name} ×${l.n} ที่ 🪙${l.top} ส่งเข้ายุ้งฉางแล้ว`); }
+                    else aucLog(`${it.name} ×${l.n} · ${l.bids ? (CR[l.who] || CR.chick).name+' ได้ไปที่ 🪙'+l.top : 'ไม่มีผู้เสนอราคา'}`);
+                });
+                mine.forEach(l=> {
+                    if(l.bids) { shop.coins+=l.top; a.sold++; lines.push(`ขาย ${itemInfo(l.k).name} ×${l.n} ให้${(CR[l.who] || CR.chick).name} ได้ 🪙${l.top}`); }
+                    else { giveItem(l.k,l.n); lines.push(`ไม่มีผู้เสนอราคา ${itemInfo(l.k).name} ×${l.n} คืนเข้ายุ้งฉางแล้ว`); }
+                });
+                lines.forEach(aucLog);
+            })) return false;
+            if(lines.length) { showToast(lines[0], 'success', {duration:5500}); farmNotify('stall','ข่าวจากลานประมูล',lines[0]); }
             return true;
         }
         function aucTick() {
@@ -12010,23 +12052,15 @@
             if (farmTabIs('auction')) renderFarmPanel();
             return changed;
         }
-        // เสนอราคาของชาวบ้าน: ถ้ายังไม่ถึงราคาที่คู่แข่งพร้อมจ่าย เขาเสนอแซงทันทีและเหรียญคืนให้เรา
         function aucBid(id, bump) {
-            const l = veg.auc.lots.find(x => x.id === id);
-            if (!l || l.ends <= Date.now() || l.who === 'me') return;
-            const min = lotMin(l), amt = bump ? Math.max(min, Math.round(min * 1.2)) : min;
-            if (shop.coins < amt) { showToast(`เหรียญไม่พอ ต้องใช้ 🪙${amt}`, 'warning'); return; }
-            const it = itemInfo(l.k), rival = CR[l.who].name;
-            l.bids = lotBids(l) + 1;
-            if (amt > l.max) {
-                Object.assign(l, { top: amt, my: amt, who: 'me' });
-                shop.coins -= amt; saveShop(); updateCoinUI();
-                showToast(`🔨 คุณนำอยู่ที่ 🪙${amt}! ${rival}ยอมถอยแล้ว ถ้าไม่มีใครแซงจนหมดเวลา ${it.e} ${it.name} เป็นของคุณ`, 'success', { duration: 5500 });
-            } else {
-                l.top = Math.min(l.max, amt + Math.max(1, Math.ceil(amt * 0.05))); l.bids += 1;
-                showToast(`💸 ${rival}เสนอแซงเป็น 🪙${l.top} ทันที! เหรียญไม่ถูกหัก ลองเสนอสูงขึ้นดู`, 'warning', { duration: 5500 });
-            }
-            saveVeg(); playSound('pop'); renderFarmPanel();
+            aucSettle();
+            const l=veg.auc.lots.find(x=>x.id===id);
+            if(!l || l.ends<=Date.now() || l.who==='me') return;
+            const min=lotMin(l), amount=bump ? Math.max(min,Math.round(min*1.2)) : min;
+            if(shop.coins<amount) { showToast(`ต้องใช้เหรียญ 🪙${amount}`, 'warning'); return; }
+            if(!farmTrade(()=> { if(!FarmAdventure.bid(l,amount,Date.now())) throw new Error('invalid_bid'); shop.coins-=amount; })) return;
+            showToast(`คุณนำที่ 🪙${amount} พักเหรียญไว้แล้ว ชาวบ้านยังมีโอกาสเสนอแซง ถ้าโดนแซงจะคืนเงินทันที`, 'success',{duration:5500});
+            playSound('pop'); renderFarmPanel();
         }
         // ลงประมูลของเรา
         let aucForm = { k: '', n: 1, start: 0, h: 6 };
@@ -12045,12 +12079,13 @@
         function aucList() {
             const a = veg.auc, { k, h } = aucForm, n = Math.min(aucForm.n, veg.inv[k] || 0);
             if (!aucOk(k) || n < 1 || a.mine.length >= AUC_OPEN || aucMadeToday() >= AUC_DAY) return;
-            const it = itemInfo(k), base = marketPrice(k) * n;
-            const fin = Math.round(base * (AUC_RAR_F[itemRarity(k) || 'common'] || 1) * (1 + 0.06 * (it.q - 1)) * AUC_DUR_F[h] * aucR(0.85, 1.25) * tradeMult());
-            const npcs = aucNpcs(), now = Date.now();
-            takeExact(k, n);
-            a.mine.push({ id: ++a.seq, k, n, start: aucForm.start, fin: fin >= aucForm.start ? fin : 0, by: npcs[Math.floor(aucR(0, npcs.length))], at: now, ends: now + h * 36e5, h });
-            a.made = { day: dayKeyLocal(), n: aucMadeToday() + 1 };
+            const it = itemInfo(k), now = Date.now();
+            if(!farmTrade(()=> {
+                takeExact(k,n);
+                const lot={id:++a.seq,k,n,start:aucForm.start,at:now,ends:now+h*36e5,h,top:0,my:0,bids:0,who:''};
+                FarmAdventure.initLot(lot,true,Math.max(1,marketPrice(k)*n),aucNpcs()); a.mine.push(lot);
+                a.made={day:dayKeyLocal(),n:aucMadeToday()+1};
+            })) return;
             aucForm = { ...aucForm, k: '' };
             saveVeg(); playSound('pop');
             showToast(`🔨 ลงประมูล ${it.e} ${it.name}${starText(it.q)} ×${n} เริ่ม 🪙${a.mine[a.mine.length - 1].start} นาน ${h} ชั่วโมง ชาวบ้านจะทยอยมาเสนอราคา`, 'success', { duration: 5000 });
@@ -12067,16 +12102,16 @@
                     <span class="farm-card-title">${it.name}${starText(it.q)} ×${l.n} ${rarTag(itemRarity(l.k))}</span>
                     <span class="farm-card-sub">${CR[l.seller].name}ลงประมูล · ⏳ ${aucLeft(l.ends)} · ${bids} ครั้ง</span>
                     <span class="farm-card-sub">${me ? `ราคาสูงสุด <b>🪙${cur}</b> โดยคุณ 🏆` : bids ? `ราคาตอนนี้ <b>🪙${cur}</b> โดย${CR[l.who].name}` : `ราคาเริ่ม 🪙${l.start} · ยังไม่มีคนเสนอ`} · ตลาดวันนี้ 🪙${marketPrice(l.k) * l.n}</span>
-                    ${me ? '<span class="farm-card-sub haggle-good">คุณนำอยู่! หมดเวลาแล้วของเข้ายุ้งฉางเลย</span>'
+                    ${me ? '<span class="farm-card-sub haggle-good">คุณนำอยู่ · ยังมีโอกาสโดนแซง เหรียญจะคืนเมื่อถูกแซง</span>'
                         : `<span class="barn-btns"><button type="button" class="chip-btn haggle-yes" ${shop.coins < min ? 'disabled' : ''} onclick="aucBid(${l.id})">เสนอ 🪙${min}</button>
-                            <button type="button" class="chip-btn" ${shop.coins < Math.round(min * 1.2) ? 'disabled' : ''} onclick="aucBid(${l.id}, true)">+20% · 🪙${Math.max(min, Math.round(min * 1.2))}</button></span>`}</div></div>`;
+                            <button type="button" class="chip-btn" ${shop.coins < Math.round(min * 1.2) ? 'disabled' : ''} onclick="aucBid(${l.id}, true)">+20% · 🪙${Math.max(min, Math.round(min * 1.2))}</button></span>`}${auctionHistory(l)}</div></div>`;
             }).join('');
             const mine = a.mine.map(x => {
                 const it = itemInfo(x.k), bids = mineBids(x);
                 return `<div class="farm-card mk-card auc-card is-mine${rarClass(x.k)}"><span class="barn-emoji">${it.icon || it.e}</span><div class="farm-card-main">
                     <span class="farm-card-title">${it.name}${starText(it.q)} ×${x.n} ${rarTag(itemRarity(x.k))}</span>
                     <span class="farm-card-sub">ประมูล ${x.h} ชม. · ⏳ ${aucLeft(x.ends)} · ${bids} ครั้ง</span>
-                    <span class="farm-card-sub">${bids ? `ราคาตอนนี้ <b>🪙${mineCur(x)}</b> โดย${CR[x.by].name}` : `ราคาเริ่ม 🪙${x.start} · รอชาวบ้านมาเสนอ`}</span></div></div>`;
+                    <span class="farm-card-sub">${bids ? `ราคาตอนนี้ <b>🪙${mineCur(x)}</b> โดย${CR[x.by].name}` : `ราคาเริ่ม 🪙${x.start} · รอชาวบ้านมาเสนอ`}</span>${auctionHistory(x)}</div></div>`;
             }).join('');
             const keys = barnKeys().filter(aucOk), k = keys.includes(aucForm.k) ? aucForm.k : '';
             const full = a.mine.length >= AUC_OPEN, capped = made >= AUC_DAY;
@@ -12087,9 +12122,9 @@
                         <div class="mk-form-row"><span>จำนวน</span><button type="button" class="chip-btn" onclick="aucAdj('n', -1)" aria-label="ลดจำนวน">−</button><b>${aucForm.n}</b><button type="button" class="chip-btn" onclick="aucAdj('n', 1)" aria-label="เพิ่มจำนวน">+</button></div>
                         <div class="mk-form-row"><span>ราคาเริ่ม</span><button type="button" class="chip-btn" onclick="aucAdj('start', -1)" aria-label="ลดราคา">−</button><b>🪙${aucForm.start}</b><button type="button" class="chip-btn" onclick="aucAdj('start', 1)" aria-label="เพิ่มราคา">+</button></div>
                         <div class="mk-form-row auc-hours" role="radiogroup" aria-label="เวลาประมูล"><span>เวลา</span>${AUC_HOURS.map(h => `<button type="button" class="chip-btn${aucForm.h === h ? ' is-active' : ''}" role="radio" aria-checked="${aucForm.h === h}" onclick="aucSetH(${h})">${h} ชม.</button>`).join('')}</div>
-                        <span class="farm-card-sub">ตลาดวันนี้ 🪙${marketPrice(k) * aucForm.n} · ยิ่งตั้งเวลานาน ชาวบ้านเห็นเยอะ ได้ราคาดีขึ้น · ของหายากและดาวสูงได้ราคาดี · ตั้งราคาเริ่มสูงไปอาจไม่มีคนประมูล (ได้ของคืน)</span>
+                        <span class="farm-card-sub">ตลาดวันนี้ 🪙${marketPrice(k) * aucForm.n} · ชาวบ้านแต่ละคนมีงบและของที่สนใจ เวลานานเพิ่มโอกาสให้แวะมาดู · ตั้งราคาเริ่มสูงไปอาจไม่มีคนประมูล (ได้ของคืน)</span>
                         <button type="button" class="shop-buy farm-action" onclick="aucList()">ลงประมูล 🔨</button></div>` : '');
-            return `<p class="farm-news">🔨 ลานประมูลชาวบ้าน: ทุกวันชาวบ้านเอาของมาลง 3–5 ชิ้น สุ่มตั้งแต่ของธรรมดาถึงของเทพ · เสนอสูงกว่าเดิมอย่างน้อย 5% · ต้องแข่งกับชาวบ้านคนอื่น ถูกแซงเหรียญไม่หาย</p>`
+            return `<p class="farm-news">🔨 ลานประมูลชาวบ้าน · NPC ทยอยเสนอราคาตามงบและความสนใจ · เพิ่มอย่างน้อย 5% · คืนเหรียญเมื่อถูกแซง · เสนอในนาทีสุดท้ายต่อเวลาได้รวมไม่เกิน 2 นาที · ปิดเว็บแล้วยังเดินประมูลต่อ</p>`
                 + (friends.room ? '<div class="modal-btn-group"><button type="button" class="modal-btn btn-secondary" onclick="openRoomAuction()">👥 ไปลานประมูลในห้องเพื่อน</button></div>' : '')
                 + `<p class="dex-group"><b>🏷️ ของที่ชาวบ้านลงประมูล</b></p>${lots ? `<div class="mk-cards">${lots}</div>` : '<p class="rp-empty">วันนี้ของชาวบ้านปิดประมูลหมดแล้ว พรุ่งนี้มีของใหม่</p>'}`
                 + `<p class="dex-group"><b>📦 ของที่คุณลงประมูล</b> · ${a.mine.length}/${AUC_OPEN} · วันนี้ลงแล้ว ${made}/${AUC_DAY}</p>${mine ? `<div class="mk-cards">${mine}</div>` : ''}${form}`
@@ -13646,7 +13681,7 @@
         }
         let shop;
         { const loaded = loadShop(); shop = loaded.st; if (loaded.fresh) safeSetItem('shop_state', JSON.stringify(shop)); }
-        function saveShop() { safeSetItem('shop_state', JSON.stringify(shop)); }
+        function saveShop() { return !window.farmEconomyBlocked && safeSetItem('shop_state', JSON.stringify(shop)); }
         function addCoins(n) {
             shop.coins += n; saveShop(); updateCoinUI();
             noteCoins(n);
@@ -13681,7 +13716,8 @@
                 let action, desc = it.desc || '';
                 if (it.consumable) desc += ` · มีอยู่ ${consumableCount(it)}`;
                 if (id === 'land') desc += ` · ซื้อแล้ว ${veg.land}/6`;
-                if (id === 'land' && veg.land >= 6) action = '<span class="shop-owned">ครบแล้ว ✓</span>';
+                if (it.consumable && consumableCount(it) + (it.consumable === 'sapling' ? 1 : it.qty) > 99) action = '<span class="shop-owned">ช่องเก็บไม่พอ</span>';
+                else if (id === 'land' && veg.land >= 6) action = '<span class="shop-owned">ครบแล้ว ✓</span>';
                 else if (it.special && !owned) action = `<span class="shop-owned is-special">${it.special === 'contest' ? '🏆 ได้จากงานประกวดผักยักษ์' : it.special === 'event' ? `${FARM_EVENTS[it.ev].cur.e} แลกด้วย${FARM_EVENTS[it.ev].cur.name}ช่วง${FARM_EVENTS[it.ev].short}` : it.special === 'quest' ? '📜 ได้จากเควสต์ชาวบ้าน' : it.special === 'museum' ? '🏛️ ได้จากพิพิธภัณฑ์' : it.special === 'pass' ? '🎫 ได้จากบัตรสะสมแต้ม' : it.special === 'room' ? '👥 ' + it.how : it.special === 'craft' ? `🔨 ทำเองที่แท็บ ${it.where === 'mine' ? '⛏️ เหมือง' : it.where === 'sea' ? '🏖️ ทะเล' : '🌲 ป่า'} (${gdMats(it.craft)})` : '🎁 ได้จากออเดอร์พิเศษ'}</span>`;
                 else if (!owned && needLvl && lvl < needLvl) action = `<button type="button" class="shop-buy" disabled>🔒 เลเวล ${needLvl}</button>`;
                 else if (!owned && it.needs && !shop.owned.includes(it.needs)) action = `<button type="button" class="shop-buy" disabled>🪙 ${price}<small>ต้องมี${SHOP_ITEMS[it.needs].name}ก่อน</small></button>`;
@@ -13699,6 +13735,7 @@
                 } else action = `<span class="shop-owned">${{ seed: 'ปลูกได้แล้ว ✓', sticker: 'อยู่ในถาดสติกเกอร์ ✓', tool: id.startsWith('animal-') ? 'อยู่ในฟาร์มแล้ว ✓' : 'ใช้อยู่ ✓' }[it.cat]}</span>`;
                 return `<div class="shop-item${owned && !it.consumable ? ' owned' : ''}"><span class="shop-preview${it.cat === 'sticker' ? ' is-pack' : ''}">${preview}</span><span class="shop-name">${it.name}</span>${desc ? `<span class="shop-desc">${desc}</span>` : ''}${action}</div>`;
             }).join('');
+            if(shopTab === 'tool') document.getElementById('shop-grid').insertAdjacentHTML('beforeend',renderAdventureStore());
             updateCoinUI();
         }
         function buyShopItem(id) {
@@ -13716,10 +13753,13 @@
                 return;
             }
             if (it.consumable) {
-                shop.coins -= price;
+                const amount = it.consumable === 'sapling' ? 1 : it.qty;
+                if (consumableCount(it) + amount > 99) { showToast('ช่องเก็บไม่พอสำหรับทั้งชุด ใช้ของที่มีก่อนนะ', 'info'); return; }
+                if (!farmTrade(() => { shop.coins -= price;
                 if (it.consumable === 'sapling') veg.saplings[it.tree] = Math.min(99, (veg.saplings[it.tree] || 0) + 1);
                 else veg.tools[it.consumable] = Math.min(99, veg.tools[it.consumable] + it.qty);
-                saveShop(); saveVeg(); updateCoinUI(); updateVegTools(); renderShop();
+                })) return;
+                updateCoinUI(); updateVegTools(); renderShop();
                 playSound('pop');
                 showToast(`🛍️ ได้ ${it.name} แล้ว! มีอยู่ ${consumableCount(it)}${it.tree ? ' · ปลูกได้ที่แปลงว่าง แท็บ 🌳 ไม้ผล' : ''}`, 'success');
                 return;
