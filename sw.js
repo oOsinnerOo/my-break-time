@@ -1,9 +1,9 @@
 // Service worker ของ Break Recorder: เก็บหน้าเว็บไว้ในเครื่อง เปิดใช้ได้แม้ไม่มีอินเทอร์เน็ต
 // เปลี่ยนเลขเวอร์ชันเมื่อเปลี่ยนรายการไฟล์ที่ต้องเก็บ (ตัวหน้าเว็บเองจะอัปเดตทุกครั้งที่ออนไลน์อยู่แล้ว)
-const CACHE = 'break-time-v9-harvest-fishing';
-const SHELL = ['./farm-ecology.js?v=20261101-ecology3', './farm-ecology-ui.js?v=20261101-ecology3', './farm-ecology.css?v=20261101-ecology3', './farm-wanted.js?v=20261101-adventure3', './farm-adventure.js?v=20261101-adventure3', './farm-adventure-ui.js?v=20261101-adventure3', './farm-adventure.css?v=20261101-adventure3', './', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png',
+const CACHE = 'break-time-v11-cute-storybook';
+const SHELL = ['./farm-expedition-ui.js?v=20261107-cute1', './farm-expedition.css?v=20261107-cute1', './farm-ecology.js?v=20261101-ecology3', './farm-ecology-ui.js?v=20261107-cute1', './farm-ecology.css?v=20261101-ecology3', './farm-wanted.js?v=20261101-adventure3', './farm-adventure.js?v=20261101-adventure3', './farm-adventure-ui.js?v=20261107-cute1', './farm-adventure.css?v=20261101-adventure3', './', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png',
     './farm.webmanifest', './farm-icon.svg', './farm-192.png', './farm-512.png', './farm-maskable-512.png', './farm-180.png',
-    './farm-pixel-art.js?v=20261031-world1', './farm-pixel-art.css?v=20261031-ui2', './farm-pixel-ui.js?v=20261031-ui2', './farm-systems.js?v=20261031-world1', './farm-world.js?v=20261101-npc1', './farm-world.css?v=20261101-room1', './farm-room.js?v=20261101-room1', './farm-room.css?v=20261101-room1', './farm-villagers.js?v=20261101-npc1', './farm-villagers.css?v=20261101-npc1'];
+    './farm-cute-art.js?v=20261107-cute1', './farm-cute.css?v=20261107-cute1', './farm-cute-ui.js?v=20261107-cute1', './farm-systems.js?v=20261031-world1', './farm-world.js?v=20261107-cute1', './farm-world.css?v=20261107-cute1', './farm-room.js?v=20261107-cute1', './farm-room.css?v=20261107-cute1', './farm-villagers.js?v=20261107-cute1', './farm-villagers.css?v=20261107-cute1'];
 const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 
 self.addEventListener('install', (event) => {

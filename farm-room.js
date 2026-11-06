@@ -2,7 +2,7 @@
  * membership, visits, gifts and greetings remain on the original room RPCs. */
 (function(root){
     'use strict';
-    const G=root.FarmSystems,A=root.FarmPixelArt,TTL=45000;
+    const G=root.FarmSystems,A=root.FarmCuteArt,TTL=45000;
     const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
     const ROOM=/^[A-HJKMNP-Z2-9]{6}$/,DIRECTIONS=['down','up','left','right'];
     const finite=(n,min,max)=>typeof n==='number'&&Number.isFinite(n)&&n>=min&&n<=max;
@@ -167,7 +167,7 @@
         host.innerHTML=`<div class="fr-heading"><div><span>จุดนัดพบของทุกคน</span><h3>ลานห้องเพื่อน</h3></div><button type="button" data-fr="manage">${A.ui('friends')} จัดการห้อง</button></div>
             <div class="fr-status" role="status"></div><div class="fr-lobby" hidden><b>เข้าห้องเดียวกัน แล้วมาเจอกันที่ลานนี้</b><p>สร้างห้องหรือใส่รหัสห้องของเพื่อน จากนั้นกด “ห้องเพื่อน” บนฟาร์มของแต่ละคน</p><button type="button" data-fr="manage">สร้างห้อง / เข้าห้อง</button></div>
             <div class="fr-connected"><div class="fr-toolbar"><button type="button" data-fr="overview">${A.ui('map')} แผนที่</button><button type="button" data-fr="refresh">${A.ui('refresh')} อัปเดตห้อง</button><span class="fr-count"></span></div>
-            <div class="fr-view" tabindex="0" role="group" aria-label="ลานห้องเพื่อน แตะพื้นเพื่อเดิน แตะเพื่อนเพื่อเดินเข้าไปหา ใช้ลูกศรและ Enter ได้"><svg class="fr-map" shape-rendering="crispEdges" aria-hidden="true"><g class="fr-ground"></g><g class="fr-places"></g><g class="fr-peers"></g><g class="fr-self"></g></svg><span class="fr-room-name"></span></div>
+            <div class="fr-view" tabindex="0" role="group" aria-label="ลานห้องเพื่อน แตะพื้นเพื่อเดิน แตะเพื่อนเพื่อเดินเข้าไปหา ใช้ลูกศรและ Enter ได้"><svg class="fr-map" shape-rendering="geometricPrecision" aria-hidden="true"><g class="fr-ground"></g><g class="fr-places"></g><g class="fr-peers"></g><g class="fr-self"></g></svg><span class="fr-room-name"></span></div>
             <div class="fr-under"><p class="fr-hint" role="status">แตะตัวละครเพื่อนเพื่อเดินไปหา</p><div class="fw-controls"><button type="button" class="fw-up" data-fr-step="0,-1" aria-label="เดินขึ้นในลานห้อง">↑</button><button type="button" class="fw-left" data-fr-step="-1,0" aria-label="เดินซ้ายในลานห้อง">←</button><button type="button" class="fw-use" data-fr="use" aria-label="ใช้งานสิ่งที่อยู่ใกล้ในลานห้อง">ใช้งาน</button><button type="button" class="fw-right" data-fr-step="1,0" aria-label="เดินขวาในลานห้อง">→</button><button type="button" class="fw-down" data-fr-step="0,1" aria-label="เดินลงในลานห้อง">↓</button></div></div>
             <div class="fr-focus" hidden><div><b></b><button type="button" data-fr="close" aria-label="ปิดรายละเอียดเพื่อน">×</button></div><p></p><nav aria-label="การใช้งานจุดหมาย"></nav></div>
             <div class="fr-members"><h4>เพื่อนที่อยู่ในลาน</h4><div></div><p></p></div><details class="fr-access"><summary>เลือกอาคารในลาน</summary><div>${Object.entries(ROOM_NAMES).map(([id,name])=>`<button type="button" data-fr-place="${id}">${name}</button>`).join('')}</div></details></div>`;
@@ -208,7 +208,7 @@
     }
     function drawScene(){
         let s='<rect width="768" height="576" fill="#48744b"/><rect x="32" y="32" width="704" height="512" fill="#95b66d"/><path d="M32 160H736V224H32zM288 64H352V512H288zM192 352H672V400H192z" fill="#c5b17c"/>';
-        let dots='';for(let i=0;i<240;i++)dots+=`M${32+i*83%702} ${32+i*47%510}h2v2h-2z`;s+='<path fill="#bbd77a" d="'+dots+'"/>';
+        for(let i=0;i<85;i++)s+=`<circle cx="${32+i*83%702}" cy="${32+i*47%510}" r="1.5" fill="#bbd7ac" opacity=".6"/>`;
         for(let x=0;x<24;x+=2)s+=svg(A.decor('decor-bush'),x*32,-8,64,48);$('.fr-ground').innerHTML=s;
         let places='';for(const e of roomNodes().sort((a,b)=>a.y+a.h-b.y-b.h)){
             const x=e.x*32,y=e.y*32;places+=`<g data-room-place="${e.type==='building'?e.id:''}">`;

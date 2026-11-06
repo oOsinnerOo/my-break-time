@@ -90,17 +90,17 @@ test('world saves normalize invalid avatar values, resource IDs and unknown obje
 test('the world adapter preserves undiscovered hybrid crop identities',()=>{
     const source=read('index.html'),start=source.indexOf('        let livingFarmStarted = false;'),end=source.indexOf('        // ครั้งแรกที่เปิดฟาร์มแบบแยก:',start);
     let adapter;const world={start:a=>{adapter=a;},refresh(){}};
-    const c={window:{FarmWorld:world},FarmWorld:world,FarmPixelArt:{ui:k=>'pixel:'+k},farmIcon:k=>'known:'+k,
+    const c={window:{FarmWorld:world},FarmWorld:world,FarmCuteArt:{ui:k=>'art:'+k},farmIcon:k=>'known:'+k,
         isSecretHybrid:k=>k==='starTomato',saveVeg(){},openFarm(){},waterVeggies(){},hasItems(){},closeVegPicker(){},craftTick(){},setInterval(){},document:{addEventListener(){}}};
     vm.createContext(c);vm.runInContext(source.slice(start,end)+'\ninitLivingFarm();',c);
-    assert.equal(adapter.icon('starTomato'),'pixel:help');assert.equal(adapter.icon('carrot'),'known:carrot');
+    assert.equal(adapter.icon('starTomato'),'art:help');assert.equal(adapter.icon('carrot'),'known:carrot');
 });
-test('scripts compile, all avatar variants are native pixels, and offline assets exist',()=>{
-    for(const file of ['farm-systems.js','farm-world.js','farm-pixel-art.js','farm-pixel-ui.js','sw.js'])new vm.Script(read(file),{filename:file});
+test('scripts compile, all avatar variants are smooth vector artwork, and offline assets exist',()=>{
+    for(const file of ['farm-systems.js','farm-world.js','farm-cute-art.js','farm-cute-ui.js','sw.js'])new vm.Script(read(file),{filename:file});
     for(const m of read('index.html').matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))new vm.Script(m[1]);
-    vm.runInContext(read('farm-pixel-art.js'),runtime);const a=runtime.FarmPixelArt;
+    vm.runInContext(read('farm-cute-art.js'),runtime);const a=runtime.FarmCuteArt;
     const sprites=new Set();for(const direction of ['up','down','left','right'])for(let shirt=0;shirt<6;shirt++)for(let frame=0;frame<2;frame++){
-        const svg=a.avatar({shirt,hair:0,hat:1},direction,frame);assert(svg.includes('crispEdges'));assert(!/NaN|undefined|<image|<text/.test(svg));sprites.add(svg);
+        const svg=a.avatar({shirt,hair:0,hat:1},direction,frame);assert(svg.includes('geometricPrecision'));assert(!/NaN|undefined|<image|<text/.test(svg));sprites.add(svg);
     }
     assert.equal(sprites.size,48);
     for(const m of read('sw.js').matchAll(/'\.\/([^']+)'/g))assert(fs.existsSync(path.join(cwd,m[1].split('?')[0])),m[1]);

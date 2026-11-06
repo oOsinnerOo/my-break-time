@@ -1,7 +1,7 @@
-/* Pixel presentation for the farm UI. Game data keeps its original emoji IDs. */
+/* Storybook presentation for the farm UI. Game data keeps its original emoji IDs. */
 (function (root) {
     'use strict';
-    const art = root.FarmPixelArt;
+    const art = root.FarmCuteArt;
     if (!art) return;
     const EMOJI = /(?:\p{Regional_Indicator}{2}|[#*0-9]\uFE0F?\u20E3|\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})?)*)/gu;
     const GROUPS = {
@@ -51,7 +51,7 @@
         '.veg-plot.rar-legendary::after':'sparkle', '.veg-plot.rar-mythic::after':'gem',
         '.veg-plot.rar-immortal::after':'rainbow', '.veg-plot.rar-cosmic::after':'star'
     };
-    const SKIP = 'svg,script,style,textarea,input,select,option,pre,code,[contenteditable]:not([contenteditable="false"]),[data-pixel-skip],.farm-glyph';
+    const SKIP = 'svg,script,style,textarea,input,select,option,pre,code,[contenteditable]:not([contenteditable="false"]),[data-cute-skip],.farm-glyph';
     const symbols = new Map(), templates = new Map();
     let started = false;
     const strip = s => s.replace(/\uFE0F/g, '');
@@ -78,13 +78,13 @@
             const fragment = document.createDocumentFragment();
             let offset = 0, changed = false;
             for (const match of matches) {
-                const override = text.parentElement.dataset.pixelIcon;
-                const entry = override ? { svg: art.ui(override), label: text.parentElement.dataset.pixelLabel || match[0] } : symbols.get(strip(match[0]));
+                const override = text.parentElement.dataset.cuteIcon;
+                const entry = override ? { svg: art.ui(override), label: text.parentElement.dataset.cuteLabel || match[0] } : symbols.get(strip(match[0]));
                 if (!entry || !entry.svg) continue;
                 fragment.append(source.slice(offset, match.index));
                 const glyph = document.createElement('span');
                 glyph.className = 'farm-glyph'; glyph.setAttribute('role', 'img'); glyph.setAttribute('aria-label', entry.label);
-                glyph.dataset.pixelGlyph = strip(match[0]);
+                glyph.dataset.cuteGlyph = strip(match[0]); glyph.title = entry.label;
                 if (!templates.has(entry.svg)) {
                     const template = document.createElement('template'); template.innerHTML = entry.svg;
                     templates.set(entry.svg, template.content);
@@ -104,10 +104,10 @@
         if (started) return;
         started = true;
         // CSS-generated badges are outside the text-node observer.
-        const effects = document.createElement('style'); effects.id = 'farm-pixel-effects';
+        const effects = document.createElement('style'); effects.id = 'farm-cute-effects';
         effects.textContent = Object.entries(EFFECTS).map(([selector,key]) => {
             const svg = art.ui(key).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
-            return selector+'{content:"";display:block;width:1em;height:1em;background:url("data:image/svg+xml,'+encodeURIComponent(svg)+'") center/contain no-repeat;image-rendering:pixelated}';
+            return selector+'{content:"";display:block;width:1em;height:1em;background:url("data:image/svg+xml,'+encodeURIComponent(svg)+'") center/contain no-repeat;image-rendering:auto}';
         }).join('\n');
         document.head.append(effects);
         for (const catalog of catalogs) for (const [key, item] of Object.entries(catalog)) {
@@ -160,5 +160,5 @@
         });
         roots.forEach(el => observer.observe(el, { childList:true, subtree:true, characterData:true }));
     }
-    root.FarmPixelUI = Object.freeze({ start, enhance });
+    root.FarmCuteUI = Object.freeze({ start, enhance });
 })(window);

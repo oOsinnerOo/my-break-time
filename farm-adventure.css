@@ -1,4 +1,4 @@
-.ad-icon{width:36px;height:36px;flex:0 0 36px;image-rendering:pixelated;shape-rendering:crispEdges;vertical-align:middle}
+.ad-icon{width:36px;height:36px;flex:0 0 36px;image-rendering:auto;shape-rendering:geometricPrecision;vertical-align:middle}
 .chip-btn .ad-icon{width:20px;height:20px;min-width:20px}
 .ad-route{border:2px solid #8d7666;background:var(--card-bg,#39294e);padding:12px;margin:12px 0;box-shadow:3px 3px 0 #201c36;color:inherit;border-radius:4px}
 .ad-route>.farm-chips{margin:8px 0;gap:7px;flex-wrap:wrap}

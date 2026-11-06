@@ -15,19 +15,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="farm-pixel-art.js?v=20261031-world1"></script>
-    <script src="farm-pixel-ui.js?v=20261031-ui2"></script>
+    <script src="farm-cute-art.js?v=20261107-cute1"></script>
+    <script src="farm-cute-ui.js?v=20261107-cute1"></script>
     <script src="farm-adventure.js?v=20261101-adventure3"></script>
-    <script src="farm-adventure-ui.js?v=20261101-adventure3"></script>
+    <script src="farm-adventure-ui.js?v=20261107-cute1"></script>
     <script src="farm-wanted.js?v=20261101-adventure3"></script>
     <link rel="stylesheet" href="farm-adventure.css?v=20261101-adventure3">
     <script src="farm-systems.js?v=20261031-world1"></script>
     <script src="farm-ecology.js?v=20261101-ecology3"></script>
-    <script src="farm-ecology-ui.js?v=20261101-ecology3"></script>
+    <script src="farm-ecology-ui.js?v=20261107-cute1"></script>
     <link rel="stylesheet" href="farm-ecology.css?v=20261101-ecology3">
-    <script src="farm-villagers.js?v=20261101-npc1"></script>
-    <script src="farm-room.js?v=20261101-room1"></script>
-    <script src="farm-world.js?v=20261101-npc1"></script>
+    <script src="farm-expedition-ui.js?v=20261107-cute1"></script>
+    <link rel="stylesheet" href="farm-expedition.css?v=20261107-cute1">
+    <script src="farm-villagers.js?v=20261107-cute1"></script>
+    <script src="farm-room.js?v=20261107-cute1"></script>
+    <script src="farm-world.js?v=20261107-cute1"></script>
     <script>
         // 😀 ฟอนต์อิโมจิ Noto ทำให้รูปของในเกมหน้าตาเหมือนกันทุกเครื่อง แต่ Google ส่งฟอนต์แบบ SVG ให้ iPhone/iPad/Safari
         // ซึ่งเครื่อง Apple วาดไม่ออก (ขึ้นเป็นช่องว่าง) เครื่อง Apple จึงใช้อิโมจิของเครื่องเสมอ และไม่ต้องโหลดฟอนต์ไฟล์ใหญ่
@@ -3185,10 +3187,10 @@
         .upg-pips i.is-on { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
         .upg-next { color: var(--accent-ink); }
     </style>
-    <link rel="stylesheet" href="farm-pixel-art.css?v=20261031-ui2">
-    <link rel="stylesheet" href="farm-world.css?v=20261101-room1">
-    <link rel="stylesheet" href="farm-room.css?v=20261101-room1">
-    <link rel="stylesheet" href="farm-villagers.css?v=20261101-npc1">
+    <link rel="stylesheet" href="farm-world.css?v=20261107-cute1">
+    <link rel="stylesheet" href="farm-room.css?v=20261107-cute1">
+    <link rel="stylesheet" href="farm-villagers.css?v=20261107-cute1">
+    <link rel="stylesheet" href="farm-cute.css?v=20261107-cute1">
 </head>
 <body>
     <script>
@@ -3371,28 +3373,28 @@
                         <span class="veg-progress" id="veg-progress" aria-live="polite"></span>
                     </div>
                     <div class="farm-actions">
-                        <button type="button" class="farm-act" onclick="openFarm('orders')"><span class="farm-act-icon" data-pixel-icon="orders">📋</span>ออเดอร์<b class="farm-dot" id="fa-orders" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('barn')"><span class="farm-act-icon" data-pixel-icon="barn">🏠</span>ยุ้งฉาง<b class="farm-dot" id="fa-barn" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('stall')"><span class="farm-act-icon" data-pixel-icon="stall">🏪</span>แผงขาย<b class="farm-dot" id="fa-stall" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('auction')"><span class="farm-act-icon" data-pixel-icon="auction">🔨</span>ประมูล<b class="farm-dot" id="fa-auction" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('kitchen')"><span class="farm-act-icon" data-pixel-icon="kitchen">🍳</span>ครัว</button>
-                        <button type="button" class="farm-act" onclick="openFarm('animals')"><span class="farm-act-icon" data-pixel-icon="animals">🐔</span>สัตว์<b class="farm-dot" id="fa-animals" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('craft')"><span class="farm-act-icon" data-pixel-icon="craft">🏭</span>แปรรูป<b class="farm-dot" id="fa-craft" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('pond')"><span class="farm-act-icon" data-pixel-icon="pond">🎣</span>บ่อปลา<b class="farm-dot" id="fa-pond" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('forest')"><span class="farm-act-icon" data-pixel-icon="forest">🌲</span>ป่า<b class="farm-dot" id="fa-forest" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('mine')"><span class="farm-act-icon" data-pixel-icon="pickaxe">⛏️</span>เหมือง<b class="farm-dot" id="fa-mine" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('sea')"><span class="farm-act-icon" data-pixel-icon="sea">🏖️</span>ทะเล<b class="farm-dot" id="fa-sea" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('contest')"><span class="farm-act-icon" data-pixel-icon="trophy">🏆</span>ประกวด<b class="farm-dot" id="fa-contest" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('compost')"><span class="farm-act-icon" data-pixel-icon="compost">🪱</span>ปุ๋ยหมัก</button>
-                        <button type="button" class="farm-act" onclick="openFarm('skills')"><span class="farm-act-icon" data-pixel-icon="skills">🎯</span>สกิล<b class="farm-dot" id="fa-skills" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('house')"><span class="farm-act-icon" data-pixel-icon="house">🏡</span>บ้านไร่<b class="farm-dot" id="fa-house" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('ach')"><span class="farm-act-icon" data-pixel-icon="medal">🎖️</span>ภารกิจ<b class="farm-dot" id="fa-ach" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('quest')"><span class="farm-act-icon" data-pixel-icon="quest">📜</span>เควสต์<b class="farm-dot" id="fa-quest" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('museum')"><span class="farm-act-icon" data-pixel-icon="museum">🏛️</span>พิพิธภัณฑ์<b class="farm-dot" id="fa-museum" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openFarm('pass')"><span class="farm-act-icon" data-pixel-icon="pass">🎫</span>บัตรสะสม<b class="farm-dot" id="fa-pass" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openVegBook()"><span class="farm-act-icon" data-pixel-icon="book">📖</span>สมุดสะสม<b class="farm-dot" id="fa-book" hidden></b></button>
-                        <button type="button" class="farm-act" onclick="openCheckin()"><span class="farm-act-icon" data-pixel-icon="gift">🎁</span>เช็กอิน<b class="farm-dot" id="fa-checkin" hidden></b></button>
-                        <button type="button" class="farm-act farm-friends-btn" onclick="openFarm('friends')"><span class="farm-act-icon" data-pixel-icon="friends">👥</span><span class="farm-friends-text" id="farm-friends-text">เล่นกับเพื่อน</span><b class="farm-dot" id="fa-friends" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('orders')"><span class="farm-act-icon" data-cute-icon="orders">📋</span>ออเดอร์<b class="farm-dot" id="fa-orders" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('barn')"><span class="farm-act-icon" data-cute-icon="barn">🏠</span>ยุ้งฉาง<b class="farm-dot" id="fa-barn" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('stall')"><span class="farm-act-icon" data-cute-icon="stall">🏪</span>แผงขาย<b class="farm-dot" id="fa-stall" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('auction')"><span class="farm-act-icon" data-cute-icon="auction">🔨</span>ประมูล<b class="farm-dot" id="fa-auction" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('kitchen')"><span class="farm-act-icon" data-cute-icon="kitchen">🍳</span>ครัว</button>
+                        <button type="button" class="farm-act" onclick="openFarm('animals')"><span class="farm-act-icon" data-cute-icon="animals">🐔</span>สัตว์<b class="farm-dot" id="fa-animals" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('craft')"><span class="farm-act-icon" data-cute-icon="craft">🏭</span>แปรรูป<b class="farm-dot" id="fa-craft" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('pond')"><span class="farm-act-icon" data-cute-icon="pond">🎣</span>บ่อปลา<b class="farm-dot" id="fa-pond" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('forest')"><span class="farm-act-icon" data-cute-icon="forest">🌲</span>ป่า<b class="farm-dot" id="fa-forest" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('mine')"><span class="farm-act-icon" data-cute-icon="pickaxe">⛏️</span>เหมือง<b class="farm-dot" id="fa-mine" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('sea')"><span class="farm-act-icon" data-cute-icon="sea">🏖️</span>ทะเล<b class="farm-dot" id="fa-sea" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('contest')"><span class="farm-act-icon" data-cute-icon="trophy">🏆</span>ประกวด<b class="farm-dot" id="fa-contest" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('compost')"><span class="farm-act-icon" data-cute-icon="compost">🪱</span>ปุ๋ยหมัก</button>
+                        <button type="button" class="farm-act" onclick="openFarm('skills')"><span class="farm-act-icon" data-cute-icon="skills">🎯</span>สกิล<b class="farm-dot" id="fa-skills" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('house')"><span class="farm-act-icon" data-cute-icon="house">🏡</span>บ้านไร่<b class="farm-dot" id="fa-house" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('ach')"><span class="farm-act-icon" data-cute-icon="medal">🎖️</span>ภารกิจ<b class="farm-dot" id="fa-ach" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('quest')"><span class="farm-act-icon" data-cute-icon="quest">📜</span>เควสต์<b class="farm-dot" id="fa-quest" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('museum')"><span class="farm-act-icon" data-cute-icon="museum">🏛️</span>พิพิธภัณฑ์<b class="farm-dot" id="fa-museum" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openFarm('pass')"><span class="farm-act-icon" data-cute-icon="pass">🎫</span>บัตรสะสม<b class="farm-dot" id="fa-pass" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openVegBook()"><span class="farm-act-icon" data-cute-icon="book">📖</span>สมุดสะสม<b class="farm-dot" id="fa-book" hidden></b></button>
+                        <button type="button" class="farm-act" onclick="openCheckin()"><span class="farm-act-icon" data-cute-icon="gift">🎁</span>เช็กอิน<b class="farm-dot" id="fa-checkin" hidden></b></button>
+                        <button type="button" class="farm-act farm-friends-btn" onclick="openFarm('friends')"><span class="farm-act-icon" data-cute-icon="friends">👥</span><span class="farm-friends-text" id="farm-friends-text">เล่นกับเพื่อน</span><b class="farm-dot" id="fa-friends" hidden></b></button>
                         <button type="button" class="farm-act farm-event-btn" id="fa-event-btn" onclick="openFarm('event')" hidden><span class="farm-act-icon">🎃</span><span id="fa-event-name">เทศกาล</span><b class="farm-dot" id="fa-event" hidden></b></button>
                     </div>
                     <a class="farm-app-link" href="./?farm"><span>📱 เล่นฟาร์มแบบแอปแยก</span><small>ลื่นกว่าบนมือถือ · ข้อมูลชุดเดียวกัน</small></a>
@@ -5530,7 +5532,7 @@
         // --- 🌱 ของตกแต่งสวนตามเทศกาล + บัวรดน้ำ ---
         const nestSvg = (svg, x, y, w, h, cls = '') => svg.replace('<svg ', `<svg x="${x}" y="${y}" width="${w}" height="${h}" ${cls ? `class="${cls}" ` : ''}`);
         function gardenFestivalDecor(stemTopY) {
-            if (window.FarmPixelArt) return FarmPixelArt.festival(currentTheme(), stemTopY);
+            if (window.FarmCuteArt) return FarmCuteArt.festival(currentTheme(), stemTopY);
             switch (currentTheme()) {
                 case 'halloween': return nestSvg(HW_PUMPKIN, 40, 136, 34, 31) + nestSvg(HW_BAT, 150, stemTopY - 12, 30, 16, 'garden-float');
                 case 'christmas': return `<path d="M76 143Q78 136 86 138Q92 134 100 138Q108 134 116 138Q124 134 132 138Q140 135 144 142Z" fill="#FFFFFF"/>`
@@ -6121,13 +6123,13 @@
         // ข้อมูลของทุกอย่างที่เก็บในยุ้งฉางได้ (ผัก ผลไม้ ผลผลิตจากสัตว์ อาหาร) พร้อมราคาพื้นฐาน
         // Game data and notifications keep plain emoji; HTML uses shared sprites.
         function farmIcon(key, fallback = '') {
-            return window.FarmPixelArt ? FarmPixelArt.icon(key, fallback) : fallback;
+            return window.FarmCuteArt ? FarmCuteArt.icon(key, fallback) : fallback;
         }
         function farmMachineIcon(key, fallback = '') {
-            return window.FarmPixelArt ? FarmPixelArt.machine(key, fallback) : fallback;
+            return window.FarmCuteArt ? FarmCuteArt.machine(key, fallback) : fallback;
         }
         function farmHouseIcon(level) {
-            return '<svg class="farm-pixel-icon" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">' + GD_HOUSES[Math.max(0, Math.min(4, level - 1))] + '</svg>';
+            return '<svg class="farm-cute-icon" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">' + GD_HOUSES[Math.max(0, Math.min(4, level - 1))] + '</svg>';
         }
         function itemInfo(key) {
             const k = baseOf(key), q = qualOf(key);
@@ -6182,7 +6184,7 @@
         const trapBits = (c, z) => ({ ...(c.risk ? { risk: 1 } : {}), ...(hasOwn(TRAPS[z], c.trap) ? { trap: c.trap } : {}), ...(c.skip ? { skip: 1 } : {}), ...(c.hit ? { hit: 1 } : {}) });
         const MINE_LEVEL = 8, MINE_FLOORS = 30, UPG_MAX = 7; // ⛏️ เหมือง และเครื่องมือ 7 ระดับ (ขั้น 6–7 ใช้แท่งโลหะ)
         const VEG_STAGE_NAMES = ['เมล็ด', 'ต้นอ่อน', 'กำลังโต'];
-        const VEG_PEST = window.FarmPixelArt ? FarmPixelArt.ui('pest') : `<svg viewBox="0 0 40 20"><path d="M29 4.5l-1.5-3M33 4.5l1.5-3" stroke="#6BA84A" stroke-width="1.2" stroke-linecap="round"/>
+        const VEG_PEST = window.FarmCuteArt ? FarmCuteArt.ui('pest') : `<svg viewBox="0 0 40 20"><path d="M29 4.5l-1.5-3M33 4.5l1.5-3" stroke="#6BA84A" stroke-width="1.2" stroke-linecap="round"/>
             <circle cx="8" cy="13" r="5" fill="#9BDB6A"/><circle cx="15" cy="12" r="5.5" fill="#8BD45A"/><circle cx="22.5" cy="12" r="5.5" fill="#9BDB6A"/>
             <circle cx="31" cy="10.5" r="6.5" fill="#B5E77F"/><circle cx="29.5" cy="9.5" r="1.3" fill="#2B2140"/><circle cx="33.5" cy="9.5" r="1.3" fill="#2B2140"/>
             <ellipse cx="27.6" cy="12.6" rx="1.6" ry="1" fill="#FF9DB8"/><path d="M30 13q1.5 1.3 3 0" stroke="#2B2140" stroke-width="1" fill="none" stroke-linecap="round"/></svg>`;
@@ -6499,7 +6501,7 @@
         // ดินยิ่งอุดมสียิ่งเข้ม (ดินจืดเป็นสีน้ำตาลอ่อน)
         const soilColors = s => s >= 60 ? ['#7A4E2D', '#9C6B43'] : s >= 30 ? ['#8E6440', '#AE8158'] : ['#B39572', '#CBB08D'];
         function vegPlotSVG(p) {
-            if (window.FarmPixelArt) return FarmPixelArt.plot(p, { secret: p.type === 'veg' && isSecretHybrid(p.seed) });
+            if (window.FarmCuteArt) return FarmCuteArt.plot(p, { secret: p.type === 'veg' && isSecretHybrid(p.seed) });
             const [c1, c2] = soilColors(p.soil);
             const soil = `<ellipse cx="40" cy="60" rx="34" ry="9" fill="${c1}"/><ellipse cx="40" cy="57" rx="31" ry="7" fill="${c2}"/>`
                 + `<circle cx="26" cy="57" r="1.2" fill="#6B4226"/><circle cx="53" cy="58" r="1.2" fill="#6B4226"/><circle cx="40" cy="60" r="1" fill="#6B4226"/>`;
@@ -7103,7 +7105,7 @@
         }
         // 🐛 มินิเกมจับหนอน 15 วินาที: หนอนโผล่จากหลุม แตะให้ทัน จับได้เยอะได้เหรียญและ XP เยอะ
         const WORM_SECS = 15;
-        const WORM_UP = window.FarmPixelArt ? FarmPixelArt.ui('wormUp') : `<svg viewBox="0 0 30 46" aria-hidden="true"><path d="M11 6L8.5 1.5M19 6l2.5-4.5" stroke="#6BA84A" stroke-width="1.4" stroke-linecap="round"/>
+        const WORM_UP = window.FarmCuteArt ? FarmCuteArt.ui('wormUp') : `<svg viewBox="0 0 30 46" aria-hidden="true"><path d="M11 6L8.5 1.5M19 6l2.5-4.5" stroke="#6BA84A" stroke-width="1.4" stroke-linecap="round"/>
             <circle cx="15" cy="40" r="6" fill="#9BDB6A"/><circle cx="15" cy="31" r="6.5" fill="#8BD45A"/><circle cx="15" cy="22" r="7" fill="#9BDB6A"/>
             <circle cx="15" cy="12" r="8" fill="#B5E77F"/><circle cx="12" cy="11" r="1.5" fill="#2B2140"/><circle cx="18" cy="11" r="1.5" fill="#2B2140"/>
             <ellipse cx="9.8" cy="14.4" rx="1.8" ry="1.1" fill="#FF9DB8"/><ellipse cx="20.2" cy="14.4" rx="1.8" ry="1.1" fill="#FF9DB8"/>
@@ -8357,6 +8359,8 @@
                 const bar = document.querySelector('.fish-fight-bar i'), left = document.querySelector('.fish-fight-left');
                 if (bar) bar.style.width = `${Math.round(fishing.taps / fishing.need * 100)}%`;
                 if (left) left.textContent = `อีก ${fishing.need - fishing.taps} ครั้ง`;
+                const count = document.querySelector('[data-reel-left]');
+                if (count) count.textContent = fishing.need - fishing.taps;
             }
         }
         function endFishing(how) {
@@ -8428,28 +8432,26 @@
                 : f.state === 'bite' ? (big ? `❗❗ แรงดึงมหาศาล! ${RARITY[hooked.r].e} ตัวใหญ่ติดเบ็ด ดึงเลย!` : '❗ ปลากินเบ็ดแล้ว! ดึงเร็ว!')
                 : f.state === 'fight' ? `💪 สู้กับปลา${RARITY[hooked.r].name}! แตะ "ดึง!" รัวๆ ให้ครบก่อนหมดเวลา`
                 : r ? fishResultText(r)
-                : 'เหวี่ยงเบ็ดแล้วรอจนปลากิน แล้วกด "ดึง!" ให้ทัน · ปลาหายากและปลาตำนานต้องแตะดึงรัวๆ';
+                : 'รอทุ่นจมแล้วค่อยดึง · ปลาตัวใหญ่ให้แตะดึงต่อเนื่อง';
             const action = f.state === 'idle'
                 ? `<button type="button" class="modal-btn btn-primary" ${veg.fish.tickets ? '' : 'disabled'} onclick="castLine()">เหวี่ยงเบ็ด 🎣 (ตั๋ว ${veg.fish.tickets})</button>`
-                : `<button type="button" class="modal-btn btn-primary pond-reel${f.state === 'bite' || f.state === 'fight' ? ' is-bite' : ''}" onclick="reelIn()">ดึง! 💪</button>`;
+                : `<button type="button" class="modal-btn btn-primary pond-reel${f.state === 'bite' || f.state === 'fight' ? ' is-bite' : ''}" onclick="reelIn()">${f.state === 'fight' ? `ดึงเบ็ด! อีก <span data-reel-left>${f.need-f.taps}</span> ครั้ง` : 'ปลากินแล้ว! ดึงเบ็ด'}</button>`;
             const fight = f.state === 'fight' ? `<div class="fish-fight rar-${hooked.r}"><span class="fish-fight-bar"><i style="width:${Math.round(f.taps / f.need * 100)}%"></i></span>
                     <b class="fish-fight-left">อีก ${f.need - f.taps} ครั้ง</b><span class="fish-fight-time"><i style="animation-duration:${Math.max(0, f.until - Date.now())}ms"></i></span></div>` : '';
             const caught = Object.keys(FISH).filter(k => !FISH[k].sea && veg.fishCaught[k]).length;
             const listed = Object.entries(FISH).filter(([k, x]) => !x.sea && (!x.secret || veg.fishCaught[k]));
             const now = ecologyFishTable('pond').filter(r=>r.p>0).map(r=>r.key);
-            return `<div class="pond is-${f.state}${big ? ' is-big' : ''}" aria-hidden="true"><span class="pond-ripple"></span><span class="pond-float">${f.state === 'bite' ? (big ? '‼️' : '❗') : ''}</span>
-                    ${r && r.how === 'catch' && f.state === 'idle' ? `<span class="pond-catch">${FISH[r.caught].e}</span>` : ''}</div>
-                <p class="pond-msg" aria-live="polite">${msg}</p>
-                ${fight}
+            return `<section class="exp-zone exp-pond">${expHeading('pond',`ตั๋วในกระเป๋า ${veg.fish.tickets} ใบ · สะสมปลา ${caught}/${listed.length} ชนิด`)}${expFishScene('pond')}${expFishSteps('pond')}
+                ${expFishFeedback('pond',msg)}${fight}${expFishAction('pond',action)}
                 <div class="pond-bait" role="radiogroup" aria-label="เหยื่อตกปลา">${[['', '🎣 ไม่ใช้เหยื่อ', -1], ['bait', '🪱 เหยื่อหนอน', veg.bait], ['gold', '✨ เหยื่อทอง', veg.goldBait]].map(([k, l, n]) =>
                     `<button type="button" class="chip-btn${curBait() === k ? ' is-active' : ''}" role="radio" aria-checked="${curBait() === k}" ${n === 0 || f.state !== 'idle' ? 'disabled' : ''} onclick="setBait('${k}')">${l}${n >= 0 ? ` ×${n}` : ''}</button>`).join('')}</div>
                 <div class="pond-bait pond-bait-shop"><button type="button" class="chip-btn" ${f.state !== 'idle' || baitBuyLeft() <= 0 || shop.coins < BAIT_PRICE || veg.bait >= 99 ? 'disabled' : ''} onclick="buyBait()">🛒 ซื้อเหยื่อ 🪙${BAIT_PRICE} <small>(วันนี้อีก ${baitBuyLeft()})</small></button>
                     <button type="button" class="chip-btn" ${f.state !== 'idle' || veg.bait < 3 || countBase('honey') < 1 || veg.goldBait >= 99 ? 'disabled' : ''} onclick="craftGoldBait()">✨ ทำเหยื่อทอง <small>(🪱3 + 🍯1)</small></button></div>
-                <div class="modal-btn-group">${action}</div>
                 ${ecologyFishPlanHTML('pond')}
                 <div class="pond-now"><span>ตอนนี้ในบ่อมี:</span>${now.map(k => `<span class="pond-now-fish rar-${FISH[k].r}" title="${veg.fishCaught[k] ? FISH[k].name : '???'} · ${RARITY[FISH[k].r].name}">${veg.fishCaught[k] ? FISH[k].e : '❔'}</span>`).join('')}</div>
-                <div class="pond-dex">${listed.map(([k, x]) => `<button type="button" class="pond-dex-item rar-${x.r}${veg.fishCaught[k] ? '' : ' locked'}" title="${veg.fishCaught[k] ? x.name : '???'}"  ${f.state !== 'idle' ? 'disabled' : ''} onclick="openDex('fish', '${k}')">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></button>`).join('')}</div>
-                <p class="shop-note">สะสมปลาแล้ว ${caught}/${listed.length} ชนิด · แตะปลาเพื่อดูรายละเอียด · ตั๋วฟรีวันละ 2 ใบ ได้เพิ่มทุกครั้งที่พักไม่เกินลิมิต และลุ้นได้ตอนส่งออเดอร์ (เก็บได้สูงสุด ${FISH_TICKET_MAX}) · ปลาขายหรือทำอาหารได้<br>🪱 เหยื่อได้จากจับหนอนจรในแปลงผัก ใช้แล้วปลาหายากติดเบ็ดง่ายขึ้น · ✨ เหยื่อทองได้จากหนอนทอง หรือทำด้วยเหยื่อหนอน 3 + น้ำผึ้ง 1 · ต้องใช้เหยื่อทองเพื่อเรียกปลาเทพ 🔴</p>`;
+                ${expFold('pond-dex','สมุดปลาบ่อ',`<div class="pond-dex">${listed.map(([k, x]) => `<button type="button" class="pond-dex-item rar-${x.r}${veg.fishCaught[k] ? '' : ' locked'}" title="${veg.fishCaught[k] ? x.name : '???'}"  ${f.state !== 'idle' ? 'disabled' : ''} onclick="openDex('fish', '${k}')">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></button>`).join('')}</div>`,`${caught}/${listed.length} ชนิด`)}
+                ${expFold('pond-help','ตั๋ว เหยื่อ และเคล็ดลับ',`<p class="shop-note">ตั๋วฟรีวันละ 2 ใบ ได้เพิ่มทุกครั้งที่พักไม่เกินลิมิต และลุ้นได้ตอนส่งออเดอร์ (เก็บได้สูงสุด ${FISH_TICKET_MAX}) · เหยื่อหนอนช่วยล่อปลาหายาก · เหยื่อทองทำจากเหยื่อหนอน 3 + น้ำผึ้ง 1 และใช้เรียกปลาเทพ · โหมดสบายเพิ่มเวลาตอบสนองโดยรางวัลเท่าเดิม · ปลาขายหรือทำอาหารได้</p>`)}
+                </section>`;
         }
 
         // ✨ แขกพิเศษ: สุ่มแวะมาในสวน (วันละไม่เกิน 2 ตัว อยู่ 3 นาที) แตะเพื่อรับของขวัญ
@@ -9359,7 +9361,7 @@
         }
 
         // --- 🛡️ กันเพื่อนแอบเก็บ: หุ่นไล่กา (เพื่อนต้องรอนานขึ้น + ยามหันไวขึ้น) และหมาเฝ้าสวน (ผู้เฝ้าคนที่สองในมินิเกมย่อง) ---
-        const SCARE_SVG = window.FarmPixelArt ? FarmPixelArt.ui('scarecrow') : '<svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><path d="M20 15v24" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"/><path d="M5 19.5h30" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"/>'
+        const SCARE_SVG = window.FarmCuteArt ? FarmCuteArt.ui('scarecrow') : '<svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><path d="M20 15v24" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"/><path d="M5 19.5h30" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"/>'
             + '<path d="M5 19.5l-2.6 2.6M5 19.5l-2.6-2M35 19.5l2.6 2.6M35 19.5l2.6-2" stroke="#E9C46A" stroke-width="1.5" stroke-linecap="round"/><path d="M12.5 17h15l-2.2 13.5h-10.6z" fill="#E07A5F"/><path d="M15.5 21.5h3.4v3.4h-3.4z" fill="#F2CC8F"/>'
             + '<circle cx="20" cy="11.5" r="5.4" fill="#F2CC8F"/><path d="M14.4 8.6q5.6-9.4 11.2 0z" fill="#E9C46A"/><path d="M10.5 8.8h19" stroke="#D4A017" stroke-width="2.6" stroke-linecap="round"/>'
             + '<circle cx="18" cy="11.8" r="0.9" fill="#5A3B1A"/><circle cx="22" cy="11.8" r="0.9" fill="#5A3B1A"/><path d="M17.6 14.4q2.4 1.4 4.8 0" stroke="#5A3B1A" stroke-width="0.9" fill="none"/></svg>';
@@ -9819,9 +9821,9 @@
             if (c.k.startsWith('seed:')) return `เมล็ด${VEGGIES[c.k.slice(5)].name}`;
             return c.k === 'leaves' ? 'ใบไม้แห้ง' : c.k === 'squirrel' ? 'กระรอก' : c.k === 'monkey' ? 'ลิง' : itemInfo(c.k) ? `${itemInfo(c.k).name} ×${c.n}` : '';
         }
-        const BUSH_POS = [[17, 47], [50, 43], [83, 48], [24, 68], [57, 66], [86, 71], [12, 90], [45, 89], [77, 92]];
+        const BUSH_POS = [[18, 44], [50, 42], [82, 44], [18, 66], [50, 64], [82, 66], [18, 88], [50, 86], [82, 88]];
         function forestBushSVG(i) {
-            if (window.FarmPixelArt) return FarmPixelArt.bush(i);
+            if (window.FarmCuteArt) return FarmCuteArt.bush(i);
             const g = [['#3E8E41', '#5FB35F', '#8FD176'], ['#2F7D4F', '#4FA36B', '#80C995'], ['#4C8F2E', '#6DB04A', '#A3D772']][i % 3];
             const dots = i % 4 === 1 ? ['#E5484D', [[20, 27], [26, 32], [44, 26], [38, 33]]] : i % 4 === 3 ? ['#FFF4C2', [[36, 13], [48, 29], [17, 33]]] : null;
             return `<svg viewBox="0 0 64 46" aria-hidden="true"><ellipse cx="32" cy="43" rx="27" ry="3" fill="#1E3B1E" opacity="0.2"/>`
@@ -9831,7 +9833,7 @@
         }
         const f1 = n => +n.toFixed(1);
         const forestPine = (x, y, h, c) => `<path d="M${x} ${f1(y - h)}l${f1(h * 0.32)} ${f1(h * 0.42)}h${f1(-h * 0.12)}l${f1(h * 0.22)} ${f1(h * 0.3)}h${f1(-h * 0.12)}l${f1(h * 0.24)} ${f1(h * 0.28)}h${f1(-h * 1.08)}l${f1(h * 0.24)} ${f1(-h * 0.28)}h${f1(-h * 0.12)}l${f1(h * 0.22)} ${f1(-h * 0.3)}h${f1(-h * 0.12)}z" fill="${c}"/>`;
-        const FOREST_BG = window.FarmPixelArt ? FarmPixelArt.scene('forest') : `<svg class="forest-bg" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs>`
+        const FOREST_BG = window.FarmCuteArt ? FarmCuteArt.scene('forest') : `<svg class="forest-bg" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs>`
             + '<linearGradient id="fo-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFE6D2"/><stop offset="1" stop-color="#E8F6DD"/></linearGradient>'
             + '<linearGradient id="fo-gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#86C463"/><stop offset="1" stop-color="#5E9E46"/></linearGradient></defs>'
             + '<rect width="320" height="200" fill="url(#fo-sky)"/>'
@@ -9849,18 +9851,13 @@
             if (lvl < FOREST_LEVEL) return `<div class="farm-card is-locked"><span class="barn-emoji" aria-hidden="true">🌲</span><div class="farm-card-main"><span class="farm-card-title">ป่าหลังฟาร์ม</span>`
                 + `<span class="farm-card-sub">ปลดล็อกที่เลเวล ${FOREST_LEVEL} · ใช้แรง ⚡ เดินป่า แตะพุ่มไม้หาไม้ เห็ด สมุนไพร และเมล็ดกาแฟ โกโก้ ชา</span></div><button type="button" class="shop-buy farm-action" disabled>🔒 เลเวล ${FOREST_LEVEL}</button></div>`;
             const busy = !!(f.cells && f.cells.some(c => !c.open)), cells = f.cells || Array(9).fill(null);
-            const bar = energyBoxHTML();
+            const bar = expHud('forest');
             const scene = `<div class="forest-scene${busy ? ' is-trip' : ''}">${FOREST_BG}${cells.map((c, i) => {
                 const [x, y] = BUSH_POS[i], open = !!(c && c.open);
                 return `<button type="button" class="forest-bush${open ? ' is-open' : ''}${open && i === forestNew ? ' is-new' : ''}${c && !open && c.risk ? ' is-risk' : ''}" style="left:${x}%;top:${y}%;z-index:${y}" ${c && !open ? '' : 'disabled'} onclick="openBush(${i})"`
-                    + ` aria-label="${!c ? 'พุ่มไม้ (เริ่มเดินป่าก่อน)' : open ? 'เจอแล้ว: ' + forestLabel(c) : `พุ่มไม้ที่ ${i + 1} แตะเพื่อค้นหา${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${forestBushSVG(i)}${c && !open && c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : ''}${open ? `<span class="fb-find">${forestFace(c)}</span>` : ''}</button>`;
-            }).join('')}${!busy ? `<span class="forest-hint">${f.cells ? 'เดินป่าครบรอบแล้ว 🎒' : 'กดเดินป่าเพื่อเริ่มค้นหา'}</span>` : ''}</div>`;
-            const eats = eatableKeys().slice(0, 6);
-            const eat = !busy && en < cost ? `<div class="forest-eat"><span class="farm-card-sub">🍽️ แรงไม่พอ กินอาหารในยุ้งฉางเพิ่มแรงได้:</span>${eats.length
-                ? `<div class="farm-chips">${eats.map(k => { const it = itemInfo(k); return `<button type="button" class="chip-btn" onclick="eatDish('${k}')">${it.e} ${it.name}${starText(it.q)} ×${veg.inv[k]} · ⚡+${foodEn(k)}</button>`; }).join('')}</div>`
-                : '<span class="farm-card-sub">ยังไม่มีอาหารในยุ้งฉาง ไปทำที่ครัว 🍳 ก่อนนะ (เมนูจากของป่าฟื้นแรงเยอะ)</span>'}</div>` : '';
-            const action = busy ? `<span class="farm-done">แตะพุ่มไม้ที่เหลืออีก ${f.cells.filter(c => !c.open).length} จุด</span>`
-                : `<button type="button" class="modal-btn btn-primary" ${en >= cost ? '' : 'disabled'} onclick="startForest()">🌲 เดินป่า (ใช้ ⚡${cost})</button>`;
+                    + ` aria-label="${!c ? 'พุ่มไม้ (เริ่มเดินป่าก่อน)' : open ? 'เจอแล้ว: ' + forestLabel(c) : `พุ่มไม้ที่ ${i + 1} แตะเพื่อค้นหา${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${forestBushSVG(i)}${expPoint(i,c)}${c && !open && c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : ''}${open ? `<span class="fb-find">${forestFace(c)}</span>` : ''}</button>`;
+            }).join('')}${!busy ? `<span class="forest-hint">${f.cells ? (f.cells.some(c=>c.skip)&&!veg.adventure.active.forest?'กลับบ้านพร้อมของแล้ว':'เดินป่าครบรอบแล้ว 🎒') : 'กดเดินป่าเพื่อเริ่มค้นหา'}</span>` : ''}</div>`;
+            const action = busy ? '' : expStartButton('forest');
             const craft = Object.entries(FOREST_DECOR).map(([id, [name, mats]]) => {
                 const owned = shop.owned.includes(id), n = owned ? gdCount(id) : 0, ok = hasItems(mats), multi = GD_ART[id].multi, full = owned && (!multi || n >= GD_MULTI_MAX);
                 return `<div class="farm-card forest-craft"><span class="gd-prev" aria-hidden="true"><svg viewBox="0 0 64 64">${GD_ART[id].svg}</svg></span>
@@ -9872,11 +9869,12 @@
             const seeds = Object.keys(FOREST_CROPS);
             const dexCells = [...FOREST_FINDS.map(k => [k, f.found[k] || 0, itemInfo(k)]), ...seeds.map(s => [s, f.found['seed:' + s] || 0, { e: VEGGIES[s].e, name: 'เมล็ด' + VEGGIES[s].name }])]
                 .map(([k, n, it]) => n ? `<div class="museum-cell is-have"><span>${it.icon || it.e}</span><small>${it.name}</small><b class="forest-n">${n}</b></div>` : `<div class="museum-cell"><span>❔</span><small>???</small></div>`).join('');
-            const html = `${bar}${renderAdventureRoute('forest')}${scene}<p class="pond-msg forest-msg" aria-live="polite">${escHtml(forestMsg || 'เดินป่ารอบละ 9 พุ่ม แต่ละพุ่มซ่อนของไว้ บางพุ่มมีกระรอกใจดี บางพุ่มมีลิงจอมซน 🐒')}</p>`
-                + `${riskAskHTML('forest', 'openBush')}${eat}<div class="modal-btn-group">${action}</div>`
-                + `<p class="veg-book-head">🪚 งานไม้: ทำของแต่งสวนจากไม้ป่า (วางในสวนให้เลย)</p>${craft}`
-                + `<p class="veg-book-head">🌲 ของป่าที่เคยเจอ · เดินป่าแล้ว ${f.trips} รอบ</p><div class="museum-grid">${dexCells}</div>`
-                + `<p class="shop-note">แรงฟื้น 1 หน่วยทุก 6 นาที (ปิดเว็บไว้ก็ฟื้น) · พักไม่เกินลิมิต +${ENERGY_BREAK} · กินอาหารในยุ้งฉางฟื้นแรง · ลิงชอบขโมยของ พกกล้วย 🍌 หรือมีหมาเฝ้าสวนไว้กันได้ · ใบไม้แห้งกลายเป็นปุ๋ยหมัก · 🪓 อัปเกรดขวานที่แท็บอัปเกรด · 🪚 แผ่นไม้ทำที่โต๊ะช่างไม้ในโรงแปรรูป</p>`;
+            const html = `<section class="exp-zone exp-forest">${expHeading('forest',`เดินป่าแล้ว ${f.trips} รอบ · รอบละ 9 จุด`)}${bar}${scene}${expProgress('forest')}`
+                + expMessage(forestMsg.split(' · 🎒')[0],busy?'แตะพุ่มไม้ที่มีหมายเลข · จุด ⚠️ เลือกเสี่ยงหรือเดินอ้อมได้':'เลือกเส้นทาง แล้วกดเดินป่าเพื่อค้นหาของในพุ่มไม้')
+                + `${riskAskHTML('forest', 'openBush')}${expRoundSummary('forest')}${expRoute('forest')}${action}${expTravelActions('forest')}${expSupplies('forest')}`
+                + expFold('forest-craft','งานไม้และของแต่งสวน',craft,'ไม้ป่าเอาไปทำอะไรได้บ้าง')
+                + expFold('forest-dex','สมุดของป่า',`<div class="museum-grid">${dexCells}</div>`,`เดินป่า ${f.trips} รอบ`)
+                + expFold('forest-help','เคล็ดลับเดินป่า','<p class="shop-note">พกกล้วยหรือมีหมาเฝ้าสวนไว้กันลิงขโมยของ · ใบไม้แห้งเพิ่มแต้มปุ๋ยหมัก · อัปเกรดขวานช่วยเพิ่มของป่า · แผ่นไม้ทำที่โต๊ะช่างไม้ในโรงแปรรูป · ของที่เก็บได้เข้าคลังทันที</p>')+'</section>';
             forestNew = -1; // เล่นแอนิเมชันเปิดพุ่มครั้งเดียว
             return html;
         }
@@ -10020,7 +10018,7 @@
         // ภาพหินแต่ละก้อน: สีตามความลึก หินแข็งมีลายแร่ ทุบแล้วมีรอยร้าว
         const mineTone = f => f < 10 ? ['#8E837A', '#ABA096', '#C9BFB4'] : f < 20 ? ['#6F7884', '#8E98A5', '#B1BAC5'] : ['#5F5A80', '#7F79A2', '#A49FC4'];
         function mineRockSVG(c, f, i) {
-            if (window.FarmPixelArt) return FarmPixelArt.rock(c, f, i);
+            if (window.FarmCuteArt) return FarmCuteArt.rock(c, f, i);
             const [c0, c1, c2] = mineTone(f), shape = ['M6 31L2 19l6-12 11-5 12 3 7 11-2 12-8 4H13z', 'M4 30L3 17l8-11 12-3 10 6 5 12-3 10-10 3H12z', 'M5 31L3 21l4-12 9-6 14 1 7 10v13l-7 5H11z'][i % 3];
             return `<svg viewBox="0 0 40 34" aria-hidden="true"><ellipse cx="20" cy="32" rx="16" ry="2" fill="#000" opacity="0.25"/><path d="${shape}" fill="${c.hp > 1 || c.cracked ? c0 : c1}"/>`
                 + `<path d="M9 9l10-6 12 3 6 9-8-3-9-2z" fill="${c2}" opacity="0.7"/><path d="M6 29l7 3h16l7-4" stroke="${c0}" stroke-width="2" fill="none" opacity="0.7"/>`
@@ -10041,7 +10039,7 @@
             return itemInfo(c.k) ? `${itemInfo(c.k).e}${c.n > 1 ? `<b>×${c.n}</b>` : ''}` : '❔';
         }
         const mineLabel = c => c.hit && c.risk ? `โดน${TRAPS.mine[c.trap][1]}` : ({ ladder: 'บันไดลงชั้นถัดไป', chest: 'หีบสมบัติ', dust: 'ฝุ่น', bat: 'ค้างคาว', cavein: 'หินถล่ม' })[c.k] || (itemInfo(c.k) ? `${itemInfo(c.k).name} ×${c.n}` : '');
-        const MINE_ENTRANCE = window.FarmPixelArt ? FarmPixelArt.scene('mine') : '<svg class="mine-entrance" viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="mi-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7D9A8"/><stop offset="1" stop-color="#F4E7CF"/></linearGradient></defs>'
+        const MINE_ENTRANCE = window.FarmCuteArt ? FarmCuteArt.scene('mine') : '<svg class="mine-entrance" viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="mi-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7D9A8"/><stop offset="1" stop-color="#F4E7CF"/></linearGradient></defs>'
             + '<rect width="320" height="150" fill="url(#mi-sky)"/><path d="M0 70Q70 20 160 26T320 64V150H0z" fill="#9C7B5C"/><path d="M0 92Q90 60 170 72T320 86V150H0z" fill="#B48F6A"/>'
             + '<path d="M118 150V86q0-34 42-34t42 34v64z" fill="#2B2033"/><path d="M112 150V82h8v68zM200 150V82h8v68zM106 78h108v10H106z" fill="#7A4E2D"/><path d="M118 80l84 0" stroke="#5A3A20" stroke-width="2"/>'
             + '<path d="M140 150l10-46M180 150l-10-46" stroke="#8C8C9E" stroke-width="3"/><path d="M142 140h36M145 128h30M148 117h24" stroke="#7A4E2D" stroke-width="3"/>'
@@ -10072,29 +10070,26 @@
             if (!m.floor) {
                 const lifts = Array.from({ length: Math.floor(m.lift / 5) }, (_, i) => (i + 1) * 5);
                 main = `<div class="mine-gate">${MINE_ENTRANCE}<span class="forest-hint">ลึกสุดที่เคยไป: ชั้น ${m.deepest}/${MINE_FLOORS}</span></div>`
-                    + `<p class="pond-msg forest-msg" aria-live="polite">${escHtml(mineMsg || 'ทุบหินก้อนละ 1 ⚡ หาแร่ อัญมณี ฟอสซิล และบันไดลงชั้นถัดไป · ทุก 5 ชั้นมีลิฟต์')}</p>`
-                    + `<div class="mine-lifts"><button type="button" class="modal-btn btn-primary" ${en >= 1 ? '' : 'disabled'} onclick="enterMine(1)">⛏️ ลงเหมืองชั้น 1</button>`
-                    + lifts.map(f => `<button type="button" class="chip-btn mine-lift" ${en >= 1 ? '' : 'disabled'} onclick="enterMine(${f})">🛗 ลิฟต์ชั้น ${f}</button>`).join('') + '</div>';
+                    + expMessage(mineMsg,'ทุบหินหาแร่และบันได · หินแข็งทุบ 2 ที · มีลิฟต์ทุก 5 ชั้น')
+                    + expRoute('mine') + expStartButton('mine')
+                    + (lifts.length?`<div class="mine-lifts">${lifts.map(f => `<button type="button" class="chip-btn mine-lift" ${expReady('mine')?'disabled':''} onclick="expStart('mine',${f})">${adBlockers('mine').length?'กลับบ้าน → ':''}🛗 ลิฟต์ชั้น ${f}</button>`).join('')}</div>`:'');
             } else {
                 const ladder = m.cells.some(c => c.k === 'ladder' && c.open), left = m.cells.filter(c => !c.open).length;
                 main = `<div class="mine-head"><b>⛏️ ชั้น ${m.floor}/${MINE_FLOORS}</b><span class="mine-depth" aria-hidden="true"><i style="width:${(m.floor / MINE_FLOORS * 100).toFixed(0)}%"></i></span><small>เหลือ ${left} ก้อน</small></div>`
                     + `<div class="mine-scene" style="--depth:${Math.min(1, m.floor / MINE_FLOORS).toFixed(2)}">${m.cells.map((c, i) => {
                         const go = c.open && c.k === 'ladder';
                         return `<button type="button" class="mine-rock${c.open ? ' is-open' : ''}${c.hp > 1 ? ' is-hard' : ''}${!c.open && c.risk ? ' is-risk' : ''}${c.open && i === mineNew ? ' is-new' : ''}${go ? ' is-ladder' : ''}" ${!c.open || go ? '' : 'disabled'} onclick="hitRock(${i})"`
-                            + ` aria-label="${c.open ? (go ? 'ลงบันได' : 'เจอแล้ว: ' + mineLabel(c)) : `หินก้อนที่ ${i + 1}${c.hp > 1 ? ' (แข็ง)' : ''}${c.hint ? ' (เบาะแส: '+mineLabel(c)+')' : ''}${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${c.open ? `<span class="mr-rubble"></span><span class="fb-find">${mineFace(c)}</span>` : mineRockSVG(c, m.floor, i) + (c.hint ? `<small class="ad-hint">${escHtml(mineLabel(c))}</small>` : '') + (c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : '')}</button>`;
+                            + ` aria-label="${c.open ? (go ? 'ลงบันได' : 'เจอแล้ว: ' + mineLabel(c)) : `หินก้อนที่ ${i + 1}${c.hp > 1 ? ' (แข็ง)' : ''}${c.hint ? ' (เบาะแส: '+mineLabel(c)+')' : ''}${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${expPoint(i,c)}${c.open ? `<span class="mr-rubble"></span><span class="fb-find">${mineFace(c)}</span>` : mineRockSVG(c, m.floor, i) + (c.hint ? `<small class="ad-hint">${escHtml(mineLabel(c))}</small>` : '') + (c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : '')}</button>`;
                     }).join('')}</div>`
-                    + `<p class="pond-msg forest-msg" aria-live="polite">${escHtml(mineMsg)}</p>` + riskAskHTML('mine', 'hitRock')
-                    + `<div class="modal-btn-group">${ladder && m.floor < MINE_FLOORS ? `<button type="button" class="modal-btn btn-primary" onclick="mineDown()">🪜 ลงชั้น ${m.floor + 1}</button>` : ''}<button type="button" class="modal-btn btn-secondary" onclick="leaveMine()">🏃 ขึ้นจากเหมือง</button></div>`;
-                if (en < 1) {
-                    const eats = eatableKeys().slice(0, 6);
-                    main += `<div class="forest-eat"><span class="farm-card-sub">🍽️ แรงหมด กินอาหารในยุ้งฉางเพิ่มแรงได้:</span>${eats.length ? `<div class="farm-chips">${eats.map(k => { const it = itemInfo(k); return `<button type="button" class="chip-btn" onclick="eatDish('${k}')">${it.e} ${it.name}${starText(it.q)} ×${veg.inv[k]} · ⚡+${foodEn(k)}</button>`; }).join('')}</div>` : '<span class="farm-card-sub">ยังไม่มีอาหารในยุ้งฉาง ไปทำที่ครัว 🍳 ก่อนนะ</span>'}</div>`;
-                }
+                    + expProgress('mine') + expMessage(mineMsg,ladder?'เจอบันไดแล้ว · ลงต่อหรือเก็บแร่ชั้นนี้ให้ครบก็ได้':'แตะหินเพื่อขุดหาแร่ · มองหาบันไดเพื่อลงต่อ') + riskAskHTML('mine', 'hitRock')
+                    + (ladder && m.floor < MINE_FLOORS ? `<button type="button" class="modal-btn btn-primary exp-primary" onclick="mineDown()">🪜 ลงชั้น ${m.floor + 1}</button>` : '')
+                    + expRoute('mine') + expTravelActions('mine');
             }
             const cells = [...MINE_FINDS, ...MINE_FOSSILS].map(k => { const n = m.found[k] || 0, it = itemInfo(k); return n ? `<div class="museum-cell is-have"><span>${it.icon || it.e}</span><small>${it.name}</small><b class="forest-n">${n}</b></div>` : '<div class="museum-cell"><span>❔</span><small>???</small></div>'; }).join('');
-            const html = energyBoxHTML() + renderAdventureRoute('mine') + main
-                + `<p class="veg-book-head">🔨 งานหินและโลหะ: ทำของแต่งสวน (วางในสวนให้เลย)</p>${zoneCraftHTML(MINE_DECOR)}`
-                + `<p class="veg-book-head">💎 ของจากเหมืองที่เคยเจอ · ทุบหินไปแล้ว ${m.rocks} ก้อน${m.chests ? ` · เปิดหีบสมบัติ ${m.chests} ครั้ง` : ''}</p><div class="museum-grid">${cells}</div>`
-                + '<p class="shop-note">หินก้อนละ 1 ⚡ (หินแข็ง 2 ที) · แร่ใส่เตาถลุงที่โรงแปรรูปได้แท่งโลหะ ใช้อัปเกรดเครื่องมือขั้น 6–7 · อัญมณีดิบเจียระไนแล้วราคา ×3 · ฟอสซิลครบ 8 ชิ้นต่อเป็นโครงไดโนเสาร์ในพิพิธภัณฑ์ · ⛏️ อัปเกรดอีเต้อที่แท็บอัปเกรด</p>';
+            const html = `<section class="exp-zone exp-mine">${expHeading('mine',`30 ชั้นให้ค้นหา · ทุบหินแล้ว ${m.rocks} ก้อน`)}${expHud('mine')}${main}${expSupplies('mine')}`
+                + expFold('mine-craft','งานหินและโลหะ',zoneCraftHTML(MINE_DECOR),'ทำของแต่งสวน')
+                + expFold('mine-dex','สมุดแร่และฟอสซิล',`<div class="museum-grid">${cells}</div>`,`หีบสมบัติ ${m.chests||0} ครั้ง`)
+                + expFold('mine-help','เคล็ดลับขุดเหมือง','<p class="shop-note">แร่ใส่เตาถลุงได้แท่งโลหะเพื่ออัปเกรดเครื่องมือ · เจียระไนอัญมณีดิบเพิ่มมูลค่า · ฟอสซิลครบ 8 ชิ้นต่อโครงไดโนเสาร์ได้ · ตะเกียงช่วยบอกเบาะแสแร่ · เชือกเปิดทางลงได้ 1 ชั้น ยกเว้นชั้นสุดท้าย</p>')+'</section>';
             mineNew = -1;
             return html;
         }
@@ -10214,10 +10209,10 @@
             seaMsg = `🧂 ได้เกลือทะเล ×${n} เข้ายุ้งฉางแล้ว ใช้ทำปลาเค็ม น้ำปลา และเมนูทะเล`;
             renderFarmPanel(); renderFarmStatus(); updateBasketFood();
         }
-        const BEACH_POS = [[14, 60], [38, 57], [63, 59], [87, 62], [22, 80], [49, 78], [74, 82], [92, 90]];
-        const sandSVG = i => `<svg viewBox="0 0 50 30" aria-hidden="true"><ellipse cx="25" cy="25" rx="23" ry="5" fill="#C9A86F" opacity="0.5"/><ellipse cx="25" cy="21" rx="19" ry="8" fill="#E8C98E"/><ellipse cx="22" cy="18" rx="11" ry="4" fill="#F4DDAA"/>`
+        const BEACH_POS = [[16, 59], [39, 57], [62, 59], [85, 61], [19, 82], [42, 83], [65, 83], [85, 84]];
+        const sandSVG = i => window.FarmCuteArt?.sand ? FarmCuteArt.sand(i) : `<svg viewBox="0 0 50 30" aria-hidden="true"><ellipse cx="25" cy="25" rx="23" ry="5" fill="#C9A86F" opacity="0.5"/><ellipse cx="25" cy="21" rx="19" ry="8" fill="#E8C98E"/><ellipse cx="22" cy="18" rx="11" ry="4" fill="#F4DDAA"/>`
             + `<path d="M${30 + (i % 3) * 3} 9l1 2.6 2.6 1-2.6 1-1 2.6-1-2.6-2.6-1 2.6-1z" fill="#FFFFFF"/><circle cx="${14 + (i % 4) * 4}" cy="20" r="1" fill="#B48F5A"/></svg>`;
-        const BEACH_BG = window.FarmPixelArt ? FarmPixelArt.scene('beach') : '<svg class="forest-bg" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs>'
+        const BEACH_BG = window.FarmCuteArt ? FarmCuteArt.scene('beach') : '<svg class="forest-bg" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs>'
             + '<linearGradient id="be-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ED3F5"/><stop offset="1" stop-color="#D8F1FB"/></linearGradient>'
             + '<linearGradient id="be-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E9CCA"/><stop offset="1" stop-color="#5FD0D6"/></linearGradient></defs>'
             + '<rect width="320" height="200" fill="url(#be-sky)"/><circle cx="262" cy="34" r="16" fill="#FFE27A"/><circle cx="262" cy="34" r="26" fill="#FFE27A" opacity="0.25"/>'
@@ -10240,30 +10235,27 @@
                 main = `<div class="forest-scene beach-scene${open ? ' is-trip' : ''}">${BEACH_BG}${cells.map((c, i) => {
                     const [x, y] = BEACH_POS[i], done = !!(c && c.open), face = !done ? '' : c.skip ? '↪️' : c.hit && c.risk ? TRAPS.beach[c.trap][0] : c.k === 'trash' ? '🧴' : c.k === 'bottle' ? '🍾' : `${itemInfo(c.k).e}${c.n > 1 ? `<b>×${c.n}</b>` : ''}`;
                     return `<button type="button" class="forest-bush sand-spot${done ? ' is-open' : ''}${done && i === seaNew ? ' is-new' : ''}${c && !done && c.risk ? ' is-risk' : ''}" style="left:${x}%;top:${y}%;z-index:${y}" ${c && !done ? '' : 'disabled'} onclick="digSand(${i})"`
-                        + ` aria-label="${!c ? 'กองทราย (เริ่มเดินชายหาดก่อน)' : done ? 'เจอแล้ว' : `กองทรายที่ ${i + 1} แตะเพื่อขุด${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${sandSVG(i)}${c && !done && i < adGear('tidechart') ? `<small class="ad-hint">${c.k === 'trash' ? 'ขยะเกยหาด' : c.k === 'bottle' ? 'ขวดจดหมาย' : escHtml(itemInfo(c.k).name)}</small>` : ''}${c && !done && c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : ''}${done ? `<span class="fb-find">${face}</span>` : ''}</button>`;
-                }).join('')}${!open ? `<span class="forest-hint">${s.cells ? 'เดินครบหาดแล้ว 🐚' : 'กดเดินชายหาดเพื่อเริ่ม'}</span>` : ''}</div>`
-                    + `<p class="pond-msg forest-msg" aria-live="polite">${escHtml(seaMsg || 'น้ำลงทีไรมีของขึ้นมาเกยหาด เปลือกหอย ปู สาหร่าย ปะการัง บางทีมีไข่มุกด้วย 🫧')}</p>`
-                    + riskAskHTML('beach', 'digSand') + `<div class="modal-btn-group">${open ? `<span class="farm-done">ขุดทรายที่เหลืออีก ${s.cells.filter(c => !c.open).length} จุด</span>` : `<button type="button" class="modal-btn btn-primary" ${en >= SEA_COST ? '' : 'disabled'} onclick="startBeach()">🏝️ เดินชายหาด (ใช้ ⚡${SEA_COST})</button>`}</div>`;
+                        + ` aria-label="${!c ? 'กองทราย (เริ่มเดินชายหาดก่อน)' : done ? 'เจอแล้ว' : `กองทรายที่ ${i + 1} แตะเพื่อขุด${c.risk ? ' (⚠️ น่าสงสัย)' : ''}`}">${sandSVG(i)}${expPoint(i,c)}${c && !done && i < adGear('tidechart') ? `<small class="ad-hint">${c.k === 'trash' ? 'ขยะเกยหาด' : c.k === 'bottle' ? 'ขวดจดหมาย' : escHtml(itemInfo(c.k).name)}</small>` : ''}${c && !done && c.risk ? '<span class="risk-sign" aria-hidden="true">⚠️</span>' : ''}${done ? `<span class="fb-find">${face}</span>` : ''}</button>`;
+                }).join('')}${!open ? `<span class="forest-hint">${s.cells ? (s.cells.some(c=>c.skip)&&!veg.adventure.active.beach?'กลับบ้านพร้อมของแล้ว':'เดินครบหาดแล้ว 🐚') : 'กดเดินชายหาดเพื่อเริ่ม'}</span>` : ''}</div>`
+                    + expProgress('beach') + expMessage(seaMsg.split(' · 🏝️')[0],open?'แตะกองทรายที่มีหมายเลข · จุด ⚠️ เลือกเสี่ยงหรือเดินอ้อมได้':'เลือกเส้นทาง แล้วเดินหาดตามหาหอย ไข่มุก และของที่คลื่นพามา')
+                    + riskAskHTML('beach', 'digSand') + expRoundSummary('beach') + expRoute('beach') + (open?'':expStartButton('beach')) + expTravelActions('beach');
             } else if (seaView === 'boat') {
                 const f = fishing, r = f.where === 'sea' ? f.result : null, hooked = busy && f.fish && FISH[f.fish], big = hooked && FISH_FIGHT[hooked.r];
                 const msg = busy && f.state === 'waiting' ? 'รอปลาทะเลกินเหยื่อ… คลื่นแรงหน่อยนะ 🌊' : busy && f.state === 'bite' ? (big ? `❗❗ ${RARITY[hooked.r].e} ตัวใหญ่ติดเบ็ด ดึงเลย!` : '❗ ปลากินเบ็ดแล้ว! ดึงเร็ว!')
-                    : busy && f.state === 'fight' ? `💪 สู้กับปลา${RARITY[hooked.r].name}! แตะ "ดึง!" รัวๆ` : r ? fishResultText(r) : seaMsg || 'ออกเรือ 1 รอบใช้ ⚡3 เหวี่ยงเบ็ดได้ 3 ครั้ง ปลาทะเลลึกต้องใช้เหยื่อ ✨ เหยื่อทองล่อพญานาคได้';
+                    : busy && f.state === 'fight' ? `💪 สู้กับปลา${RARITY[hooked.r].name}! แตะ "ดึง!" รัวๆ` : r ? fishResultText(r) : seaMsg || `ออกเรือใช้ ${SEA_COST} ⚡ · เหวี่ยงเบ็ดได้ ${boatCasts()} ครั้ง · ต้องใช้เหยื่อทุกครั้ง`;
                 const bait = seaBait();
-                const action = busy ? `<button type="button" class="modal-btn btn-primary pond-reel${f.state === 'bite' || f.state === 'fight' ? ' is-bite' : ''}" onclick="reelIn()">ดึง! 💪</button>`
+                const action = busy ? `<button type="button" class="modal-btn btn-primary pond-reel${f.state === 'bite' || f.state === 'fight' ? ' is-bite' : ''}" onclick="reelIn()">${f.state==='fight'?`ดึงเบ็ด! อีก <span data-reel-left>${f.need-f.taps}</span> ครั้ง`:'ปลากินแล้ว! ดึงเบ็ด'}</button>`
                     : s.casts > 0 ? `<button type="button" class="modal-btn btn-primary" ${bait ? '' : 'disabled'} onclick="castSea()">${bait ? `เหวี่ยงเบ็ด 🎣 (เหลือ ${s.casts} ครั้ง)` : 'ไม่มีเหยื่อแล้ว 🪱'}</button>`
                     : `<button type="button" class="modal-btn btn-primary" ${en >= SEA_COST ? '' : 'disabled'} onclick="startBoat()">🚤 ออกเรือ (ใช้ ⚡${SEA_COST} · ตกได้ ${boatCasts()} ครั้ง)</button>`;
                 const fight = busy && f.state === 'fight' ? `<div class="fish-fight rar-${hooked.r}"><span class="fish-fight-bar"><i style="width:${Math.round(f.taps / f.need * 100)}%"></i></span>
                     <b class="fish-fight-left">อีก ${f.need - f.taps} ครั้ง</b><span class="fish-fight-time"><i style="animation-duration:${Math.max(0, f.until - Date.now())}ms"></i></span></div>` : '';
                 const seaFish = Object.keys(FISH).filter(k => FISH[k].sea), now = ecologyFishTable('sea').filter(r=>r.p>0).map(r=>r.key);
-                main = `<div class="pond sea-pond${busy ? ' is-' + f.state : ''}${big ? ' is-big' : ''}" aria-hidden="true"><span class="sea-boat">🚤</span><span class="pond-ripple"></span><span class="pond-float">${busy && f.state === 'bite' ? (big ? '‼️' : '❗') : ''}</span>
-                        ${r && r.how === 'catch' && !busy ? `<span class="pond-catch">${FISH[r.caught].e}</span>` : ''}</div>
-                    <p class="pond-msg" aria-live="polite">${escHtml(msg)}</p>${fight}
+                main = `${expFishScene('sea')}${expFishSteps('sea')}${expFishFeedback('sea',msg)}${fight}${expFishAction('sea',action)}${!busy&&!bait?`<button type="button" class="chip-btn" onclick="ecologyOpenFishing('pond')">หาเหยื่อที่บ่อปลา</button>`:''}
                     <div class="pond-bait" role="radiogroup" aria-label="เหยื่อ">${[['bait', '🪱 เหยื่อหนอน', veg.bait], ['gold', '✨ เหยื่อทอง', veg.goldBait]].map(([k, l, n]) =>
                         `<button type="button" class="chip-btn${bait === k ? ' is-active' : ''}" role="radio" aria-checked="${bait === k}" ${n === 0 || busy ? 'disabled' : ''} onclick="setBait('${k}')">${l} ×${n}</button>`).join('')}</div>
-                    <div class="modal-btn-group">${action}</div>
                     ${ecologyFishPlanHTML('sea')}
                     <div class="pond-now"><span>ตอนนี้ในทะเลมี:</span>${now.map(k => `<span class="pond-now-fish rar-${FISH[k].r}" title="${veg.fishCaught[k] ? FISH[k].name : '???'} · ${RARITY[FISH[k].r].name}">${veg.fishCaught[k] ? FISH[k].e : '❔'}</span>`).join('')}</div>
-                    <div class="pond-dex">${seaFish.map(k => { const x = FISH[k]; return `<button type="button" class="pond-dex-item rar-${x.r}${veg.fishCaught[k] ? '' : ' locked'}" title="${veg.fishCaught[k] ? x.name : '???'}" ${busy ? 'disabled' : ''} onclick="openDex('fish', '${k}')">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></button>`; }).join('')}</div>`;
+                    ${expFold('sea-fish-dex','สมุดปลาทะเล',`<div class="pond-dex">${seaFish.map(k => { const x = FISH[k]; return `<button type="button" class="pond-dex-item rar-${x.r}${veg.fishCaught[k] ? '' : ' locked'}" title="${veg.fishCaught[k] ? x.name : '???'}" ${busy ? 'disabled' : ''} onclick="openDex('fish', '${k}')">${veg.fishCaught[k] ? x.e : '❔'}<small>${veg.fishCaught[k] || 0}</small></button>`; }).join('')}</div>`,`${seaFish.filter(k=>veg.fishCaught[k]).length}/${seaFish.length} ชนิด`)}`;
             } else {
                 const t = s.salt, ready = saltReady(), pct = t && !ready ? Math.max(2, Math.min(99, Math.round((1 - (t - Date.now()) / SALT_MS) * 100))) : 100;
                 main = `<div class="farm-card salt-card${ready ? ' is-ready' : ''}"><span class="barn-emoji" aria-hidden="true">🧂</span>
@@ -10274,10 +10266,10 @@
                     + `<p class="pond-msg forest-msg" aria-live="polite">${escHtml(seaMsg)}</p><p class="shop-note">เกลือใช้ที่โรงตากปลา (ปลาทูเค็ม ทูน่ากระป๋อง น้ำปลา) และเมนูทะเลในครัว</p>`;
             }
             const finds = BEACH_FINDS.map(k => { const n = s.found[k] || 0, it = itemInfo(k); return n ? `<div class="museum-cell is-have"><span>${it.icon || it.e}</span><small>${it.name}</small><b class="forest-n">${n}</b></div>` : '<div class="museum-cell"><span>❔</span><small>???</small></div>'; }).join('');
-            const html = energyBoxHTML() + seg + (seaView === 'beach' ? renderAdventureRoute('beach') : '') + main
-                + `<p class="veg-book-head">🐚 งานเปลือกหอย: ทำของแต่งสวน (วางในสวนให้เลย)</p>${zoneCraftHTML(SEA_DECOR)}`
-                + `<p class="veg-book-head">🌊 ของจากชายหาด · เดินหาด ${s.beach} รอบ · ออกเรือ ${s.boats} รอบ${s.clean ? ` · เก็บขยะ ${s.clean} ชิ้น 💙` : ''}</p><div class="museum-grid">${finds}</div>`
-                + '<p class="shop-note">เดินชายหาด/ออกเรือ ครั้งละ 3 ⚡ · ออกเรือตกได้ 3 ครั้ง ต้องใช้เหยื่อทุกครั้ง (ซื้อที่บ่อปลา หรือได้จากถังหมัก) · ปลาทะเลเข้าตู้ปลาในพิพิธภัณฑ์ได้ · คันเบ็ดที่อัปเกรดแล้วใช้ในทะเลได้ด้วย</p>';
+            const html = `<section class="exp-zone exp-sea">${expHeading(seaView==='boat'?'sea':seaView==='salt'?'salt':'beach',`เดินหาด ${s.beach} รอบ · ออกเรือ ${s.boats} รอบ`)}${seg}${expHud('beach')}${main}${expSupplies('beach')}`
+                + expFold('sea-craft','งานเปลือกหอย',zoneCraftHTML(SEA_DECOR),'ทำของแต่งสวน')
+                + expFold('sea-dex','สมุดของชายหาด',`<div class="museum-grid">${finds}</div>`,`เก็บขยะแล้ว ${s.clean||0} ชิ้น`)
+                + expFold('sea-help','เคล็ดลับเที่ยวทะเล',`<p class="shop-note">เดินหาดหรือออกเรือครั้งละ ${SEA_COST} ⚡ · ออกเรือตกได้ ${boatCasts()} ครั้ง ต้องใช้เหยื่อทุกครั้ง · ซื้อเหยื่อหรือทำเหยื่อทองที่บ่อปลา · ปลาทะเลบริจาคเข้าตู้ปลาได้ · คันเบ็ดที่อัปเกรดใช้ในทะเลได้ด้วย</p>`)+'</section>';
             seaNew = -1;
             return html;
         }
@@ -12985,7 +12977,7 @@
         };
         // วาดฉากหลังทั้งชุด: ท้องฟ้าตามเวลาไทย · ฝน/พายุทำให้ฟ้าครึ้ม · กลางคืน/เย็น/เช้าย้อมสีทั้งภาพ
         function gdBackdropSVG(bg, t, wet) {
-            if (window.FarmPixelArt) return FarmPixelArt.backdrop(bg, t, wet);
+            if (window.FarmCuteArt) return FarmCuteArt.backdrop(bg, t, wet);
             const B = GD_BACKDROPS[bg] || GD_BACKDROPS.meadow;
             return gdSky(t, wet) + B.draw() + gdSkyTop(t, wet);
         }
@@ -13009,7 +13001,7 @@
         const gdStage = streak => streak >= 14 ? 4 : streak >= 7 ? 3 : streak >= 3 ? 2 : streak >= 1 ? 1 : 0;
         // คืนค่า { svg ของต้นไม้ (ยังไม่รวมกระถาง), top = ยอดต้น (ใช้วางของเทศกาล) }
         function gdTreeSVG(kind, stage, opts = {}) {
-            if (window.FarmPixelArt) return FarmPixelArt.tree(kind, stage, opts);
+            if (window.FarmCuteArt) return FarmCuteArt.tree(kind, stage, opts);
             const T = GD_TREES[kind] || GD_TREES.classic, wilt = !!opts.wilted;
             const L = wilt ? ['#9C8A55', '#B5A16C', '#CDBB86'] : T.leaf, base = 142;
             const H = [16, 34, 56, 80, 102][stage] * (T.small ? 0.62 : 1), top = base - H;
@@ -13645,10 +13637,11 @@
         SHOP_ITEMS['decor-gardencup'] = { cat: 'decor', name: 'ถ้วยสวนสวยประจำห้อง', price: 0, emoji: '🏆', pos: '', special: 'room', how: 'ได้เมื่อสวนได้โหวตมากที่สุดในห้อง' };
         // Apply after the forest/mine/sea reward catalogs have all been defined.
         // Metadata, item IDs and placement sizes stay in the existing catalogs.
-        if (window.FarmPixelArt) {
-            Object.entries(GD_ART).forEach(([id, art]) => { const svg = FarmPixelArt.decor(id); if (svg) art.svg = svg; });
-            GD_HOUSES.forEach((_, i) => { GD_HOUSES[i] = FarmPixelArt.house(i); });
-            Object.entries(GD_POTS).forEach(([kind, pot]) => { pot.svg = FarmPixelArt.pot(kind); });
+        if (window.FarmCuteArt) {
+            FarmCuteArt.configure({catalogs:[VEGGIES,FLOWERS,FARM_PRODUCTS,FISH,RECIPES,ANIMALS,PETS,MACHINES],decor:GD_ART,houses:GD_HOUSES,pots:GD_POTS});
+            Object.entries(GD_ART).forEach(([id, art]) => { const svg = FarmCuteArt.decor(id); if (svg) art.svg = svg; });
+            GD_HOUSES.forEach((_, i) => { GD_HOUSES[i] = FarmCuteArt.house(i); });
+            Object.entries(GD_POTS).forEach(([kind, pot]) => { pot.svg = FarmCuteArt.pot(kind); });
         }
         function loadShop() {
             let v = null;
@@ -15098,7 +15091,7 @@
             const n = m.length, q = 4;
             let d = '';
             m.forEach((row, y) => row.forEach((dark, x) => { if (dark) d += `M${x + q} ${y + q}h1v1h-1z`; }));
-            return `<svg class="qr-svg" viewBox="0 0 ${n + q * 2} ${n + q * 2}" shape-rendering="crispEdges" role="img" aria-label="QR code"><rect width="100%" height="100%" fill="#FFFFFF"/><path d="${d}" fill="#111111"/></svg>`;
+            return `<svg class="qr-svg" viewBox="0 0 ${n + q * 2} ${n + q * 2}" shape-rendering="geometricPrecision" role="img" aria-label="QR code"><rect width="100%" height="100%" fill="#FFFFFF"/><path d="${d}" fill="#111111"/></svg>`;
         }
 
         // --- 📱 นับเวลาต่อบนมือถือ: สแกน QR บนหน้าจอพัก มือถือจะนับถอยหลังและเตือนเมื่อครบเวลา ---
@@ -17480,7 +17473,7 @@
             initReportPage();
             initDataSafety();
             if (FARM_APP) initFarmApp();
-            if (window.FarmPixelUI) FarmPixelUI.start([VEGGIES, FLOWERS, FARM_PRODUCTS, FISH, RECIPES, ANIMALS, PETS, MACHINES]);
+            if (window.FarmCuteUI) FarmCuteUI.start([VEGGIES, FLOWERS, FARM_PRODUCTS, FISH, RECIPES, ANIMALS, PETS, MACHINES]);
             initLivingFarm();
         };
         let livingFarmStarted = false;
@@ -17490,7 +17483,7 @@
             FarmWorld.start({
                 read: () => ({world:veg.world,plots:veg.plots,land:veg.land,level:farmLevel(),coins:shop.coins,energy:energyNow(),house:veg.house,pet:veg.pet,
                     machines:veg.machines,weather:todayWeather(),season:farmSeason(),landPrice:LAND_PRICES[Math.min(veg.land,5)],landLevel:LAND_LEVELS[Math.min(veg.land,5)],timing:timing.plot,timingAt:timing.t0}),
-                save: saveVeg, icon: k => isSecretHybrid(k) ? FarmPixelArt.ui('help') : farmIcon(k), name: k => itemInfo(k)?.name || k,
+                save: saveVeg, icon: k => isSecretHybrid(k) ? FarmCuteArt.ui('help') : farmIcon(k), name: k => itemInfo(k)?.name || k,
                 describe: i => {const p=veg.plots[i];return p.seed?plotName(p)+' · '+vegPlotLabel(p)+' · ดิน '+p.soil+'%':'แปลงว่าง · ดิน '+p.soil+'%';},
                 plot: i => {const el=document.querySelectorAll('#veg-plots .veg-plot')[i];if(el&&veg.plots[i])onVegPlotTap(i,el);},
                 open: openFarm, water: waterVeggies, expand: () => buyShopItem('land'),

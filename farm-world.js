@@ -1,12 +1,12 @@
-/* A walkable pixel farm backed by the original game's plots and inventory. */
+/* A walkable storybook farm backed by the original game's plots and inventory. */
 (function(root) {
     'use strict';
-    const G=root.FarmSystems,A=root.FarmPixelArt,T=32,NS='http://www.w3.org/2000/svg';
+    const G=root.FarmSystems,A=root.FarmCuteArt,T=32,NS='http://www.w3.org/2000/svg';
     let api,host,map,view,world,route=[],position={x:9,y:6},target=null,placement=null,editing=false,overview=false;
     let running=0,last=0,visible=true,dirty=true,lastSignature='',lastAvatar='',direction='down',walkFrame=0,moveTime=0;
     let cols=16,rows=11,keys=new Set(),pendingRefresh=false,settingsOpen=false,meeting=false;
     const $=s=>host.querySelector(s),icon=k=>A.ui(k),escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const rect=(x,y,w,h,fill,extra='')=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" ${extra}/>`;
+    const rect=(x,y,w,h,fill,extra='')=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" rx="3" ${extra}/>`;
     const sprite=(svg,x,y,w,h,vb='0 0 64 64')=>`<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="${vb}" overflow="visible">${svg}</svg>`;
     const glyph=(key,x,y,size=32)=>sprite(A.ui(key),x,y,size,size,'0 0 24 24');
     function data(){return api.read();}
@@ -34,7 +34,7 @@
             <div class="fw-play"><div class="fw-toolbar"><button type="button" data-command="overview">${icon('map')} แผนที่</button><button type="button" data-command="edit">${icon('hammer')} จัดพื้นที่</button><button type="button" data-command="look">${icon('farmer')} ตัวละคร</button><button type="button" data-command="land">${icon('plus')} ขยายที่ดิน</button></div>
             <div class="fw-look" hidden><label>เสื้อ <select data-look="shirt" aria-label="สีเสื้อตัวละคร"><option value="0">ใบไม้</option><option value="1">ท้องฟ้า</option><option value="2">อิฐแดง</option><option value="3">ลาเวนเดอร์</option><option value="4">น้ำผึ้ง</option><option value="5">ชมพู</option></select></label><label>ผม <select data-look="hair" aria-label="สีผมตัวละคร"><option value="0">น้ำตาล</option><option value="1">ดำ</option><option value="2">ทองแดง</option><option value="3">ทอง</option></select></label><label>หมวก <select data-look="hat" aria-label="หมวกตัวละคร"><option value="0">ไม่ใส่</option><option value="1">หมวกฟาง</option><option value="2">หมวกแก๊ป</option></select></label></div>
             <div class="fw-editor" hidden><b>เลือกของแล้วแตะช่องที่จะวาง</b><div class="fw-decor-tools">${Object.entries(G.DECOR).map(([k,d])=>`<button type="button" data-decor="${k}">${sprite(A.decor('decor-'+k),0,0,24,24)}<span>${d.name}</span></button>`).join('')}</div><p class="fw-edit-help">แตะอาคารเพื่อย้าย · แตะของตกแต่งเพื่อเก็บคืน · แปลงเพาะปลูกมีตำแหน่งประจำ</p><span class="fw-placement" role="status"></span><details class="fw-grid-input"><summary>เลือกตำแหน่งด้วยช่องตาราง</summary><label>แนวนอน <input type="number" data-grid="x" min="1" max="22" value="4" aria-label="ช่องแนวนอน"></label><label>แนวตั้ง <input type="number" data-grid="y" min="1" max="16" value="8" aria-label="ช่องแนวตั้ง"></label><button type="button" data-command="place-grid">วางตำแหน่งนี้</button></details></div>
-            <div class="fw-view" tabindex="0" role="group" aria-label="แผนที่ฟาร์ม แตะเพื่อเดิน ใช้ปุ่มลูกศรหรือ W A S D และ Enter เพื่อใช้งาน" aria-describedby="fw-hint"><svg class="fw-map" xmlns="${NS}" aria-hidden="true" shape-rendering="crispEdges"><g class="fw-ground"></g><g class="fw-items"></g><g class="fw-clues"></g><g class="fw-people"></g><g class="fw-selected"></g><g class="fw-pet"></g><g class="fw-player"></g></svg><div class="fw-hud"><span data-hud="level"></span><span data-hud="coins"></span><span data-hud="energy"></span></div><span class="fw-map-label">ลานฟาร์ม</span></div>
+            <div class="fw-view" tabindex="0" role="group" aria-label="แผนที่ฟาร์ม แตะเพื่อเดิน ใช้ปุ่มลูกศรหรือ W A S D และ Enter เพื่อใช้งาน" aria-describedby="fw-hint"><svg class="fw-map" xmlns="${NS}" aria-hidden="true" shape-rendering="geometricPrecision"><g class="fw-ground"></g><g class="fw-items"></g><g class="fw-clues"></g><g class="fw-people"></g><g class="fw-selected"></g><g class="fw-pet"></g><g class="fw-player"></g></svg><div class="fw-hud"><span data-hud="level"></span><span data-hud="coins"></span><span data-hud="energy"></span></div><span class="fw-map-label">ลานฟาร์ม</span></div>
             <div class="fw-under"><p id="fw-hint" class="fw-hint" role="status">แตะพื้นเพื่อเดิน แตะอาคารหรือแปลงเพื่อไปใช้งาน</p><div class="fw-controls" aria-label="ควบคุมตัวละคร"><button type="button" class="fw-up" data-step="0,-1" aria-label="เดินขึ้น">↑</button><button type="button" class="fw-left" data-step="-1,0" aria-label="เดินซ้าย">←</button><button type="button" class="fw-use" data-command="use" aria-label="ใช้งานสิ่งที่อยู่ใกล้">ใช้งาน</button><button type="button" class="fw-right" data-step="1,0" aria-label="เดินขวา">→</button><button type="button" class="fw-down" data-step="0,1" aria-label="เดินลง">↓</button></div></div>
             <div class="fw-focus" hidden><div class="fw-focus-head"><b class="fw-focus-title"></b><button type="button" data-command="close-focus" aria-label="ปิดรายละเอียดจุดหมาย">×</button></div><p class="fw-focus-description"></p><div class="fw-timing" hidden aria-label="จังหวะเก็บเกี่ยว"><span></span><i></i></div><div class="fw-focus-actions"></div><div class="fw-picker-slot"></div></div>
             <button type="button" class="fw-goal" data-command="goal"></button><details class="fw-destinations"><summary>เลือกจุดหมายโดยไม่ใช้แผนที่</summary><div></div></details></div>`;
@@ -66,9 +66,7 @@
     function terrain(d){
         let s=rect(0,0,G.W*T,G.H*T,'#365943')+rect(T,T,(G.W-2)*T,(G.H-2)*T,'#95b66d');
         s+=rect(2*T,5*T,14*T,2*T,'#c5b17c')+rect(6*T,2*T,T,10*T,'#c5b17c')+rect(10*T,4*T,T,8*T,'#c5b17c');
-        const runs={'#a8c77b':'','#789c5b':'','#dfc791':''};
-        for(let i=0;i<340;i++){const x=(i*83+11)%(G.W*T-64)+32,y=(i*47+19)%(G.H*T-64)+32,c=i%7===0?'#dfc791':i%2?'#a8c77b':'#789c5b';runs[c]+=`M${x} ${y}h${i%3+1}v2h-${i%3+1}z`;}
-        s+=Object.entries(runs).map(([c,path])=>`<path d="${path}" fill="${c}"/>`).join('');
+        for(let i=0;i<115;i++){const x=(i*83+11)%(G.W*T-64)+32,y=(i*47+19)%(G.H*T-64)+32;s+=`<path d="M${x} ${y}q-2-5-4-3m4 3q2-5 4-3" fill="none" stroke="#79a685" stroke-width="1" stroke-linecap="round" opacity=".45"/>`;}
         s+=rect(17*T,T,6*T,16*T,'#9bad72')+rect(T,12*T,16*T,5*T,'#a8bc7c');
         if(d.land<1)s+=rect(T,12*T,16*T,5*T,'#486744', 'opacity=".8"')+glyph('lock',8*T,14*T,32);
         if(d.land<4)s+=rect(17*T,T,6*T,16*T,'#486744','opacity=".8"')+glyph('lock',19*T,8*T,32);

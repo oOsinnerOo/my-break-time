@@ -5,15 +5,7 @@ const AD_GEAR = {
     tidechart: { name: 'แผนที่น้ำขึ้นน้ำลง', level: 10, text: n => `เห็นของใต้ทราย ${n} จุด${n >= 2 ? ' · ออกเรือตกปลาเพิ่ม 1 ครั้ง' : ''}`, mats: [{ wood: 3, seaweed: 2 }, { seaGlass: 3, conch: 3 }, { pearl: 1, seaGlass: 4 }] }
 };
 function adIcon(k) {
-    const patterns = {
-        gloves: ['..aaaa..','.abbbba.','.abbaba.','aabbaba.','abbbaba.','.abbbba.','..aaaa..','..accca.'],
-        lamp: ['..aaaa..','..abba..','.aaaaaa.','.acccca.','.acddca.','.acddca.','.acccca.','aaaaaaaa'],
-        tidechart: ['.aaaaaaa','aeeefeea','aefeffea','aeeffeea','afeeefea','aeeeffea','aeeeeeea','.aaaaaaa'],
-        bandage: ['..aaaa..','.acccca.','acbbccca','acbbccca','acccbbca','acccbbca','.acccca.','..aaaa..'],
-        rope: ['..aaaa..','.acccca.','acaaaaca','aca..aca','acaaaaca','.acccca.','..aaaca.','.....aa.']
-    };
-    const colors = { a: '#49344b', b: '#b87954', c: '#f4d5a2', d: '#ffd45b', e: '#d5e7ba', f: '#80b8bc' };
-    return `<svg class="ad-icon" viewBox="0 0 8 8" role="img" aria-label="${AD_GEAR[k]?.name || (k === 'rope' ? 'เชือกสำรวจ' : 'ผ้าพันแผล')}">${(patterns[k] || patterns.bandage).flatMap((row,y)=>[...row].map((v,x)=>v==='.'?'':`<rect x="${x}" y="${y}" width="1" height="1" fill="${colors[v]}"/>`)).join('')}</svg>`;
+    return FarmCuteArt.ui(k).replace('class="farm-cute-icon"','class="farm-cute-icon ad-icon"');
 }
 function farmTrade(change) {
     if (storageFrozen || window.farmEconomyBlocked) { showToast('กำลังป้องกันข้อมูลเซฟ กรุณาเปิดเกมใหม่ก่อนทำรายการ', 'warning'); return false; }
@@ -63,10 +55,23 @@ function renderAdventureStore() {
 function adBusy(z) {
     return z==='mine' ? !!veg.mine.floor : !!((z==='forest'?veg.forest:veg.sea).cells || []).some(c=>!c.open);
 }
+function adBlockers(z) {
+    return Object.keys(FarmAdventure.routes).filter(other=>other!==z && adBusy(other));
+}
+// Returning keeps every banked find. Unvisited cells are skipped, never rewarded.
+// Shared by the return button and recovery of older saves with parallel trips.
+function adEndTrip(z) {
+    if(z==='mine') Object.assign(veg.mine,{floor:0,cells:null});
+    else ((z==='forest'?veg.forest:veg.sea).cells || []).forEach(c=>{if(!c.open){c.open=true;c.skip=1;}});
+    delete veg.adventure.active[z];
+    if(veg.trip.z===z) veg.trip={z:'',got:[]};
+    riskAsk='';
+}
 function adCanStart(z) {
     if(window.farmEconomyBlocked || storageFrozen) return false;
-    if (Object.keys(FarmAdventure.routes).some(other=>other!==z && adBusy(other))) {
-        showToast('สำรวจรอบเดิมให้จบ หรือกลับบ้านก่อนเริ่มอีกพื้นที่นะ', 'info'); return false;
+    const blocked=adBlockers(z);
+    if (blocked.length) {
+        showToast('มีทริปค้าง: '+blocked.map(k=>({forest:'ป่า',mine:'เหมือง',beach:'ชายหาด'})[k]).join(' / ')+' · ใช้ปุ่มกลับบ้านแล้วเริ่มรอบใหม่ได้เลย', 'info'); return false;
     }
     return true;
 }
@@ -99,13 +104,11 @@ function adProgress(z,c,event) {
 }
 function adReturnHome(z) {
     if(!adBusy(z)) return;
-    if(z==='mine') { leaveMine(); delete veg.adventure.active[z]; saveVeg(); return; }
-    const cells=(z==='forest'?veg.forest:veg.sea).cells;
-    cells.filter(c=>!c.open).forEach(c=>{c.open=true;c.skip=1;});
-    delete veg.adventure.active[z]; veg.trip={z:'',got:[]}; riskAsk='';
+    if(!farmTrade(()=>adEndTrip(z))) return;
+    if(z==='mine') mineMsg='ขึ้นจากเหมืองพร้อมของแล้ว ใช้ลิฟต์ที่ปลดล็อกไว้กลับลงไปได้';
     if(z==='forest') forestMsg='กลับบ้านพร้อมของที่เก็บได้แล้ว เส้นทางที่ยังไม่ครบยกเลิกได้เสมอ';
-    else seaMsg='กลับบ้านแล้ว ของที่เก็บได้ยังอยู่ในยุ้งฉาง';
-    saveVeg(); renderFarmPanel();
+    else if(z==='beach') seaMsg='กลับบ้านแล้ว ของที่เก็บได้ยังอยู่ในยุ้งฉาง';
+    renderFarmPanel(); renderFarmStatus();
 }
 function useAdventureSupply(k) {
     if(!(veg.adventure.supplies[k]>0)) return;

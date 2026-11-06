@@ -195,34 +195,31 @@
     function sprite(id,direction='down',frame=0,pose='idle'){
         if(!IDS.includes(id))return '';if(!['up','down','left','right'].includes(direction))direction='down';frame=frame?1:0;
         if(!['idle','work','rest'].includes(pose))pose='idle';const key=id+direction+frame+pose;if(spriteCache.has(key))return spriteCache.get(key);
-        const n=NPCS[id],r=(x,y,w,h,c)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"/>`;let s='<ellipse cx="12" cy="30" rx="8" ry="1.5" fill="#61704e"/>';
-        s+=r(6,23,5,6-frame,'#60443e')+r(14,23,5,5+frame,'#60443e')+r(5,28-frame,6,2,'#493b42')+r(14,28+frame,6,2,'#493b42');
-        s+=r(5,15,15,11,'#60443e')+r(6,15,13,9,n.coat)+r(9,16,7,8,'#fff0d7')+r(10,17,5,1,n.coat)+r(3,17+frame,3,6,n.body)+r(20,17-frame,3,6,n.body);
-        if(n.species==='bunny')s+=r(6,0,4,10,n.body)+r(15,0,4,10,n.body)+r(7,1,2,7,'#d99aa6')+r(16,1,2,7,'#d99aa6');
-        else if(n.species==='cat')s+=r(5,3,5,7,n.body)+r(15,3,5,7,n.body)+r(6,4,2,3,'#d99aa6')+r(17,4,2,3,'#d99aa6');
-        else if(n.species==='bear')s+=r(4,3,6,6,n.body)+r(15,3,6,6,n.body)+r(5,4,3,3,n.light)+r(17,4,3,3,n.light);
-        else if(n.species==='elephant')s+=r(1,7,8,9,n.body)+r(17,7,7,9,n.body)+r(2,8,5,6,n.light)+r(19,8,4,6,n.light);
-        else if(n.species==='hedgehog')s+=r(3,4,18,12,'#785650')+r(5,2,3,4,'#785650')+r(10,1,3,5,'#785650')+r(16,2,3,4,'#785650');
-        else s+=r(10,2,5,4,'#cf9661');
-        s+=r(5,6,15,11,n.body)+r(7,8,11,8,n.light)+r(7,6,10,2,n.body);
-        if(direction==='up')s+=r(6,7,13,9,n.body);
-        else{
-            const left=direction!=='right',right=direction!=='left';if(left)s+=r(8,10,2,pose==='rest'?1:2,'#493b42');if(right)s+=r(15,10,2,pose==='rest'?1:2,'#493b42');
-            s+=r(7,13,2,1,'#dc9a92')+r(17,13,2,1,'#dc9a92');
-            s+=n.species==='elephant'?r(direction==='left'?7:direction==='right'?16:11,12,4,7,n.body):n.species==='chick'?r(11,12,4,2,'#cf9661'):r(11,13,3,1,'#785650');
-            if(id==='luckyCat')s+=r(7,6,4,2,'#ba805e')+r(17,7,2,3,'#ba805e')+r(8,17,9,2,'#ba705e');
+        const n=NPCS[id],ell=(x,y,rx,ry,c)=>`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${c}"/>`,line=(d,c,w=1)=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+        let s=ell(12,30,8,1.5,'#79947b33')+line(`M8 23l-${frame} 5m8-5l${frame} 5`,'#a08a79',3.4)+ell(7-frame,29,3,1.5,'#8c7e75')+ell(17+frame,29,3,1.5,'#8c7e75');
+        s+=`<rect x="5" y="15" width="14" height="11" rx="4" fill="${n.coat}"/>`+`<path d="M9 16h6v8H9Z" fill="#f9edd6"/>`+line(`M5 17q-3 ${5+frame} 0 6m14-6q3 ${6-frame} 0 6`,n.body,3);
+        if(n.species==='bunny')s+=ell(7,4,2.8,6,n.body)+ell(17,4,2.8,6,n.body)+ell(7,3,1,4,'#e8b8c5')+ell(17,3,1,4,'#e8b8c5');
+        else if(n.species==='cat')s+=`<path d="M4 9L3 2l7 4m4 0l7-4l-1 7" fill="${n.body}"/>`;
+        else if(n.species==='bear')s+=ell(5,5,3,3,n.body)+ell(19,5,3,3,n.body)+ell(5,5,1.6,1.6,n.light)+ell(19,5,1.6,1.6,n.light);
+        else if(n.species==='elephant')s+=ell(4,10,4,6,n.body)+ell(20,10,4,6,n.body)+ell(3,10,2,4,n.light)+ell(21,10,2,4,n.light);
+        else if(n.species==='hedgehog')s+=`<path d="M2 13L3 6l3 1l1-5l4 2l3-4l3 5l4-1l2 9Z" fill="#aa8a78"/>`;
+        else s+=`<path d="M9 5q-3-7 2-3q3-4 4 1Z" fill="#e6bc83"/>`;
+        s+=ell(12,10,8,7,n.body)+ell(12,11,6,5,n.light);
+        if(direction==='up')s+=ell(12,10,7,6,n.body);
+        else {
+            const dx=direction==='left'?-1:direction==='right'?1:0;
+            for(const x of direction==='left'?[8]:direction==='right'?[16]:[8.5,15.5])s+=pose==='rest'?line(`M${x-1} 10q1 1 2 0`,'#5a524d',.8):ell(x+dx,10,.8,1,'#5a524d');
+            s+=ell(7,13,1.7,.8,'#e8aab1')+ell(17,13,1.7,.8,'#e8aab1');
+            if(n.species==='elephant')s+=line(`M${12+dx*3} 12q3 8-1 7`,n.body,3.2);
+            else if(n.species==='chick')s+=`<path d="M10 12h5l-2.5 2Z" fill="#daa370"/>`;
+            else s+=line('M11 13q1 2 2 0','#846c5f',.8);
+            if(id==='luckyCat')s+=ell(7,6,2.5,1.6,'#c69b7a');
         }
         if(pose==='work'){
-            if(id==='dadBear')s+=r(20,12-frame*3,2,11,'#80543f')+r(17,11-frame*3,7,4,'#91adbf');
-            else if(id==='bunny')s+=r(19,19-frame,5,5,'#659cae')+r(17,20-frame,3,2,'#91c8cf')+(frame?r(17,24,1,2,'#91c8cf')+r(21,26,1,2,'#91c8cf'):'');
-            else if(id==='orangeCat')s+=r(21,5,1,17,'#80543f')+r(22,5,1,1,'#fff0c7')+r(23,5,1,21,'#d9e3c0')+r(22,26,2,2,'#c66e69');
-            else if(id==='momElephant')s+=r(2,22+frame,21,2,'#80543f')+r(4,18+frame,5,4,'#cd9860')+r(11,18+frame,5,4,'#ecc38b')+r(18,18+frame,4,4,'#cd9860');
-            else if(id==='hedgehog')s+=r(17,19+frame,7,7,'#b4a2c7')+r(19,17-frame,1,9,'#e8e4ce');
-            else if(id==='luckyCat')s+=r(18,17-frame,6,10,'#80543f')+r(19,18-frame,4,7,'#fff0c7')+r(20,20-frame,3,1,'#ba805e');
-            else if(id==='teddy')s+=r(19,18+frame,3,3,'#d99aa6')+r(22,16+frame,2,6,'#bf7091');
-            else s+=r(20,18-frame,3,7,'#e1a24e')+r(19,17-frame,5,2,'#64964e');
+            const tools={dadBear:`<path d="M20 ${12-frame*2}v13" stroke="#ae9276" stroke-width="2"/><path d="M17 ${12-frame*2}h7v4h-7Z" fill="#a6c3cf"/>`,bunny:`<ellipse cx="20" cy="22" rx="4" ry="3" fill="#a0c9d1"/>`+line('M18 22l-3 2','#9fc5c9',1.6),orangeCat:line('M21 25V5q4 0 3 17','#b29e81',1),momElephant:`<ellipse cx="12" cy="24" rx="11" ry="2" fill="#bf9d7c"/><ellipse cx="12" cy="21" rx="5" ry="3" fill="#ebd2a4"/>`,hedgehog:line('M18 25l5-7','#b49db8',3),luckyCat:`<rect x="18" y="17" width="6" height="10" rx="2" fill="#e9dcc2"/>`,teddy:ell(22,19,2,3,'#e7aabd'),chick:`<path d="M20 24l3-6" stroke="#a7c195" stroke-width="3"/>`};
+            s+=`<g transform="translate(0,${frame})">${tools[id]||''}</g>`;
         }
-        const out='<g shape-rendering="crispEdges">'+s+'</g>';spriteCache.set(key,out);return out;
+        const out='<g class="cute-villager" data-direction="'+direction+'" shape-rendering="geometricPrecision">'+s+'</g>';spriteCache.set(key,out);return out;
     }
 
     let api,engine,bridge,host,overlay,walkers,dialogue='',book=false,bookTab='quests',lastFocus,lastObserve=0,lastSync=0,clueSignature='',clueList=[],lastNote='',markerAt=0,markers={},lastDialogHTML='',feedback='';

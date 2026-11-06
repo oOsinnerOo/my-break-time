@@ -94,9 +94,9 @@ test('quest objects keep their location when villagers change destinations',()=>
     for(const a of w.actors.values())a.goal={...before};
     assert.deepEqual(plain(w.destination('chick','board',world.pos,7,false)),before);
 });
-test('every villager and walking direction uses distinct native pixel sprites',()=>{
+test('every villager and walking direction uses distinct rounded cartoon sprites',()=>{
     const sprites=new Set();for(const who of V.IDS)for(const dir of ['down','up','left','right'])for(const f of [0,1]){
-        const s=V.sprite(who,dir,f);assert(s.includes('crispEdges'));assert(!/NaN|undefined|<image|<text|script/i.test(s));sprites.add(s);
+        const s=V.sprite(who,dir,f);assert(s.includes('geometricPrecision'));assert(!/NaN|undefined|<image|<text|script/i.test(s));sprites.add(s);
     }assert.equal(sprites.size,64);assert.equal(V.sprite('<script>'),'');
 });
 test('work and rest poses are distinct from ordinary idle sprites',()=>{
